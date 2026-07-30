@@ -171,9 +171,9 @@ export const decorationAssets: DecorationAsset[] = [
     originalWidth: 910,
     originalHeight: 284,
 
-    defaultWidth: 650,
-    minWidth: 650,
-    maxWidth: 650,
+    defaultWidth: 750,
+    minWidth: 750,
+    maxWidth: 750,
 
     defaultX: 627,
     defaultY: 455,
@@ -188,9 +188,9 @@ export const decorationAssets: DecorationAsset[] = [
     originalWidth: 908,
     originalHeight: 338,
 
-    defaultWidth: 650,
-    minWidth: 650,
-    maxWidth: 650,
+    defaultWidth: 750,
+    minWidth: 750,
+    maxWidth: 750,
 
     defaultX: 627,
     defaultY: 460,
@@ -205,9 +205,9 @@ export const decorationAssets: DecorationAsset[] = [
     originalWidth: 908,
     originalHeight: 350,
 
-    defaultWidth: 650,
-    minWidth: 650,
-    maxWidth: 650,
+    defaultWidth: 750,
+    minWidth: 750,
+    maxWidth: 750,
 
     defaultX: 627,
     defaultY: 460,
@@ -227,9 +227,9 @@ export const decorationAssets: DecorationAsset[] = [
     originalWidth: 1024,
     originalHeight: 1024,
 
-    defaultWidth: 155,
-    minWidth: 155,
-    maxWidth: 155,
+    defaultWidth: 165,
+    minWidth: 165,
+    maxWidth: 165,
 
     defaultX: 627,
     defaultY: 365,
@@ -244,9 +244,9 @@ export const decorationAssets: DecorationAsset[] = [
     originalWidth: 1536,
     originalHeight: 1024,
 
-    defaultWidth: 115,
-    minWidth: 115,
-    maxWidth: 115,
+    defaultWidth: 135,
+    minWidth: 135,
+    maxWidth: 135,
 
     defaultX: 585,
     defaultY: 380,
@@ -261,9 +261,9 @@ export const decorationAssets: DecorationAsset[] = [
     originalWidth: 1536,
     originalHeight: 1024,
 
-    defaultWidth: 120,
-    minWidth: 120,
-    maxWidth: 120,
+    defaultWidth: 140,
+    minWidth: 140,
+    maxWidth: 140,
 
     defaultX: 670,
     defaultY: 380,
@@ -373,9 +373,9 @@ export const decorationAssets: DecorationAsset[] = [
     originalWidth: 1024,
     originalHeight: 1536,
 
-    defaultWidth: 190,
-    minWidth: 190,
-    maxWidth: 190,
+    defaultWidth: 170,
+    minWidth: 170,
+    maxWidth: 170,
 
     defaultX: 695,
     defaultY: 345,
@@ -395,9 +395,9 @@ export const decorationAssets: DecorationAsset[] = [
     originalWidth: 690,
     originalHeight: 639,
 
-    defaultWidth: 125,
-    minWidth: 125,
-    maxWidth: 125,
+    defaultWidth: 165,
+    minWidth: 165,
+    maxWidth: 165,
 
     defaultX: 627,
     defaultY: 380,
@@ -417,9 +417,9 @@ export const decorationAssets: DecorationAsset[] = [
     originalWidth: 1024,
     originalHeight: 1536,
 
-    defaultWidth: 140,
-    minWidth: 140,
-    maxWidth: 140,
+    defaultWidth: 180,
+    minWidth: 180,
+    maxWidth: 180,
 
     defaultX: 550,
     defaultY: 235,
@@ -434,9 +434,9 @@ export const decorationAssets: DecorationAsset[] = [
     originalWidth: 1024,
     originalHeight: 1536,
 
-    defaultWidth: 140,
-    minWidth: 140,
-    maxWidth: 140,
+    defaultWidth: 180,
+    minWidth: 180,
+    maxWidth: 180,
 
     defaultX: 705,
     defaultY: 235,

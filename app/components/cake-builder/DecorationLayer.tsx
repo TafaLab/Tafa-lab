@@ -70,12 +70,14 @@ function ToolbarButton({
   onClick,
   children,
   danger = false,
+  compact = false,
 }: {
   title: string;
   label: string;
   onClick: () => void;
   children: ReactNode;
   danger?: boolean;
+  compact?: boolean;
 }) {
   return (
     <button
@@ -90,7 +92,11 @@ function ToolbarButton({
         event.stopPropagation();
         onClick();
       }}
-      className={`flex h-[48px] min-h-[48px] w-full min-w-0 flex-col items-center justify-center gap-0.5 rounded-xl border px-1 text-center transition active:scale-[0.96] md:h-auto md:min-h-[52px] ${
+      className={`flex min-w-0 flex-col items-center justify-center rounded-xl border text-center transition active:scale-[0.96] ${
+        compact
+          ? "h-[52px] w-[52px] gap-0.5 px-1"
+          : "min-h-[52px] w-full gap-1 px-1 py-2"
+      } ${
         danger
           ? "border-red-100 bg-red-50 text-red-700 hover:bg-red-100"
           : "border-[#6a4433]/10 bg-[#f8f0eb] text-[#4b342a] hover:bg-[#efe3da]"
@@ -103,7 +109,13 @@ function ToolbarButton({
         {children}
       </span>
 
-      <span className="hidden w-full truncate text-[8px] font-semibold leading-tight min-[390px]:block md:text-[10px]">
+      <span
+        className={`w-full truncate font-semibold leading-tight ${
+          compact
+            ? "text-[7px]"
+            : "text-[9px] md:text-[10px]"
+        }`}
+      >
         {label}
       </span>
     </button>
@@ -142,13 +154,10 @@ export default function DecorationLayer({
   onDuplicate,
   onRotate,
   onResetRotation,
-  onResetTransform,
   onFlipHorizontal,
   onFlipVertical,
   onBringForward,
   onSendBackward,
-  onBringToFront,
-  onSendToBack,
 }: DecorationLayerProps) {
   const interactionRef =
     useRef<InteractionState | null>(null);
@@ -655,243 +664,235 @@ export default function DecorationLayer({
       })}
 
       {selectedInstance && (
-        <div
-          role="toolbar"
-          aria-label="Управление декором"
-          onPointerDown={(event) => {
-            event.stopPropagation();
-          }}
-          className="
-            decoration-floating-toolbar
-            fixed
-            right-2
-            top-1/2
-            z-[4000]
-            grid
-            w-[58px]
-            -translate-y-1/2
-            grid-cols-1
-            gap-1
-            rounded-2xl
-            border
-            border-black/10
-            bg-white/95
-            p-1.5
-            shadow-xl
-            backdrop-blur-md
-
-            md:absolute
-            md:right-auto
-            md:top-auto
-            md:w-[min(92%,430px)]
-            md:translate-y-0
-            md:grid-cols-4
-            md:gap-1.5
-            md:p-2
-          "
-          style={{
-            left:
-              typeof window !== "undefined" &&
-              window.innerWidth >= 768
-                ? canvasPercent(toolbarX)
-                : "auto",
-
-            top:
-              typeof window !== "undefined" &&
-              window.innerWidth >= 768
-                ? canvasPercent(toolbarY)
-                : "50%",
-
-            transform:
-              typeof window !== "undefined" &&
-              window.innerWidth >= 768
-                ? "translate(-50%, -50%)"
-                : "translateY(-50%)",
-          }}
-        >
-          <ToolbarButton
-            title="Удалить декор"
-            label="Удалить"
-            danger
-            onClick={() =>
-              onRemove(
-                selectedInstance.instanceId,
-              )
-            }
-          >
-            ×
-          </ToolbarButton>
-
-          <ToolbarButton
-            title="Создать копию"
-            label="Копия"
-            onClick={() =>
-              onDuplicate(
-                selectedInstance.instanceId,
-              )
-            }
-          >
-            ⧉
-          </ToolbarButton>
-
-          <ToolbarButton
-            title="Повернуть на 15 градусов"
-            label="Повернуть"
-            onClick={() =>
-              onRotate(
-                selectedInstance.instanceId,
-              )
-            }
-          >
-            ↻
-          </ToolbarButton>
-
-          <ToolbarButton
-            title="Сбросить поворот"
-            label="Поворот 0"
-            onClick={() =>
-              onResetRotation(
-                selectedInstance.instanceId,
-              )
-            }
-          >
-            0°
-          </ToolbarButton>
-
-          <ToolbarButton
-            title="Уменьшить декор"
-            label="Уменьшить"
-            onClick={() =>
-              updateInstance(
-                selectedInstance.instanceId,
-                {
-                  width: Math.max(
-                    70,
-                    selectedInstance.width - 24,
-                  ),
-                },
-              )
-            }
-          >
-            −
-          </ToolbarButton>
-
-          <ToolbarButton
-            title="Увеличить декор"
-            label="Увеличить"
-            onClick={() =>
-              updateInstance(
-                selectedInstance.instanceId,
-                {
-                  width: Math.min(
-                    620,
-                    selectedInstance.width + 24,
-                  ),
-                },
-              )
-            }
-          >
-            +
-          </ToolbarButton>
-
-          <ToolbarButton
-            title="Отразить по горизонтали"
-            label="Зеркало"
-            onClick={() =>
-              onFlipHorizontal(
-                selectedInstance.instanceId,
-              )
-            }
-          >
-            ↔
-          </ToolbarButton>
-
-          <ToolbarButton
-            title="Отразить по вертикали"
-            label="Вверх/вниз"
-            onClick={() =>
-              onFlipVertical(
-                selectedInstance.instanceId,
-              )
-            }
-          >
-            ↕
-          </ToolbarButton>
-
-          <ToolbarButton
-            title="Переместить на один слой назад"
-            label="Слой назад"
-            onClick={() =>
-              onSendBackward(
-                selectedInstance.instanceId,
-              )
-            }
-          >
-            ‹
-          </ToolbarButton>
-
-          <ToolbarButton
-            title="Переместить на один слой вперёд"
-            label="Слой вперёд"
-            onClick={() =>
-              onBringForward(
-                selectedInstance.instanceId,
-              )
-            }
-          >
-            ›
-          </ToolbarButton>
-
-          <ToolbarButton
-            title="Переместить на задний план"
-            label="Вниз"
-            onClick={() =>
-              onSendToBack(
-                selectedInstance.instanceId,
-              )
-            }
-          >
-            ⇊
-          </ToolbarButton>
-
-          <ToolbarButton
-            title="Переместить на передний план"
-            label="Наверх"
-            onClick={() =>
-              onBringToFront(
-                selectedInstance.instanceId,
-              )
-            }
-          >
-            ⇈
-          </ToolbarButton>
-
-          <button
-            type="button"
-            title="Вернуть исходное положение и размер"
-            aria-label="Вернуть исходное положение и размер"
+        <>
+          <div
+            role="toolbar"
+            aria-label="Управление декором"
             onPointerDown={(event) => {
               event.stopPropagation();
             }}
-            onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-
-              onResetTransform(
-                selectedInstance.instanceId,
-              );
-            }}
-            className="flex h-[48px] min-h-[48px] w-full items-center justify-center rounded-xl border border-[#6a4433]/15 bg-white px-1 text-center text-lg font-bold text-[#6a4433] transition active:scale-[0.96] md:col-span-4 md:h-11 md:min-h-11 md:text-xs md:font-semibold"
+            className="fixed right-2 top-1/2 z-[5000] flex -translate-y-1/2 flex-col gap-1 rounded-2xl border border-black/10 bg-white/95 p-1.5 shadow-xl backdrop-blur-md md:hidden"
           >
-            <span className="md:hidden">
-              ↙
-            </span>
+            <ToolbarButton
+              title="Удалить декор"
+              label="Удалить"
+              danger
+              compact
+              onClick={() =>
+                onRemove(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ×
+            </ToolbarButton>
 
-            <span className="hidden md:inline">
-              Вернуть исходное положение и размер
-            </span>
-          </button>
-        </div>
+            <ToolbarButton
+              title="Создать копию"
+              label="Копия"
+              compact
+              onClick={() =>
+                onDuplicate(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ⧉
+            </ToolbarButton>
+
+            <ToolbarButton
+              title="Повернуть на 15 градусов"
+              label="Повернуть"
+              compact
+              onClick={() =>
+                onRotate(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ↻
+            </ToolbarButton>
+
+            <ToolbarButton
+              title="Сбросить поворот"
+              label="Поворот 0"
+              compact
+              onClick={() =>
+                onResetRotation(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              0°
+            </ToolbarButton>
+
+            <ToolbarButton
+              title="Отразить по горизонтали"
+              label="Зеркало"
+              compact
+              onClick={() =>
+                onFlipHorizontal(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ↔
+            </ToolbarButton>
+
+            <ToolbarButton
+              title="Отразить по вертикали"
+              label="Отразить"
+              compact
+              onClick={() =>
+                onFlipVertical(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ↕
+            </ToolbarButton>
+
+            <ToolbarButton
+              title="Переместить на один слой назад"
+              label="Слой назад"
+              compact
+              onClick={() =>
+                onSendBackward(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ‹
+            </ToolbarButton>
+
+            <ToolbarButton
+              title="Переместить на один слой вперёд"
+              label="Слой вперёд"
+              compact
+              onClick={() =>
+                onBringForward(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ›
+            </ToolbarButton>
+          </div>
+
+          <div
+            role="toolbar"
+            aria-label="Управление декором"
+            onPointerDown={(event) => {
+              event.stopPropagation();
+            }}
+            className="absolute hidden w-[min(92%,430px)] grid-cols-4 gap-1.5 rounded-2xl border border-black/10 bg-white/95 p-2 shadow-xl backdrop-blur-md md:grid"
+            style={{
+              left: canvasPercent(toolbarX),
+              top: canvasPercent(toolbarY),
+              zIndex:
+                2000 + instances.length,
+              transform:
+                "translate(-50%, -50%)",
+            }}
+          >
+            <ToolbarButton
+              title="Удалить декор"
+              label="Удалить"
+              danger
+              onClick={() =>
+                onRemove(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ×
+            </ToolbarButton>
+
+            <ToolbarButton
+              title="Создать копию"
+              label="Копия"
+              onClick={() =>
+                onDuplicate(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ⧉
+            </ToolbarButton>
+
+            <ToolbarButton
+              title="Повернуть на 15 градусов"
+              label="Повернуть"
+              onClick={() =>
+                onRotate(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ↻
+            </ToolbarButton>
+
+            <ToolbarButton
+              title="Сбросить поворот"
+              label="Поворот 0"
+              onClick={() =>
+                onResetRotation(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              0°
+            </ToolbarButton>
+
+            <ToolbarButton
+              title="Отразить по горизонтали"
+              label="Зеркало"
+              onClick={() =>
+                onFlipHorizontal(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ↔
+            </ToolbarButton>
+
+            <ToolbarButton
+              title="Отразить по вертикали"
+              label="Отразить"
+              onClick={() =>
+                onFlipVertical(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ↕
+            </ToolbarButton>
+
+            <ToolbarButton
+              title="Переместить на один слой назад"
+              label="Слой назад"
+              onClick={() =>
+                onSendBackward(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ‹
+            </ToolbarButton>
+
+            <ToolbarButton
+              title="Переместить на один слой вперёд"
+              label="Слой вперёд"
+              onClick={() =>
+                onBringForward(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ›
+            </ToolbarButton>
+          </div>
+        </>
       )}
     </>
   );
