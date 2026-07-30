@@ -93,9 +93,9 @@ function ToolbarButton({
         onClick();
       }}
       className={`flex min-w-0 flex-col items-center justify-center rounded-xl border text-center transition active:scale-[0.96] ${
-        compact
-          ? "h-[52px] w-[52px] gap-0.5 px-1"
-          : "min-h-[52px] w-full gap-1 px-1 py-2"
+       compact
+  ? "h-[52px] w-[52px] gap-0.5 px-1"
+  : "min-h-[42px] w-full gap-0.5 px-1 py-1"
       } ${
         danger
           ? "border-red-100 bg-red-50 text-red-700 hover:bg-red-100"
@@ -111,9 +111,9 @@ function ToolbarButton({
 
       <span
         className={`w-full truncate font-semibold leading-tight ${
-          compact
-            ? "text-[7px]"
-            : "text-[9px] md:text-[10px]"
+         compact
+  ? "text-[7px]"
+  : "text-[8px]"
         }`}
       >
         {label}
@@ -785,7 +785,7 @@ export default function DecorationLayer({
             onPointerDown={(event) => {
               event.stopPropagation();
             }}
-            className="absolute hidden w-[min(92%,430px)] grid-cols-4 gap-1.5 rounded-2xl border border-black/10 bg-white/95 p-2 shadow-xl backdrop-blur-md md:grid"
+           className="absolute hidden w-[min(78%,320px)] grid-cols-4 gap-1 rounded-xl border border-black/10 bg-white/95 p-1.5 shadow-lg backdrop-blur-md md:grid"
             style={{
               left: canvasPercent(toolbarX),
               top: canvasPercent(toolbarY),
