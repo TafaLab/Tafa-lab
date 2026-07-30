@@ -64,25 +64,24 @@ type DecorationLayerProps = {
   onSendToBack: (instanceId: string) => void;
 };
 
-function IconButton({
+function ToolbarButton({
   title,
+  label,
   onClick,
   children,
   danger = false,
-  label,
 }: {
   title: string;
+  label: string;
   onClick: () => void;
   children: ReactNode;
   danger?: boolean;
-  label?: string;
 }) {
   return (
     <button
       type="button"
       title={title}
       aria-label={title}
-      data-mobile-label={label ?? title}
       onClick={(event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -91,13 +90,22 @@ function IconButton({
       onPointerDown={(event) => {
         event.stopPropagation();
       }}
-      className={`decoration-toolbar-button flex h-8 w-8 items-center justify-center rounded-lg transition ${
+      className={`flex min-h-[52px] min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-center transition active:scale-[0.97] ${
         danger
-          ? "text-red-700 hover:bg-red-50"
-          : "text-[#4b342a] hover:bg-[#f2e8e1]"
+          ? "bg-red-50 text-red-700 hover:bg-red-100"
+          : "bg-[#f8f0eb] text-[#4b342a] hover:bg-[#efe3da]"
       }`}
     >
-      {children}
+      <span
+        className="flex h-5 items-center justify-center text-base font-bold leading-none"
+        aria-hidden="true"
+      >
+        {children}
+      </span>
+
+      <span className="w-full truncate text-[9px] font-semibold leading-tight sm:text-[10px]">
+        {label}
+      </span>
     </button>
   );
 }
@@ -181,7 +189,10 @@ export default function DecorationLayer({
     onChange(
       instances.map((instance) =>
         instance.instanceId === instanceId
-          ? { ...instance, ...changes }
+          ? {
+              ...instance,
+              ...changes,
+            }
           : instance,
       ),
     );
@@ -278,7 +289,9 @@ export default function DecorationLayer({
     const targetsY = [BUILDER_CANVAS_SIZE / 2];
 
     for (const other of instances) {
-      if (other.instanceId === instance.instanceId) {
+      if (
+        other.instanceId === instance.instanceId
+      ) {
         continue;
       }
 
@@ -287,7 +300,9 @@ export default function DecorationLayer({
     }
 
     for (const target of targetsX) {
-      if (Math.abs(x - target) <= SNAP_DISTANCE) {
+      if (
+        Math.abs(x - target) <= SNAP_DISTANCE
+      ) {
         x = target;
         vertical = target;
         break;
@@ -295,7 +310,9 @@ export default function DecorationLayer({
     }
 
     for (const target of targetsY) {
-      if (Math.abs(y - target) <= SNAP_DISTANCE) {
+      if (
+        Math.abs(y - target) <= SNAP_DISTANCE
+      ) {
         y = target;
         horizontal = target;
         break;
@@ -305,7 +322,10 @@ export default function DecorationLayer({
     return {
       x,
       y,
-      guides: { vertical, horizontal },
+      guides: {
+        vertical,
+        horizontal,
+      },
     };
   }
 
@@ -335,7 +355,8 @@ export default function DecorationLayer({
 
     const instance = instances.find(
       (item) =>
-        item.instanceId === interaction.instanceId,
+        item.instanceId ===
+        interaction.instanceId,
     );
 
     if (!instance) {
@@ -344,6 +365,7 @@ export default function DecorationLayer({
 
     if (interaction.mode === "move") {
       const halfWidth = instance.width / 2;
+
       const verticalMargin = Math.min(
         instance.width / 3,
         70,
@@ -390,8 +412,9 @@ export default function DecorationLayer({
 
     const rotation = event.altKey
       ? rawRotation
-      : Math.round(rawRotation / ROTATION_SNAP) *
-        ROTATION_SNAP;
+      : Math.round(
+          rawRotation / ROTATION_SNAP,
+        ) * ROTATION_SNAP;
 
     updateInstance(instance.instanceId, {
       rotation: normalizeRotation(rotation),
@@ -424,7 +447,12 @@ export default function DecorationLayer({
     }
 
     interactionRef.current = null;
-    setGuides({ vertical: null, horizontal: null });
+
+    setGuides({
+      vertical: null,
+      horizontal: null,
+    });
+
     onInteractionEnd();
   }
 
@@ -434,31 +462,40 @@ export default function DecorationLayer({
     }
 
     interactionRef.current = null;
-    setGuides({ vertical: null, horizontal: null });
+
+    setGuides({
+      vertical: null,
+      horizontal: null,
+    });
+
     onInteractionEnd();
   }
 
   const selectedInstance =
     instances.find(
       (instance) =>
-        instance.instanceId === selectedInstanceId,
+        instance.instanceId ===
+        selectedInstanceId,
     ) ?? null;
 
   const toolbarX = selectedInstance
     ? clamp(
         selectedInstance.x,
-        145,
-        BUILDER_CANVAS_SIZE - 145,
+        230,
+        BUILDER_CANVAS_SIZE - 230,
       )
     : 0;
 
   const toolbarY = selectedInstance
     ? clamp(
         selectedInstance.y -
-          Math.max(selectedInstance.width / 2, 55) -
-          110,
-        85,
-        BUILDER_CANVAS_SIZE - 85,
+          Math.max(
+            selectedInstance.width / 2,
+            70,
+          ) -
+          165,
+        150,
+        BUILDER_CANVAS_SIZE - 150,
       )
     : 0;
 
@@ -468,7 +505,9 @@ export default function DecorationLayer({
         <span
           className="pointer-events-none absolute bottom-0 top-0 w-px bg-[#6a4433]/50"
           style={{
-            left: canvasPercent(guides.vertical),
+            left: canvasPercent(
+              guides.vertical,
+            ),
             zIndex: 1900,
           }}
         />
@@ -478,7 +517,9 @@ export default function DecorationLayer({
         <span
           className="pointer-events-none absolute left-0 right-0 h-px bg-[#6a4433]/50"
           style={{
-            top: canvasPercent(guides.horizontal),
+            top: canvasPercent(
+              guides.horizontal,
+            ),
             zIndex: 1900,
           }}
         />
@@ -494,7 +535,8 @@ export default function DecorationLayer({
         }
 
         const selected =
-          instance.instanceId === selectedInstanceId;
+          instance.instanceId ===
+          selectedInstanceId;
 
         return (
           <div
@@ -503,9 +545,12 @@ export default function DecorationLayer({
             style={{
               left: canvasPercent(instance.x),
               top: canvasPercent(instance.y),
-              width: canvasPercent(instance.width),
+              width: canvasPercent(
+                instance.width,
+              ),
               zIndex: 20 + index,
-              transform: "translate(-50%, -50%)",
+              transform:
+                "translate(-50%, -50%)",
             }}
           >
             <button
@@ -514,15 +559,22 @@ export default function DecorationLayer({
               onDoubleClick={(event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                onDuplicate(instance.instanceId);
+
+                onDuplicate(
+                  instance.instanceId,
+                );
               }}
               onPointerDown={(event) =>
                 startMove(event, instance)
               }
               onPointerMove={handlePointerMove}
               onPointerUp={finishInteraction}
-              onPointerCancel={finishInteraction}
-              onLostPointerCapture={cancelInteraction}
+              onPointerCancel={
+                finishInteraction
+              }
+              onLostPointerCapture={
+                cancelInteraction
+              }
               className={`relative block w-full touch-none select-none border-0 bg-transparent p-0 ${
                 selected
                   ? "cursor-grabbing"
@@ -550,8 +602,10 @@ export default function DecorationLayer({
             {selected && (
               <>
                 <span
-                  className="pointer-events-none absolute left-1/2 top-[-38px] h-8 w-px -translate-x-1/2 bg-[#6a4433]/70"
-                  style={{ zIndex: 30 }}
+                  className="pointer-events-none absolute left-1/2 top-[-42px] h-9 w-px -translate-x-1/2 bg-[#6a4433]/70"
+                  style={{
+                    zIndex: 30,
+                  }}
                 />
 
                 <button
@@ -559,16 +613,29 @@ export default function DecorationLayer({
                   title="Повернуть декор"
                   aria-label="Повернуть декор"
                   onPointerDown={(event) =>
-                    startRotate(event, instance)
+                    startRotate(
+                      event,
+                      instance,
+                    )
                   }
-                  onPointerMove={handlePointerMove}
-                  onPointerUp={finishInteraction}
-                  onPointerCancel={finishInteraction}
-                  onLostPointerCapture={cancelInteraction}
-                  className="absolute left-1/2 top-[-48px] flex h-6 w-6 -translate-x-1/2 touch-none items-center justify-center rounded-full border-2 border-[#6a4433] bg-white text-xs text-[#6a4433] shadow-md"
-                  style={{ zIndex: 31 }}
+                  onPointerMove={
+                    handlePointerMove
+                  }
+                  onPointerUp={
+                    finishInteraction
+                  }
+                  onPointerCancel={
+                    finishInteraction
+                  }
+                  onLostPointerCapture={
+                    cancelInteraction
+                  }
+                  className="absolute left-1/2 top-[-54px] flex h-8 w-8 -translate-x-1/2 touch-none items-center justify-center rounded-full border-2 border-[#6a4433] bg-white text-base font-bold text-[#6a4433] shadow-md"
+                  style={{
+                    zIndex: 31,
+                  }}
                 >
-                  в†»
+                  ↻
                 </button>
               </>
             )}
@@ -579,152 +646,198 @@ export default function DecorationLayer({
       {selectedInstance && (
         <div
           role="toolbar"
-          aria-label="РЈРїСЂР°РІР»РµРЅРёРµ РґРµРєРѕСЂРѕРј"
+          aria-label="Управление декором"
           onPointerDown={(event) => {
             event.stopPropagation();
           }}
-          className="decoration-floating-toolbar absolute grid grid-cols-6 gap-1 rounded-2xl border border-black/10 bg-white/95 p-2 shadow-xl backdrop-blur-sm"
+          className="decoration-floating-toolbar absolute w-[min(92%,430px)] rounded-2xl border border-black/10 bg-white/95 p-2 shadow-xl backdrop-blur-md"
           style={{
             left: canvasPercent(toolbarX),
             top: canvasPercent(toolbarY),
-            zIndex: 2000 + instances.length,
-            transform: "translate(-50%, -50%)",
+            zIndex:
+              2000 + instances.length,
+            transform:
+              "translate(-50%, -50%)",
           }}
         >
-          <IconButton
-            title="РЈРґР°Р»РёС‚СЊ"
-            label="Удалить"
-            danger
-            onClick={() =>
-              onRemove(selectedInstance.instanceId)
-            }
-          >
-            <span className="text-sm">вњ•</span>
-          </IconButton>
+          <div className="grid grid-cols-4 gap-1.5">
+            <ToolbarButton
+              title="Удалить декор"
+              label="Удалить"
+              danger
+              onClick={() =>
+                onRemove(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ×
+            </ToolbarButton>
 
-          <IconButton
-            title="Р”СѓР±Р»РёСЂРѕРІР°С‚СЊ"
-            label="Копия"
-            onClick={() =>
-              onDuplicate(selectedInstance.instanceId)
-            }
-          >
-            <span className="text-base">в§‰</span>
-          </IconButton>
+            <ToolbarButton
+              title="Создать копию"
+              label="Копия"
+              onClick={() =>
+                onDuplicate(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ⧉
+            </ToolbarButton>
 
-          <IconButton
-            title="Повернуть на 15°"
-            label="Повернуть"
-            onClick={() =>
-              onRotate(selectedInstance.instanceId)
-            }
-          >
-            <span className="text-lg">в†»</span>
-          </IconButton>
+            <ToolbarButton
+              title="Повернуть на 15 градусов"
+              label="Повернуть"
+              onClick={() =>
+                onRotate(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ↻
+            </ToolbarButton>
 
-          <IconButton
-            title="Сбросить поворот"
-            label="Сброс"
-            onClick={() =>
-              onResetRotation(selectedInstance.instanceId)
-            }
-          >
-            <span className="text-xs font-bold">0В°</span>
-          </IconButton>
+            <ToolbarButton
+              title="Сбросить поворот"
+              label="Поворот 0"
+              onClick={() =>
+                onResetRotation(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              0°
+            </ToolbarButton>
 
-          <IconButton
-            title="Вернуть исходное положение"
-            label="Исходное"
-            onClick={() =>
-              onResetTransform(selectedInstance.instanceId)
-            }
-          >
-            <span className="text-base">вЊ‚</span>
-          </IconButton>
+            <ToolbarButton
+              title="Уменьшить декор"
+              label="Уменьшить"
+              onClick={() =>
+                updateInstance(
+                  selectedInstance.instanceId,
+                  {
+                    width: Math.max(
+                      70,
+                      selectedInstance.width -
+                        24,
+                    ),
+                  },
+                )
+              }
+            >
+              −
+            </ToolbarButton>
 
-          <IconButton
-            title="РћС‚СЂР°Р·РёС‚СЊ РїРѕ РіРѕСЂРёР·РѕРЅС‚Р°Р»Рё"
-            label="Зеркало"
-            onClick={() =>
-              onFlipHorizontal(selectedInstance.instanceId)
-            }
-          >
-            <span className="text-lg">в†”</span>
-          </IconButton>
+            <ToolbarButton
+              title="Увеличить декор"
+              label="Увеличить"
+              onClick={() =>
+                updateInstance(
+                  selectedInstance.instanceId,
+                  {
+                    width: Math.min(
+                      620,
+                      selectedInstance.width +
+                        24,
+                    ),
+                  },
+                )
+              }
+            >
+              +
+            </ToolbarButton>
 
-          <IconButton
-            title="РћС‚СЂР°Р·РёС‚СЊ РїРѕ РІРµСЂС‚РёРєР°Р»Рё"
-            label="Вверх/вниз"
-            onClick={() =>
-              onFlipVertical(selectedInstance.instanceId)
-            }
-          >
-            <span className="text-lg">в†•</span>
-          </IconButton>
+            <ToolbarButton
+              title="Отразить по горизонтали"
+              label="Зеркало"
+              onClick={() =>
+                onFlipHorizontal(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ↔
+            </ToolbarButton>
 
-          <IconButton
-            title="РќР° РѕРґРёРЅ СЃР»РѕР№ РЅР°Р·Р°Рґ"
-            label="Слой назад"
-            onClick={() =>
-              onSendBackward(selectedInstance.instanceId)
-            }
-          >
-            <span className="text-lg">вЂ№</span>
-          </IconButton>
+            <ToolbarButton
+              title="Отразить по вертикали"
+              label="Вверх/вниз"
+              onClick={() =>
+                onFlipVertical(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ↕
+            </ToolbarButton>
 
-          <IconButton
-            title="РќР° РѕРґРёРЅ СЃР»РѕР№ РІРїРµСЂС‘Рґ"
-            label="Слой вперёд"
-            onClick={() =>
-              onBringForward(selectedInstance.instanceId)
-            }
-          >
-            <span className="text-lg">вЂє</span>
-          </IconButton>
+            <ToolbarButton
+              title="Переместить на один слой назад"
+              label="Слой назад"
+              onClick={() =>
+                onSendBackward(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ‹
+            </ToolbarButton>
 
-          <IconButton
-            title="РќР° Р·Р°РґРЅРёР№ РїР»Р°РЅ"
-            label="Назад"
-            onClick={() =>
-              onSendToBack(selectedInstance.instanceId)
-            }
-          >
-            <span className="text-lg">в‡Љ</span>
-          </IconButton>
+            <ToolbarButton
+              title="Переместить на один слой вперёд"
+              label="Слой вперёд"
+              onClick={() =>
+                onBringForward(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ›
+            </ToolbarButton>
 
-          <IconButton
-            title="РќР° РїРµСЂРµРґРЅРёР№ РїР»Р°РЅ"
-            label="Вперёд"
-            onClick={() =>
-              onBringToFront(selectedInstance.instanceId)
-            }
-          >
-            <span className="text-lg">в‡€</span>
-          </IconButton>
+            <ToolbarButton
+              title="Переместить на задний план"
+              label="В самый низ"
+              onClick={() =>
+                onSendToBack(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ⇊
+            </ToolbarButton>
 
-          <IconButton
-            title="Уменьшить декор"
-            label="Уменьшить"
-            onClick={() =>
-              updateInstance(selectedInstance.instanceId, {
-                width: Math.max(70, selectedInstance.width - 24),
-              })
-            }
-          >
-            <span className="text-xl font-bold">−</span>
-          </IconButton>
+            <ToolbarButton
+              title="Переместить на передний план"
+              label="На самый верх"
+              onClick={() =>
+                onBringToFront(
+                  selectedInstance.instanceId,
+                )
+              }
+            >
+              ⇈
+            </ToolbarButton>
+          </div>
 
-          <IconButton
-            title="Увеличить декор"
-            label="Увеличить"
-            onClick={() =>
-              updateInstance(selectedInstance.instanceId, {
-                width: Math.min(620, selectedInstance.width + 24),
-              })
-            }
+          <button
+            type="button"
+            onPointerDown={(event) => {
+              event.stopPropagation();
+            }}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+
+              onResetTransform(
+                selectedInstance.instanceId,
+              );
+            }}
+            className="mt-1.5 min-h-11 w-full rounded-xl border border-[#6a4433]/15 bg-white px-3 text-xs font-semibold text-[#6a4433] transition hover:bg-[#fffaf7] active:scale-[0.98]"
           >
-            <span className="text-xl font-bold">+</span>
-          </IconButton>
+            Вернуть исходное положение и размер
+          </button>
         </div>
       )}
     </>
