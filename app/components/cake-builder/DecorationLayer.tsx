@@ -82,28 +82,28 @@ function ToolbarButton({
       type="button"
       title={title}
       aria-label={title}
+      onPointerDown={(event) => {
+        event.stopPropagation();
+      }}
       onClick={(event) => {
         event.preventDefault();
         event.stopPropagation();
         onClick();
       }}
-      onPointerDown={(event) => {
-        event.stopPropagation();
-      }}
-      className={`flex min-h-[52px] min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-center transition active:scale-[0.97] ${
+      className={`flex h-[48px] min-h-[48px] w-full min-w-0 flex-col items-center justify-center gap-0.5 rounded-xl border px-1 text-center transition active:scale-[0.96] md:h-auto md:min-h-[52px] ${
         danger
-          ? "bg-red-50 text-red-700 hover:bg-red-100"
-          : "bg-[#f8f0eb] text-[#4b342a] hover:bg-[#efe3da]"
+          ? "border-red-100 bg-red-50 text-red-700 hover:bg-red-100"
+          : "border-[#6a4433]/10 bg-[#f8f0eb] text-[#4b342a] hover:bg-[#efe3da]"
       }`}
     >
       <span
-        className="flex h-5 items-center justify-center text-base font-bold leading-none"
         aria-hidden="true"
+        className="flex h-5 items-center justify-center text-base font-bold leading-none"
       >
         {children}
       </span>
 
-      <span className="w-full truncate text-[9px] font-semibold leading-tight sm:text-[10px]">
+      <span className="hidden w-full truncate text-[8px] font-semibold leading-tight min-[390px]:block md:text-[10px]">
         {label}
       </span>
     </button>
@@ -121,7 +121,10 @@ function angleBetween(
   pointY: number,
 ) {
   return (
-    (Math.atan2(pointY - centerY, pointX - centerX) *
+    (Math.atan2(
+      pointY - centerY,
+      pointX - centerX,
+    ) *
       180) /
     Math.PI
   );
@@ -176,6 +179,7 @@ export default function DecorationLayer({
       x:
         ((clientX - rect.left) / rect.width) *
         BUILDER_CANVAS_SIZE,
+
       y:
         ((clientY - rect.top) / rect.height) *
         BUILDER_CANVAS_SIZE,
@@ -282,15 +286,22 @@ export default function DecorationLayer({
   ) {
     let x = rawX;
     let y = rawY;
+
     let vertical: number | null = null;
     let horizontal: number | null = null;
 
-    const targetsX = [BUILDER_CANVAS_SIZE / 2];
-    const targetsY = [BUILDER_CANVAS_SIZE / 2];
+    const targetsX = [
+      BUILDER_CANVAS_SIZE / 2,
+    ];
+
+    const targetsY = [
+      BUILDER_CANVAS_SIZE / 2,
+    ];
 
     for (const other of instances) {
       if (
-        other.instanceId === instance.instanceId
+        other.instanceId ===
+        instance.instanceId
       ) {
         continue;
       }
@@ -650,179 +661,215 @@ export default function DecorationLayer({
           onPointerDown={(event) => {
             event.stopPropagation();
           }}
-          className="decoration-floating-toolbar absolute w-[min(92%,430px)] rounded-2xl border border-black/10 bg-white/95 p-2 shadow-xl backdrop-blur-md"
+          className="
+            decoration-floating-toolbar
+            fixed
+            right-2
+            top-1/2
+            z-[4000]
+            grid
+            w-[58px]
+            -translate-y-1/2
+            grid-cols-1
+            gap-1
+            rounded-2xl
+            border
+            border-black/10
+            bg-white/95
+            p-1.5
+            shadow-xl
+            backdrop-blur-md
+
+            md:absolute
+            md:right-auto
+            md:top-auto
+            md:w-[min(92%,430px)]
+            md:translate-y-0
+            md:grid-cols-4
+            md:gap-1.5
+            md:p-2
+          "
           style={{
-            left: canvasPercent(toolbarX),
-            top: canvasPercent(toolbarY),
-            zIndex:
-              2000 + instances.length,
+            left:
+              typeof window !== "undefined" &&
+              window.innerWidth >= 768
+                ? canvasPercent(toolbarX)
+                : "auto",
+
+            top:
+              typeof window !== "undefined" &&
+              window.innerWidth >= 768
+                ? canvasPercent(toolbarY)
+                : "50%",
+
             transform:
-              "translate(-50%, -50%)",
+              typeof window !== "undefined" &&
+              window.innerWidth >= 768
+                ? "translate(-50%, -50%)"
+                : "translateY(-50%)",
           }}
         >
-          <div className="grid grid-cols-4 gap-1.5">
-            <ToolbarButton
-              title="Удалить декор"
-              label="Удалить"
-              danger
-              onClick={() =>
-                onRemove(
-                  selectedInstance.instanceId,
-                )
-              }
-            >
-              ×
-            </ToolbarButton>
+          <ToolbarButton
+            title="Удалить декор"
+            label="Удалить"
+            danger
+            onClick={() =>
+              onRemove(
+                selectedInstance.instanceId,
+              )
+            }
+          >
+            ×
+          </ToolbarButton>
 
-            <ToolbarButton
-              title="Создать копию"
-              label="Копия"
-              onClick={() =>
-                onDuplicate(
-                  selectedInstance.instanceId,
-                )
-              }
-            >
-              ⧉
-            </ToolbarButton>
+          <ToolbarButton
+            title="Создать копию"
+            label="Копия"
+            onClick={() =>
+              onDuplicate(
+                selectedInstance.instanceId,
+              )
+            }
+          >
+            ⧉
+          </ToolbarButton>
 
-            <ToolbarButton
-              title="Повернуть на 15 градусов"
-              label="Повернуть"
-              onClick={() =>
-                onRotate(
-                  selectedInstance.instanceId,
-                )
-              }
-            >
-              ↻
-            </ToolbarButton>
+          <ToolbarButton
+            title="Повернуть на 15 градусов"
+            label="Повернуть"
+            onClick={() =>
+              onRotate(
+                selectedInstance.instanceId,
+              )
+            }
+          >
+            ↻
+          </ToolbarButton>
 
-            <ToolbarButton
-              title="Сбросить поворот"
-              label="Поворот 0"
-              onClick={() =>
-                onResetRotation(
-                  selectedInstance.instanceId,
-                )
-              }
-            >
-              0°
-            </ToolbarButton>
+          <ToolbarButton
+            title="Сбросить поворот"
+            label="Поворот 0"
+            onClick={() =>
+              onResetRotation(
+                selectedInstance.instanceId,
+              )
+            }
+          >
+            0°
+          </ToolbarButton>
 
-            <ToolbarButton
-              title="Уменьшить декор"
-              label="Уменьшить"
-              onClick={() =>
-                updateInstance(
-                  selectedInstance.instanceId,
-                  {
-                    width: Math.max(
-                      70,
-                      selectedInstance.width -
-                        24,
-                    ),
-                  },
-                )
-              }
-            >
-              −
-            </ToolbarButton>
+          <ToolbarButton
+            title="Уменьшить декор"
+            label="Уменьшить"
+            onClick={() =>
+              updateInstance(
+                selectedInstance.instanceId,
+                {
+                  width: Math.max(
+                    70,
+                    selectedInstance.width - 24,
+                  ),
+                },
+              )
+            }
+          >
+            −
+          </ToolbarButton>
 
-            <ToolbarButton
-              title="Увеличить декор"
-              label="Увеличить"
-              onClick={() =>
-                updateInstance(
-                  selectedInstance.instanceId,
-                  {
-                    width: Math.min(
-                      620,
-                      selectedInstance.width +
-                        24,
-                    ),
-                  },
-                )
-              }
-            >
-              +
-            </ToolbarButton>
+          <ToolbarButton
+            title="Увеличить декор"
+            label="Увеличить"
+            onClick={() =>
+              updateInstance(
+                selectedInstance.instanceId,
+                {
+                  width: Math.min(
+                    620,
+                    selectedInstance.width + 24,
+                  ),
+                },
+              )
+            }
+          >
+            +
+          </ToolbarButton>
 
-            <ToolbarButton
-              title="Отразить по горизонтали"
-              label="Зеркало"
-              onClick={() =>
-                onFlipHorizontal(
-                  selectedInstance.instanceId,
-                )
-              }
-            >
-              ↔
-            </ToolbarButton>
+          <ToolbarButton
+            title="Отразить по горизонтали"
+            label="Зеркало"
+            onClick={() =>
+              onFlipHorizontal(
+                selectedInstance.instanceId,
+              )
+            }
+          >
+            ↔
+          </ToolbarButton>
 
-            <ToolbarButton
-              title="Отразить по вертикали"
-              label="Вверх/вниз"
-              onClick={() =>
-                onFlipVertical(
-                  selectedInstance.instanceId,
-                )
-              }
-            >
-              ↕
-            </ToolbarButton>
+          <ToolbarButton
+            title="Отразить по вертикали"
+            label="Вверх/вниз"
+            onClick={() =>
+              onFlipVertical(
+                selectedInstance.instanceId,
+              )
+            }
+          >
+            ↕
+          </ToolbarButton>
 
-            <ToolbarButton
-              title="Переместить на один слой назад"
-              label="Слой назад"
-              onClick={() =>
-                onSendBackward(
-                  selectedInstance.instanceId,
-                )
-              }
-            >
-              ‹
-            </ToolbarButton>
+          <ToolbarButton
+            title="Переместить на один слой назад"
+            label="Слой назад"
+            onClick={() =>
+              onSendBackward(
+                selectedInstance.instanceId,
+              )
+            }
+          >
+            ‹
+          </ToolbarButton>
 
-            <ToolbarButton
-              title="Переместить на один слой вперёд"
-              label="Слой вперёд"
-              onClick={() =>
-                onBringForward(
-                  selectedInstance.instanceId,
-                )
-              }
-            >
-              ›
-            </ToolbarButton>
+          <ToolbarButton
+            title="Переместить на один слой вперёд"
+            label="Слой вперёд"
+            onClick={() =>
+              onBringForward(
+                selectedInstance.instanceId,
+              )
+            }
+          >
+            ›
+          </ToolbarButton>
 
-            <ToolbarButton
-              title="Переместить на задний план"
-              label="В самый низ"
-              onClick={() =>
-                onSendToBack(
-                  selectedInstance.instanceId,
-                )
-              }
-            >
-              ⇊
-            </ToolbarButton>
+          <ToolbarButton
+            title="Переместить на задний план"
+            label="Вниз"
+            onClick={() =>
+              onSendToBack(
+                selectedInstance.instanceId,
+              )
+            }
+          >
+            ⇊
+          </ToolbarButton>
 
-            <ToolbarButton
-              title="Переместить на передний план"
-              label="На самый верх"
-              onClick={() =>
-                onBringToFront(
-                  selectedInstance.instanceId,
-                )
-              }
-            >
-              ⇈
-            </ToolbarButton>
-          </div>
+          <ToolbarButton
+            title="Переместить на передний план"
+            label="Наверх"
+            onClick={() =>
+              onBringToFront(
+                selectedInstance.instanceId,
+              )
+            }
+          >
+            ⇈
+          </ToolbarButton>
 
           <button
             type="button"
+            title="Вернуть исходное положение и размер"
+            aria-label="Вернуть исходное положение и размер"
             onPointerDown={(event) => {
               event.stopPropagation();
             }}
@@ -834,9 +881,15 @@ export default function DecorationLayer({
                 selectedInstance.instanceId,
               );
             }}
-            className="mt-1.5 min-h-11 w-full rounded-xl border border-[#6a4433]/15 bg-white px-3 text-xs font-semibold text-[#6a4433] transition hover:bg-[#fffaf7] active:scale-[0.98]"
+            className="flex h-[48px] min-h-[48px] w-full items-center justify-center rounded-xl border border-[#6a4433]/15 bg-white px-1 text-center text-lg font-bold text-[#6a4433] transition active:scale-[0.96] md:col-span-4 md:h-11 md:min-h-11 md:text-xs md:font-semibold"
           >
-            Вернуть исходное положение и размер
+            <span className="md:hidden">
+              ↙
+            </span>
+
+            <span className="hidden md:inline">
+              Вернуть исходное положение и размер
+            </span>
           </button>
         </div>
       )}
