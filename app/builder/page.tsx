@@ -206,7 +206,7 @@ export default function BuilderPage() {
   };
 
   return (
-    <main className="min-h-screen overflow-x-clip bg-[#f7f3ef] text-[#342923]">
+    <main className="min-h-screen bg-[#f7f3ef] text-[#342923]">
       <header className="border-b border-black/10 bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 md:px-8 md:py-4">
           <Link
