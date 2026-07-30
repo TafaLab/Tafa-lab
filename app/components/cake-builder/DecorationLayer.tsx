@@ -510,7 +510,7 @@ export default function DecorationLayer({
           >
             <button
               type="button"
-              aria-label={`РџРµСЂРµРјРµСЃС‚РёС‚СЊ: ${asset.name}`}
+              aria-label={`Переместить: ${asset.name}`}
               onDoubleClick={(event) => {
                 event.preventDefault();
                 event.stopPropagation();
@@ -556,8 +556,8 @@ export default function DecorationLayer({
 
                 <button
                   type="button"
-                  title="РџРѕРІРµСЂРЅСѓС‚СЊ РґРµРєРѕСЂ"
-                  aria-label="РџРѕРІРµСЂРЅСѓС‚СЊ РґРµРєРѕСЂ"
+                  title="Повернуть декор"
+                  aria-label="Повернуть декор"
                   onPointerDown={(event) =>
                     startRotate(event, instance)
                   }
@@ -613,7 +613,7 @@ export default function DecorationLayer({
           </IconButton>
 
           <IconButton
-            title="РџРѕРІРµСЂРЅСѓС‚СЊ РЅР° 15В°"
+            title="Повернуть на 15°"
             label="Повернуть"
             onClick={() =>
               onRotate(selectedInstance.instanceId)
@@ -623,7 +623,7 @@ export default function DecorationLayer({
           </IconButton>
 
           <IconButton
-            title="РЎР±СЂРѕСЃРёС‚СЊ РїРѕРІРѕСЂРѕС‚"
+            title="Сбросить поворот"
             label="Сброс"
             onClick={() =>
               onResetRotation(selectedInstance.instanceId)
@@ -633,7 +633,7 @@ export default function DecorationLayer({
           </IconButton>
 
           <IconButton
-            title="Р’РµСЂРЅСѓС‚СЊ РёСЃС…РѕРґРЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ"
+            title="Вернуть исходное положение"
             label="Исходное"
             onClick={() =>
               onResetTransform(selectedInstance.instanceId)

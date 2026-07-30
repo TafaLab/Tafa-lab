@@ -209,26 +209,26 @@ export default function BuilderPage() {
 
           <nav className="hidden items-center gap-7 text-sm lg:flex">
             <Link href="/cakes">
-              РўРѕСЂС‚С‹
+              Торты
             </Link>
 
             <Link
               href="/builder"
               className="font-semibold"
             >
-              РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+              Конструктор
             </Link>
 
             <Link href="/food">
-              Р•РґР° Рё РґРµСЃРµСЂС‚С‹
+              Еда и десерты
             </Link>
 
             <Link href="/gallery">
-              Р“Р°Р»РµСЂРµСЏ
+              Галерея
             </Link>
 
             <Link href="/contacts">
-              РљРѕРЅС‚Р°РєС‚С‹
+              Контакты
             </Link>
           </nav>
 
@@ -236,47 +236,47 @@ export default function BuilderPage() {
             href="/"
             className="rounded-full border border-black/15 px-5 py-2 text-sm"
           >
-            РќР° РіР»Р°РІРЅСѓСЋ
+            На главную
           </Link>
         </div>
       </header>
 
-      <section className="border-b border-black/10 bg-[#efe3da]">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 md:px-8 lg:grid-cols-[1fr_auto] lg:items-end">
+      <section className="builder-hero border-b border-black/10 bg-[#efe3da]">
+        <div className="builder-hero-inner mx-auto grid max-w-7xl gap-8 px-4 py-12 md:px-8 lg:grid-cols-[1fr_auto] lg:items-end">
           <div>
             <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8b6250]">
-              РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ Milky Cake
+              Конструктор Milky Cake
             </span>
 
-            <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight md:text-6xl">
-              РЎРѕР±РµСЂРёС‚Рµ С‚РѕСЂС‚,
+            <h1 className="builder-hero-title mt-4 max-w-3xl text-4xl font-semibold leading-tight md:text-6xl">
+              Соберите торт,
               <br />
 
               <span className="font-serif italic">
-                РєРѕС‚РѕСЂС‹Р№ РїСЂРёРґСѓРјР°Р»Рё РІС‹
+                который придумали вы
               </span>
             </h1>
 
-            <p className="mt-5 max-w-2xl text-sm leading-7 text-black/65 md:text-base">
-              Р’С‹Р±РµСЂРёС‚Рµ РІРµСЃ, РЅР°С‡РёРЅРєСѓ, С†РІРµС‚
-              РѕСЃРЅРѕРІС‹ Рё РѕС„РѕСЂРјР»РµРЅРёРµ. РњРµРЅРµРґР¶РµСЂ
-              РїСЂРѕРІРµСЂРёС‚ Р·Р°СЏРІРєСѓ Рё РїРѕРґС‚РІРµСЂРґРёС‚
-              РёС‚РѕРіРѕРІСѓСЋ СЃС‚РѕРёРјРѕСЃС‚СЊ.
+            <p className="builder-hero-description mt-5 max-w-2xl text-sm leading-7 text-black/65 md:text-base">
+              Выберите вес, начинку, цвет
+              основы и оформление. Менеджер
+              проверит заявку и подтвердит
+              итоговую стоимость.
             </p>
           </div>
 
-          <div className="flex items-center gap-4 rounded-2xl bg-white/65 px-5 py-4">
+          <div className="builder-hero-step flex items-center gap-4 rounded-2xl bg-white/65 px-5 py-4">
             <span className="text-3xl font-semibold text-[#a67b65]">
               01
             </span>
 
             <div>
               <strong className="block">
-                РЎРѕР·РґР°РЅРёРµ РґРёР·Р°Р№РЅР°
+                Создание дизайна
               </strong>
 
               <small className="text-black/55">
-                РџСЂРµРґРІР°СЂРёС‚РµР»СЊРЅР°СЏ РІРµСЂСЃРёСЏ Р·Р°РєР°Р·Р°
+                Предварительная версия заказа
               </small>
             </div>
           </div>
@@ -289,11 +289,11 @@ export default function BuilderPage() {
             <div className="mb-5 flex items-end justify-between gap-4">
               <div>
                 <span className="text-xs uppercase tracking-[0.18em] text-black/45">
-                  РџСЂРµРґРІР°СЂРёС‚РµР»СЊРЅС‹Р№ РІРёРґ
+                  Предварительный вид
                 </span>
 
                 <h2 className="mt-1 text-2xl font-semibold">
-                  Р’Р°С€ С‚РѕСЂС‚
+                  Ваш торт
                 </h2>
               </div>
 
@@ -302,20 +302,20 @@ export default function BuilderPage() {
                   type="button"
                   onClick={undo}
                   disabled={!canUndo}
-                  title="РћС‚РјРµРЅРёС‚СЊ вЂ” Ctrl+Z"
+                  title="Отменить — Ctrl+Z"
                   className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white text-lg transition hover:border-[#6a4433]/35 disabled:cursor-not-allowed disabled:opacity-35"
                 >
-                  в†¶
+                  ↶
                 </button>
 
                 <button
                   type="button"
                   onClick={redo}
                   disabled={!canRedo}
-                  title="РџРѕРІС‚РѕСЂРёС‚СЊ вЂ” Ctrl+Shift+Z РёР»Рё Ctrl+Y"
+                  title="Повторить — Ctrl+Shift+Z или Ctrl+Y"
                   className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white text-lg transition hover:border-[#6a4433]/35 disabled:cursor-not-allowed disabled:opacity-35"
                 >
-                  в†·
+                  ↷
                 </button>
 
                 <span className="rounded-full bg-[#f2e8e1] px-4 py-2 text-sm font-semibold">
@@ -394,48 +394,48 @@ export default function BuilderPage() {
 
             <div className="builder-preview-help mt-4 rounded-2xl border border-[#6a4433]/15 bg-[#f8f0eb] px-4 py-3">
               <p className="text-sm leading-6 text-black/60">
-                Р”РµРєРѕСЂ РјРѕР¶РЅРѕ РґРІРёРіР°С‚СЊ,
-                РјР°СЃС€С‚Р°Р±РёСЂРѕРІР°С‚СЊ Р·Р° СѓРіР»С‹ Рё
-                РІСЂР°С‰Р°С‚СЊ РѕС‚РґРµР»СЊРЅРѕР№ СЂСѓС‡РєРѕР№.
-                РќР°РїСЂР°РІР»СЏСЋС‰РёРµ РїРѕРјРѕРіР°СЋС‚
-                РІС‹СЂР°РІРЅРёРІР°С‚СЊ СЌР»РµРјРµРЅС‚С‹. Ctrl+Z
-                РѕС‚РјРµРЅСЏРµС‚ РґРµР№СЃС‚РІРёРµ, Ctrl+D
-                РґСѓР±Р»РёСЂСѓРµС‚ РІС‹Р±СЂР°РЅРЅС‹Р№ РґРµРєРѕСЂ.
+                Декор можно двигать,
+                масштабировать за углы и
+                вращать отдельной ручкой.
+                Направляющие помогают
+                выравнивать элементы. Ctrl+Z
+                отменяет действие, Ctrl+D
+                дублирует выбранный декор.
               </p>
             </div>
 
             <div className="builder-preview-summary mt-5 grid grid-cols-2 gap-3 md:grid-cols-5">
               <PreviewValue
-                label="Р¤РѕСЂРјР°"
-                value="РљСЂСѓРіР»Р°СЏ"
+                label="Форма"
+                value="Круглая"
               />
 
               <PreviewValue
-                label="Р’РµСЃ"
+                label="Вес"
                 value={
                   selectedWeight?.label ??
-                  "вЂ”"
+                  "—"
                 }
               />
 
               <PreviewValue
-                label="РќР°С‡РёРЅРєР°"
+                label="Начинка"
                 value={
                   selectedFilling?.label ??
-                  "вЂ”"
+                  "—"
                 }
               />
 
               <PreviewValue
-                label="Р¦РІРµС‚"
+                label="Цвет"
                 value={selectedBase.name}
               />
 
               <PreviewValue
-                label="Р¦РµРЅР°"
+                label="Цена"
                 value={`${formatPrice(
                   totalPrice,
-                )} в‚ё`}
+                )} ₸`}
               />
             </div>
           </div>
@@ -444,8 +444,8 @@ export default function BuilderPage() {
         <div className="space-y-6">
           <BuilderSection
             number="01"
-            title="Р’С‹Р±РµСЂРёС‚Рµ РІРµСЃ"
-            description="РћР±С‹С‡РЅРѕ СЂР°СЃСЃС‡РёС‚С‹РІР°СЋС‚ 150вЂ“200 РіСЂР°РјРјРѕРІ РЅР° РѕРґРЅРѕРіРѕ РіРѕСЃС‚СЏ."
+            title="Выберите вес"
+            description="Обычно рассчитывают 150–200 граммов на одного гостя."
           >
             <div className="grid grid-cols-2 gap-3">
               {weights.map((item) => (
@@ -469,7 +469,7 @@ export default function BuilderPage() {
                     {formatPrice(
                       item.price,
                     )}{" "}
-                    в‚ё
+                    ₸
                   </span>
                 </button>
               ))}
@@ -478,8 +478,8 @@ export default function BuilderPage() {
 
           <BuilderSection
             number="02"
-            title="Р’С‹Р±РµСЂРёС‚Рµ РЅР°С‡РёРЅРєСѓ"
-            description="РќР°С‡РёРЅРєРё, РєРѕС‚РѕСЂС‹Рµ РіРѕС‚РѕРІРёС‚ Milky Cake."
+            title="Выберите начинку"
+            description="Начинки, которые готовит Milky Cake."
           >
             <div className="space-y-3">
               {fillings.map((item) => (
@@ -507,10 +507,10 @@ export default function BuilderPage() {
 
                   <small className="shrink-0 font-semibold text-[#7c5645]">
                     {item.price === 0
-                      ? "Р’РєР»СЋС‡РµРЅРѕ"
+                      ? "Включено"
                       : `+${formatPrice(
                           item.price,
-                        )} в‚ё`}
+                        )} ₸`}
                   </small>
                 </button>
               ))}
@@ -519,8 +519,8 @@ export default function BuilderPage() {
 
           <BuilderSection
             number="03"
-            title="Р’С‹Р±РµСЂРёС‚Рµ С†РІРµС‚"
-            description="Р’С‹Р±РµСЂРёС‚Рµ С†РІРµС‚ РїРѕРєСЂС‹С‚РёСЏ С‚РѕСЂС‚Р°."
+            title="Выберите цвет"
+            description="Выберите цвет покрытия торта."
           >
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {cakeBases.map((base) => (
@@ -555,8 +555,8 @@ export default function BuilderPage() {
 
           <BuilderSection
             number="04"
-            title="Р”РѕР±Р°РІСЊС‚Рµ РґРµРєРѕСЂ"
-            description="Р”РµРєРѕСЂ РјРѕР¶РЅРѕ РґРІРёРіР°С‚СЊ, РїРѕРІРѕСЂР°С‡РёРІР°С‚СЊ Рё Р·РµСЂРєР°Р»СЊРЅРѕ РѕС‚СЂР°Р¶Р°С‚СЊ."
+            title="Добавьте декор"
+            description="Декор можно двигать, поворачивать и зеркально отражать."
           >
             <div className="flex gap-2 overflow-x-auto pb-2">
               {categoryOrder.map(
@@ -624,7 +624,7 @@ export default function BuilderPage() {
                     </strong>
 
                     <span className="mt-2 block text-xs font-semibold text-[#7c5645]">
-                      Р”РѕР±Р°РІРёС‚СЊ +
+                      Добавить +
                     </span>
                   </div>
                 </button>
@@ -636,7 +636,7 @@ export default function BuilderPage() {
               <div className="mt-5 border-t border-black/10 pt-5">
                 <div className="flex items-center justify-between">
                   <strong>
-                    Р”РѕР±Р°РІР»РµРЅРѕ:{" "}
+                    Добавлено:{" "}
                     {
                       decorationInstances.length
                     }
@@ -647,7 +647,7 @@ export default function BuilderPage() {
                     onClick={clearDecorations}
                     className="text-sm text-red-700"
                   >
-                    РћС‡РёСЃС‚РёС‚СЊ РґРµРєРѕСЂ
+                    Очистить декор
                   </button>
                 </div>
               </div>
@@ -676,8 +676,8 @@ export default function BuilderPage() {
 
           <BuilderSection
             number="05"
-            title="Р”РѕР±Р°РІСЊС‚Рµ РЅР°РґРїРёСЃСЊ"
-            description="РќР°РґРїРёСЃСЊ РјРѕР¶РЅРѕ РґРІРёРіР°С‚СЊ, СѓРІРµР»РёС‡РёРІР°С‚СЊ, СѓРјРµРЅСЊС€Р°С‚СЊ Рё РёР·РіРёР±Р°С‚СЊ."
+            title="Добавьте надпись"
+            description="Надпись можно двигать, увеличивать, уменьшать и изгибать."
           >
             <InscriptionControls
               inscription={inscription}
@@ -687,13 +687,13 @@ export default function BuilderPage() {
 
             <label className="mt-5 block">
               <span className="mb-2 block text-sm font-semibold">
-                Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РїРѕР¶РµР»Р°РЅРёСЏ
+                Дополнительные пожелания
               </span>
 
               <textarea
                 value={comment}
                 rows={5}
-                placeholder="РћРїРёС€РёС‚Рµ С‚РµРјР°С‚РёРєСѓ РїСЂР°Р·РґРЅРёРєР°, РѕС‚С‚РµРЅРєРё Рё РґСЂСѓРіРёРµ РґРµС‚Р°Р»Рё."
+                placeholder="Опишите тематику праздника, оттенки и другие детали."
                 onChange={(event) =>
                   setComment(
                     event.target.value,
@@ -706,17 +706,17 @@ export default function BuilderPage() {
 
           <section className="rounded-3xl bg-[#432e25] p-6 text-white md:p-8">
             <span className="text-sm text-white/60">
-              РџСЂРµРґРІР°СЂРёС‚РµР»СЊРЅР°СЏ СЃС‚РѕРёРјРѕСЃС‚СЊ
+              Предварительная стоимость
             </span>
 
             <strong className="mt-2 block text-4xl">
-              {formatPrice(totalPrice)} в‚ё
+              {formatPrice(totalPrice)} ₸
             </strong>
 
             <p className="mt-4 max-w-xl text-sm leading-6 text-white/65">
-              РњРµРЅРµРґР¶РµСЂ РїСЂРѕРІРµСЂРёС‚ Р·Р°СЏРІРєСѓ,
-              РІС‹Р±СЂР°РЅРЅС‹Р№ РґРµРєРѕСЂ Рё РїРѕРґС‚РІРµСЂРґРёС‚
-              РѕРєРѕРЅС‡Р°С‚РµР»СЊРЅСѓСЋ СЃС‚РѕРёРјРѕСЃС‚СЊ.
+              Менеджер проверит заявку,
+              выбранный декор и подтвердит
+              окончательную стоимость.
             </p>
 
            
@@ -740,8 +740,8 @@ export default function BuilderPage() {
   }}
   className="mt-6 flex w-full items-center justify-between rounded-full bg-white px-6 py-4 font-semibold text-[#432e25] transition hover:bg-[#f7f2ed]"
 >
-  РџРµСЂРµР№С‚Рё Рє РѕС„РѕСЂРјР»РµРЅРёСЋ
-  <span>в†’</span>
+  Перейти к оформлению
+  <span>→</span>
 </button>
 
           </section>

@@ -130,7 +130,7 @@ export default function CakePreview({
     >
       <img
         src={base.src}
-        alt={`РљСЂСѓРіР»С‹Р№ С‚РѕСЂС‚: ${base.name}`}
+        alt={`Круглый торт: ${base.name}`}
         className="pointer-events-none absolute inset-0 h-full w-full select-none object-contain"
         draggable={false}
       />

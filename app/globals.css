@@ -4216,11 +4216,55 @@ img {
     display: none !important;
   }
 
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .builder-hero-inner {
+    gap: 16px !important;
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
+  }
+
+  .builder-hero-title {
+    margin-top: 10px !important;
+    font-size: clamp(32px, 10vw, 42px) !important;
+    line-height: 1.02 !important;
+    overflow-wrap: anywhere;
+  }
+
+  .builder-hero-description {
+    margin-top: 14px !important;
+    font-size: 14px !important;
+    line-height: 1.65 !important;
+  }
+
+  .builder-hero-step {
+    gap: 12px !important;
+    padding: 14px 16px !important;
+  }
+
+  .builder-hero-step > span {
+    font-size: 28px !important;
+  }
+
+  .builder-mobile-preview {
+    max-width: 100vw;
+  }
+
   .cake-builder-stage {
-    width: min(100%, 52vh) !important;
-    max-width: 390px !important;
-    max-height: 390px;
+    width: min(100%, 280px) !important;
+    max-width: 280px !important;
+    max-height: 280px !important;
     border-radius: 18px !important;
+  }
+
+  .cake-builder-stage > img {
+    object-fit: contain !important;
+    transform: scale(0.92);
+    transform-origin: center;
   }
 
   /* Mobile-only visual correction for assets that were too small. */
