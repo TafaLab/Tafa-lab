@@ -44,6 +44,7 @@ type SelectedDecorationChanges =
       | "x"
       | "y"
       | "rotation"
+      | "width"
       | "flipX"
       | "flipY"
     >

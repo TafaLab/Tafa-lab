@@ -116,7 +116,7 @@ export default function CakePreview({
   return (
     <div
       ref={stageRef}
-      className="relative mx-auto aspect-square w-full max-w-[680px] touch-none overflow-hidden rounded-3xl bg-[#f5f1ed]"
+      className="cake-builder-stage relative mx-auto aspect-square w-full max-w-[680px] touch-none overflow-hidden rounded-3xl bg-[#f5f1ed]"
       onPointerDown={(event) => {
         if (
           event.currentTarget === event.target
@@ -130,7 +130,7 @@ export default function CakePreview({
     >
       <img
         src={base.src}
-        alt={`Круглый торт: ${base.name}`}
+        alt={`РљСЂСѓРіР»С‹Р№ С‚РѕСЂС‚: ${base.name}`}
         className="pointer-events-none absolute inset-0 h-full w-full select-none object-contain"
         draggable={false}
       />

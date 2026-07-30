@@ -69,17 +69,20 @@ function IconButton({
   onClick,
   children,
   danger = false,
+  label,
 }: {
   title: string;
   onClick: () => void;
   children: ReactNode;
   danger?: boolean;
+  label?: string;
 }) {
   return (
     <button
       type="button"
       title={title}
       aria-label={title}
+      data-mobile-label={label ?? title}
       onClick={(event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -88,7 +91,7 @@ function IconButton({
       onPointerDown={(event) => {
         event.stopPropagation();
       }}
-      className={`flex h-8 w-8 items-center justify-center rounded-lg transition ${
+      className={`decoration-toolbar-button flex h-8 w-8 items-center justify-center rounded-lg transition ${
         danger
           ? "text-red-700 hover:bg-red-50"
           : "text-[#4b342a] hover:bg-[#f2e8e1]"
@@ -496,7 +499,7 @@ export default function DecorationLayer({
         return (
           <div
             key={instance.instanceId}
-            className="absolute"
+            className={`decoration-instance decoration-category-${asset.category} absolute`}
             style={{
               left: canvasPercent(instance.x),
               top: canvasPercent(instance.y),
@@ -507,7 +510,7 @@ export default function DecorationLayer({
           >
             <button
               type="button"
-              aria-label={`Переместить: ${asset.name}`}
+              aria-label={`РџРµСЂРµРјРµСЃС‚РёС‚СЊ: ${asset.name}`}
               onDoubleClick={(event) => {
                 event.preventDefault();
                 event.stopPropagation();
@@ -526,7 +529,7 @@ export default function DecorationLayer({
                   : "cursor-grab"
               }`}
               style={{
-                transform: `rotate(${instance.rotation}deg) scaleX(${instance.flipX ? -1 : 1}) scaleY(${instance.flipY ? -1 : 1})`,
+                transform: `rotate(${instance.rotation}deg) scaleX(${instance.flipX ? -1 : 1}) scaleY(${instance.flipY ? -1 : 1}) scale(var(--mobile-decoration-scale, 1))`,
                 transformOrigin: "center",
                 userSelect: "none",
                 WebkitUserSelect: "none",
@@ -553,8 +556,8 @@ export default function DecorationLayer({
 
                 <button
                   type="button"
-                  title="Повернуть декор"
-                  aria-label="Повернуть декор"
+                  title="РџРѕРІРµСЂРЅСѓС‚СЊ РґРµРєРѕСЂ"
+                  aria-label="РџРѕРІРµСЂРЅСѓС‚СЊ РґРµРєРѕСЂ"
                   onPointerDown={(event) =>
                     startRotate(event, instance)
                   }
@@ -565,7 +568,7 @@ export default function DecorationLayer({
                   className="absolute left-1/2 top-[-48px] flex h-6 w-6 -translate-x-1/2 touch-none items-center justify-center rounded-full border-2 border-[#6a4433] bg-white text-xs text-[#6a4433] shadow-md"
                   style={{ zIndex: 31 }}
                 >
-                  ↻
+                  в†»
                 </button>
               </>
             )}
@@ -576,11 +579,11 @@ export default function DecorationLayer({
       {selectedInstance && (
         <div
           role="toolbar"
-          aria-label="Управление декором"
+          aria-label="РЈРїСЂР°РІР»РµРЅРёРµ РґРµРєРѕСЂРѕРј"
           onPointerDown={(event) => {
             event.stopPropagation();
           }}
-          className="absolute grid grid-cols-6 gap-1 rounded-2xl border border-black/10 bg-white/95 p-2 shadow-xl backdrop-blur-sm"
+          className="decoration-floating-toolbar absolute grid grid-cols-6 gap-1 rounded-2xl border border-black/10 bg-white/95 p-2 shadow-xl backdrop-blur-sm"
           style={{
             left: canvasPercent(toolbarX),
             top: canvasPercent(toolbarY),
@@ -589,103 +592,138 @@ export default function DecorationLayer({
           }}
         >
           <IconButton
-            title="Удалить"
+            title="РЈРґР°Р»РёС‚СЊ"
+            label="Удалить"
             danger
             onClick={() =>
               onRemove(selectedInstance.instanceId)
             }
           >
-            <span className="text-sm">✕</span>
+            <span className="text-sm">вњ•</span>
           </IconButton>
 
           <IconButton
-            title="Дублировать"
+            title="Р”СѓР±Р»РёСЂРѕРІР°С‚СЊ"
+            label="Копия"
             onClick={() =>
               onDuplicate(selectedInstance.instanceId)
             }
           >
-            <span className="text-base">⧉</span>
+            <span className="text-base">в§‰</span>
           </IconButton>
 
           <IconButton
-            title="Повернуть на 15°"
+            title="РџРѕРІРµСЂРЅСѓС‚СЊ РЅР° 15В°"
+            label="Повернуть"
             onClick={() =>
               onRotate(selectedInstance.instanceId)
             }
           >
-            <span className="text-lg">↻</span>
+            <span className="text-lg">в†»</span>
           </IconButton>
 
           <IconButton
-            title="Сбросить поворот"
+            title="РЎР±СЂРѕСЃРёС‚СЊ РїРѕРІРѕСЂРѕС‚"
+            label="Сброс"
             onClick={() =>
               onResetRotation(selectedInstance.instanceId)
             }
           >
-            <span className="text-xs font-bold">0°</span>
+            <span className="text-xs font-bold">0В°</span>
           </IconButton>
 
           <IconButton
-            title="Вернуть исходное положение"
+            title="Р’РµСЂРЅСѓС‚СЊ РёСЃС…РѕРґРЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ"
+            label="Исходное"
             onClick={() =>
               onResetTransform(selectedInstance.instanceId)
             }
           >
-            <span className="text-base">⌂</span>
+            <span className="text-base">вЊ‚</span>
           </IconButton>
 
           <IconButton
-            title="Отразить по горизонтали"
+            title="РћС‚СЂР°Р·РёС‚СЊ РїРѕ РіРѕСЂРёР·РѕРЅС‚Р°Р»Рё"
+            label="Зеркало"
             onClick={() =>
               onFlipHorizontal(selectedInstance.instanceId)
             }
           >
-            <span className="text-lg">↔</span>
+            <span className="text-lg">в†”</span>
           </IconButton>
 
           <IconButton
-            title="Отразить по вертикали"
+            title="РћС‚СЂР°Р·РёС‚СЊ РїРѕ РІРµСЂС‚РёРєР°Р»Рё"
+            label="Вверх/вниз"
             onClick={() =>
               onFlipVertical(selectedInstance.instanceId)
             }
           >
-            <span className="text-lg">↕</span>
+            <span className="text-lg">в†•</span>
           </IconButton>
 
           <IconButton
-            title="На один слой назад"
+            title="РќР° РѕРґРёРЅ СЃР»РѕР№ РЅР°Р·Р°Рґ"
+            label="Слой назад"
             onClick={() =>
               onSendBackward(selectedInstance.instanceId)
             }
           >
-            <span className="text-lg">‹</span>
+            <span className="text-lg">вЂ№</span>
           </IconButton>
 
           <IconButton
-            title="На один слой вперёд"
+            title="РќР° РѕРґРёРЅ СЃР»РѕР№ РІРїРµСЂС‘Рґ"
+            label="Слой вперёд"
             onClick={() =>
               onBringForward(selectedInstance.instanceId)
             }
           >
-            <span className="text-lg">›</span>
+            <span className="text-lg">вЂє</span>
           </IconButton>
 
           <IconButton
-            title="На задний план"
+            title="РќР° Р·Р°РґРЅРёР№ РїР»Р°РЅ"
+            label="Назад"
             onClick={() =>
               onSendToBack(selectedInstance.instanceId)
             }
           >
-            <span className="text-lg">⇊</span>
+            <span className="text-lg">в‡Љ</span>
           </IconButton>
 
           <IconButton
-            title="На передний план"
+            title="РќР° РїРµСЂРµРґРЅРёР№ РїР»Р°РЅ"
+            label="Вперёд"
             onClick={() =>
               onBringToFront(selectedInstance.instanceId)
             }
           >
-            <span className="text-lg">⇈</span>
+            <span className="text-lg">в‡€</span>
+          </IconButton>
+
+          <IconButton
+            title="Уменьшить декор"
+            label="Уменьшить"
+            onClick={() =>
+              updateInstance(selectedInstance.instanceId, {
+                width: Math.max(70, selectedInstance.width - 24),
+              })
+            }
+          >
+            <span className="text-xl font-bold">−</span>
+          </IconButton>
+
+          <IconButton
+            title="Увеличить декор"
+            label="Увеличить"
+            onClick={() =>
+              updateInstance(selectedInstance.instanceId, {
+                width: Math.min(620, selectedInstance.width + 24),
+              })
+            }
+          >
+            <span className="text-xl font-bold">+</span>
           </IconButton>
         </div>
       )}

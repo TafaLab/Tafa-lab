@@ -4169,3 +4169,265 @@ img {
     width: 100%;
   }
 }
+
+
+/* =========================================================
+   Mobile presentation fixes — cake builder and admin
+   ========================================================= */
+
+.admin-mobile-bar,
+.admin-sidebar-overlay,
+.admin-sidebar-close {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  /* The preview remains visible while the customer chooses decorations. */
+  .builder-mobile-preview {
+    position: sticky;
+    z-index: 80;
+    top: 0;
+    margin: 0 -16px 18px;
+    padding: 8px 12px 10px;
+    background: rgba(247, 243, 239, 0.95);
+    box-shadow: 0 12px 28px rgba(68, 46, 37, 0.12);
+    backdrop-filter: blur(16px);
+  }
+
+  .builder-preview-card {
+    padding: 10px !important;
+    border-radius: 20px !important;
+  }
+
+  .builder-preview-card > div:first-child {
+    margin-bottom: 8px !important;
+  }
+
+  .builder-preview-card h2 {
+    font-size: 18px !important;
+  }
+
+  .builder-preview-card > div:first-child span:first-child {
+    display: none;
+  }
+
+  .builder-preview-help,
+  .builder-preview-summary {
+    display: none !important;
+  }
+
+  .cake-builder-stage {
+    width: min(100%, 52vh) !important;
+    max-width: 390px !important;
+    max-height: 390px;
+    border-radius: 18px !important;
+  }
+
+  /* Mobile-only visual correction for assets that were too small. */
+  .decoration-category-berries > button {
+    --mobile-decoration-scale: 1.45;
+  }
+
+  .decoration-category-fruits > button {
+    --mobile-decoration-scale: 1.35;
+  }
+
+  .decoration-category-macarons > button {
+    --mobile-decoration-scale: 1.6;
+  }
+
+  .decoration-category-lollipops > button {
+    --mobile-decoration-scale: 2.15;
+  }
+
+  .decoration-category-flowers > button {
+    --mobile-decoration-scale: 1.15;
+  }
+
+  .decoration-instance > button {
+    transform:
+      rotate(var(--decoration-rotation, 0deg))
+      scale(var(--mobile-decoration-scale, 1));
+  }
+
+  .decoration-floating-toolbar {
+    position: fixed !important;
+    z-index: 4000 !important;
+    top: calc(env(safe-area-inset-top) + 8px) !important;
+    right: 8px !important;
+    left: 8px !important;
+    width: auto !important;
+    display: flex !important;
+    grid-template-columns: none !important;
+    gap: 6px !important;
+    padding: 7px !important;
+    overflow-x: auto;
+    border-radius: 17px !important;
+    transform: none !important;
+    scrollbar-width: none;
+  }
+
+  .decoration-floating-toolbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .decoration-toolbar-button {
+    width: 68px !important;
+    min-width: 68px;
+    height: 56px !important;
+    flex-direction: column;
+    gap: 2px;
+    border: 1px solid rgba(56, 40, 37, 0.08);
+    background: #ffffff;
+  }
+
+  .decoration-toolbar-button::after {
+    content: attr(data-mobile-label);
+    max-width: 62px;
+    overflow: hidden;
+    color: #5c473e;
+    font-size: 8px;
+    font-weight: 700;
+    line-height: 1.05;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Replace the icon strip with a readable drawer. */
+  .admin-mobile-bar {
+    position: sticky;
+    z-index: 150;
+    top: 0;
+    min-height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 13px;
+    border-bottom: 1px solid rgba(56, 40, 37, 0.08);
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(16px);
+  }
+
+  .admin-mobile-menu-button {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 13px;
+    background: #302321;
+    color: #ffffff;
+  }
+
+  .admin-mobile-menu-button span {
+    font-size: 20px;
+  }
+
+  .admin-mobile-menu-button strong {
+    font-size: 12px;
+  }
+
+  .admin-mobile-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: Georgia, "Times New Roman", serif;
+  }
+
+  .admin-mobile-brand span {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: var(--pink);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .admin-sidebar {
+    position: fixed !important;
+    z-index: 220 !important;
+    top: 0 !important;
+    bottom: 0;
+    left: 0;
+    width: min(315px, 86vw) !important;
+    height: 100dvh !important;
+    display: flex !important;
+    padding: 20px 16px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    transform: translateX(-105%);
+    transition: transform 0.24s ease;
+  }
+
+  .admin-sidebar-open {
+    transform: translateX(0);
+  }
+
+  .admin-sidebar-overlay {
+    position: fixed;
+    z-index: 210;
+    inset: 0;
+    display: block;
+    border: 0;
+    background: rgba(31, 22, 20, 0.52);
+    backdrop-filter: blur(3px);
+  }
+
+  .admin-sidebar-brand {
+    display: flex !important;
+    justify-content: flex-start !important;
+    padding: 4px 4px 20px !important;
+  }
+
+  .admin-sidebar-brand div,
+  .admin-navigation-link > span:last-child,
+  .admin-sidebar-footer {
+    display: flex !important;
+  }
+
+  .admin-sidebar-close {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    margin-left: auto;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+    font-size: 25px;
+  }
+
+  .admin-navigation {
+    display: grid !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin-top: 22px !important;
+  }
+
+  .admin-navigation-link {
+    width: 100% !important;
+    min-height: 52px !important;
+    justify-content: flex-start !important;
+    padding: 0 14px !important;
+    font-size: 14px !important;
+  }
+
+  .admin-navigation-icon {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .admin-sidebar-footer {
+    display: block !important;
+  }
+
+  .admin-header {
+    min-height: 62px;
+  }
+}
