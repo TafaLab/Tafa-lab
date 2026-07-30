@@ -1,0 +1,2438 @@
+﻿==================================================
+FILE: app/cakes/page.tsx
+==================================================
+"use client";
+
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
+import type { Cake } from "@/lib/cake-types";
+import { getPublishedCakes } from "@/lib/cake-service";
+
+import CakeCategories from "@/app/components/cakes/CakeCategories";
+import CakeSearch from "@/app/components/cakes/CakeSearch";
+import CakeSort, {
+  type CakeSortType,
+} from "@/app/components/cakes/CakeSort";
+import CakesGrid from "@/app/components/cakes/CakesGrid";
+
+export default function CakesPage() {
+  const [cakes, setCakes] = useState<Cake[]>([]);
+  const [category, setCategory] =
+    useState("all");
+  const [search, setSearch] = useState("");
+  const [sort, setSort] =
+    useState<CakeSortType>("popular");
+
+  const [isLoading, setIsLoading] =
+    useState(true);
+  const [error, setError] =
+    useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadCakes() {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const data = await getPublishedCakes();
+
+        if (!cancelled) {
+          setCakes(data);
+        }
+      } catch (loadError) {
+        if (!cancelled) {
+          setError(
+            loadError instanceof Error
+              ? loadError.message
+              : "РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ РєР°С‚Р°Р»РѕРі."
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    void loadCakes();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const filteredCakes = useMemo(() => {
+    let data = [...cakes];
+
+    if (category !== "all") {
+      if (category === "popular") {
+        data = data.filter(
+          (cake) => cake.isPopular
+        );
+      } else if (category === "new") {
+        data = data.filter(
+          (cake) => cake.isNew
+        );
+      } else {
+        data = data.filter((cake) =>
+          cake.categories.includes(category)
+        );
+      }
+    }
+
+    const normalizedSearch = search
+      .trim()
+      .toLowerCase();
+
+    if (normalizedSearch) {
+      data = data.filter((cake) => {
+        const name = cake.name.toLowerCase();
+        const description =
+          cake.description.toLowerCase();
+
+        return (
+          name.includes(normalizedSearch) ||
+          description.includes(normalizedSearch)
+        );
+      });
+    }
+
+    switch (sort) {
+      case "popular":
+        data.sort((a, b) => {
+          const popularDifference =
+            Number(b.isPopular) -
+            Number(a.isPopular);
+
+          if (popularDifference !== 0) {
+            return popularDifference;
+          }
+
+          return a.sortOrder - b.sortOrder;
+        });
+        break;
+
+      case "new":
+        data.sort((a, b) => {
+          const newDifference =
+            Number(b.isNew) -
+            Number(a.isNew);
+
+          if (newDifference !== 0) {
+            return newDifference;
+          }
+
+          return a.sortOrder - b.sortOrder;
+        });
+        break;
+
+      case "priceAsc":
+        data.sort(
+          (a, b) =>
+            a.minimumPrice - b.minimumPrice
+        );
+        break;
+
+      case "priceDesc":
+        data.sort(
+          (a, b) =>
+            b.minimumPrice - a.minimumPrice
+        );
+        break;
+    }
+
+    return data;
+  }, [cakes, category, search, sort]);
+
+  return (
+    <main className="min-h-screen bg-[#faf8f6]">
+      <section className="mx-auto max-w-7xl px-6 py-20">
+        <div className="mb-14 text-center">
+          <h1 className="text-4xl font-bold sm:text-5xl">
+            Р“РѕС‚РѕРІС‹Рµ С‚РѕСЂС‚С‹
+          </h1>
+
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-black/60">
+            Р’С‹Р±РµСЂРёС‚Рµ РіРѕС‚РѕРІС‹Р№ РґРёР·Р°Р№РЅ РёР»Рё РёР·РјРµРЅРёС‚Рµ
+            РµРіРѕ РІ РЅР°С€РµРј РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРµ.
+          </p>
+        </div>
+
+        <div className="space-y-8">
+          <CakeCategories
+            value={category}
+            onChange={setCategory}
+          />
+
+          <div className="flex flex-col gap-4 lg:flex-row">
+            <div className="flex-1">
+              <CakeSearch
+                value={search}
+                onChange={setSearch}
+              />
+            </div>
+
+            <CakeSort
+              value={sort}
+              onChange={setSort}
+            />
+          </div>
+
+          {isLoading && (
+            <div className="rounded-3xl border border-black/10 bg-white p-16 text-center">
+              <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-black/10 border-t-[#6a4433]" />
+
+              <p className="mt-5 text-black/60">
+                Р—Р°РіСЂСѓР¶Р°РµРј РєР°С‚Р°Р»РѕРі...
+              </p>
+            </div>
+          )}
+
+          {!isLoading && error && (
+            <div className="rounded-3xl border border-red-200 bg-red-50 p-8 text-center">
+              <h2 className="text-xl font-semibold text-red-800">
+                РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ С‚РѕСЂС‚С‹
+              </h2>
+
+              <p className="mt-3 text-sm text-red-700">
+                {error}
+              </p>
+
+              <button
+                type="button"
+                onClick={() =>
+                  window.location.reload()
+                }
+                className="mt-6 rounded-full bg-red-700 px-6 py-3 font-semibold text-white"
+              >
+                РџРѕРїСЂРѕР±РѕРІР°С‚СЊ СЃРЅРѕРІР°
+              </button>
+            </div>
+          )}
+
+          {!isLoading && !error && (
+            <>
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold">
+                  РќР°Р№РґРµРЅРѕ: {filteredCakes.length}
+                </h2>
+              </div>
+
+              <CakesGrid cakes={filteredCakes} />
+            </>
+          )}
+        </div>
+      </section>
+    </main>
+  );
+}
+
+==================================================
+FILE: app/components/cakes/CakeCard.tsx
+==================================================
+"use client";
+
+import Link from "next/link";
+
+import type { Cake } from "@/lib/cake-types";
+import { formatPrice } from "@/lib/cake-builder/utils";
+
+type Props = {
+  cake: Cake;
+};
+
+export default function CakeCard({
+  cake,
+}: Props) {
+  const variant =
+    cake.defaultVariant ?? cake.variants[0] ?? null;
+
+  return (
+    <article className="group overflow-hidden rounded-3xl border border-black/10 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+      <Link href={`/cakes/${cake.slug}`}>
+        <div className="relative aspect-square overflow-hidden bg-[#f7f3ef]">
+          {cake.imageUrl ? (
+            <img
+              src={cake.imageUrl}
+              alt={cake.name}
+              className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+              draggable={false}
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center px-6 text-center text-sm text-black/40">
+              Р¤РѕС‚РѕРіСЂР°С„РёСЏ РїРѕРєР° РЅРµ РґРѕР±Р°РІР»РµРЅР°
+            </div>
+          )}
+
+          <div className="absolute left-4 top-4 flex flex-wrap gap-2">
+            {cake.isPopular && (
+              <span className="rounded-full bg-[#6a4433] px-3 py-1 text-xs font-semibold text-white">
+                РџРѕРїСѓР»СЏСЂРЅС‹Р№
+              </span>
+            )}
+
+            {cake.isNew && (
+              <span className="rounded-full bg-[#2f9e44] px-3 py-1 text-xs font-semibold text-white">
+                NEW
+              </span>
+            )}
+          </div>
+        </div>
+      </Link>
+
+      <div className="space-y-4 p-5">
+        <div>
+          <h3 className="text-xl font-semibold">
+            {cake.name}
+          </h3>
+
+          {cake.description && (
+            <p className="mt-2 line-clamp-2 text-sm leading-6 text-black/60">
+              {cake.description}
+            </p>
+          )}
+        </div>
+
+        <div className="flex items-end justify-between gap-4">
+          <span className="text-sm text-black/60">
+            {variant
+              ? `РѕС‚ ${variant.weightKg} РєРі`
+              : "Р’РµСЃ СѓС‚РѕС‡РЅСЏРµС‚СЃСЏ"}
+          </span>
+
+          <div className="text-right">
+            {variant?.oldPrice &&
+              variant.oldPrice > variant.price && (
+                <div className="text-sm text-black/40 line-through">
+                  {formatPrice(variant.oldPrice)} в‚ё
+                </div>
+              )}
+
+            <strong className="text-lg">
+              {cake.minimumPrice > 0
+                ? `РѕС‚ ${formatPrice(
+                    cake.minimumPrice
+                  )} в‚ё`
+                : "Р¦РµРЅР° СѓС‚РѕС‡РЅСЏРµС‚СЃСЏ"}
+            </strong>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <Link
+            href={`/cakes/${cake.slug}`}
+            className="rounded-full border border-[#6a4433] py-3 text-center font-semibold text-[#6a4433] transition hover:bg-[#f7f3ef]"
+          >
+            РџРѕРґСЂРѕР±РЅРµРµ
+          </Link>
+
+          <Link
+            href="/builder"
+            className="rounded-full bg-[#6a4433] py-3 text-center font-semibold text-white transition hover:opacity-90"
+          >
+            РР·РјРµРЅРёС‚СЊ
+          </Link>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+==================================================
+FILE: app/components/cakes/CakesGrid.tsx
+==================================================
+"use client";
+
+import type { Cake } from "@/lib/cake-types";
+
+import CakeCard from "./CakeCard";
+
+type Props = {
+  cakes: Cake[];
+};
+
+export default function CakesGrid({
+  cakes,
+}: Props) {
+  if (cakes.length === 0) {
+    return (
+      <div className="rounded-3xl border border-dashed border-black/15 bg-white p-16 text-center">
+        <h3 className="text-2xl font-semibold">
+          РўРѕСЂС‚С‹ РЅРµ РЅР°Р№РґРµРЅС‹
+        </h3>
+
+        <p className="mt-3 text-black/60">
+          РџРѕРїСЂРѕР±СѓР№С‚Рµ РёР·РјРµРЅРёС‚СЊ Р·Р°РїСЂРѕСЃ РёР»Рё РІС‹Р±СЂР°С‚СЊ
+          РґСЂСѓРіСѓСЋ РєР°С‚РµРіРѕСЂРёСЋ.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+      {cakes.map((cake) => (
+        <CakeCard
+          key={cake.id}
+          cake={cake}
+        />
+      ))}
+    </div>
+  );
+}
+
+==================================================
+FILE: app/builder/page.tsx
+==================================================
+"use client";
+
+import Link from "next/link";
+import {
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
+
+import BuilderSection from "@/app/components/cake-builder/BuilderSection";
+import CakePreview from "@/app/components/cake-builder/CakePreview";
+import DecorationControls from "@/app/components/cake-builder/DecorationControls";
+import InscriptionControls from "@/app/components/cake-builder/InscriptionControls";
+import PreviewValue from "@/app/components/cake-builder/PreviewValue";
+
+import {
+  cakeBases,
+  enabledDecorationAssets,
+  type DecorationCategory,
+} from "@/lib/cake-builder/assets";
+
+import {
+  categoryLabels,
+  categoryOrder,
+  defaultInscription,
+  fillings,
+  weights,
+} from "@/lib/cake-builder/constants";
+
+import { useBuilderHistory } from "@/lib/cake-builder/hooks/useBuilderHistory";
+import { useBuilderPrice } from "@/lib/cake-builder/hooks/useBuilderPrice";
+import { useBuilderSelection } from "@/lib/cake-builder/hooks/useBuilderSelection";
+import { useDecorationActions } from "@/lib/cake-builder/hooks/useDecorationActions";
+import { useKeyboardShortcuts } from "@/lib/cake-builder/hooks/useKeyboardShortcuts";
+
+import type {
+  Filling,
+  InscriptionSettings,
+} from "@/lib/cake-builder/types";
+
+import {
+  formatPrice,
+} from "@/lib/cake-builder/utils";
+
+export default function BuilderPage() {
+  const [weight, setWeight] =
+    useState<number>(1.5);
+
+  const [filling, setFilling] =
+    useState<Filling>("snickers");
+
+  const [baseId, setBaseId] =
+    useState("white");
+
+  const [
+    activeCategory,
+    setActiveCategory,
+  ] = useState<DecorationCategory>(
+    "berries",
+  );
+
+  const [
+    inscription,
+    setInscription,
+  ] = useState<InscriptionSettings>(
+    defaultInscription,
+  );
+
+  const [comment, setComment] =
+    useState("");
+
+  const {
+    decorationInstances,
+    decorationInstancesRef,
+    commitDecorations,
+
+    undo: undoHistory,
+    redo: redoHistory,
+    canUndo,
+    canRedo,
+
+    beginInteraction:
+      beginDecorationInteraction,
+
+    updateDuringInteraction:
+      updateDecorationsDuringInteraction,
+
+    finishInteraction:
+      finishDecorationInteraction,
+  } = useBuilderHistory();
+
+  const {
+    selectedInstanceId,
+    inscriptionSelected,
+
+    selectedInstance,
+    selectedInstanceAsset,
+
+    selectDecoration,
+    selectInscription,
+    clearSelection,
+    clearDecorationSelection,
+  } = useBuilderSelection({
+    decorationInstances,
+  });
+
+  const {
+    selectedWeight,
+    selectedFilling,
+    selectedBase,
+    totalPrice,
+  } = useBuilderPrice({
+    weight,
+    filling,
+    baseId,
+    decorationInstances,
+  });
+
+  const {
+    addDecoration,
+    updateSelectedDecoration,
+    removeDecoration,
+    duplicateDecoration,
+
+    rotateDecoration,
+    resetDecorationRotation,
+    resetDecorationTransform,
+
+    flipDecorationHorizontal,
+    flipDecorationVertical,
+
+    bringDecorationForward,
+    sendDecorationBackward,
+    bringDecorationToFront,
+    sendDecorationToBack,
+
+    clearDecorations,
+    nudgeSelectedDecoration,
+  } = useDecorationActions({
+    decorationInstancesRef,
+    selectedInstanceId,
+    commitDecorations,
+    selectDecoration,
+    clearDecorationSelection,
+  });
+
+  const undo = useCallback(() => {
+    if (!canUndo) {
+      return;
+    }
+
+    undoHistory();
+    clearSelection();
+  }, [
+    canUndo,
+    clearSelection,
+    undoHistory,
+  ]);
+
+  const redo = useCallback(() => {
+    if (!canRedo) {
+      return;
+    }
+
+    redoHistory();
+    clearSelection();
+  }, [
+    canRedo,
+    clearSelection,
+    redoHistory,
+  ]);
+
+  useKeyboardShortcuts({
+    selectedInstanceId,
+
+    undo,
+    redo,
+
+    clearSelection,
+
+    duplicateDecoration,
+    removeDecoration,
+    nudgeSelectedDecoration,
+  });
+
+  const activeAssets = useMemo(() => {
+    return enabledDecorationAssets.filter(
+      (asset) =>
+        asset.category === activeCategory,
+    );
+  }, [activeCategory]);
+
+  return (
+    <main className="min-h-screen bg-[#f7f3ef] text-[#342923]">
+      <header className="border-b border-black/10 bg-white">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-8">
+          <Link
+            href="/"
+            className="flex items-center gap-3"
+          >
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#6a4433] text-sm font-semibold text-white">
+              MC
+            </span>
+
+            <span className="text-xl">
+              Milky <strong>Cake</strong>
+            </span>
+          </Link>
+
+          <nav className="hidden items-center gap-7 text-sm lg:flex">
+            <Link href="/cakes">
+              РўРѕСЂС‚С‹
+            </Link>
+
+            <Link
+              href="/builder"
+              className="font-semibold"
+            >
+              РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+            </Link>
+
+            <Link href="/food">
+              Р•РґР° Рё РґРµСЃРµСЂС‚С‹
+            </Link>
+
+            <Link href="/gallery">
+              Р“Р°Р»РµСЂРµСЏ
+            </Link>
+
+            <Link href="/contacts">
+              РљРѕРЅС‚Р°РєС‚С‹
+            </Link>
+          </nav>
+
+          <Link
+            href="/"
+            className="rounded-full border border-black/15 px-5 py-2 text-sm"
+          >
+            РќР° РіР»Р°РІРЅСѓСЋ
+          </Link>
+        </div>
+      </header>
+
+      <section className="border-b border-black/10 bg-[#efe3da]">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 md:px-8 lg:grid-cols-[1fr_auto] lg:items-end">
+          <div>
+            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8b6250]">
+              РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ Milky Cake
+            </span>
+
+            <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight md:text-6xl">
+              РЎРѕР±РµСЂРёС‚Рµ С‚РѕСЂС‚,
+              <br />
+
+              <span className="font-serif italic">
+                РєРѕС‚РѕСЂС‹Р№ РїСЂРёРґСѓРјР°Р»Рё РІС‹
+              </span>
+            </h1>
+
+            <p className="mt-5 max-w-2xl text-sm leading-7 text-black/65 md:text-base">
+              Р’С‹Р±РµСЂРёС‚Рµ РІРµСЃ, РЅР°С‡РёРЅРєСѓ, С†РІРµС‚
+              РѕСЃРЅРѕРІС‹ Рё РѕС„РѕСЂРјР»РµРЅРёРµ. РњРµРЅРµРґР¶РµСЂ
+              РїСЂРѕРІРµСЂРёС‚ Р·Р°СЏРІРєСѓ Рё РїРѕРґС‚РІРµСЂРґРёС‚
+              РёС‚РѕРіРѕРІСѓСЋ СЃС‚РѕРёРјРѕСЃС‚СЊ.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-4 rounded-2xl bg-white/65 px-5 py-4">
+            <span className="text-3xl font-semibold text-[#a67b65]">
+              01
+            </span>
+
+            <div>
+              <strong className="block">
+                РЎРѕР·РґР°РЅРёРµ РґРёР·Р°Р№РЅР°
+              </strong>
+
+              <small className="text-black/55">
+                РџСЂРµРґРІР°СЂРёС‚РµР»СЊРЅР°СЏ РІРµСЂСЃРёСЏ Р·Р°РєР°Р·Р°
+              </small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto grid max-w-7xl gap-8 px-4 py-10 md:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.85fr)]">
+        <div className="lg:sticky lg:top-6 lg:self-start">
+          <div className="rounded-3xl bg-white p-4 shadow-sm md:p-6">
+            <div className="mb-5 flex items-end justify-between gap-4">
+              <div>
+                <span className="text-xs uppercase tracking-[0.18em] text-black/45">
+                  РџСЂРµРґРІР°СЂРёС‚РµР»СЊРЅС‹Р№ РІРёРґ
+                </span>
+
+                <h2 className="mt-1 text-2xl font-semibold">
+                  Р’Р°С€ С‚РѕСЂС‚
+                </h2>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={undo}
+                  disabled={!canUndo}
+                  title="РћС‚РјРµРЅРёС‚СЊ вЂ” Ctrl+Z"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white text-lg transition hover:border-[#6a4433]/35 disabled:cursor-not-allowed disabled:opacity-35"
+                >
+                  в†¶
+                </button>
+
+                <button
+                  type="button"
+                  onClick={redo}
+                  disabled={!canRedo}
+                  title="РџРѕРІС‚РѕСЂРёС‚СЊ вЂ” Ctrl+Shift+Z РёР»Рё Ctrl+Y"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white text-lg transition hover:border-[#6a4433]/35 disabled:cursor-not-allowed disabled:opacity-35"
+                >
+                  в†·
+                </button>
+
+                <span className="rounded-full bg-[#f2e8e1] px-4 py-2 text-sm font-semibold">
+                  {selectedWeight?.label}
+                </span>
+              </div>
+            </div>
+
+            <CakePreview
+              base={selectedBase}
+              decorations={
+                decorationInstances
+              }
+              selectedDecorationId={
+                selectedInstanceId
+              }
+              inscription={inscription}
+              inscriptionSelected={
+                inscriptionSelected
+              }
+              onDecorationsChange={
+                updateDecorationsDuringInteraction
+              }
+              onDecorationInteractionStart={
+                beginDecorationInteraction
+              }
+              onDecorationInteractionEnd={
+                finishDecorationInteraction
+              }
+              onDecorationSelect={
+                selectDecoration
+              }
+              onDecorationRemove={
+                removeDecoration
+              }
+              onDecorationDuplicate={
+                duplicateDecoration
+              }
+              onDecorationRotate={
+                rotateDecoration
+              }
+              onDecorationResetRotation={
+                resetDecorationRotation
+              }
+              onDecorationResetTransform={
+                resetDecorationTransform
+              }
+              onDecorationFlipHorizontal={
+                flipDecorationHorizontal
+              }
+              onDecorationFlipVertical={
+                flipDecorationVertical
+              }
+              onDecorationBringForward={
+                bringDecorationForward
+              }
+              onDecorationSendBackward={
+                sendDecorationBackward
+              }
+              onDecorationBringToFront={
+                bringDecorationToFront
+              }
+              onDecorationSendToBack={
+                sendDecorationToBack
+              }
+              onInscriptionChange={
+                setInscription
+              }
+              onInscriptionSelect={
+                selectInscription
+              }
+              onClearSelection={
+                clearSelection
+              }
+            />
+
+            <div className="mt-4 rounded-2xl border border-[#6a4433]/15 bg-[#f8f0eb] px-4 py-3">
+              <p className="text-sm leading-6 text-black/60">
+                Р”РµРєРѕСЂ РјРѕР¶РЅРѕ РґРІРёРіР°С‚СЊ,
+                РјР°СЃС€С‚Р°Р±РёСЂРѕРІР°С‚СЊ Р·Р° СѓРіР»С‹ Рё
+                РІСЂР°С‰Р°С‚СЊ РѕС‚РґРµР»СЊРЅРѕР№ СЂСѓС‡РєРѕР№.
+                РќР°РїСЂР°РІР»СЏСЋС‰РёРµ РїРѕРјРѕРіР°СЋС‚
+                РІС‹СЂР°РІРЅРёРІР°С‚СЊ СЌР»РµРјРµРЅС‚С‹. Ctrl+Z
+                РѕС‚РјРµРЅСЏРµС‚ РґРµР№СЃС‚РІРёРµ, Ctrl+D
+                РґСѓР±Р»РёСЂСѓРµС‚ РІС‹Р±СЂР°РЅРЅС‹Р№ РґРµРєРѕСЂ.
+              </p>
+            </div>
+
+            <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-5">
+              <PreviewValue
+                label="Р¤РѕСЂРјР°"
+                value="РљСЂСѓРіР»Р°СЏ"
+              />
+
+              <PreviewValue
+                label="Р’РµСЃ"
+                value={
+                  selectedWeight?.label ??
+                  "вЂ”"
+                }
+              />
+
+              <PreviewValue
+                label="РќР°С‡РёРЅРєР°"
+                value={
+                  selectedFilling?.label ??
+                  "вЂ”"
+                }
+              />
+
+              <PreviewValue
+                label="Р¦РІРµС‚"
+                value={selectedBase.name}
+              />
+
+              <PreviewValue
+                label="Р¦РµРЅР°"
+                value={`${formatPrice(
+                  totalPrice,
+                )} в‚ё`}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <BuilderSection
+            number="01"
+            title="Р’С‹Р±РµСЂРёС‚Рµ РІРµСЃ"
+            description="РћР±С‹С‡РЅРѕ СЂР°СЃСЃС‡РёС‚С‹РІР°СЋС‚ 150вЂ“200 РіСЂР°РјРјРѕРІ РЅР° РѕРґРЅРѕРіРѕ РіРѕСЃС‚СЏ."
+          >
+            <div className="grid grid-cols-2 gap-3">
+              {weights.map((item) => (
+                <button
+                  type="button"
+                  key={item.value}
+                  onClick={() =>
+                    setWeight(item.value)
+                  }
+                  className={`rounded-2xl border p-4 text-left transition ${
+                    weight === item.value
+                      ? "border-[#6a4433] bg-[#f4e9e2]"
+                      : "border-black/10 bg-white hover:border-black/25"
+                  }`}
+                >
+                  <strong className="block text-lg">
+                    {item.label}
+                  </strong>
+
+                  <span className="mt-1 block text-sm text-black/55">
+                    {formatPrice(
+                      item.price,
+                    )}{" "}
+                    в‚ё
+                  </span>
+                </button>
+              ))}
+            </div>
+          </BuilderSection>
+
+          <BuilderSection
+            number="02"
+            title="Р’С‹Р±РµСЂРёС‚Рµ РЅР°С‡РёРЅРєСѓ"
+            description="РќР°С‡РёРЅРєРё, РєРѕС‚РѕСЂС‹Рµ РіРѕС‚РѕРІРёС‚ Milky Cake."
+          >
+            <div className="space-y-3">
+              {fillings.map((item) => (
+                <button
+                  type="button"
+                  key={item.value}
+                  onClick={() =>
+                    setFilling(item.value)
+                  }
+                  className={`flex w-full items-start justify-between gap-4 rounded-2xl border p-4 text-left transition ${
+                    filling === item.value
+                      ? "border-[#6a4433] bg-[#f4e9e2]"
+                      : "border-black/10 bg-white hover:border-black/25"
+                  }`}
+                >
+                  <div>
+                    <strong className="block">
+                      {item.label}
+                    </strong>
+
+                    <span className="mt-1 block text-sm leading-6 text-black/55">
+                      {item.description}
+                    </span>
+                  </div>
+
+                  <small className="shrink-0 font-semibold text-[#7c5645]">
+                    {item.price === 0
+                      ? "Р’РєР»СЋС‡РµРЅРѕ"
+                      : `+${formatPrice(
+                          item.price,
+                        )} в‚ё`}
+                  </small>
+                </button>
+              ))}
+            </div>
+          </BuilderSection>
+
+          <BuilderSection
+            number="03"
+            title="Р’С‹Р±РµСЂРёС‚Рµ С†РІРµС‚"
+            description="Р’С‹Р±РµСЂРёС‚Рµ С†РІРµС‚ РїРѕРєСЂС‹С‚РёСЏ С‚РѕСЂС‚Р°."
+          >
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {cakeBases.map((base) => (
+                <button
+                  type="button"
+                  key={base.id}
+                  onClick={() =>
+                    setBaseId(base.id)
+                  }
+                  className={`overflow-hidden rounded-2xl border bg-white text-left transition ${
+                    baseId === base.id
+                      ? "border-[#6a4433] ring-2 ring-[#6a4433]/15"
+                      : "border-black/10 hover:border-black/25"
+                  }`}
+                >
+                  <div className="aspect-square bg-[#f5f1ed]">
+                    <img
+                      src={base.src}
+                      alt=""
+                      className="h-full w-full object-contain"
+                      draggable={false}
+                    />
+                  </div>
+
+                  <strong className="block px-3 py-3 text-sm">
+                    {base.name}
+                  </strong>
+                </button>
+              ))}
+            </div>
+          </BuilderSection>
+
+          <BuilderSection
+            number="04"
+            title="Р”РѕР±Р°РІСЊС‚Рµ РґРµРєРѕСЂ"
+            description="Р”РµРєРѕСЂ РјРѕР¶РЅРѕ РґРІРёРіР°С‚СЊ, РїРѕРІРѕСЂР°С‡РёРІР°С‚СЊ Рё Р·РµСЂРєР°Р»СЊРЅРѕ РѕС‚СЂР°Р¶Р°С‚СЊ."
+          >
+            <div className="flex gap-2 overflow-x-auto pb-2">
+              {categoryOrder.map(
+                (category) => {
+                  const hasAssets =
+                    enabledDecorationAssets.some(
+                      (asset) =>
+                        asset.category ===
+                        category,
+                    );
+
+                  if (!hasAssets) {
+                    return null;
+                  }
+
+                  return (
+                    <button
+                      type="button"
+                      key={category}
+                      onClick={() =>
+                        setActiveCategory(
+                          category,
+                        )
+                      }
+                      className={`shrink-0 rounded-full px-4 py-2 text-sm transition ${
+                        activeCategory ===
+                        category
+                          ? "bg-[#6a4433] text-white"
+                          : "bg-[#f0e8e2] text-[#4c382f]"
+                      }`}
+                    >
+                      {
+                        categoryLabels[
+                          category
+                        ]
+                      }
+                    </button>
+                  );
+                },
+              )}
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {activeAssets.map((asset) => (
+                <button
+                  type="button"
+                  key={asset.id}
+                  onClick={() =>
+                    addDecoration(asset)
+                  }
+                  className="overflow-hidden rounded-2xl border border-black/10 bg-white text-left transition hover:border-[#6a4433]/50 hover:shadow-sm"
+                >
+                  <div className="flex aspect-square items-center justify-center bg-[#f5f1ed] p-5">
+                    <img
+                      src={asset.src}
+                      alt=""
+                      className="max-h-full max-w-full object-contain"
+                      draggable={false}
+                    />
+                  </div>
+
+                  <div className="p-3">
+                    <strong className="block text-sm">
+                      {asset.name}
+                    </strong>
+
+                    <span className="mt-2 block text-xs font-semibold text-[#7c5645]">
+                      Р”РѕР±Р°РІРёС‚СЊ +
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {decorationInstances.length >
+              0 && (
+              <div className="mt-5 border-t border-black/10 pt-5">
+                <div className="flex items-center justify-between">
+                  <strong>
+                    Р”РѕР±Р°РІР»РµРЅРѕ:{" "}
+                    {
+                      decorationInstances.length
+                    }
+                  </strong>
+
+                  <button
+                    type="button"
+                    onClick={clearDecorations}
+                    className="text-sm text-red-700"
+                  >
+                    РћС‡РёСЃС‚РёС‚СЊ РґРµРєРѕСЂ
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {selectedInstance &&
+              selectedInstanceAsset && (
+                <DecorationControls
+                  instance={
+                    selectedInstance
+                  }
+                  asset={
+                    selectedInstanceAsset
+                  }
+                  onChange={
+                    updateSelectedDecoration
+                  }
+                  onRemove={() =>
+                    removeDecoration(
+                      selectedInstance.instanceId,
+                    )
+                  }
+                />
+              )}
+          </BuilderSection>
+
+          <BuilderSection
+            number="05"
+            title="Р”РѕР±Р°РІСЊС‚Рµ РЅР°РґРїРёСЃСЊ"
+            description="РќР°РґРїРёСЃСЊ РјРѕР¶РЅРѕ РґРІРёРіР°С‚СЊ, СѓРІРµР»РёС‡РёРІР°С‚СЊ, СѓРјРµРЅСЊС€Р°С‚СЊ Рё РёР·РіРёР±Р°С‚СЊ."
+          >
+            <InscriptionControls
+              inscription={inscription}
+              onChange={setInscription}
+              onSelect={selectInscription}
+            />
+
+            <label className="mt-5 block">
+              <span className="mb-2 block text-sm font-semibold">
+                Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РїРѕР¶РµР»Р°РЅРёСЏ
+              </span>
+
+              <textarea
+                value={comment}
+                rows={5}
+                placeholder="РћРїРёС€РёС‚Рµ С‚РµРјР°С‚РёРєСѓ РїСЂР°Р·РґРЅРёРєР°, РѕС‚С‚РµРЅРєРё Рё РґСЂСѓРіРёРµ РґРµС‚Р°Р»Рё."
+                onChange={(event) =>
+                  setComment(
+                    event.target.value,
+                  )
+                }
+                className="w-full resize-none rounded-2xl border border-black/10 bg-white px-4 py-3 outline-none transition focus:border-[#6a4433]"
+              />
+            </label>
+          </BuilderSection>
+
+          <section className="rounded-3xl bg-[#432e25] p-6 text-white md:p-8">
+            <span className="text-sm text-white/60">
+              РџСЂРµРґРІР°СЂРёС‚РµР»СЊРЅР°СЏ СЃС‚РѕРёРјРѕСЃС‚СЊ
+            </span>
+
+            <strong className="mt-2 block text-4xl">
+              {formatPrice(totalPrice)} в‚ё
+            </strong>
+
+            <p className="mt-4 max-w-xl text-sm leading-6 text-white/65">
+              РњРµРЅРµРґР¶РµСЂ РїСЂРѕРІРµСЂРёС‚ Р·Р°СЏРІРєСѓ,
+              РІС‹Р±СЂР°РЅРЅС‹Р№ РґРµРєРѕСЂ Рё РїРѕРґС‚РІРµСЂРґРёС‚
+              РѕРєРѕРЅС‡Р°С‚РµР»СЊРЅСѓСЋ СЃС‚РѕРёРјРѕСЃС‚СЊ.
+            </p>
+
+           
+   <button
+  type="button"
+  onClick={() => {
+    sessionStorage.setItem(
+      "milky-cake-order",
+      JSON.stringify({
+        weight,
+        filling,
+        color: baseId,
+        decorations: decorationInstances,
+        inscription,
+        comment,
+        price: totalPrice,
+      }),
+    );
+
+    window.location.href = "/checkout";
+  }}
+  className="mt-6 flex w-full items-center justify-between rounded-full bg-white px-6 py-4 font-semibold text-[#432e25] transition hover:bg-[#f7f2ed]"
+>
+  РџРµСЂРµР№С‚Рё Рє РѕС„РѕСЂРјР»РµРЅРёСЋ
+  <span>в†’</span>
+</button>
+
+          </section>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+==================================================
+FILE NOT FOUND: app/components/builder/CakeBuilder.tsx
+==================================================
+
+==================================================
+FILE NOT FOUND: app/cart/page.tsx
+==================================================
+
+==================================================
+FILE: app/checkout/page.tsx
+==================================================
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+import { supabase } from "@/lib/supabase";
+import {
+  cakeBases,
+  enabledDecorationAssets,
+} from "@/lib/cake-builder/assets";
+import {
+  fillings,
+  weights,
+} from "@/lib/cake-builder/constants";
+import { formatPrice } from "@/lib/cake-builder/utils";
+
+import type {
+  DecorationInstance,
+  InscriptionSettings,
+} from "@/lib/cake-builder/types";
+
+type OrderData = {
+  weight: number;
+  filling: string;
+  color: string;
+  decorations: DecorationInstance[];
+  inscription: InscriptionSettings;
+  comment: string;
+  price: number;
+};
+
+export default function CheckoutPage() {
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  const [order, setOrder] =
+    useState<OrderData | null>(null);
+
+  const [customerName, setCustomerName] =
+    useState("");
+
+  const [customerPhone, setCustomerPhone] =
+    useState("");
+
+  const [customerEmail, setCustomerEmail] =
+    useState("");
+
+  const [customerMessenger, setCustomerMessenger] =
+    useState("");
+
+  const [deliveryType, setDeliveryType] =
+    useState("pickup");
+
+  const [deliveryDate, setDeliveryDate] =
+    useState("");
+
+  const [deliveryTime, setDeliveryTime] =
+    useState("");
+
+  const [address, setAddress] =
+    useState("");
+
+  useEffect(() => {
+    const raw =
+      sessionStorage.getItem(
+        "milky-cake-order",
+      );
+
+    if (!raw) {
+      router.replace("/builder");
+      return;
+    }
+
+    try {
+      setOrder(JSON.parse(raw));
+    } catch {
+      router.replace("/builder");
+      return;
+    }
+
+    setLoading(false);
+  }, [router]);
+
+  const weight = useMemo(() => {
+    return weights.find(
+      (x) => x.value === order?.weight,
+    );
+  }, [order]);
+
+  const filling = useMemo(() => {
+    return fillings.find(
+      (x) => x.value === order?.filling,
+    );
+  }, [order]);
+
+  const cake = useMemo(() => {
+    return cakeBases.find(
+      (x) => x.id === order?.color,
+    );
+  }, [order]);
+
+  async function createOrder() {
+    if (!order) return;
+
+    if (!customerName.trim()) {
+      alert("Р’РІРµРґРёС‚Рµ РёРјСЏ");
+      return;
+    }
+
+    if (!customerPhone.trim()) {
+      alert("Р’РІРµРґРёС‚Рµ С‚РµР»РµС„РѕРЅ");
+      return;
+    }
+
+    setSaving(true);
+
+    const { error } = await supabase
+      .from("orders")
+      .insert({
+        customer_name: customerName,
+
+        customer_phone: customerPhone,
+
+        customer_email:
+          customerEmail || null,
+
+        customer_messenger:
+          customerMessenger || null,
+
+        delivery_type: deliveryType,
+
+        delivery_date:
+          deliveryDate || null,
+
+        delivery_time:
+          deliveryTime || null,
+
+        address:
+          deliveryType === "delivery"
+            ? address
+            : null,
+
+        weight: weight?.label ?? "",
+
+        filling:
+          filling?.label ?? "",
+
+        cake_color:
+          cake?.name ?? "",
+
+        decorations:
+          order.decorations,
+
+        inscription:
+          order.inscription,
+
+        customer_comment:
+          order.comment,
+
+        price: order.price,
+      });
+
+    setSaving(false);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    sessionStorage.removeItem(
+      "milky-cake-order",
+    );
+
+    router.replace("/thank-you");
+  }
+
+  if (loading || !order) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#f7f3ef]">
+        Р—Р°РіСЂСѓР·РєР°...
+      </main>
+    );
+  }
+
+  return (
+    <main className="min-h-screen bg-[#f7f3ef]">
+      <header className="border-b bg-white">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
+
+          <Link
+            href="/builder"
+            className="font-semibold"
+          >
+            в†ђ Р’РµСЂРЅСѓС‚СЊСЃСЏ РІ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+          </Link>
+
+          <h1 className="text-3xl font-semibold">
+            РћС„РѕСЂРјР»РµРЅРёРµ Р·Р°РєР°Р·Р°
+          </h1>
+
+        </div>
+      </header>
+
+      <div className="mx-auto grid max-w-7xl gap-8 px-6 py-10 lg:grid-cols-[1fr_420px]">
+
+              <div className="space-y-6">
+
+          <section className="rounded-3xl bg-white p-6 shadow-sm">
+            <h2 className="mb-5 text-2xl font-semibold">
+              РљРѕРЅС‚Р°РєС‚РЅС‹Рµ РґР°РЅРЅС‹Рµ
+            </h2>
+
+            <div className="grid gap-4">
+
+              <input
+                value={customerName}
+                onChange={(e) =>
+                  setCustomerName(e.target.value)
+                }
+                placeholder="Р’Р°С€Рµ РёРјСЏ"
+                className="rounded-2xl border border-black/10 px-5 py-4 outline-none focus:border-[#6a4433]"
+              />
+
+              <input
+                value={customerPhone}
+                onChange={(e) =>
+                  setCustomerPhone(e.target.value)
+                }
+                placeholder="РўРµР»РµС„РѕРЅ"
+                className="rounded-2xl border border-black/10 px-5 py-4 outline-none focus:border-[#6a4433]"
+              />
+
+              <input
+                value={customerEmail}
+                onChange={(e) =>
+                  setCustomerEmail(e.target.value)
+                }
+                placeholder="E-mail (РЅРµРѕР±СЏР·Р°С‚РµР»СЊРЅРѕ)"
+                className="rounded-2xl border border-black/10 px-5 py-4 outline-none focus:border-[#6a4433]"
+              />
+
+              <input
+                value={customerMessenger}
+                onChange={(e) =>
+                  setCustomerMessenger(e.target.value)
+                }
+                placeholder="WhatsApp / Telegram"
+                className="rounded-2xl border border-black/10 px-5 py-4 outline-none focus:border-[#6a4433]"
+              />
+
+            </div>
+          </section>
+
+          <section className="rounded-3xl bg-white p-6 shadow-sm">
+
+            <h2 className="mb-5 text-2xl font-semibold">
+              РџРѕР»СѓС‡РµРЅРёРµ Р·Р°РєР°Р·Р°
+            </h2>
+
+            <div className="flex gap-3">
+
+              <button
+                type="button"
+                onClick={() =>
+                  setDeliveryType("pickup")
+                }
+                className={`rounded-full px-5 py-3 ${
+                  deliveryType === "pickup"
+                    ? "bg-[#6a4433] text-white"
+                    : "bg-[#f2ece8]"
+                }`}
+              >
+                РЎР°РјРѕРІС‹РІРѕР·
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setDeliveryType("delivery")
+                }
+                className={`rounded-full px-5 py-3 ${
+                  deliveryType === "delivery"
+                    ? "bg-[#6a4433] text-white"
+                    : "bg-[#f2ece8]"
+                }`}
+              >
+                Р”РѕСЃС‚Р°РІРєР°
+              </button>
+
+            </div>
+
+            <div className="mt-5 grid gap-4 md:grid-cols-2">
+
+              <input
+                type="date"
+                value={deliveryDate}
+                onChange={(e) =>
+                  setDeliveryDate(e.target.value)
+                }
+                className="rounded-2xl border border-black/10 px-5 py-4"
+              />
+
+              <input
+                value={deliveryTime}
+                onChange={(e) =>
+                  setDeliveryTime(e.target.value)
+                }
+                placeholder="РќР°РїСЂРёРјРµСЂ 18:00"
+                className="rounded-2xl border border-black/10 px-5 py-4"
+              />
+
+            </div>
+
+            {deliveryType === "delivery" && (
+              <textarea
+                value={address}
+                onChange={(e) =>
+                  setAddress(e.target.value)
+                }
+                rows={4}
+                placeholder="РђРґСЂРµСЃ РґРѕСЃС‚Р°РІРєРё"
+                className="mt-4 w-full rounded-2xl border border-black/10 px-5 py-4 resize-none"
+              />
+            )}
+
+          </section>
+
+        </div>
+
+        <aside className="space-y-6">
+
+          <section className="rounded-3xl bg-white p-6 shadow-sm">
+
+            <h2 className="text-2xl font-semibold">
+              Р’Р°С€ Р·Р°РєР°Р·
+            </h2>
+
+            <div className="mt-5 aspect-square rounded-3xl bg-[#f5f1ed] p-6">
+
+              <img
+                src={cake?.src}
+                alt=""
+                className="h-full w-full object-contain"
+              />
+
+            </div>
+
+            <div className="mt-6 space-y-3 text-sm">
+
+              <div className="flex justify-between">
+                <span>Р’РµСЃ</span>
+                <strong>{weight?.label}</strong>
+              </div>
+
+              <div className="flex justify-between">
+                <span>РќР°С‡РёРЅРєР°</span>
+                <strong>{filling?.label}</strong>
+              </div>
+
+              <div className="flex justify-between">
+                <span>Р¦РІРµС‚</span>
+                <strong>{cake?.name}</strong>
+              </div>
+
+              <div className="flex justify-between">
+                <span>Р”РµРєРѕСЂ</span>
+                <strong>
+                  {order.decorations.length}
+                </strong>
+              </div>
+
+              <div className="flex justify-between">
+                <span>РќР°РґРїРёСЃСЊ</span>
+                <strong>
+                  {order.inscription.text
+                    ? "Р•СЃС‚СЊ"
+                    : "РќРµС‚"}
+                </strong>
+              </div>
+
+            </div>
+
+            <div className="mt-6 rounded-2xl bg-[#f7f3ef] p-5">
+
+              <div className="flex items-center justify-between">
+
+                <span className="text-lg">
+                  РџСЂРµРґРІР°СЂРёС‚РµР»СЊРЅР°СЏ СЃС‚РѕРёРјРѕСЃС‚СЊ
+                </span>
+
+                <strong className="text-3xl">
+                  {formatPrice(order.price)} в‚ё
+                </strong>
+
+              </div>
+
+            </div>
+
+            <button
+              type="button"
+              onClick={createOrder}
+              disabled={saving}
+              className="mt-6 w-full rounded-full bg-[#6a4433] px-6 py-4 text-lg font-semibold text-white transition hover:opacity-90 disabled:opacity-60"
+            >
+              {saving
+                ? "РЎРѕС…СЂР°РЅРµРЅРёРµ..."
+                : "РџРѕРґС‚РІРµСЂРґРёС‚СЊ Р·Р°РєР°Р·"}
+            </button>
+
+          </section>
+
+        </aside>
+
+      </div>
+
+    </main>
+  );
+}
+
+
+==================================================
+FILE: app/page.tsx
+==================================================
+import Link from "next/link";
+
+const categories = [
+  {
+    icon: "рџЋ‚",
+    title: "РўРѕСЂС‚С‹ РЅР° Р·Р°РєР°Р·",
+    description:
+      "РџСЂР°Р·РґРЅРёС‡РЅС‹Рµ, СЃРІР°РґРµР±РЅС‹Рµ, РґРµС‚СЃРєРёРµ Рё С‚РµРјР°С‚РёС‡РµСЃРєРёРµ С‚РѕСЂС‚С‹ РґР»СЏ РѕСЃРѕР±РµРЅРЅС‹С… СЃРѕР±С‹С‚РёР№.",
+    href: "/cakes",
+    button: "Р’С‹Р±СЂР°С‚СЊ С‚РѕСЂС‚",
+  },
+  {
+    icon: "вњЁ",
+    title: "РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ С‚РѕСЂС‚Р°",
+    description:
+      "Р’С‹Р±РµСЂРёС‚Рµ С„РѕСЂРјСѓ, СЂР°Р·РјРµСЂ, РЅР°С‡РёРЅРєСѓ, С†РІРµС‚ Рё СѓРєСЂР°С€РµРЅРёСЏ. РЎРѕР·РґР°Р№С‚Рµ СЃРѕР±СЃС‚РІРµРЅРЅСѓСЋ РёРґРµСЋ С‚РѕСЂС‚Р°.",
+    href: "/builder",
+    button: "РЎРѕР±СЂР°С‚СЊ С‚РѕСЂС‚",
+    featured: true,
+  },
+  {
+    icon: "рџҐђ",
+    title: "Р•РґР° Рё РґРµСЃРµСЂС‚С‹",
+    description:
+      "Р”РѕРјР°С€РЅСЏСЏ РІС‹РїРµС‡РєР°, РґРµСЃРµСЂС‚С‹ Рё РіРѕС‚РѕРІС‹Рµ Р±Р»СЋРґР° РґР»СЏ РїСЂР°Р·РґРЅРёРєРѕРІ Рё СЃРµРјРµР№РЅС‹С… РІСЃС‚СЂРµС‡.",
+    href: "/food",
+    button: "РћС‚РєСЂС‹С‚СЊ РєР°С‚Р°Р»РѕРі",
+  },
+];
+
+const advantages = [
+  {
+    number: "01",
+    title: "РќР°С‚СѓСЂР°Р»СЊРЅС‹Рµ РїСЂРѕРґСѓРєС‚С‹",
+    description:
+      "РСЃРїРѕР»СЊР·СѓРµРј СЃРІРµР¶РёРµ РёРЅРіСЂРµРґРёРµРЅС‚С‹ Рё РїСЂРѕРґСѓРєС‚С‹, СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёРµ С‚СЂРµР±РѕРІР°РЅРёСЏРј С…Р°Р»Р°Р».",
+  },
+  {
+    number: "02",
+    title: "РРЅРґРёРІРёРґСѓР°Р»СЊРЅС‹Р№ РґРёР·Р°Р№РЅ",
+    description:
+      "РњРµРЅРµРґР¶РµСЂ РїРѕРјРѕР¶РµС‚ РґРѕСЂР°Р±РѕС‚Р°С‚СЊ РІР°С€Сѓ РёРґРµСЋ Рё СЃРѕРіР»Р°СЃРѕРІР°С‚СЊ РєР°Р¶РґСѓСЋ РґРµС‚Р°Р»СЊ.",
+  },
+  {
+    number: "03",
+    title: "РЈРґРѕР±РЅРѕРµ РѕС„РѕСЂРјР»РµРЅРёРµ",
+    description:
+      "РћС‚РїСЂР°РІСЊС‚Рµ Р·Р°СЏРІРєСѓ РЅР° СЃР°Р№С‚Рµ, СЃРѕРіР»Р°СЃСѓР№С‚Рµ Р·Р°РєР°Р· Рё РїРѕР»СѓС‡РёС‚Рµ СЃС‡С‘С‚ РЅР° РѕРїР»Р°С‚Сѓ.",
+  },
+];
+
+const cakes = [
+  {
+    title: "РќРµР¶РЅР°СЏ РєР»Р°СЃСЃРёРєР°",
+    category: "РџСЂР°Р·РґРЅРёС‡РЅС‹Р№ С‚РѕСЂС‚",
+    price: "РѕС‚ 18 000 в‚ё",
+    image: "/images/cake-classic.jpg",
+  },
+  {
+    title: "РЇРіРѕРґРЅРѕРµ РЅР°СЃС‚СЂРѕРµРЅРёРµ",
+    category: "РўРѕСЂС‚ СЃ СЏРіРѕРґР°РјРё",
+    price: "РѕС‚ 22 000 в‚ё",
+    image: "/images/cake-berry.jpg",
+  },
+  {
+    title: "Р”РµС‚СЃРєРёР№ РїСЂР°Р·РґРЅРёРє",
+    category: "Р”РµС‚СЃРєРёР№ С‚РѕСЂС‚",
+    price: "РѕС‚ 25 000 в‚ё",
+    image: "/images/cake-kids.jpg",
+  },
+];
+
+export default function HomePage() {
+  return (
+    <main>
+      <header className="site-header">
+        <div className="container header-inner">
+          <Link href="/" className="brand">
+            <span className="brand-logo">MC</span>
+
+            <span className="brand-text">
+              Milky <strong>Cake</strong>
+            </span>
+          </Link>
+
+          <nav className="desktop-nav">
+            <Link href="/cakes">РўРѕСЂС‚С‹</Link>
+            <Link href="/builder">РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ</Link>
+            <Link href="/food">Р•РґР° Рё РґРµСЃРµСЂС‚С‹</Link>
+            <Link href="/gallery">Р“Р°Р»РµСЂРµСЏ</Link>
+            <Link href="/contacts">РљРѕРЅС‚Р°РєС‚С‹</Link>
+          </nav>
+
+          <Link href="/builder" className="header-button">
+            РЎРѕР±СЂР°С‚СЊ С‚РѕСЂС‚
+          </Link>
+        </div>
+      </header>
+
+<section className="hero">
+  <div className="hero-circle hero-circle-one" />
+  <div className="hero-circle hero-circle-two" />
+
+  <div className="container hero-grid">
+    <div className="hero-content">
+      <div className="eyebrow">
+        <span />
+        РљРѕРЅРґРёС‚РµСЂСЃРєР°СЏ РґР»СЏ РѕСЃРѕР±РµРЅРЅС‹С… РґРЅРµР№
+      </div>
+
+      <h1>
+        РўРѕСЂС‚, СЃРѕР·РґР°РЅРЅС‹Р№
+        <br />
+        <em>СЃРїРµС†РёР°Р»СЊРЅРѕ РґР»СЏ РІР°СЃ</em>
+      </h1>
+
+      <p className="hero-description">
+        РЎРѕР±РµСЂРёС‚Рµ РёРґРµСЋ СЃРІРѕРµРіРѕ С‚РѕСЂС‚Р° РІ РёРЅС‚РµСЂР°РєС‚РёРІРЅРѕРј РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРµ. Р’С‹Р±РµСЂРёС‚Рµ
+        С„РѕСЂРјСѓ, РЅР°С‡РёРЅРєСѓ, С†РІРµС‚ Рё РѕС„РѕСЂРјР»РµРЅРёРµ, Р° РјРµРЅРµРґР¶РµСЂ Milky Cake РїРѕРјРѕР¶РµС‚
+        СЃРѕРіР»Р°СЃРѕРІР°С‚СЊ С„РёРЅР°Р»СЊРЅС‹Р№ РґРёР·Р°Р№РЅ.
+      </p>
+
+      <div className="hero-actions">
+        <Link href="/builder" className="primary-button">
+          РЎРѕР±СЂР°С‚СЊ СЃРІРѕР№ С‚РѕСЂС‚
+          <span>в†’</span>
+        </Link>
+
+        <Link href="/cakes" className="secondary-button">
+          РџРѕСЃРјРѕС‚СЂРµС‚СЊ РіРѕС‚РѕРІС‹Рµ С‚РѕСЂС‚С‹
+        </Link>
+      </div>
+
+      <div className="hero-information">
+        <div>
+          <strong>Р•Р¶РµРґРЅРµРІРЅРѕ</strong>
+          <span>РџСЂРёРЅРёРјР°РµРј Р·Р°СЏРІРєРё СЃ 08:00 РґРѕ 21:00</span>
+        </div>
+
+        <div>
+          <strong>РРЅРґРёРІРёРґСѓР°Р»СЊРЅРѕ</strong>
+          <span>РљР°Р¶РґС‹Р№ РґРёР·Р°Р№РЅ СЃРѕРіР»Р°СЃРѕРІС‹РІР°РµС‚СЃСЏ СЃ РјРµРЅРµРґР¶РµСЂРѕРј</span>
+        </div>
+      </div>
+    </div>
+
+    <div className="hero-visual">
+      <div className="hero-photo">
+        <img
+          className="hero-photo-image"
+          src="/images/hero-cake.jpg"
+          alt="РџСЂР°Р·РґРЅРёС‡РЅС‹Р№ С‚РѕСЂС‚ Milky Cake"
+        />
+
+        <div className="hero-photo-overlay" />
+
+        <div className="hero-photo-caption">
+          <div>
+            <span>Milky Cake</span>
+            <strong>РўРѕСЂС‚С‹ СЂСѓС‡РЅРѕР№ СЂР°Р±РѕС‚С‹</strong>
+          </div>
+
+          <Link href="/cakes">РЎРјРѕС‚СЂРµС‚СЊ в†’</Link>
+        </div>
+      </div>
+
+      <div className="hero-badge">
+        <span>РЎРѕР·РґР°Р№С‚Рµ</span>
+        <strong>СЃРІРѕР№ РґРёР·Р°Р№РЅ</strong>
+      </div>
+
+      <div className="floating-card floating-card-left">
+        <span className="floating-icon">рџЌ“</span>
+
+        <div>
+          <strong>Р›СЋР±РѕР№ РґРµРєРѕСЂ</strong>
+          <small>РЇРіРѕРґС‹, С†РІРµС‚С‹ Рё С‚РѕРїРїРµСЂС‹</small>
+        </div>
+      </div>
+
+      <div className="floating-card floating-card-right">
+        <span className="floating-icon">рџЌ°</span>
+
+        <div>
+          <strong>Р›СЋР±РёРјР°СЏ РЅР°С‡РёРЅРєР°</strong>
+          <small>Р’С‹Р±РµСЂРёС‚Рµ РІРєСѓСЃ СЃРІРѕРµРіРѕ С‚РѕСЂС‚Р°</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+      <section className="categories-section">
+        <div className="container">
+          <div className="section-header">
+            <div>
+              <span className="section-label">Р’С‹Р±РµСЂРёС‚Рµ СЃРІРѕР№ С„РѕСЂРјР°С‚</span>
+              <h2>Р’СЃС‘ РґР»СЏ РєСЂР°СЃРёРІРѕРіРѕ РїСЂР°Р·РґРЅРёРєР°</h2>
+            </div>
+
+            <p>
+              Р’С‹Р±РµСЂРёС‚Рµ РіРѕС‚РѕРІС‹Р№ РІР°СЂРёР°РЅС‚ РёР»Рё СЃРѕР·РґР°Р№С‚Рµ СѓРЅРёРєР°Р»СЊРЅС‹Р№ С‚РѕСЂС‚ СЃ РїРѕРјРѕС‰СЊСЋ
+              РёРЅС‚РµСЂР°РєС‚РёРІРЅРѕРіРѕ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂР°.
+            </p>
+          </div>
+
+          <div className="categories-grid">
+            {categories.map((category) => (
+              <article
+                key={category.title}
+                className={
+                  category.featured
+                    ? "category-card category-card-featured"
+                    : "category-card"
+                }
+              >
+                {category.featured && (
+                  <span className="category-popular">Р“Р»Р°РІРЅР°СЏ РѕСЃРѕР±РµРЅРЅРѕСЃС‚СЊ</span>
+                )}
+
+                <div className="category-icon">{category.icon}</div>
+
+                <h3>{category.title}</h3>
+                <p>{category.description}</p>
+
+                <Link href={category.href}>
+                  {category.button}
+                  <span>в†’</span>
+                </Link>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="builder-section">
+        <div className="container builder-grid">
+          <div className="builder-preview">
+            <div className="builder-window">
+              <div className="builder-window-header">
+                <div className="window-controls">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+
+                <small>РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ Milky Cake</small>
+              </div>
+
+              <div className="builder-window-body">
+                <div className="builder-menu">
+                  <button type="button" className="active">
+                    Р¤РѕСЂРјР°
+                  </button>
+                  <button type="button">Р Р°Р·РјРµСЂ</button>
+                  <button type="button">РќР°С‡РёРЅРєР°</button>
+                  <button type="button">Р¦РІРµС‚</button>
+                  <button type="button">Р”РµРєРѕСЂ</button>
+                  <button type="button">РќР°РґРїРёСЃСЊ</button>
+                </div>
+
+                <div className="builder-photo">
+                  <div className="builder-photo-image" />
+                  <span>РџСЂРµРґРІР°СЂРёС‚РµР»СЊРЅС‹Р№ РґРёР·Р°Р№РЅ</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="builder-content">
+            <span className="section-label">Р“Р»Р°РІРЅР°СЏ РѕСЃРѕР±РµРЅРЅРѕСЃС‚СЊ</span>
+
+            <h2>
+              РќРµ РїСЂРѕСЃС‚Рѕ Р·Р°РєР°Р¶РёС‚Рµ.
+              <br />
+              <em>РЎРѕР·РґР°Р№С‚Рµ СЃРІРѕР№ С‚РѕСЂС‚.</em>
+            </h2>
+
+            <p>
+              РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РїРѕРјРѕР¶РµС‚ РїРµСЂРµРґР°С‚СЊ РІР°С€Сѓ РёРґРµСЋ РјРµРЅРµРґР¶РµСЂСѓ. Р’С‹ СЃРјРѕР¶РµС‚Рµ
+              РІС‹Р±СЂР°С‚СЊ РѕСЃРЅРѕРІРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹, СѓРІРёРґРµС‚СЊ РїСЂРµРґРІР°СЂРёС‚РµР»СЊРЅРѕРµ РѕС„РѕСЂРјР»РµРЅРёРµ Рё
+              РѕС‚РїСЂР°РІРёС‚СЊ Р·Р°СЏРІРєСѓ.
+            </p>
+
+            <ul>
+              <li>
+                <span>вњ“</span>
+                Р’С‹Р±РµСЂРёС‚Рµ С„РѕСЂРјСѓ, СЂР°Р·РјРµСЂ Рё РЅР°С‡РёРЅРєСѓ
+              </li>
+
+              <li>
+                <span>вњ“</span>
+                Р”РѕР±Р°РІСЊС‚Рµ С†РІРµС‚, СѓРєСЂР°С€РµРЅРёСЏ Рё РЅР°РґРїРёСЃСЊ
+              </li>
+
+              <li>
+                <span>вњ“</span>
+                РџРѕР»СѓС‡РёС‚Рµ РїСЂРµРґРІР°СЂРёС‚РµР»СЊРЅСѓСЋ СЃС‚РѕРёРјРѕСЃС‚СЊ
+              </li>
+
+              <li>
+                <span>вњ“</span>
+                РЎРѕРіР»Р°СЃСѓР№С‚Рµ С„РёРЅР°Р»СЊРЅС‹Р№ РґРёР·Р°Р№РЅ СЃ РјРµРЅРµРґР¶РµСЂРѕРј
+              </li>
+            </ul>
+
+            <Link href="/builder" className="primary-button">
+              РћС‚РєСЂС‹С‚СЊ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+              <span>в†’</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="popular-section">
+        <div className="container">
+          <div className="section-header">
+            <div>
+              <span className="section-label">РџРѕРїСѓР»СЏСЂРЅС‹Рµ РІР°СЂРёР°РЅС‚С‹</span>
+              <h2>РўРѕСЂС‚С‹, РєРѕС‚РѕСЂС‹Рµ РІС‹Р±РёСЂР°СЋС‚ С‡Р°С‰Рµ РІСЃРµРіРѕ</h2>
+            </div>
+
+            <Link href="/cakes" className="catalog-link">
+              РЎРјРѕС‚СЂРµС‚СЊ РІРµСЃСЊ РєР°С‚Р°Р»РѕРі
+              <span>в†’</span>
+            </Link>
+          </div>
+
+          <div className="products-grid">
+            {cakes.map((cake) => (
+              <article key={cake.title} className="product-card">
+                <div className="product-image">
+                  <img src={cake.image} alt={cake.title} />
+
+                  <span className="product-placeholder">
+                    Р”РѕР±Р°РІСЊС‚Рµ С„РѕС‚РѕРіСЂР°С„РёСЋ
+                  </span>
+
+                  <button type="button" aria-label="Р”РѕР±Р°РІРёС‚СЊ РІ РёР·Р±СЂР°РЅРЅРѕРµ">
+                    в™Ў
+                  </button>
+                </div>
+
+                <div className="product-details">
+                  <div>
+                    <span>{cake.category}</span>
+                    <h3>{cake.title}</h3>
+                  </div>
+
+                  <strong>{cake.price}</strong>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="advantages-section">
+        <div className="container advantages-grid">
+          {advantages.map((advantage) => (
+            <article key={advantage.number} className="advantage-card">
+              <span>{advantage.number}</span>
+              <h3>{advantage.title}</h3>
+              <p>{advantage.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="process-section">
+        <div className="container">
+          <div className="process-heading">
+            <span className="section-label">РљР°Рє СЃРґРµР»Р°С‚СЊ Р·Р°РєР°Р·</span>
+            <h2>РћС‚ РёРґРµРё РґРѕ РіРѕС‚РѕРІРѕРіРѕ С‚РѕСЂС‚Р°</h2>
+          </div>
+
+          <div className="process-grid">
+            <article>
+              <span>1</span>
+              <h3>РЎРѕР·РґР°Р№С‚Рµ РёРґРµСЋ</h3>
+              <p>
+                Р’С‹Р±РµСЂРёС‚Рµ РіРѕС‚РѕРІС‹Р№ С‚РѕСЂС‚ РёР»Рё СЃРѕР±РµСЂРёС‚Рµ СЃРІРѕР№ РІР°СЂРёР°РЅС‚ РІ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРµ.
+              </p>
+            </article>
+
+            <article>
+              <span>2</span>
+              <h3>РћС‚РїСЂР°РІСЊС‚Рµ Р·Р°СЏРІРєСѓ</h3>
+              <p>
+                РЈРєР°Р¶РёС‚Рµ РєРѕРЅС‚Р°РєС‚С‹, РґР°С‚Сѓ РјРµСЂРѕРїСЂРёСЏС‚РёСЏ Рё РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РїРѕР¶РµР»Р°РЅРёСЏ.
+              </p>
+            </article>
+
+            <article>
+              <span>3</span>
+              <h3>РЎРѕРіР»Р°СЃСѓР№С‚Рµ РґРµС‚Р°Р»Рё</h3>
+              <p>
+                РњРµРЅРµРґР¶РµСЂ СЃРІСЏР¶РµС‚СЃСЏ СЃ РІР°РјРё Рё РїРѕРјРѕР¶РµС‚ СѓС‚РІРµСЂРґРёС‚СЊ С„РёРЅР°Р»СЊРЅС‹Р№ РґРёР·Р°Р№РЅ.
+              </p>
+            </article>
+
+            <article>
+              <span>4</span>
+              <h3>РџРѕР»СѓС‡РёС‚Рµ СЃС‡С‘С‚</h3>
+              <p>
+                РџРѕСЃР»Рµ СЃРѕРіР»Р°СЃРѕРІР°РЅРёСЏ РјРµРЅРµРґР¶РµСЂ РѕС‚РїСЂР°РІРёС‚ СЃС‡С‘С‚ РґР»СЏ РѕРїР»Р°С‚С‹ Р·Р°РєР°Р·Р°.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="final-section">
+        <div className="container final-section-inner">
+          <div>
+            <span className="section-label">РќР°С‡РЅРёС‚Рµ СЃ РёРґРµРё</span>
+            <h2>РљР°Рє Р±СѓРґРµС‚ РІС‹РіР»СЏРґРµС‚СЊ РІР°С€ РёРґРµР°Р»СЊРЅС‹Р№ С‚РѕСЂС‚?</h2>
+
+            <p>
+              РЎРѕР·РґР°Р№С‚Рµ РїСЂРµРґРІР°СЂРёС‚РµР»СЊРЅС‹Р№ РґРёР·Р°Р№РЅ Р·Р° РЅРµСЃРєРѕР»СЊРєРѕ РјРёРЅСѓС‚. РњРµРЅРµРґР¶РµСЂ
+              СЃРІСЏР¶РµС‚СЃСЏ СЃ РІР°РјРё, СѓС‚РѕС‡РЅРёС‚ РґРµС‚Р°Р»Рё Рё РІС‹СЃС‚Р°РІРёС‚ СЃС‡С‘С‚.
+            </p>
+          </div>
+
+          <Link href="/builder" className="dark-button">
+            РЎРѕР±СЂР°С‚СЊ С‚РѕСЂС‚
+            <span>в†’</span>
+          </Link>
+        </div>
+      </section>
+
+      <footer className="site-footer">
+        <div className="container footer-grid">
+          <div className="footer-about">
+            <Link href="/" className="brand footer-brand">
+              <span className="brand-logo">MC</span>
+
+              <span className="brand-text">
+                Milky <strong>Cake</strong>
+              </span>
+            </Link>
+
+            <p>
+              РўРѕСЂС‚С‹, РґРµСЃРµСЂС‚С‹ Рё РґРѕРјР°С€РЅСЏСЏ РµРґР° РґР»СЏ РІР°С€РёС… РѕСЃРѕР±РµРЅРЅС‹С… РјРѕРјРµРЅС‚РѕРІ.
+            </p>
+          </div>
+
+          <div className="footer-column">
+            <strong>РњРµРЅСЋ</strong>
+            <Link href="/cakes">РўРѕСЂС‚С‹</Link>
+            <Link href="/builder">РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ</Link>
+            <Link href="/food">Р•РґР° Рё РґРµСЃРµСЂС‚С‹</Link>
+          </div>
+
+          <div className="footer-column">
+            <strong>РРЅС„РѕСЂРјР°С†РёСЏ</strong>
+            <Link href="/gallery">Р“Р°Р»РµСЂРµСЏ</Link>
+            <Link href="/about">Рћ РЅР°СЃ</Link>
+            <Link href="/contacts">РљРѕРЅС‚Р°РєС‚С‹</Link>
+          </div>
+
+          <div className="footer-column">
+            <strong>РњС‹ РЅР° СЃРІСЏР·Рё</strong>
+            <a href="tel:+70000000000" className="footer-phone">
+              +7 000 000 00 00
+            </a>
+            <span>Р•Р¶РµРґРЅРµРІРЅРѕ СЃ 08:00 РґРѕ 21:00</span>
+          </div>
+        </div>
+
+        <div className="container footer-bottom">
+          <span>В© 2026 Milky Cake</span>
+          <span>РўРѕСЂС‚С‹, СЃРѕР·РґР°РЅРЅС‹Рµ СЃ Р»СЋР±РѕРІСЊСЋ</span>
+        </div>
+      </footer>
+    </main>
+  );
+}
+
+==================================================
+FILE: lib/cake-types.ts
+==================================================
+export type CakeVariant = {
+  id: string;
+  cakeId: string;
+  weightKg: number;
+  price: number;
+  oldPrice: number | null;
+  isDefault: boolean;
+  sortOrder: number;
+  createdAt: string;
+};
+
+export type Cake = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  imageUrl: string;
+  categories: string[];
+  isPopular: boolean;
+  isNew: boolean;
+  isPublished: boolean;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+  variants: CakeVariant[];
+  defaultVariant: CakeVariant | null;
+  minimumPrice: number;
+};
+
+export const cakeCategories = [
+  {
+    value: "all",
+    label: "Р’СЃРµ",
+  },
+  {
+    value: "kids",
+    label: "Р”РµС‚СЃРєРёРµ",
+  },
+  {
+    value: "girls",
+    label: "Р”Р»СЏ РґРµРІРѕС‡РµРє",
+  },
+  {
+    value: "boys",
+    label: "Р”Р»СЏ РјР°Р»СЊС‡РёРєРѕРІ",
+  },
+  {
+    value: "babies",
+    label: "Р”Р»СЏ РјР°Р»С‹С€РµР№",
+  },
+  {
+    value: "women",
+    label: "Р”Р»СЏ Р¶РµРЅС‰РёРЅ",
+  },
+  {
+    value: "men",
+    label: "Р”Р»СЏ РјСѓР¶С‡РёРЅ",
+  },
+  {
+    value: "birthday",
+    label: "РќР° РґРµРЅСЊ СЂРѕР¶РґРµРЅРёСЏ",
+  },
+  {
+    value: "gender-party",
+    label: "Gender Party",
+  },
+  {
+    value: "bento",
+    label: "Р‘РµРЅС‚Рѕ",
+  },
+  {
+    value: "tiered",
+    label: "РњРЅРѕРіРѕСЏСЂСѓСЃРЅС‹Рµ",
+  },
+  {
+    value: "promo-9990",
+    label: "Р—Р° 9 990 в‚ё",
+  },
+  {
+    value: "promo-10990",
+    label: "Р—Р° 10 990 в‚ё",
+  },
+  {
+    value: "popular",
+    label: "РџРѕРїСѓР»СЏСЂРЅС‹Рµ",
+  },
+  {
+    value: "new",
+    label: "РќРѕРІРёРЅРєРё",
+  },
+] as const;
+
+==================================================
+FILE: lib/cake-service.ts
+==================================================
+import { supabase } from "@/lib/supabase";
+import type {
+  Cake,
+  CakeVariant,
+} from "@/lib/cake-types";
+
+type CakeVariantRow = {
+  id: string;
+  cake_id: string;
+  weight_kg: number | string;
+  price: number | string;
+  old_price: number | string | null;
+  is_default: boolean;
+  sort_order: number | null;
+  created_at: string;
+};
+
+type CakeRow = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  image_url: string | null;
+  categories: string[] | null;
+  is_popular: boolean | null;
+  is_new: boolean | null;
+  is_published: boolean | null;
+  sort_order: number | null;
+  created_at: string;
+  updated_at: string;
+  cake_variants: CakeVariantRow[] | null;
+};
+
+function normalizeVariant(
+  row: CakeVariantRow
+): CakeVariant {
+  return {
+    id: row.id,
+    cakeId: row.cake_id,
+    weightKg: Number(row.weight_kg),
+    price: Number(row.price),
+    oldPrice:
+      row.old_price === null
+        ? null
+        : Number(row.old_price),
+    isDefault: Boolean(row.is_default),
+    sortOrder: row.sort_order ?? 0,
+    createdAt: row.created_at,
+  };
+}
+
+function normalizeCake(row: CakeRow): Cake {
+  const variants = (row.cake_variants ?? [])
+    .map(normalizeVariant)
+    .sort((a, b) => {
+      if (a.sortOrder !== b.sortOrder) {
+        return a.sortOrder - b.sortOrder;
+      }
+
+      return a.weightKg - b.weightKg;
+    });
+
+  const defaultVariant =
+    variants.find((variant) => variant.isDefault) ??
+    variants[0] ??
+    null;
+
+  const minimumPrice =
+    variants.length > 0
+      ? Math.min(
+          ...variants.map((variant) => variant.price)
+        )
+      : 0;
+
+  return {
+    id: row.id,
+    name: row.name,
+    slug: row.slug,
+    description: row.description ?? "",
+    imageUrl: row.image_url ?? "",
+    categories: row.categories ?? [],
+    isPopular: Boolean(row.is_popular),
+    isNew: Boolean(row.is_new),
+    isPublished: Boolean(row.is_published),
+    sortOrder: row.sort_order ?? 0,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    variants,
+    defaultVariant,
+    minimumPrice,
+  };
+}
+
+export async function getPublishedCakes(): Promise<
+  Cake[]
+> {
+  const { data, error } = await supabase
+    .from("cakes")
+    .select(`
+      id,
+      name,
+      slug,
+      description,
+      image_url,
+      categories,
+      is_popular,
+      is_new,
+      is_published,
+      sort_order,
+      created_at,
+      updated_at,
+      cake_variants (
+        id,
+        cake_id,
+        weight_kg,
+        price,
+        old_price,
+        is_default,
+        sort_order,
+        created_at
+      )
+    `)
+    .eq("is_published", true)
+    .order("sort_order", {
+      ascending: true,
+    });
+
+  if (error) {
+    throw new Error(
+      `РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ С‚РѕСЂС‚С‹: ${error.message}`
+    );
+  }
+
+  return ((data ?? []) as CakeRow[]).map(
+    normalizeCake
+  );
+}
+
+export async function getAllCakes(): Promise<Cake[]> {
+  const { data, error } = await supabase
+    .from("cakes")
+    .select(`
+      id,
+      name,
+      slug,
+      description,
+      image_url,
+      categories,
+      is_popular,
+      is_new,
+      is_published,
+      sort_order,
+      created_at,
+      updated_at,
+      cake_variants (
+        id,
+        cake_id,
+        weight_kg,
+        price,
+        old_price,
+        is_default,
+        sort_order,
+        created_at
+      )
+    `)
+    .order("sort_order", {
+      ascending: true,
+    });
+
+  if (error) {
+    throw new Error(
+      `РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ С‚РѕСЂС‚С‹: ${error.message}`
+    );
+  }
+
+  return ((data ?? []) as CakeRow[]).map(
+    normalizeCake
+  );
+}
+
+export async function getCakeBySlug(
+  slug: string
+): Promise<Cake | null> {
+  const { data, error } = await supabase
+    .from("cakes")
+    .select(`
+      id,
+      name,
+      slug,
+      description,
+      image_url,
+      categories,
+      is_popular,
+      is_new,
+      is_published,
+      sort_order,
+      created_at,
+      updated_at,
+      cake_variants (
+        id,
+        cake_id,
+        weight_kg,
+        price,
+        old_price,
+        is_default,
+        sort_order,
+        created_at
+      )
+    `)
+    .eq("slug", slug)
+    .eq("is_published", true)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(
+      `РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ С‚РѕСЂС‚: ${error.message}`
+    );
+  }
+
+  if (!data) {
+    return null;
+  }
+
+  return normalizeCake(data as CakeRow);
+}
+
+==================================================
+FILE: lib/supabase.ts
+==================================================
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+export const supabase = createClient(
+  supabaseUrl,
+  supabaseAnonKey,
+  {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  }
+);
+
+==================================================
+FILE: package.json
+==================================================
+{
+  "name": "milky-cake",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.111.0",
+    "next": "16.2.12",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-rnd": "^10.5.3",
+    "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.12",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
+
+

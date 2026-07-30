@@ -1,0 +1,2268 @@
+﻿==================================================
+FILE: app/admin/orders/page.tsx
+==================================================
+export default function AdminOrdersPage() {
+  return (
+    <div className="admin-page">
+      <section className="admin-page-heading">
+        <div>
+          <span className="admin-eyebrow">Мини CRM</span>
+          <h1>Заказы</h1>
+          <p>
+            Здесь будут список заказов, данные клиента, состав и изменение
+            статуса.
+          </p>
+        </div>
+      </section>
+
+      <section className="admin-empty-state">
+        <span className="admin-empty-icon">▤</span>
+        <h2>Раздел заказов подготовлен</h2>
+        <p>
+          Подключим его после завершения управления тортами и оформления
+          заказа.
+        </p>
+      </section>
+    </div>
+  );
+}
+
+
+==================================================
+FILE: app/admin/layout.tsx
+==================================================
+import type { ReactNode } from "react";
+import AdminHeader from "../components/admin/AdminHeader";
+import AdminSidebar from "../components/admin/AdminSidebar";
+
+export default function AdminLayout({
+  children,
+}: Readonly<{
+  children: ReactNode;
+}>) {
+  return (
+    <div className="admin-shell">
+      <AdminSidebar />
+
+      <div className="admin-main">
+        <AdminHeader />
+
+        <main className="admin-content">{children}</main>
+      </div>
+    </div>
+  );
+}
+
+
+==================================================
+FILE: app/components/admin/AdminSidebar.tsx
+==================================================
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+type NavigationItem = {
+  href: string;
+  label: string;
+  icon: string;
+  exact?: boolean;
+};
+
+const navigation: NavigationItem[] = [
+  {
+    href: "/admin",
+    label: "Главная",
+    icon: "⌂",
+    exact: true,
+  },
+  {
+    href: "/admin/orders",
+    label: "Заказы",
+    icon: "▤",
+  },
+  {
+    href: "/admin/cakes",
+    label: "Торты",
+    icon: "◉",
+  },
+  {
+    href: "/admin/constructor",
+    label: "Конструктор",
+    icon: "✦",
+  },
+  {
+    href: "/admin/categories",
+    label: "Категории",
+    icon: "▦",
+  },
+  {
+    href: "/admin/fillings",
+    label: "Начинки",
+    icon: "◎",
+  },
+  {
+    href: "/admin/settings",
+    label: "Настройки",
+    icon: "⚙",
+  },
+];
+
+function isNavigationItemActive(
+  pathname: string,
+  item: NavigationItem,
+): boolean {
+  if (item.exact) {
+    return pathname === item.href;
+  }
+
+  return pathname === item.href || pathname.startsWith(`${item.href}/`);
+}
+
+export default function AdminSidebar() {
+  const pathname = usePathname();
+
+  return (
+    <aside className="admin-sidebar">
+      <div className="admin-sidebar-brand">
+        <Link href="/admin" className="admin-sidebar-logo">
+          MC
+        </Link>
+
+        <div>
+          <strong>Milky Cake</strong>
+          <span>Панель управления</span>
+        </div>
+      </div>
+
+      <nav className="admin-navigation" aria-label="Админ-панель">
+        {navigation.map((item) => {
+          const active = isNavigationItemActive(pathname, item);
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`admin-navigation-link ${
+                active ? "admin-navigation-link-active" : ""
+              }`}
+            >
+              <span className="admin-navigation-icon">{item.icon}</span>
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="admin-sidebar-footer">
+        <Link href="/" className="admin-store-link">
+          <span>←</span>
+          Вернуться на сайт
+        </Link>
+
+        <p>Milky Cake CRM</p>
+      </div>
+    </aside>
+  );
+}
+
+
+==================================================
+FILE: app/components/admin/AdminPageHeader.tsx
+==================================================
+FILE NOT FOUND
+
+==================================================
+FILE: app/components/cake-builder/CakePreview.tsx
+==================================================
+"use client";
+
+import {
+  useRef,
+  type RefObject,
+} from "react";
+
+import type { CakeBaseAsset } from "@/lib/cake-builder/assets";
+
+import type {
+  DecorationInstance,
+  InscriptionSettings,
+} from "@/lib/cake-builder/types";
+
+import DecorationLayer from "./DecorationLayer";
+import InscriptionLayer from "./InscriptionLayer";
+
+type CakePreviewProps = {
+  base: CakeBaseAsset;
+  decorations: DecorationInstance[];
+  selectedDecorationId: string | null;
+  inscription: InscriptionSettings;
+  inscriptionSelected: boolean;
+
+  onDecorationsChange: (
+    decorations: DecorationInstance[],
+  ) => void;
+
+  onDecorationInteractionStart: () => void;
+  onDecorationInteractionEnd: () => void;
+
+  onDecorationSelect: (
+    instanceId: string,
+  ) => void;
+
+  onDecorationRemove: (
+    instanceId: string,
+  ) => void;
+
+  onDecorationDuplicate: (
+    instanceId: string,
+  ) => void;
+
+  onDecorationRotate: (
+    instanceId: string,
+  ) => void;
+
+  onDecorationResetRotation: (
+    instanceId: string,
+  ) => void;
+
+  onDecorationResetTransform: (
+    instanceId: string,
+  ) => void;
+
+  onDecorationFlipHorizontal: (
+    instanceId: string,
+  ) => void;
+
+  onDecorationFlipVertical: (
+    instanceId: string,
+  ) => void;
+
+  onDecorationBringForward: (
+    instanceId: string,
+  ) => void;
+
+  onDecorationSendBackward: (
+    instanceId: string,
+  ) => void;
+
+  onDecorationBringToFront: (
+    instanceId: string,
+  ) => void;
+
+  onDecorationSendToBack: (
+    instanceId: string,
+  ) => void;
+
+  onInscriptionChange: (
+    inscription: InscriptionSettings,
+  ) => void;
+
+  onInscriptionSelect: () => void;
+  onClearSelection: () => void;
+};
+
+export default function CakePreview({
+  base,
+  decorations,
+  selectedDecorationId,
+  inscription,
+  inscriptionSelected,
+  onDecorationsChange,
+  onDecorationInteractionStart,
+  onDecorationInteractionEnd,
+  onDecorationSelect,
+  onDecorationRemove,
+  onDecorationDuplicate,
+  onDecorationRotate,
+  onDecorationResetRotation,
+  onDecorationResetTransform,
+  onDecorationFlipHorizontal,
+  onDecorationFlipVertical,
+  onDecorationBringForward,
+  onDecorationSendBackward,
+  onDecorationBringToFront,
+  onDecorationSendToBack,
+  onInscriptionChange,
+  onInscriptionSelect,
+  onClearSelection,
+}: CakePreviewProps) {
+  const stageRef =
+    useRef<HTMLDivElement | null>(null);
+
+  return (
+    <div
+      ref={stageRef}
+      className="relative mx-auto aspect-square w-full max-w-[680px] touch-none overflow-hidden rounded-3xl bg-[#f5f1ed]"
+      onPointerDown={(event) => {
+        if (
+          event.currentTarget === event.target
+        ) {
+          onClearSelection();
+        }
+      }}
+      onContextMenu={(event) => {
+        event.preventDefault();
+      }}
+    >
+      <img
+        src={base.src}
+        alt={`РљСЂСѓРіР»С‹Р№ С‚РѕСЂС‚: ${base.name}`}
+        className="pointer-events-none absolute inset-0 h-full w-full select-none object-contain"
+        draggable={false}
+      />
+
+      <DecorationLayer
+        stageRef={
+          stageRef as RefObject<HTMLDivElement | null>
+        }
+        instances={decorations}
+        selectedInstanceId={
+          selectedDecorationId
+        }
+        onSelect={onDecorationSelect}
+        onChange={onDecorationsChange}
+        onInteractionStart={
+          onDecorationInteractionStart
+        }
+        onInteractionEnd={
+          onDecorationInteractionEnd
+        }
+        onRemove={onDecorationRemove}
+        onDuplicate={onDecorationDuplicate}
+        onRotate={onDecorationRotate}
+        onResetRotation={
+          onDecorationResetRotation
+        }
+        onResetTransform={
+          onDecorationResetTransform
+        }
+        onFlipHorizontal={
+          onDecorationFlipHorizontal
+        }
+        onFlipVertical={
+          onDecorationFlipVertical
+        }
+        onBringForward={
+          onDecorationBringForward
+        }
+        onSendBackward={
+          onDecorationSendBackward
+        }
+        onBringToFront={
+          onDecorationBringToFront
+        }
+        onSendToBack={
+          onDecorationSendToBack
+        }
+      />
+
+      <InscriptionLayer
+        stageRef={
+          stageRef as RefObject<HTMLDivElement | null>
+        }
+        inscription={inscription}
+        selected={inscriptionSelected}
+        onSelect={onInscriptionSelect}
+        onChange={onInscriptionChange}
+      />
+    </div>
+  );
+}
+
+==================================================
+FILE: app/components/cake-builder/DecorationLayer.tsx
+==================================================
+"use client";
+
+import {
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+  type RefObject,
+} from "react";
+
+import {
+  BUILDER_CANVAS_SIZE,
+  getDecorationAsset,
+} from "@/lib/cake-builder/assets";
+
+import type { DecorationInstance } from "@/lib/cake-builder/types";
+
+import {
+  canvasPercent,
+  clamp,
+} from "@/lib/cake-builder/utils";
+
+const SNAP_DISTANCE = 14;
+const ROTATION_SNAP = 5;
+
+type InteractionMode = "move" | "rotate";
+
+type InteractionState = {
+  mode: InteractionMode;
+  instanceId: string;
+  pointerId: number;
+  startX: number;
+  startY: number;
+  startRotation: number;
+  startAngle: number;
+  offsetX: number;
+  offsetY: number;
+};
+
+type GuideState = {
+  vertical: number | null;
+  horizontal: number | null;
+};
+
+type DecorationLayerProps = {
+  stageRef: RefObject<HTMLDivElement | null>;
+  instances: DecorationInstance[];
+  selectedInstanceId: string | null;
+
+  onSelect: (instanceId: string) => void;
+  onChange: (instances: DecorationInstance[]) => void;
+  onInteractionStart: () => void;
+  onInteractionEnd: () => void;
+  onRemove: (instanceId: string) => void;
+  onDuplicate: (instanceId: string) => void;
+  onRotate: (instanceId: string) => void;
+  onResetRotation: (instanceId: string) => void;
+  onResetTransform: (instanceId: string) => void;
+  onFlipHorizontal: (instanceId: string) => void;
+  onFlipVertical: (instanceId: string) => void;
+  onBringForward: (instanceId: string) => void;
+  onSendBackward: (instanceId: string) => void;
+  onBringToFront: (instanceId: string) => void;
+  onSendToBack: (instanceId: string) => void;
+};
+
+function IconButton({
+  title,
+  onClick,
+  children,
+  danger = false,
+}: {
+  title: string;
+  onClick: () => void;
+  children: ReactNode;
+  danger?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      title={title}
+      aria-label={title}
+      onClick={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        onClick();
+      }}
+      onPointerDown={(event) => {
+        event.stopPropagation();
+      }}
+      className={`flex h-8 w-8 items-center justify-center rounded-lg transition ${
+        danger
+          ? "text-red-700 hover:bg-red-50"
+          : "text-[#4b342a] hover:bg-[#f2e8e1]"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function normalizeRotation(rotation: number) {
+  return ((rotation % 360) + 360) % 360;
+}
+
+function angleBetween(
+  centerX: number,
+  centerY: number,
+  pointX: number,
+  pointY: number,
+) {
+  return (
+    (Math.atan2(pointY - centerY, pointX - centerX) *
+      180) /
+    Math.PI
+  );
+}
+
+export default function DecorationLayer({
+  stageRef,
+  instances,
+  selectedInstanceId,
+  onSelect,
+  onChange,
+  onInteractionStart,
+  onInteractionEnd,
+  onRemove,
+  onDuplicate,
+  onRotate,
+  onResetRotation,
+  onResetTransform,
+  onFlipHorizontal,
+  onFlipVertical,
+  onBringForward,
+  onSendBackward,
+  onBringToFront,
+  onSendToBack,
+}: DecorationLayerProps) {
+  const interactionRef =
+    useRef<InteractionState | null>(null);
+
+  const [guides, setGuides] =
+    useState<GuideState>({
+      vertical: null,
+      horizontal: null,
+    });
+
+  function getCanvasPoint(
+    clientX: number,
+    clientY: number,
+  ) {
+    const stage = stageRef.current;
+
+    if (!stage) {
+      return null;
+    }
+
+    const rect = stage.getBoundingClientRect();
+
+    if (rect.width <= 0 || rect.height <= 0) {
+      return null;
+    }
+
+    return {
+      x:
+        ((clientX - rect.left) / rect.width) *
+        BUILDER_CANVAS_SIZE,
+      y:
+        ((clientY - rect.top) / rect.height) *
+        BUILDER_CANVAS_SIZE,
+    };
+  }
+
+  function updateInstance(
+    instanceId: string,
+    changes: Partial<DecorationInstance>,
+  ) {
+    onChange(
+      instances.map((instance) =>
+        instance.instanceId === instanceId
+          ? { ...instance, ...changes }
+          : instance,
+      ),
+    );
+  }
+
+  function startMove(
+    event: ReactPointerEvent<HTMLButtonElement>,
+    instance: DecorationInstance,
+  ) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const point = getCanvasPoint(
+      event.clientX,
+      event.clientY,
+    );
+
+    if (!point) {
+      return;
+    }
+
+    onSelect(instance.instanceId);
+    onInteractionStart();
+
+    interactionRef.current = {
+      mode: "move",
+      instanceId: instance.instanceId,
+      pointerId: event.pointerId,
+      startX: instance.x,
+      startY: instance.y,
+      startRotation: instance.rotation,
+      startAngle: 0,
+      offsetX: point.x - instance.x,
+      offsetY: point.y - instance.y,
+    };
+
+    event.currentTarget.setPointerCapture(
+      event.pointerId,
+    );
+  }
+
+  function startRotate(
+    event: ReactPointerEvent<HTMLButtonElement>,
+    instance: DecorationInstance,
+  ) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const point = getCanvasPoint(
+      event.clientX,
+      event.clientY,
+    );
+
+    if (!point) {
+      return;
+    }
+
+    onSelect(instance.instanceId);
+    onInteractionStart();
+
+    interactionRef.current = {
+      mode: "rotate",
+      instanceId: instance.instanceId,
+      pointerId: event.pointerId,
+      startX: instance.x,
+      startY: instance.y,
+      startRotation: instance.rotation,
+      startAngle: angleBetween(
+        instance.x,
+        instance.y,
+        point.x,
+        point.y,
+      ),
+      offsetX: 0,
+      offsetY: 0,
+    };
+
+    event.currentTarget.setPointerCapture(
+      event.pointerId,
+    );
+  }
+
+  function snapPosition(
+    instance: DecorationInstance,
+    rawX: number,
+    rawY: number,
+  ) {
+    let x = rawX;
+    let y = rawY;
+    let vertical: number | null = null;
+    let horizontal: number | null = null;
+
+    const targetsX = [BUILDER_CANVAS_SIZE / 2];
+    const targetsY = [BUILDER_CANVAS_SIZE / 2];
+
+    for (const other of instances) {
+      if (other.instanceId === instance.instanceId) {
+        continue;
+      }
+
+      targetsX.push(other.x);
+      targetsY.push(other.y);
+    }
+
+    for (const target of targetsX) {
+      if (Math.abs(x - target) <= SNAP_DISTANCE) {
+        x = target;
+        vertical = target;
+        break;
+      }
+    }
+
+    for (const target of targetsY) {
+      if (Math.abs(y - target) <= SNAP_DISTANCE) {
+        y = target;
+        horizontal = target;
+        break;
+      }
+    }
+
+    return {
+      x,
+      y,
+      guides: { vertical, horizontal },
+    };
+  }
+
+  function handlePointerMove(
+    event: ReactPointerEvent<HTMLElement>,
+  ) {
+    const interaction = interactionRef.current;
+
+    if (
+      !interaction ||
+      interaction.pointerId !== event.pointerId
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const point = getCanvasPoint(
+      event.clientX,
+      event.clientY,
+    );
+
+    if (!point) {
+      return;
+    }
+
+    const instance = instances.find(
+      (item) =>
+        item.instanceId === interaction.instanceId,
+    );
+
+    if (!instance) {
+      return;
+    }
+
+    if (interaction.mode === "move") {
+      const halfWidth = instance.width / 2;
+      const verticalMargin = Math.min(
+        instance.width / 3,
+        70,
+      );
+
+      const rawX = clamp(
+        point.x - interaction.offsetX,
+        halfWidth,
+        BUILDER_CANVAS_SIZE - halfWidth,
+      );
+
+      const rawY = clamp(
+        point.y - interaction.offsetY,
+        verticalMargin,
+        BUILDER_CANVAS_SIZE - verticalMargin,
+      );
+
+      const snapped = snapPosition(
+        instance,
+        rawX,
+        rawY,
+      );
+
+      setGuides(snapped.guides);
+
+      updateInstance(instance.instanceId, {
+        x: Math.round(snapped.x),
+        y: Math.round(snapped.y),
+      });
+
+      return;
+    }
+
+    const currentAngle = angleBetween(
+      interaction.startX,
+      interaction.startY,
+      point.x,
+      point.y,
+    );
+
+    const rawRotation =
+      interaction.startRotation +
+      (currentAngle - interaction.startAngle);
+
+    const rotation = event.altKey
+      ? rawRotation
+      : Math.round(rawRotation / ROTATION_SNAP) *
+        ROTATION_SNAP;
+
+    updateInstance(instance.instanceId, {
+      rotation: normalizeRotation(rotation),
+    });
+  }
+
+  function finishInteraction(
+    event: ReactPointerEvent<HTMLElement>,
+  ) {
+    const interaction = interactionRef.current;
+
+    if (
+      !interaction ||
+      interaction.pointerId !== event.pointerId
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (
+      event.currentTarget.hasPointerCapture(
+        event.pointerId,
+      )
+    ) {
+      event.currentTarget.releasePointerCapture(
+        event.pointerId,
+      );
+    }
+
+    interactionRef.current = null;
+    setGuides({ vertical: null, horizontal: null });
+    onInteractionEnd();
+  }
+
+  function cancelInteraction() {
+    if (!interactionRef.current) {
+      return;
+    }
+
+    interactionRef.current = null;
+    setGuides({ vertical: null, horizontal: null });
+    onInteractionEnd();
+  }
+
+  const selectedInstance =
+    instances.find(
+      (instance) =>
+        instance.instanceId === selectedInstanceId,
+    ) ?? null;
+
+  const toolbarX = selectedInstance
+    ? clamp(
+        selectedInstance.x,
+        145,
+        BUILDER_CANVAS_SIZE - 145,
+      )
+    : 0;
+
+  const toolbarY = selectedInstance
+    ? clamp(
+        selectedInstance.y -
+          Math.max(selectedInstance.width / 2, 55) -
+          110,
+        85,
+        BUILDER_CANVAS_SIZE - 85,
+      )
+    : 0;
+
+  return (
+    <>
+      {guides.vertical !== null && (
+        <span
+          className="pointer-events-none absolute bottom-0 top-0 w-px bg-[#6a4433]/50"
+          style={{
+            left: canvasPercent(guides.vertical),
+            zIndex: 1900,
+          }}
+        />
+      )}
+
+      {guides.horizontal !== null && (
+        <span
+          className="pointer-events-none absolute left-0 right-0 h-px bg-[#6a4433]/50"
+          style={{
+            top: canvasPercent(guides.horizontal),
+            zIndex: 1900,
+          }}
+        />
+      )}
+
+      {instances.map((instance, index) => {
+        const asset = getDecorationAsset(
+          instance.assetId,
+        );
+
+        if (!asset) {
+          return null;
+        }
+
+        const selected =
+          instance.instanceId === selectedInstanceId;
+
+        return (
+          <div
+            key={instance.instanceId}
+            className="absolute"
+            style={{
+              left: canvasPercent(instance.x),
+              top: canvasPercent(instance.y),
+              width: canvasPercent(instance.width),
+              zIndex: 20 + index,
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <button
+              type="button"
+              aria-label={`РџРµСЂРµРјРµСЃС‚РёС‚СЊ: ${asset.name}`}
+              onDoubleClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                onDuplicate(instance.instanceId);
+              }}
+              onPointerDown={(event) =>
+                startMove(event, instance)
+              }
+              onPointerMove={handlePointerMove}
+              onPointerUp={finishInteraction}
+              onPointerCancel={finishInteraction}
+              onLostPointerCapture={cancelInteraction}
+              className={`relative block w-full touch-none select-none border-0 bg-transparent p-0 ${
+                selected
+                  ? "cursor-grabbing"
+                  : "cursor-grab"
+              }`}
+              style={{
+                transform: `rotate(${instance.rotation}deg) scaleX(${instance.flipX ? -1 : 1}) scaleY(${instance.flipY ? -1 : 1})`,
+                transformOrigin: "center",
+                userSelect: "none",
+                WebkitUserSelect: "none",
+              }}
+            >
+              <img
+                src={asset.src}
+                alt=""
+                className="pointer-events-none block h-auto w-full select-none"
+                draggable={false}
+              />
+
+              {selected && (
+                <span className="pointer-events-none absolute inset-[-6px] rounded-lg border-2 border-[#6a4433]/80 shadow-[0_0_0_1px_rgba(255,255,255,0.95)]" />
+              )}
+            </button>
+
+            {selected && (
+              <>
+                <span
+                  className="pointer-events-none absolute left-1/2 top-[-38px] h-8 w-px -translate-x-1/2 bg-[#6a4433]/70"
+                  style={{ zIndex: 30 }}
+                />
+
+                <button
+                  type="button"
+                  title="РџРѕРІРµСЂРЅСѓС‚СЊ РґРµРєРѕСЂ"
+                  aria-label="РџРѕРІРµСЂРЅСѓС‚СЊ РґРµРєРѕСЂ"
+                  onPointerDown={(event) =>
+                    startRotate(event, instance)
+                  }
+                  onPointerMove={handlePointerMove}
+                  onPointerUp={finishInteraction}
+                  onPointerCancel={finishInteraction}
+                  onLostPointerCapture={cancelInteraction}
+                  className="absolute left-1/2 top-[-48px] flex h-6 w-6 -translate-x-1/2 touch-none items-center justify-center rounded-full border-2 border-[#6a4433] bg-white text-xs text-[#6a4433] shadow-md"
+                  style={{ zIndex: 31 }}
+                >
+                  в†»
+                </button>
+              </>
+            )}
+          </div>
+        );
+      })}
+
+      {selectedInstance && (
+        <div
+          role="toolbar"
+          aria-label="РЈРїСЂР°РІР»РµРЅРёРµ РґРµРєРѕСЂРѕРј"
+          onPointerDown={(event) => {
+            event.stopPropagation();
+          }}
+          className="absolute grid grid-cols-6 gap-1 rounded-2xl border border-black/10 bg-white/95 p-2 shadow-xl backdrop-blur-sm"
+          style={{
+            left: canvasPercent(toolbarX),
+            top: canvasPercent(toolbarY),
+            zIndex: 2000 + instances.length,
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <IconButton
+            title="РЈРґР°Р»РёС‚СЊ"
+            danger
+            onClick={() =>
+              onRemove(selectedInstance.instanceId)
+            }
+          >
+            <span className="text-sm">вњ•</span>
+          </IconButton>
+
+          <IconButton
+            title="Р”СѓР±Р»РёСЂРѕРІР°С‚СЊ"
+            onClick={() =>
+              onDuplicate(selectedInstance.instanceId)
+            }
+          >
+            <span className="text-base">в§‰</span>
+          </IconButton>
+
+          <IconButton
+            title="РџРѕРІРµСЂРЅСѓС‚СЊ РЅР° 15В°"
+            onClick={() =>
+              onRotate(selectedInstance.instanceId)
+            }
+          >
+            <span className="text-lg">в†»</span>
+          </IconButton>
+
+          <IconButton
+            title="РЎР±СЂРѕСЃРёС‚СЊ РїРѕРІРѕСЂРѕС‚"
+            onClick={() =>
+              onResetRotation(selectedInstance.instanceId)
+            }
+          >
+            <span className="text-xs font-bold">0В°</span>
+          </IconButton>
+
+          <IconButton
+            title="Р’РµСЂРЅСѓС‚СЊ РёСЃС…РѕРґРЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ"
+            onClick={() =>
+              onResetTransform(selectedInstance.instanceId)
+            }
+          >
+            <span className="text-base">вЊ‚</span>
+          </IconButton>
+
+          <IconButton
+            title="РћС‚СЂР°Р·РёС‚СЊ РїРѕ РіРѕСЂРёР·РѕРЅС‚Р°Р»Рё"
+            onClick={() =>
+              onFlipHorizontal(selectedInstance.instanceId)
+            }
+          >
+            <span className="text-lg">в†”</span>
+          </IconButton>
+
+          <IconButton
+            title="РћС‚СЂР°Р·РёС‚СЊ РїРѕ РІРµСЂС‚РёРєР°Р»Рё"
+            onClick={() =>
+              onFlipVertical(selectedInstance.instanceId)
+            }
+          >
+            <span className="text-lg">в†•</span>
+          </IconButton>
+
+          <IconButton
+            title="РќР° РѕРґРёРЅ СЃР»РѕР№ РЅР°Р·Р°Рґ"
+            onClick={() =>
+              onSendBackward(selectedInstance.instanceId)
+            }
+          >
+            <span className="text-lg">вЂ№</span>
+          </IconButton>
+
+          <IconButton
+            title="РќР° РѕРґРёРЅ СЃР»РѕР№ РІРїРµСЂС‘Рґ"
+            onClick={() =>
+              onBringForward(selectedInstance.instanceId)
+            }
+          >
+            <span className="text-lg">вЂє</span>
+          </IconButton>
+
+          <IconButton
+            title="РќР° Р·Р°РґРЅРёР№ РїР»Р°РЅ"
+            onClick={() =>
+              onSendToBack(selectedInstance.instanceId)
+            }
+          >
+            <span className="text-lg">в‡Љ</span>
+          </IconButton>
+
+          <IconButton
+            title="РќР° РїРµСЂРµРґРЅРёР№ РїР»Р°РЅ"
+            onClick={() =>
+              onBringToFront(selectedInstance.instanceId)
+            }
+          >
+            <span className="text-lg">в‡€</span>
+          </IconButton>
+        </div>
+      )}
+    </>
+  );
+}
+
+==================================================
+FILE: app/components/cake-builder/InscriptionLayer.tsx
+==================================================
+"use client";
+
+import {
+  useId,
+  useRef,
+  type PointerEvent as ReactPointerEvent,
+  type RefObject,
+} from "react";
+
+import { BUILDER_CANVAS_SIZE } from "@/lib/cake-builder/assets";
+
+import {
+  caveat,
+  cormorant,
+  lobster,
+  marckScript,
+  montserrat,
+  playfair,
+} from "@/lib/cake-builder/fonts";
+
+import type {
+  InscriptionFont,
+  InscriptionSettings,
+} from "@/lib/cake-builder/types";
+
+import {
+  canvasPercent,
+  clamp,
+} from "@/lib/cake-builder/utils";
+
+type InscriptionDragState = {
+  pointerId: number;
+  offsetX: number;
+  offsetY: number;
+};
+
+type InscriptionLayerProps = {
+  stageRef: RefObject<HTMLDivElement | null>;
+  inscription: InscriptionSettings;
+  selected: boolean;
+  onSelect: () => void;
+
+  onChange: (
+    inscription: InscriptionSettings,
+  ) => void;
+};
+
+const fontFamilies: Record<
+  InscriptionFont,
+  string
+> = {
+  marck: marckScript.style.fontFamily,
+  caveat: caveat.style.fontFamily,
+  lobster: lobster.style.fontFamily,
+  cormorant: cormorant.style.fontFamily,
+  playfair: playfair.style.fontFamily,
+  montserrat: montserrat.style.fontFamily,
+};
+
+export default function InscriptionLayer({
+  stageRef,
+  inscription,
+  selected,
+  onSelect,
+  onChange,
+}: InscriptionLayerProps) {
+  const dragStateRef =
+    useRef<InscriptionDragState | null>(null);
+
+  const rawPathId = useId();
+
+  const pathId = rawPathId.replace(
+    /[^a-zA-Z0-9_-]/g,
+    "",
+  );
+
+  if (!inscription.text.trim()) {
+    return null;
+  }
+
+  function getCanvasPoint(
+    clientX: number,
+    clientY: number,
+  ) {
+    const stage = stageRef.current;
+
+    if (!stage) {
+      return null;
+    }
+
+    const rect =
+      stage.getBoundingClientRect();
+
+    if (
+      rect.width <= 0 ||
+      rect.height <= 0
+    ) {
+      return null;
+    }
+
+    return {
+      x:
+        ((clientX - rect.left) /
+          rect.width) *
+        BUILDER_CANVAS_SIZE,
+
+      y:
+        ((clientY - rect.top) /
+          rect.height) *
+        BUILDER_CANVAS_SIZE,
+    };
+  }
+
+  function startDragging(
+    event: ReactPointerEvent<HTMLButtonElement>,
+  ) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const point = getCanvasPoint(
+      event.clientX,
+      event.clientY,
+    );
+
+    if (!point) {
+      return;
+    }
+
+    onSelect();
+
+    dragStateRef.current = {
+      pointerId: event.pointerId,
+      offsetX: point.x - inscription.x,
+      offsetY: point.y - inscription.y,
+    };
+
+    event.currentTarget.setPointerCapture(
+      event.pointerId,
+    );
+  }
+
+  function moveInscription(
+    event: ReactPointerEvent<HTMLButtonElement>,
+  ) {
+    const dragState =
+      dragStateRef.current;
+
+    if (
+      !dragState ||
+      dragState.pointerId !== event.pointerId
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const point = getCanvasPoint(
+      event.clientX,
+      event.clientY,
+    );
+
+    if (!point) {
+      return;
+    }
+
+    onChange({
+      ...inscription,
+
+      x: Math.round(
+        clamp(
+          point.x - dragState.offsetX,
+          80,
+          BUILDER_CANVAS_SIZE - 80,
+        ),
+      ),
+
+      y: Math.round(
+        clamp(
+          point.y - dragState.offsetY,
+          60,
+          BUILDER_CANVAS_SIZE - 60,
+        ),
+      ),
+    });
+  }
+
+  function stopDragging(
+    event: ReactPointerEvent<HTMLButtonElement>,
+  ) {
+    const dragState =
+      dragStateRef.current;
+
+    if (
+      !dragState ||
+      dragState.pointerId !== event.pointerId
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (
+      event.currentTarget.hasPointerCapture(
+        event.pointerId,
+      )
+    ) {
+      event.currentTarget.releasePointerCapture(
+        event.pointerId,
+      );
+    }
+
+    dragStateRef.current = null;
+  }
+
+  const fontFamily =
+    fontFamilies[inscription.fontFamily];
+
+  const curved =
+    Math.abs(inscription.curve) >= 3;
+
+  const baselineY = 170;
+
+  /*
+   * РЈСЃРёР»РµРЅРЅС‹Р№ РёР·РіРёР±.
+   * Р—РЅР°С‡РµРЅРёСЏ РѕРєРѕР»Рѕ 100 СѓР¶Рµ РґР°СЋС‚ РІС‹СЂР°Р¶РµРЅРЅСѓСЋ РґСѓРіСѓ.
+   */
+  const curveControlY =
+    baselineY - inscription.curve * 2.25;
+
+  const displayText = inscription.uppercase
+    ? inscription.text.toLocaleUpperCase("ru-RU")
+    : inscription.text;
+
+  const opacity =
+    clamp(inscription.opacity ?? 100, 20, 100) /
+    100;
+
+  const outlineWidth =
+    inscription.outlineWidth ?? 0;
+
+  const shadowEnabled =
+    inscription.shadowEnabled ?? false;
+
+  const shadowColor =
+    inscription.shadowColor ?? "#000000";
+
+  const shadowBlur =
+    inscription.shadowBlur ?? 4;
+
+  const shadowOffsetY =
+    inscription.shadowOffsetY ?? 3;
+
+  const svgShadowFilter = shadowEnabled
+    ? `drop-shadow(0px ${shadowOffsetY}px ${shadowBlur}px ${shadowColor})`
+    : "none";
+
+  const htmlTextShadow = shadowEnabled
+    ? `0 ${shadowOffsetY}px ${shadowBlur}px ${shadowColor}`
+    : "none";
+
+  return (
+    <button
+      type="button"
+      aria-label="РџРµСЂРµРјРµСЃС‚РёС‚СЊ РЅР°РґРїРёСЃСЊ"
+      onPointerDown={startDragging}
+      onPointerMove={moveInscription}
+      onPointerUp={stopDragging}
+      onPointerCancel={stopDragging}
+      onLostPointerCapture={() => {
+        dragStateRef.current = null;
+      }}
+      className={`absolute z-40 block w-[78%] touch-none select-none border-0 bg-transparent p-0 ${
+        selected
+          ? "cursor-grabbing drop-shadow-[0_0_5px_rgba(106,68,51,0.6)]"
+          : "cursor-grab"
+      }`}
+      style={{
+        left: canvasPercent(inscription.x),
+        top: canvasPercent(inscription.y),
+        opacity,
+
+        transform: `translate(-50%, -50%) rotate(${inscription.rotation}deg)`,
+
+        transformOrigin: "center",
+      }}
+    >
+      {curved ? (
+        <svg
+          viewBox="0 0 600 420"
+          className="pointer-events-none block h-auto w-full overflow-visible"
+          aria-hidden="true"
+          style={{
+            filter: svgShadowFilter,
+          }}
+        >
+          <defs>
+            <path
+              id={pathId}
+              d={`M 20 ${baselineY} Q 300 ${curveControlY} 580 ${baselineY}`}
+              fill="none"
+            />
+          </defs>
+
+          <text
+            fill={inscription.color}
+            stroke={
+              outlineWidth > 0
+                ? inscription.outlineColor
+                : "none"
+            }
+            strokeWidth={outlineWidth}
+            paintOrder="stroke fill"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+            fontFamily={fontFamily}
+            fontSize={inscription.fontSize}
+            fontWeight={inscription.fontWeight ?? 400}
+            letterSpacing={inscription.letterSpacing ?? 1}
+            textAnchor="middle"
+          >
+            <textPath
+              href={`#${pathId}`}
+              startOffset="50%"
+            >
+              {displayText}
+            </textPath>
+          </text>
+        </svg>
+      ) : (
+        <span
+          className="pointer-events-none block whitespace-nowrap text-center leading-none"
+          style={{
+            color: inscription.color,
+            fontFamily,
+            fontSize: `${inscription.fontSize}px`,
+            fontWeight: inscription.fontWeight ?? 400,
+            letterSpacing: `${inscription.letterSpacing ?? 1}px`,
+            textShadow: htmlTextShadow,
+
+            WebkitTextStroke:
+              outlineWidth > 0
+                ? `${outlineWidth}px ${inscription.outlineColor}`
+                : undefined,
+
+            paintOrder: "stroke fill",
+          }}
+        >
+          {displayText}
+        </span>
+      )}
+    </button>
+  );
+}
+
+==================================================
+FILE: lib/cake-builder/types.ts
+==================================================
+import type { DecorationCategory } from "./assets";
+
+export type Filling =
+  | "snickers"
+  | "whoopie-pie"
+  | "honey"
+  | "chocolate-banana"
+  | "pistachio"
+  | "milk-girl"
+  | "red-velvet";
+
+export type WeightOption = {
+  value: number;
+  label: string;
+  price: number;
+};
+
+export type FillingOption = {
+  value: Filling;
+  label: string;
+  description: string;
+  price: number;
+};
+
+export type DecorationInstance = {
+  instanceId: string;
+  assetId: string;
+  x: number;
+  y: number;
+  /** Р¤РёРєСЃРёСЂРѕРІР°РЅРЅС‹Р№ СЂР°Р·РјРµСЂ РёР· assets.ts. РљР»РёРµРЅС‚ РµРіРѕ РЅРµ РјРµРЅСЏРµС‚. */
+  width: number;
+  rotation: number;
+  flipX: boolean;
+  flipY: boolean;
+};
+
+export type InscriptionFont =
+  | "marck"
+  | "caveat"
+  | "lobster"
+  | "cormorant"
+  | "playfair"
+  | "montserrat";
+
+export type InscriptionSettings = {
+  text: string;
+  x: number;
+  y: number;
+  fontSize: number;
+  rotation: number;
+
+  /**
+   * 0 вЂ” РїСЂСЏРјР°СЏ РЅР°РґРїРёСЃСЊ.
+   * РџРѕР»РѕР¶РёС‚РµР»СЊРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ вЂ” РёР·РіРёР± РІРІРµСЂС….
+   * РћС‚СЂРёС†Р°С‚РµР»СЊРЅРѕРµ вЂ” РёР·РіРёР± РІРЅРёР·.
+   */
+  curve: number;
+
+  /**
+   * РРЅС‚РµСЂРІР°Р» РјРµР¶РґСѓ Р±СѓРєРІР°РјРё РІ РїРёРєСЃРµР»СЏС….
+   */
+  letterSpacing: number;
+
+  fontFamily: InscriptionFont;
+  fontWeight: number;
+
+  color: string;
+
+  /**
+   * РџСЂРѕР·СЂР°С‡РЅРѕСЃС‚СЊ РѕС‚ 20 РґРѕ 100%.
+   */
+  opacity: number;
+
+  uppercase: boolean;
+
+  outlineColor: string;
+  outlineWidth: number;
+
+  shadowEnabled: boolean;
+  shadowColor: string;
+  shadowBlur: number;
+  shadowOffsetY: number;
+};
+
+export type CategoryLabels = Record<
+  DecorationCategory,
+  string
+>;
+
+export type CategoryPrices = Record<
+  DecorationCategory,
+  number
+>;
+
+==================================================
+FILE: lib/cake-builder/assets.ts
+==================================================
+export const BUILDER_CANVAS_SIZE = 1254;
+
+export type CakeBaseAsset = {
+  id: string;
+  name: string;
+  src: string;
+  originalWidth: number;
+  originalHeight: number;
+};
+
+export type DecorationCategory =
+  | "drips"
+  | "berries"
+  | "fruits"
+  | "flowers"
+  | "macarons"
+  | "lollipops"
+  | "pearls";
+
+export type DecorationAsset = {
+  id: string;
+  name: string;
+  category: DecorationCategory;
+  src: string;
+
+  /**
+   * Р РµР°Р»СЊРЅС‹Рµ С‚РµС…РЅРёС‡РµСЃРєРёРµ СЂР°Р·РјРµСЂС‹ РёСЃС…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р°.
+   * РСЃРїРѕР»СЊР·СѓСЋС‚СЃСЏ РґР»СЏ СЃРѕС…СЂР°РЅРµРЅРёСЏ РїСЂРѕРїРѕСЂС†РёР№ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ.
+   */
+  originalWidth: number;
+  originalHeight: number;
+
+  /**
+   * Р¤РёРєСЃРёСЂРѕРІР°РЅРЅР°СЏ С€РёСЂРёРЅР° СЌР»РµРјРµРЅС‚Р° РЅР° С…РѕР»СЃС‚Рµ 1254 Г— 1254.
+   * РљР»РёРµРЅС‚ РЅРµ РјРѕР¶РµС‚ РёР·РјРµРЅРёС‚СЊ СЌС‚РѕС‚ СЂР°Р·РјРµСЂ.
+   */
+  defaultWidth: number;
+  minWidth: number;
+  maxWidth: number;
+
+  /**
+   * РќР°С‡Р°Р»СЊРЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ С†РµРЅС‚СЂР° СЌР»РµРјРµРЅС‚Р°
+   * РЅР° С…РѕР»СЃС‚Рµ 1254 Г— 1254.
+   */
+  defaultX: number;
+  defaultY: number;
+
+  /**
+   * РќР°С‡Р°Р»СЊРЅС‹Р№ СѓРіРѕР» РїРѕРІРѕСЂРѕС‚Р°.
+   */
+  defaultRotation: number;
+
+  /**
+   * false вЂ” СЌР»РµРјРµРЅС‚ РІСЂРµРјРµРЅРЅРѕ РЅРµ РїРѕРєР°Р·С‹РІР°РµС‚СЃСЏ
+   * РІ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРµ.
+   */
+  enabled: boolean;
+};
+
+export const cakeBases: CakeBaseAsset[] = [
+  {
+    id: "white",
+    name: "Р‘РµР»С‹Р№",
+    src: "/images/assets/cake_bases/cake-base-white.png",
+    originalWidth: 1254,
+    originalHeight: 1254,
+  },
+  {
+    id: "cream",
+    name: "РљСЂРµРјРѕРІС‹Р№",
+    src: "/images/assets/cake_bases/cake-base-cream.png",
+    originalWidth: 1254,
+    originalHeight: 1254,
+  },
+  {
+    id: "ivory",
+    name: "РђР№РІРѕСЂРё",
+    src: "/images/assets/cake_bases/cake-base-ivory.png",
+    originalWidth: 1254,
+    originalHeight: 1254,
+  },
+  {
+    id: "pink",
+    name: "Р РѕР·РѕРІС‹Р№",
+    src: "/images/assets/cake_bases/cake-base-pink.png",
+    originalWidth: 1254,
+    originalHeight: 1254,
+  },
+  {
+    id: "blue",
+    name: "Р“РѕР»СѓР±РѕР№",
+    src: "/images/assets/cake_bases/cake-base-blue.png",
+    originalWidth: 1254,
+    originalHeight: 1254,
+  },
+  {
+    id: "mint",
+    name: "РњСЏС‚РЅС‹Р№",
+    src: "/images/assets/cake_bases/cake-base-mint.png",
+    originalWidth: 1254,
+    originalHeight: 1254,
+  },
+  {
+    id: "lilac",
+    name: "РЎРёСЂРµРЅРµРІС‹Р№",
+    src: "/images/assets/cake_bases/cake-base-lilac.png",
+    originalWidth: 1254,
+    originalHeight: 1254,
+  },
+  {
+    id: "lavender",
+    name: "Р›Р°РІР°РЅРґРѕРІС‹Р№",
+    src: "/images/assets/cake_bases/cake-base-lavender.png",
+    originalWidth: 1254,
+    originalHeight: 1254,
+  },
+  {
+    id: "peach",
+    name: "РџРµСЂСЃРёРєРѕРІС‹Р№",
+    src: "/images/assets/cake_bases/cake-base-peach.png",
+    originalWidth: 1254,
+    originalHeight: 1254,
+  },
+  {
+    id: "yellow",
+    name: "Р–С‘Р»С‚С‹Р№",
+    src: "/images/assets/cake_bases/cake-base-yellow.png",
+    originalWidth: 1254,
+    originalHeight: 1254,
+  },
+  {
+    id: "chocolate",
+    name: "РЁРѕРєРѕР»Р°РґРЅС‹Р№",
+    src: "/images/assets/cake_bases/cake-base-chocolate.png",
+    originalWidth: 1254,
+    originalHeight: 1254,
+  },
+  {
+    id: "red-velvet",
+    name: "РљСЂР°СЃРЅС‹Р№ Р±Р°СЂС…Р°С‚",
+    src: "/images/assets/cake_bases/cake-base-red-velvet.png",
+    originalWidth: 1254,
+    originalHeight: 1254,
+  },
+  {
+    id: "black",
+    name: "Р§С‘СЂРЅС‹Р№",
+    src: "/images/assets/cake_bases/cake-base-black.png",
+    originalWidth: 1254,
+    originalHeight: 1254,
+  },
+  {
+    id: "gray",
+    name: "РЎРµСЂС‹Р№",
+    src: "/images/assets/cake_bases/cake-base-gray.png",
+    originalWidth: 1254,
+    originalHeight: 1254,
+  },
+];
+
+export const decorationAssets: DecorationAsset[] = [
+  // =========================================================
+  // РџРћР”РўРЃРљР
+  // =========================================================
+
+  {
+    id: "drip-dark",
+    name: "РўС‘РјРЅС‹Р№ С€РѕРєРѕР»Р°Рґ",
+    category: "drips",
+    src: "/images/assets/drips/dark.png",
+    originalWidth: 910,
+    originalHeight: 284,
+
+    defaultWidth: 650,
+    minWidth: 650,
+    maxWidth: 650,
+
+    defaultX: 627,
+    defaultY: 455,
+    defaultRotation: 0,
+    enabled: true,
+  },
+  {
+    id: "drip-milk",
+    name: "РњРѕР»РѕС‡РЅС‹Р№ С€РѕРєРѕР»Р°Рґ",
+    category: "drips",
+    src: "/images/assets/drips/milk.png",
+    originalWidth: 908,
+    originalHeight: 338,
+
+    defaultWidth: 650,
+    minWidth: 650,
+    maxWidth: 650,
+
+    defaultX: 627,
+    defaultY: 460,
+    defaultRotation: 0,
+    enabled: true,
+  },
+  {
+    id: "drip-white",
+    name: "Р‘РµР»С‹Р№ С€РѕРєРѕР»Р°Рґ",
+    category: "drips",
+    src: "/images/assets/drips/white.png",
+    originalWidth: 908,
+    originalHeight: 350,
+
+    defaultWidth: 650,
+    minWidth: 650,
+    maxWidth: 650,
+
+    defaultX: 627,
+    defaultY: 460,
+    defaultRotation: 0,
+    enabled: true,
+  },
+
+  // =========================================================
+  // РЇР“РћР”Р«
+  // =========================================================
+
+  {
+    id: "strawberry-whole",
+    name: "РљР»СѓР±РЅРёРєР°",
+    category: "berries",
+    src: "/images/assets/berries/strawberry/strawberry_whole_01.png",
+    originalWidth: 1024,
+    originalHeight: 1024,
+
+    defaultWidth: 155,
+    minWidth: 155,
+    maxWidth: 155,
+
+    defaultX: 627,
+    defaultY: 365,
+    defaultRotation: 0,
+    enabled: true,
+  },
+  {
+    id: "cherry",
+    name: "Р’РёС€РЅСЏ",
+    category: "berries",
+    src: "/images/assets/berries/cherry/cherry_01.png",
+    originalWidth: 1536,
+    originalHeight: 1024,
+
+    defaultWidth: 115,
+    minWidth: 115,
+    maxWidth: 115,
+
+    defaultX: 585,
+    defaultY: 380,
+    defaultRotation: -5,
+    enabled: true,
+  },
+  {
+    id: "sweet-cherry",
+    name: "Р§РµСЂРµС€РЅСЏ",
+    category: "berries",
+    src: "/images/assets/berries/sweet_cherry/sweet_cherry_01.png",
+    originalWidth: 1536,
+    originalHeight: 1024,
+
+    defaultWidth: 120,
+    minWidth: 120,
+    maxWidth: 120,
+
+    defaultX: 670,
+    defaultY: 380,
+    defaultRotation: 5,
+    enabled: true,
+  },
+  {
+    id: "fig-half",
+    name: "РџРѕР»РѕРІРёРЅРєР° РёРЅР¶РёСЂР°",
+    category: "berries",
+    src: "/images/assets/berries/fig/fig_half_01.png",
+    originalWidth: 1536,
+    originalHeight: 1024,
+
+    defaultWidth: 200,
+    minWidth: 200,
+    maxWidth: 200,
+
+    defaultX: 627,
+    defaultY: 385,
+    defaultRotation: 0,
+    enabled: true,
+  },
+
+  // =========================================================
+  // Р¤Р РЈРљРўР«
+  // =========================================================
+
+  {
+    id: "kiwi-slice",
+    name: "РљРёРІРё",
+    category: "fruits",
+    src: "/images/assets/fruits/kiwi/kiwi_slice_01.png",
+    originalWidth: 1024,
+    originalHeight: 1024,
+
+    defaultWidth: 180,
+    minWidth: 180,
+    maxWidth: 180,
+
+    defaultX: 580,
+    defaultY: 380,
+    defaultRotation: -10,
+    enabled: true,
+  },
+  {
+    id: "lemon-slice",
+    name: "Р›РёРјРѕРЅ",
+    category: "fruits",
+    src: "/images/assets/fruits/lemon/lemon_slice_01.png",
+    originalWidth: 1024,
+    originalHeight: 1024,
+
+    defaultWidth: 185,
+    minWidth: 185,
+    maxWidth: 185,
+
+    defaultX: 627,
+    defaultY: 380,
+    defaultRotation: 0,
+    enabled: true,
+  },
+  {
+    id: "orange-slice",
+    name: "РђРїРµР»СЊСЃРёРЅ",
+    category: "fruits",
+    src: "/images/assets/fruits/orange/orange_slice_01.png",
+    originalWidth: 1024,
+    originalHeight: 1024,
+
+    defaultWidth: 190,
+    minWidth: 190,
+    maxWidth: 190,
+
+    defaultX: 675,
+    defaultY: 380,
+    defaultRotation: 10,
+    enabled: true,
+  },
+
+  // =========================================================
+  // Р¦Р’Р•РўР«
+  // =========================================================
+
+  {
+    id: "pink-spray-rose",
+    name: "Р РѕР·РѕРІР°СЏ РєСѓСЃС‚РѕРІР°СЏ СЂРѕР·Р°",
+    category: "flowers",
+    src: "/images/assets/flowers/roses/pink/pink_spray_rose_01.png",
+    originalWidth: 1024,
+    originalHeight: 1536,
+
+    defaultWidth: 185,
+    minWidth: 185,
+    maxWidth: 185,
+
+    defaultX: 555,
+    defaultY: 345,
+    defaultRotation: -12,
+    enabled: true,
+  },
+  {
+    id: "white-rose-half-open",
+    name: "Р‘РµР»Р°СЏ РїРѕР»СѓСЂР°СЃРєСЂС‹С‚Р°СЏ СЂРѕР·Р°",
+    category: "flowers",
+    src: "/images/assets/flowers/roses/white/white_rose_half_open_01.png",
+    originalWidth: 1024,
+    originalHeight: 1536,
+
+    defaultWidth: 190,
+    minWidth: 190,
+    maxWidth: 190,
+
+    defaultX: 695,
+    defaultY: 345,
+    defaultRotation: 12,
+    enabled: true,
+  },
+
+  // =========================================================
+  // РњРђРљРђР РЈРќР«
+  // =========================================================
+
+  {
+    id: "pink-macaron",
+    name: "Р РѕР·РѕРІС‹Р№ РјР°РєР°СЂСѓРЅ",
+    category: "macarons",
+    src: "/images/assets/macarons/pink/pink_macaron_01.png",
+    originalWidth: 690,
+    originalHeight: 639,
+
+    defaultWidth: 125,
+    minWidth: 125,
+    maxWidth: 125,
+
+    defaultX: 627,
+    defaultY: 380,
+    defaultRotation: 0,
+    enabled: true,
+  },
+
+  // =========================================================
+  // Р›Р•Р”Р•РќР¦Р«
+  // =========================================================
+
+  {
+    id: "colorful-lollipop",
+    name: "Р Р°Р·РЅРѕС†РІРµС‚РЅС‹Р№ Р»РµРґРµРЅРµС†",
+    category: "lollipops",
+    src: "/images/assets/lollipops/colorful/colorful_lollipop_01.png",
+    originalWidth: 1024,
+    originalHeight: 1536,
+
+    defaultWidth: 140,
+    minWidth: 140,
+    maxWidth: 140,
+
+    defaultX: 550,
+    defaultY: 235,
+    defaultRotation: -8,
+    enabled: true,
+  },
+  {
+    id: "swirl-lollipop",
+    name: "Р›РµРґРµРЅРµС†-СЃРїРёСЂР°Р»СЊ",
+    category: "lollipops",
+    src: "/images/assets/lollipops/swirl/swirl_lollipop_01.png",
+    originalWidth: 1024,
+    originalHeight: 1536,
+
+    defaultWidth: 140,
+    minWidth: 140,
+    maxWidth: 140,
+
+    defaultX: 705,
+    defaultY: 235,
+    defaultRotation: 8,
+    enabled: true,
+  },
+
+  // =========================================================
+  // Р–Р•РњР§РЈР“
+  // =========================================================
+
+  /**
+   * РџРѕРєР° РѕС‚РєР»СЋС‡С‘РЅ, РїРѕС‚РѕРјСѓ С‡С‚Рѕ С‚РµРєСѓС‰РёР№ С„Р°Р№Р»
+   * white_pearl_01.png РЅРµ РёРјРµРµС‚ РїСЂРѕР·СЂР°С‡РЅРѕРіРѕ С„РѕРЅР°.
+   *
+   * РџРѕСЃР»Рµ РїРѕРґРіРѕС‚РѕРІРєРё РїСЂРѕР·СЂР°С‡РЅРѕРіРѕ PNG РґРѕСЃС‚Р°С‚РѕС‡РЅРѕ
+   * Р·Р°РјРµРЅРёС‚СЊ enabled РЅР° true.
+   */
+  {
+    id: "white-pearl",
+    name: "Р‘РµР»Р°СЏ Р¶РµРјС‡СѓР¶РёРЅР°",
+    category: "pearls",
+    src: "/images/assets/pearls/white/white_pearl_01.png",
+    originalWidth: 1254,
+    originalHeight: 1254,
+
+    defaultWidth: 22,
+    minWidth: 22,
+    maxWidth: 22,
+
+    defaultX: 627,
+    defaultY: 390,
+    defaultRotation: 0,
+    enabled: false,
+  },
+];
+
+/**
+ * РўРѕР»СЊРєРѕ СЌР»РµРјРµРЅС‚С‹, РєРѕС‚РѕСЂС‹Рµ СЂР°Р·СЂРµС€РµРЅРѕ РїРѕРєР°Р·С‹РІР°С‚СЊ
+ * РєР»РёРµРЅС‚Сѓ РІ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРµ.
+ */
+export const enabledDecorationAssets =
+  decorationAssets.filter((asset) => asset.enabled);
+
+/**
+ * Р Р°СЃСЃС‡РёС‚С‹РІР°РµС‚ РІРёР·СѓР°Р»СЊРЅСѓСЋ РІС‹СЃРѕС‚Сѓ СЌР»РµРјРµРЅС‚Р°
+ * СЃ СЃРѕС…СЂР°РЅРµРЅРёРµРј РїСЂРѕРїРѕСЂС†РёР№ РёСЃС…РѕРґРЅРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ.
+ */
+export function getDecorationHeight(
+  asset: Pick<
+    DecorationAsset,
+    "originalWidth" | "originalHeight" | "defaultWidth"
+  >,
+): number {
+  return Math.round(
+    asset.defaultWidth *
+      (asset.originalHeight / asset.originalWidth),
+  );
+}
+
+/**
+ * Р’РѕР·РІСЂР°С‰Р°РµС‚ Р°СЃСЃРµС‚ РїРѕ РµРіРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ.
+ */
+export function getDecorationAsset(
+  assetId: string,
+): DecorationAsset | undefined {
+  return decorationAssets.find(
+    (asset) => asset.id === assetId,
+  );
+}
+
+==================================================
+FILE: lib/cake-builder/constants.ts
+==================================================
+import type { DecorationCategory } from "./assets";
+
+import type {
+  CategoryLabels,
+  CategoryPrices,
+  FillingOption,
+  InscriptionSettings,
+  WeightOption,
+} from "./types";
+
+export const weights: WeightOption[] = [
+  {
+    value: 1,
+    label: "1 РєРі",
+    price: 14000,
+  },
+  {
+    value: 1.5,
+    label: "1,5 РєРі",
+    price: 19000,
+  },
+  {
+    value: 2,
+    label: "2 РєРі",
+    price: 24000,
+  },
+  {
+    value: 3,
+    label: "3 РєРі",
+    price: 34000,
+  },
+];
+
+export const fillings: FillingOption[] = [
+  {
+    value: "snickers",
+    label: "РЎРЅРёРєРµСЂСЃ",
+    description:
+      "РЁРѕРєРѕР»Р°РґРЅС‹Рµ РєРѕСЂР¶Рё, Р°СЂР°С…РёСЃ, РєР°СЂР°РјРµР»СЊ Рё РєСЂРµРј-С‡РёР·",
+    price: 0,
+  },
+  {
+    value: "whoopie-pie",
+    label: "Р’СѓРїРё РїР°Р№",
+    description:
+      "РЁРѕРєРѕР»Р°РґРЅС‹Рµ РєРѕСЂР¶Рё Рё РЅРµР¶РЅС‹Р№ СЃР»РёРІРѕС‡РЅС‹Р№ РєСЂРµРј",
+    price: 0,
+  },
+  {
+    value: "honey",
+    label: "РњРµРґРѕРІС‹Р№",
+    description:
+      "РњРµРґРѕРІС‹Рµ РєРѕСЂР¶Рё Рё РЅРµР¶РЅС‹Р№ СЃРјРµС‚Р°РЅРЅС‹Р№ РєСЂРµРј",
+    price: 0,
+  },
+  {
+    value: "chocolate-banana",
+    label: "РЁРѕРєРѕР»Р°РґРЅРѕ-Р±Р°РЅР°РЅРѕРІС‹Р№",
+    description:
+      "РЁРѕРєРѕР»Р°РґРЅС‹Рµ РєРѕСЂР¶Рё, Р±Р°РЅР°РЅ Рё РЅРµР¶РЅС‹Р№ РєСЂРµРј",
+    price: 0,
+  },
+  {
+    value: "pistachio",
+    label: "Р¤РёСЃС‚Р°С€РєРѕРІС‹Р№",
+    description:
+      "Р¤РёСЃС‚Р°С€РєРѕРІС‹Рµ РєРѕСЂР¶Рё Рё С„РёСЃС‚Р°С€РєРѕРІС‹Р№ РєСЂРµРј",
+    price: 500,
+  },
+  {
+    value: "milk-girl",
+    label: "РњРѕР»РѕС‡РЅР°СЏ РґРµРІРѕС‡РєР°",
+    description:
+      "РўРѕРЅРєРёРµ РјРѕР»РѕС‡РЅС‹Рµ РєРѕСЂР¶Рё Рё СЃР»РёРІРѕС‡РЅС‹Р№ РєСЂРµРј",
+    price: 500,
+  },
+  {
+    value: "red-velvet",
+    label: "РљСЂР°СЃРЅС‹Р№ Р±Р°СЂС…Р°С‚",
+    description:
+      "РљСЂР°СЃРЅС‹Рµ Р±Р°СЂС…Р°С‚РЅС‹Рµ РєРѕСЂР¶Рё Рё РєСЂРµРј-С‡РёР·",
+    price: 500,
+  },
+];
+
+export const categoryLabels: CategoryLabels = {
+  drips: "РџРѕРґС‚С‘РєРё",
+  berries: "РЇРіРѕРґС‹",
+  fruits: "Р¤СЂСѓРєС‚С‹",
+  flowers: "Р¦РІРµС‚С‹",
+  macarons: "РњР°РєР°СЂСѓРЅС‹",
+  lollipops: "Р›РµРґРµРЅС†С‹",
+  pearls: "Р–РµРјС‡СѓРі",
+};
+
+export const categoryPrices: CategoryPrices = {
+  drips: 2000,
+  berries: 2500,
+  fruits: 2500,
+  flowers: 3500,
+  macarons: 3000,
+  lollipops: 2500,
+  pearls: 1500,
+};
+
+export const categoryOrder: DecorationCategory[] = [
+  "drips",
+  "berries",
+  "fruits",
+  "flowers",
+  "macarons",
+  "lollipops",
+  "pearls",
+];
+
+export const defaultInscription: InscriptionSettings = {
+  text: "",
+  x: 627,
+  y: 570,
+  fontSize: 52,
+  rotation: 0,
+  curve: 0,
+  letterSpacing: 1,
+
+  fontFamily: "marck",
+  fontWeight: 400,
+
+  color: "#4d2c23",
+  opacity: 100,
+  uppercase: false,
+
+  outlineColor: "#ffffff",
+  outlineWidth: 0,
+
+  shadowEnabled: false,
+  shadowColor: "#000000",
+  shadowBlur: 4,
+  shadowOffsetY: 3,
+};
+
+==================================================
+FILE: lib/supabase.ts
+==================================================
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+export const supabase = createClient(
+  supabaseUrl,
+  supabaseAnonKey,
+  {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  }
+);
+
+==================================================
+FILE: app/thank-you/page.tsx
+==================================================
+"use client";
+
+import Link from "next/link";
+
+export default function ThankYouPage() {
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-[#f7f3ef] px-6">
+      <div className="w-full max-w-2xl rounded-3xl bg-white p-10 text-center shadow-sm">
+
+        <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-[#e9f8ec] text-5xl">
+          вњ…
+        </div>
+
+        <h1 className="mt-8 text-4xl font-semibold text-[#342923]">
+          РЎРїР°СЃРёР±Рѕ Р·Р° Р·Р°РєР°Р·!
+        </h1>
+
+        <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-black/65">
+          РњС‹ РїРѕР»СѓС‡РёР»Рё РІР°С€Сѓ Р·Р°СЏРІРєСѓ.
+          <br />
+          Р’ Р±Р»РёР¶Р°Р№С€РµРµ РІСЂРµРјСЏ РјРµРЅРµРґР¶РµСЂ Milky Cake СЃРІСЏР¶РµС‚СЃСЏ СЃ РІР°РјРё,
+          РїСЂРѕРІРµСЂРёС‚ РѕС„РѕСЂРјР»РµРЅРёРµ С‚РѕСЂС‚Р°, СѓС‚РѕС‡РЅРёС‚ РґРµС‚Р°Р»Рё Рё РїРѕРґС‚РІРµСЂРґРёС‚
+          РѕРєРѕРЅС‡Р°С‚РµР»СЊРЅСѓСЋ СЃС‚РѕРёРјРѕСЃС‚СЊ.
+        </p>
+
+        <div className="mt-10 rounded-2xl bg-[#f7f3ef] p-6 text-left">
+
+          <h2 className="mb-3 text-lg font-semibold">
+            Р§С‚Рѕ Р±СѓРґРµС‚ РґР°Р»СЊС€Рµ?
+          </h2>
+
+          <ul className="space-y-3 text-black/70">
+            <li>вњ” РџСЂРѕРІРµСЂРёРј РѕС„РѕСЂРјР»РµРЅРёРµ С‚РѕСЂС‚Р°.</li>
+            <li>вњ” РџСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё РїСЂРµРґР»РѕР¶РёРј СѓР»СѓС‡С€РµРЅРёСЏ.</li>
+            <li>вњ” РџРѕРґС‚РІРµСЂРґРёРј СЃС‚РѕРёРјРѕСЃС‚СЊ.</li>
+            <li>вњ” РЎРѕРіР»Р°СЃСѓРµРј РґР°С‚Сѓ Рё РІСЂРµРјСЏ.</li>
+            <li>вњ” РџСЂРёРіРѕС‚РѕРІРёРј РІР°С€ С‚РѕСЂС‚.</li>
+          </ul>
+
+        </div>
+
+        <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+
+          <Link
+            href="/"
+            className="flex-1 rounded-full bg-[#6a4433] px-6 py-4 text-center font-semibold text-white transition hover:opacity-90"
+          >
+            РќР° РіР»Р°РІРЅСѓСЋ
+          </Link>
+
+          <Link
+            href="/builder"
+            className="flex-1 rounded-full border border-[#6a4433] px-6 py-4 text-center font-semibold text-[#6a4433] transition hover:bg-[#f7f3ef]"
+          >
+            РЎРѕР·РґР°С‚СЊ РµС‰С‘ РѕРґРёРЅ С‚РѕСЂС‚
+          </Link>
+
+        </div>
+
+      </div>
+    </main>
+  );
+}
+
