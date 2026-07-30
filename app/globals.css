@@ -4184,15 +4184,18 @@ img {
 @media (max-width: 700px) {
   /* The preview remains visible while the customer chooses decorations. */
   .builder-mobile-preview {
-    position: sticky;
-    z-index: 80;
-    top: 0;
-    margin: 0 -16px 18px;
-    padding: 8px 12px 10px;
-    background: rgba(247, 243, 239, 0.95);
-    box-shadow: 0 12px 28px rgba(68, 46, 37, 0.12);
-    backdrop-filter: blur(16px);
-  }
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  z-index: 80;
+  top: 0 !important;
+  align-self: start;
+  margin: 0 -16px 18px;
+  padding: 8px 12px 10px;
+  background: rgba(247, 243, 239, 0.97);
+  box-shadow: 0 12px 28px rgba(68, 46, 37, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
 
   .builder-preview-card {
     padding: 10px !important;
@@ -4216,11 +4219,15 @@ img {
     display: none !important;
   }
 
-  html,
-  body {
-    max-width: 100%;
-    overflow-x: hidden;
-  }
+html {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+body {
+  max-width: 100%;
+  overflow-x: visible;
+}
 
   .builder-hero-inner {
     gap: 16px !important;
