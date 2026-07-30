@@ -298,8 +298,8 @@ export default function BuilderPage() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-5 px-4 pb-10 pt-0 md:gap-8 md:px-8 md:py-10 lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.85fr)]">
-        <div className="sticky top-[56px] z-40 -mx-4 self-start border-b border-black/10 bg-[#f7f3ef]/95 px-2 py-2 shadow-[0_8px_20px_rgba(54,41,34,0.08)] backdrop-blur-md md:static md:mx-0 md:border-0 md:bg-transparent md:px-0 md:py-0 md:shadow-none lg:sticky lg:top-6">
+ <section className="mx-auto grid max-w-7xl items-start gap-5 px-4 pb-10 pt-0 md:gap-8 md:px-8 md:py-10 lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.85fr)]">
+        <div className="builder-mobile-preview sticky top-0 z-40 -mx-4 self-start border-b border-black/10 bg-[#f7f3ef]/95 px-2 py-2 shadow-[0_8px_20px_rgba(54,41,34,0.08)] backdrop-blur-md md:static md:mx-0 md:border-0 md:bg-transparent md:px-0 md:py-0 md:shadow-none lg:sticky lg:top-6">
           <div className="rounded-2xl bg-white p-2 shadow-sm md:rounded-3xl md:p-6">
             <div className="mb-2 flex items-center justify-between gap-2 md:mb-5 md:items-end md:gap-4">
               <div className="min-w-0">
