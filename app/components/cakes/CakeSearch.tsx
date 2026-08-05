@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale } from "next-intl";
+
 type Props = {
   value: string;
   onChange: (value: string) => void;
@@ -9,6 +11,9 @@ export default function CakeSearch({
   value,
   onChange,
 }: Props) {
+  const locale = useLocale();
+  const isEnglish = locale === "en";
+
   return (
     <div className="relative w-full">
       <svg
@@ -18,6 +23,7 @@ export default function CakeSearch({
         viewBox="0 0 24 24"
         stroke="currentColor"
         strokeWidth={2}
+        aria-hidden="true"
       >
         <path
           strokeLinecap="round"
@@ -32,7 +38,16 @@ export default function CakeSearch({
         onChange={(event) =>
           onChange(event.target.value)
         }
-        placeholder="Поиск торта..."
+        placeholder={
+          isEnglish
+            ? "Search cakes..."
+            : "Поиск торта..."
+        }
+        aria-label={
+          isEnglish
+            ? "Search cakes"
+            : "Поиск торта"
+        }
         className="h-14 w-full rounded-2xl border border-black/10 bg-white pl-14 pr-5 text-sm outline-none transition focus:border-[#6a4433] focus:ring-2 focus:ring-[#6a4433]/10"
       />
     </div>

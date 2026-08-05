@@ -591,11 +591,11 @@ export default function BuilderPage() {
             className="flex items-center gap-3"
           >
             <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#6a4433] text-sm font-semibold text-white">
-              MC
+              STK
             </span>
 
             <span className="text-xl">
-              Milky <strong>Cake</strong>
+              STK <strong>Bakery</strong>
             </span>
           </Link>
 
@@ -637,7 +637,7 @@ export default function BuilderPage() {
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 md:px-8 lg:grid-cols-[1fr_auto] lg:items-end">
           <div>
             <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8b6250]">
-              РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ Milky Cake
+              РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ STK Bakery
             </span>
 
             <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight md:text-6xl">
@@ -871,7 +871,7 @@ export default function BuilderPage() {
           <BuilderSection
             number="02"
             title="Р’С‹Р±РµСЂРёС‚Рµ РЅР°С‡РёРЅРєСѓ"
-            description="РќР°С‡РёРЅРєРё, РєРѕС‚РѕСЂС‹Рµ РіРѕС‚РѕРІРёС‚ Milky Cake."
+            description="РќР°С‡РёРЅРєРё, РєРѕС‚РѕСЂС‹Рµ РіРѕС‚РѕРІРёС‚ STK Bakery."
           >
             <div className="space-y-3">
               {fillings.map((item) => (
@@ -1658,10 +1658,10 @@ export default function HomePage() {
       <header className="site-header">
         <div className="container header-inner">
           <Link href="/" className="brand">
-            <span className="brand-logo">MC</span>
+            <span className="brand-logo">SB</span>
 
             <span className="brand-text">
-              Milky <strong>Cake</strong>
+              STK <strong>Bakery</strong>
             </span>
           </Link>
 
@@ -1698,7 +1698,7 @@ export default function HomePage() {
 
       <p className="hero-description">
         РЎРѕР±РµСЂРёС‚Рµ РёРґРµСЋ СЃРІРѕРµРіРѕ С‚РѕСЂС‚Р° РІ РёРЅС‚РµСЂР°РєС‚РёРІРЅРѕРј РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРµ. Р’С‹Р±РµСЂРёС‚Рµ
-        С„РѕСЂРјСѓ, РЅР°С‡РёРЅРєСѓ, С†РІРµС‚ Рё РѕС„РѕСЂРјР»РµРЅРёРµ, Р° РјРµРЅРµРґР¶РµСЂ Milky Cake РїРѕРјРѕР¶РµС‚
+        С„РѕСЂРјСѓ, РЅР°С‡РёРЅРєСѓ, С†РІРµС‚ Рё РѕС„РѕСЂРјР»РµРЅРёРµ, Р° РјРµРЅРµРґР¶РµСЂ STK Bakery РїРѕРјРѕР¶РµС‚
         СЃРѕРіР»Р°СЃРѕРІР°С‚СЊ С„РёРЅР°Р»СЊРЅС‹Р№ РґРёР·Р°Р№РЅ.
       </p>
 
@@ -1731,14 +1731,14 @@ export default function HomePage() {
         <img
           className="hero-photo-image"
           src="/images/hero-cake.jpg"
-          alt="РџСЂР°Р·РґРЅРёС‡РЅС‹Р№ С‚РѕСЂС‚ Milky Cake"
+          alt="РџСЂР°Р·РґРЅРёС‡РЅС‹Р№ С‚РѕСЂС‚ STK Bakery"
         />
 
         <div className="hero-photo-overlay" />
 
         <div className="hero-photo-caption">
           <div>
-            <span>Milky Cake</span>
+            <span>STK Bakery</span>
             <strong>РўРѕСЂС‚С‹ СЂСѓС‡РЅРѕР№ СЂР°Р±РѕС‚С‹</strong>
           </div>
 
@@ -1826,7 +1826,7 @@ export default function HomePage() {
                   <span />
                 </div>
 
-                <small>РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ Milky Cake</small>
+                <small>РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ STK Bakery</small>
               </div>
 
               <div className="builder-window-body">
@@ -2015,10 +2015,10 @@ export default function HomePage() {
         <div className="container footer-grid">
           <div className="footer-about">
             <Link href="/" className="brand footer-brand">
-              <span className="brand-logo">MC</span>
+              <span className="brand-logo">SB</span>
 
               <span className="brand-text">
-                Milky <strong>Cake</strong>
+                STK <strong>Bakery</strong>
               </span>
             </Link>
 
@@ -2051,7 +2051,7 @@ export default function HomePage() {
         </div>
 
         <div className="container footer-bottom">
-          <span>В© 2026 Milky Cake</span>
+          <span>В© 2026 STK Bakery</span>
           <span>РўРѕСЂС‚С‹, СЃРѕР·РґР°РЅРЅС‹Рµ СЃ Р»СЋР±РѕРІСЊСЋ</span>
         </div>
       </footer>

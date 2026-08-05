@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale } from "next-intl";
+
 import type { Cake } from "@/lib/cake-types";
 
 import CakeCard from "./CakeCard";
@@ -11,16 +13,22 @@ type Props = {
 export default function CakesGrid({
   cakes,
 }: Props) {
+  const locale = useLocale();
+  const isEnglish = locale === "en";
+
   if (cakes.length === 0) {
     return (
       <div className="rounded-3xl border border-dashed border-black/15 bg-white p-16 text-center">
         <h3 className="text-2xl font-semibold">
-          Торты не найдены
+          {isEnglish
+            ? "No Cakes Found"
+            : "Торты не найдены"}
         </h3>
 
         <p className="mt-3 text-black/60">
-          Попробуйте изменить запрос или выбрать
-          другую категорию.
+          {isEnglish
+            ? "Try changing your search or selecting another category."
+            : "Попробуйте изменить запрос или выбрать другую категорию."}
         </p>
       </div>
     );

@@ -1,7 +1,21 @@
 ﻿"use client";
 
-import { ChangeEvent, useRef, useState } from "react";
-import { uploadCakeImage } from "../../../../lib/cake-admin";
+import { useLocale } from "next-intl";
+
+import {
+  type ChangeEvent,
+  useRef,
+  useState,
+} from "react";
+
+import {
+  uploadCakeImage,
+} from "@/lib/cake-admin";
+
+import {
+  adminMessages,
+  type AdminLocale,
+} from "@/messages/admin";
 
 type ImageUploaderProps = {
   value: string;
@@ -19,12 +33,35 @@ export default function ImageUploader({
   value,
   onChange,
 }: ImageUploaderProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState("");
+  const currentLocale = useLocale();
 
-  async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
+  const locale: AdminLocale =
+    currentLocale === "en"
+      ? "en"
+      : "ru";
+
+  const text =
+    adminMessages[locale]
+      .imageUploader;
+
+  const inputRef =
+    useRef<HTMLInputElement>(
+      null,
+    );
+
+  const [
+    uploading,
+    setUploading,
+  ] = useState(false);
+
+  const [error, setError] =
+    useState("");
+
+  async function handleFileChange(
+    event: ChangeEvent<HTMLInputElement>,
+  ) {
+    const file =
+      event.target.files?.[0];
 
     event.target.value = "";
 
@@ -32,13 +69,22 @@ export default function ImageUploader({
       return;
     }
 
-    if (!allowedTypes.includes(file.type)) {
-      setError("Поддерживаются JPG, PNG, WebP и AVIF.");
+    if (
+      !allowedTypes.includes(
+        file.type,
+      )
+    ) {
+      setError(
+        text.allowedTypesError,
+      );
       return;
     }
 
-    if (file.size > 10 * 1024 * 1024) {
-      setError("Размер изображения не должен превышать 10 МБ.");
+    if (
+      file.size >
+      10 * 1024 * 1024
+    ) {
+      setError(text.sizeError);
       return;
     }
 
@@ -46,13 +92,17 @@ export default function ImageUploader({
     setError("");
 
     try {
-      const publicUrl = await uploadCakeImage(file);
+      const publicUrl =
+        await uploadCakeImage(
+          file,
+        );
+
       onChange(publicUrl);
     } catch (uploadError) {
       setError(
         uploadError instanceof Error
           ? uploadError.message
-          : "Не удалось загрузить фотографию.",
+          : text.uploadError,
       );
     } finally {
       setUploading(false);
@@ -63,12 +113,26 @@ export default function ImageUploader({
     <div className="admin-image-uploader">
       <div className="admin-image-preview">
         {value ? (
-          <img src={value} alt="Фотография торта" />
+          <img
+            src={value}
+            alt={text.imageAlt}
+          />
         ) : (
           <div className="admin-image-placeholder">
             <span>◉</span>
-            <strong>Фотография торта</strong>
-            <small>JPG, PNG или WebP до 10 МБ</small>
+
+            <strong>
+              {
+                text.placeholderTitle
+              }
+            </strong>
+
+            <small>
+              {
+                text
+                  .placeholderDescription
+              }
+            </small>
           </div>
         )}
       </div>
@@ -77,7 +141,9 @@ export default function ImageUploader({
         ref={inputRef}
         type="file"
         accept="image/jpeg,image/png,image/webp,image/avif"
-        onChange={handleFileChange}
+        onChange={
+          handleFileChange
+        }
         hidden
       />
 
@@ -85,29 +151,37 @@ export default function ImageUploader({
         <button
           type="button"
           className="admin-upload-button"
-          onClick={() => inputRef.current?.click()}
+          onClick={() =>
+            inputRef.current?.click()
+          }
           disabled={uploading}
         >
           {uploading
-            ? "Загрузка..."
+            ? text.uploading
             : value
-              ? "Заменить фотографию"
-              : "Загрузить фотографию"}
+              ? text.replace
+              : text.upload}
         </button>
 
         {value ? (
           <button
             type="button"
             className="admin-remove-image-button"
-            onClick={() => onChange("")}
+            onClick={() =>
+              onChange("")
+            }
             disabled={uploading}
           >
-            Удалить
+            {text.remove}
           </button>
         ) : null}
       </div>
 
-      {error ? <p className="admin-field-error">{error}</p> : null}
+      {error ? (
+        <p className="admin-field-error">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }

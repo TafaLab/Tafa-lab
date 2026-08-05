@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale } from "next-intl";
+
 import {
   useId,
   useRef,
@@ -64,6 +66,9 @@ export default function InscriptionLayer({
   onSelect,
   onChange,
 }: InscriptionLayerProps) {
+  const locale = useLocale();
+  const isEnglish = locale === "en";
+
   const dragStateRef =
     useRef<InscriptionDragState | null>(null);
 
@@ -130,8 +135,10 @@ export default function InscriptionLayer({
 
     dragStateRef.current = {
       pointerId: event.pointerId,
-      offsetX: point.x - inscription.x,
-      offsetY: point.y - inscription.y,
+      offsetX:
+        point.x - inscription.x,
+      offsetY:
+        point.y - inscription.y,
     };
 
     event.currentTarget.setPointerCapture(
@@ -147,7 +154,8 @@ export default function InscriptionLayer({
 
     if (
       !dragState ||
-      dragState.pointerId !== event.pointerId
+      dragState.pointerId !==
+        event.pointerId
     ) {
       return;
     }
@@ -169,7 +177,8 @@ export default function InscriptionLayer({
 
       x: Math.round(
         clamp(
-          point.x - dragState.offsetX,
+          point.x -
+            dragState.offsetX,
           80,
           BUILDER_CANVAS_SIZE - 80,
         ),
@@ -177,7 +186,8 @@ export default function InscriptionLayer({
 
       y: Math.round(
         clamp(
-          point.y - dragState.offsetY,
+          point.y -
+            dragState.offsetY,
           60,
           BUILDER_CANVAS_SIZE - 60,
         ),
@@ -193,7 +203,8 @@ export default function InscriptionLayer({
 
     if (
       !dragState ||
-      dragState.pointerId !== event.pointerId
+      dragState.pointerId !==
+        event.pointerId
     ) {
       return;
     }
@@ -215,27 +226,34 @@ export default function InscriptionLayer({
   }
 
   const fontFamily =
-    fontFamilies[inscription.fontFamily];
+    fontFamilies[
+      inscription.fontFamily
+    ];
 
   const curved =
     Math.abs(inscription.curve) >= 3;
 
   const baselineY = 170;
 
-  /*
-   * Усиленный изгиб.
-   * Значения около 100 уже дают выраженную дугу.
-   */
   const curveControlY =
-    baselineY - inscription.curve * 2.25;
+    baselineY -
+    inscription.curve * 2.25;
 
-  const displayText = inscription.uppercase
-    ? inscription.text.toLocaleUpperCase("ru-RU")
-    : inscription.text;
+  const displayText =
+    inscription.uppercase
+      ? inscription.text.toLocaleUpperCase(
+          isEnglish
+            ? "en-US"
+            : "ru-RU",
+        )
+      : inscription.text;
 
   const opacity =
-    clamp(inscription.opacity ?? 100, 20, 100) /
-    100;
+    clamp(
+      inscription.opacity ?? 100,
+      20,
+      100,
+    ) / 100;
 
   const outlineWidth =
     inscription.outlineWidth ?? 0;
@@ -244,7 +262,8 @@ export default function InscriptionLayer({
     inscription.shadowEnabled ?? false;
 
   const shadowColor =
-    inscription.shadowColor ?? "#000000";
+    inscription.shadowColor ??
+    "#000000";
 
   const shadowBlur =
     inscription.shadowBlur ?? 4;
@@ -252,18 +271,24 @@ export default function InscriptionLayer({
   const shadowOffsetY =
     inscription.shadowOffsetY ?? 3;
 
-  const svgShadowFilter = shadowEnabled
-    ? `drop-shadow(0px ${shadowOffsetY}px ${shadowBlur}px ${shadowColor})`
-    : "none";
+  const svgShadowFilter =
+    shadowEnabled
+      ? `drop-shadow(0px ${shadowOffsetY}px ${shadowBlur}px ${shadowColor})`
+      : "none";
 
-  const htmlTextShadow = shadowEnabled
-    ? `0 ${shadowOffsetY}px ${shadowBlur}px ${shadowColor}`
-    : "none";
+  const htmlTextShadow =
+    shadowEnabled
+      ? `0 ${shadowOffsetY}px ${shadowBlur}px ${shadowColor}`
+      : "none";
 
   return (
     <button
       type="button"
-      aria-label="Переместить надпись"
+      aria-label={
+        isEnglish
+          ? "Move inscription"
+          : "Переместить надпись"
+      }
       onPointerDown={startDragging}
       onPointerMove={moveInscription}
       onPointerUp={stopDragging}
@@ -277,8 +302,12 @@ export default function InscriptionLayer({
           : "cursor-grab"
       }`}
       style={{
-        left: canvasPercent(inscription.x),
-        top: canvasPercent(inscription.y),
+        left: canvasPercent(
+          inscription.x,
+        ),
+        top: canvasPercent(
+          inscription.y,
+        ),
         opacity,
 
         transform: `translate(-50%, -50%) rotate(${inscription.rotation}deg)`,
@@ -292,7 +321,8 @@ export default function InscriptionLayer({
           className="pointer-events-none block h-auto w-full overflow-visible"
           aria-hidden="true"
           style={{
-            filter: svgShadowFilter,
+            filter:
+              svgShadowFilter,
           }}
         >
           <defs>
@@ -315,9 +345,17 @@ export default function InscriptionLayer({
             strokeLinejoin="round"
             strokeLinecap="round"
             fontFamily={fontFamily}
-            fontSize={inscription.fontSize}
-            fontWeight={inscription.fontWeight ?? 400}
-            letterSpacing={inscription.letterSpacing ?? 1}
+            fontSize={
+              inscription.fontSize
+            }
+            fontWeight={
+              inscription.fontWeight ??
+              400
+            }
+            letterSpacing={
+              inscription.letterSpacing ??
+              1
+            }
             textAnchor="middle"
           >
             <textPath
@@ -332,19 +370,24 @@ export default function InscriptionLayer({
         <span
           className="pointer-events-none block whitespace-nowrap text-center leading-none"
           style={{
-            color: inscription.color,
+            color:
+              inscription.color,
             fontFamily,
             fontSize: `${inscription.fontSize}px`,
-            fontWeight: inscription.fontWeight ?? 400,
+            fontWeight:
+              inscription.fontWeight ??
+              400,
             letterSpacing: `${inscription.letterSpacing ?? 1}px`,
-            textShadow: htmlTextShadow,
+            textShadow:
+              htmlTextShadow,
 
             WebkitTextStroke:
               outlineWidth > 0
                 ? `${outlineWidth}px ${inscription.outlineColor}`
                 : undefined,
 
-            paintOrder: "stroke fill",
+            paintOrder:
+              "stroke fill",
           }}
         >
           {displayText}

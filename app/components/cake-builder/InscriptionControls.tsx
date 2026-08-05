@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale } from "next-intl";
+
 import {
   defaultInscription,
 } from "@/lib/cake-builder/constants";
@@ -30,53 +32,89 @@ type InscriptionControlsProps = {
   onSelect: () => void;
 };
 
-const fontOptions: {
+type FontOption = {
   value: InscriptionFont;
-  label: string;
-  description: string;
+  labelRu: string;
+  labelEn: string;
+  descriptionRu: string;
+  descriptionEn: string;
   fontFamily: string;
   fontWeight?: number;
-}[] = [
+};
+
+type FontWeightOption = {
+  value: number;
+  labelRu: string;
+  labelEn: string;
+};
+
+const fontOptions: FontOption[] = [
   {
     value: "marck",
-    label: "Каллиграфия",
-    description: "Нежный праздничный стиль",
+    labelRu: "Каллиграфия",
+    labelEn: "Calligraphy",
+    descriptionRu:
+      "Нежный праздничный стиль",
+    descriptionEn:
+      "A delicate celebratory style",
     fontFamily:
       marckScript.style.fontFamily,
   },
   {
     value: "caveat",
-    label: "Ручная надпись",
-    description: "Лёгкий живой почерк",
-    fontFamily: caveat.style.fontFamily,
+    labelRu: "Ручная надпись",
+    labelEn: "Handwritten",
+    descriptionRu:
+      "Лёгкий живой почерк",
+    descriptionEn:
+      "A light and natural handwriting style",
+    fontFamily:
+      caveat.style.fontFamily,
     fontWeight: 600,
   },
   {
     value: "lobster",
-    label: "Кондитерский",
-    description: "Яркий декоративный стиль",
-    fontFamily: lobster.style.fontFamily,
+    labelRu: "Кондитерский",
+    labelEn: "Decorative",
+    descriptionRu:
+      "Яркий декоративный стиль",
+    descriptionEn:
+      "A bold decorative style",
+    fontFamily:
+      lobster.style.fontFamily,
   },
   {
     value: "cormorant",
-    label: "Элегантный",
-    description: "Тонкий премиальный стиль",
+    labelRu: "Элегантный",
+    labelEn: "Elegant",
+    descriptionRu:
+      "Тонкий премиальный стиль",
+    descriptionEn:
+      "A refined premium style",
     fontFamily:
       cormorant.style.fontFamily,
     fontWeight: 600,
   },
   {
     value: "playfair",
-    label: "Классический",
-    description: "Торжественный стиль",
+    labelRu: "Классический",
+    labelEn: "Classic",
+    descriptionRu:
+      "Торжественный стиль",
+    descriptionEn:
+      "A formal classic style",
     fontFamily:
       playfair.style.fontFamily,
     fontWeight: 600,
   },
   {
     value: "montserrat",
-    label: "Современный",
-    description: "Чистый минимализм",
+    labelRu: "Современный",
+    labelEn: "Modern",
+    descriptionRu:
+      "Чистый минимализм",
+    descriptionEn:
+      "Clean modern minimalism",
     fontFamily:
       montserrat.style.fontFamily,
     fontWeight: 600,
@@ -94,22 +132,26 @@ const colors = [
   "#c49a45",
 ];
 
-const fontWeights = [
+const fontWeights: FontWeightOption[] = [
   {
     value: 400,
-    label: "Тонкий",
+    labelRu: "Тонкий",
+    labelEn: "Regular",
   },
   {
     value: 500,
-    label: "Средний",
+    labelRu: "Средний",
+    labelEn: "Medium",
   },
   {
     value: 600,
-    label: "Плотный",
+    labelRu: "Плотный",
+    labelEn: "Semi Bold",
   },
   {
     value: 700,
-    label: "Жирный",
+    labelRu: "Жирный",
+    labelEn: "Bold",
   },
 ];
 
@@ -118,6 +160,9 @@ export default function InscriptionControls({
   onChange,
   onSelect,
 }: InscriptionControlsProps) {
+  const locale = useLocale();
+  const isEnglish = locale === "en";
+
   function update(
     changes: Partial<InscriptionSettings>,
   ) {
@@ -133,14 +178,20 @@ export default function InscriptionControls({
     <div className="space-y-5">
       <label className="block">
         <span className="mb-2 block text-sm font-semibold">
-          Надпись на торте
+          {isEnglish
+            ? "Inscription on the Cake"
+            : "Надпись на торте"}
         </span>
 
         <input
           type="text"
           value={inscription.text}
           maxLength={40}
-          placeholder="Например: С днём рождения!"
+          placeholder={
+            isEnglish
+              ? "Example: Happy Birthday!"
+              : "Например: С днём рождения!"
+          }
           onFocus={onSelect}
           onChange={(event) =>
             update({
@@ -158,13 +209,17 @@ export default function InscriptionControls({
       {inscription.text.trim() && (
         <div className="rounded-2xl border border-[#6a4433]/20 bg-[#f8f0eb] p-4">
           <span className="text-xs uppercase tracking-[0.15em] text-black/45">
-            Настройка надписи
+            {isEnglish
+              ? "Inscription Settings"
+              : "Настройка надписи"}
           </span>
 
           <div className="mt-4 space-y-6">
             <div>
               <strong className="mb-3 block text-sm">
-                Стиль надписи
+                {isEnglish
+                  ? "Inscription Style"
+                  : "Стиль надписи"}
               </strong>
 
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -199,15 +254,21 @@ export default function InscriptionControls({
                             option.fontWeight,
                         }}
                       >
-                        Милый праздник
+                        {isEnglish
+                          ? "Sweet Celebration"
+                          : "Милый праздник"}
                       </span>
 
                       <strong className="mt-3 block text-sm">
-                        {option.label}
+                        {isEnglish
+                          ? option.labelEn
+                          : option.labelRu}
                       </strong>
 
                       <span className="mt-1 block text-xs leading-5 text-black/45">
-                        {option.description}
+                        {isEnglish
+                          ? option.descriptionEn
+                          : option.descriptionRu}
                       </span>
                     </button>
                   );
@@ -217,7 +278,9 @@ export default function InscriptionControls({
 
             <div>
               <strong className="mb-3 block text-sm">
-                Цвет надписи
+                {isEnglish
+                  ? "Inscription Color"
+                  : "Цвет надписи"}
               </strong>
 
               <div className="flex flex-wrap gap-3">
@@ -225,7 +288,11 @@ export default function InscriptionControls({
                   <button
                     type="button"
                     key={color}
-                    aria-label={`Цвет ${color}`}
+                    aria-label={
+                      isEnglish
+                        ? `Color ${color}`
+                        : `Цвет ${color}`
+                    }
                     onClick={() =>
                       update({ color })
                     }
@@ -241,7 +308,9 @@ export default function InscriptionControls({
                 ))}
 
                 <label className="flex h-9 items-center gap-2 rounded-full border border-black/10 bg-white px-3 text-xs">
-                  Другой
+                  {isEnglish
+                    ? "Custom"
+                    : "Другой"}
 
                   <input
                     type="color"
@@ -260,7 +329,9 @@ export default function InscriptionControls({
 
             <div>
               <strong className="mb-3 block text-sm">
-                Жирность
+                {isEnglish
+                  ? "Font Weight"
+                  : "Жирность"}
               </strong>
 
               <div className="grid grid-cols-2 gap-2">
@@ -289,7 +360,9 @@ export default function InscriptionControls({
                           weight.value,
                       }}
                     >
-                      {weight.label}
+                      {isEnglish
+                        ? weight.labelEn
+                        : weight.labelRu}
                     </button>
                   );
                 })}
@@ -310,11 +383,17 @@ export default function InscriptionControls({
                   : "border-black/10 bg-white"
               }`}
             >
-              АБВ — верхний регистр
+              {isEnglish
+                ? "ABC — Uppercase"
+                : "АБВ — верхний регистр"}
             </button>
 
             <RangeControl
-              label="Размер надписи"
+              label={
+                isEnglish
+                  ? "Inscription Size"
+                  : "Размер надписи"
+              }
               value={inscription.fontSize}
               min={20}
               max={120}
@@ -325,7 +404,11 @@ export default function InscriptionControls({
             />
 
             <RangeControl
-              label="Интервал между буквами"
+              label={
+                isEnglish
+                  ? "Letter Spacing"
+                  : "Интервал между буквами"
+              }
               value={
                 inscription.letterSpacing ?? 1
               }
@@ -338,7 +421,11 @@ export default function InscriptionControls({
             />
 
             <RangeControl
-              label="Изгиб надписи"
+              label={
+                isEnglish
+                  ? "Inscription Curve"
+                  : "Изгиб надписи"
+              }
               value={inscription.curve}
               min={-140}
               max={140}
@@ -359,7 +446,9 @@ export default function InscriptionControls({
                     : "border-black/10 bg-white"
                 }`}
               >
-                Дугой вниз
+                {isEnglish
+                  ? "Curve Down"
+                  : "Дугой вниз"}
               </button>
 
               <button
@@ -373,7 +462,9 @@ export default function InscriptionControls({
                     : "border-black/10 bg-white"
                 }`}
               >
-                Прямо
+                {isEnglish
+                  ? "Straight"
+                  : "Прямо"}
               </button>
 
               <button
@@ -387,12 +478,18 @@ export default function InscriptionControls({
                     : "border-black/10 bg-white"
                 }`}
               >
-                Дугой вверх
+                {isEnglish
+                  ? "Curve Up"
+                  : "Дугой вверх"}
               </button>
             </div>
 
             <RangeControl
-              label="Поворот"
+              label={
+                isEnglish
+                  ? "Rotation"
+                  : "Поворот"
+              }
               value={inscription.rotation}
               min={-180}
               max={180}
@@ -403,7 +500,11 @@ export default function InscriptionControls({
             />
 
             <RangeControl
-              label="Прозрачность"
+              label={
+                isEnglish
+                  ? "Opacity"
+                  : "Прозрачность"
+              }
               value={inscription.opacity ?? 100}
               min={20}
               max={100}
@@ -415,12 +516,18 @@ export default function InscriptionControls({
 
             <div className="rounded-2xl border border-black/10 bg-white p-4">
               <strong className="block text-sm">
-                Контур
+                {isEnglish
+                  ? "Outline"
+                  : "Контур"}
               </strong>
 
               <div className="mt-4 space-y-4">
                 <RangeControl
-                  label="Толщина контура"
+                  label={
+                    isEnglish
+                      ? "Outline Width"
+                      : "Толщина контура"
+                  }
                   value={
                     inscription.outlineWidth ??
                     0
@@ -435,7 +542,9 @@ export default function InscriptionControls({
 
                 <label className="flex items-center justify-between gap-4">
                   <span className="text-sm">
-                    Цвет контура
+                    {isEnglish
+                      ? "Outline Color"
+                      : "Цвет контура"}
                   </span>
 
                   <input
@@ -471,13 +580,19 @@ export default function InscriptionControls({
                     : "border-black/10 bg-white"
                 }`}
               >
-                Тень надписи
+                {isEnglish
+                  ? "Text Shadow"
+                  : "Тень надписи"}
               </button>
 
               {inscription.shadowEnabled && (
                 <div className="mt-5 space-y-4">
                   <RangeControl
-                    label="Размытие тени"
+                    label={
+                      isEnglish
+                        ? "Shadow Blur"
+                        : "Размытие тени"
+                    }
                     value={
                       inscription.shadowBlur ??
                       4
@@ -491,7 +606,11 @@ export default function InscriptionControls({
                   />
 
                   <RangeControl
-                    label="Смещение тени"
+                    label={
+                      isEnglish
+                        ? "Shadow Offset"
+                        : "Смещение тени"
+                    }
                     value={
                       inscription.shadowOffsetY ??
                       3
@@ -508,7 +627,9 @@ export default function InscriptionControls({
 
                   <label className="flex items-center justify-between gap-4">
                     <span className="text-sm">
-                      Цвет тени
+                      {isEnglish
+                        ? "Shadow Color"
+                        : "Цвет тени"}
                     </span>
 
                     <input
@@ -532,13 +653,15 @@ export default function InscriptionControls({
 
             <div className="rounded-xl border border-black/10 bg-white px-4 py-3">
               <strong className="block text-sm">
-                Положение
+                {isEnglish
+                  ? "Position"
+                  : "Положение"}
               </strong>
 
               <p className="mt-1 text-xs leading-5 text-black/45">
-                Перетащите надпись мышкой или
-                пальцем прямо по изображению
-                торта.
+                {isEnglish
+                  ? "Drag the inscription directly on the cake image using a mouse or finger."
+                  : "Перетащите надпись мышкой или пальцем прямо по изображению торта."}
               </p>
 
               <span className="mt-2 block text-xs text-black/45">
@@ -557,7 +680,9 @@ export default function InscriptionControls({
               }
               className="rounded-full border border-black/15 bg-white px-4 py-2 text-sm"
             >
-              Сбросить оформление
+              {isEnglish
+                ? "Reset Styling"
+                : "Сбросить оформление"}
             </button>
           </div>
         </div>

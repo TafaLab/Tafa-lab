@@ -90,6 +90,7 @@ export const categoryLabels: CategoryLabels = {
   flowers: "Цветы",
   macarons: "Макаруны",
   lollipops: "Леденцы",
+  toppers: "Топперы",
   pearls: "Жемчуг",
 };
 
@@ -100,6 +101,7 @@ export const categoryPrices: CategoryPrices = {
   flowers: 3500,
   macarons: 3000,
   lollipops: 2500,
+  toppers: 0,
   pearls: 1500,
 };
 

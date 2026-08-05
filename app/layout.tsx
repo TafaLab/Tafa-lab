@@ -5,10 +5,50 @@
 
 import "./globals.css";
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "Milky Cake — торты на заказ",
+  metadataBase: new URL(siteUrl),
+
+  title: {
+    default: "STK Bakery",
+    template: "%s | STK Bakery",
+  },
+
   description:
-    "Торты, десерты и еда на заказ. Соберите собственный торт в интерактивном конструкторе Milky Cake.",
+    "Custom cakes, desserts and an interactive cake builder by STK Bakery.",
+
+  applicationName: "STK Bakery",
+
+  authors: [
+    {
+      name: "STK Bakery",
+    },
+  ],
+
+  creator: "STK Bakery",
+  publisher: "STK Bakery",
+
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
 };
 
 export const viewport: Viewport = {
@@ -16,6 +56,9 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   viewportFit: "cover",
+
+  themeColor: "#f7f3ef",
+  colorScheme: "light",
 };
 
 export default function RootLayout({
@@ -27,6 +70,7 @@ export default function RootLayout({
     <html
       lang="ru"
       data-scroll-behavior="smooth"
+      suppressHydrationWarning
     >
       <body>{children}</body>
     </html>
