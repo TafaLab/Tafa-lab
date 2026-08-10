@@ -10,13 +10,16 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       disallow: [
-        "/admin",
-        "/admin/",
-        "/checkout",
-        "/thank-you",
+        "/ru/admin",
+        "/ru/admin/",
+        "/en/admin",
+        "/en/admin/",
+        "/ru/checkout",
+        "/en/checkout",
+        "/ru/thank-you",
+        "/en/thank-you",
       ],
     },
-
     sitemap: `${siteUrl}/sitemap.xml`,
     host: siteUrl,
   };

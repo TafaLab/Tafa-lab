@@ -5,36 +5,33 @@ const siteUrl =
   "http://localhost:3000";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const locales = ["ru", "en"];
+  const locales = ["ru", "en"] as const;
 
-  const pages = [
-    "",
-    "/cakes",
-    "/builder",
-    "/food",
-    "/gallery",
-    "/contacts",
+  const corePages = [
+    { path: "", priority: 1, changeFrequency: "weekly" as const },
+    { path: "/industries/bakeries", priority: 0.95, changeFrequency: "weekly" as const },
+    { path: "/industries/restaurants", priority: 0.95, changeFrequency: "weekly" as const },
+    { path: "/industries/beauty", priority: 0.9, changeFrequency: "weekly" as const },
+    { path: "/industries/travel", priority: 0.9, changeFrequency: "weekly" as const },
+    { path: "/industries/business-platforms", priority: 0.95, changeFrequency: "weekly" as const },
+    { path: "/contacts", priority: 0.7, changeFrequency: "monthly" as const },
+
+    // Live STK Bakery demo. Kept public as a portfolio project.
+    { path: "/bakery", priority: 0.65, changeFrequency: "monthly" as const },
   ];
 
   return locales.flatMap((locale) =>
-    pages.map((page) => ({
-      url: `${siteUrl}/${locale}${page}`,
-
+    corePages.map((page) => ({
+      url: `${siteUrl}/${locale}${page.path}`,
       lastModified: new Date(),
-
-      changeFrequency:
-        page === ""
-          ? "weekly"
-          : "monthly",
-
-      priority:
-        page === ""
-          ? 1
-          : page === "/builder"
-            ? 0.95
-            : page === "/cakes"
-              ? 0.9
-              : 0.8,
+      changeFrequency: page.changeFrequency,
+      priority: page.priority,
+      alternates: {
+        languages: {
+          ru: `${siteUrl}/ru${page.path}`,
+          en: `${siteUrl}/en${page.path}`,
+        },
+      },
     })),
   );
 }

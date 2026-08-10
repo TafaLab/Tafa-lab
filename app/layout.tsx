@@ -1,8 +1,4 @@
-﻿import type {
-  Metadata,
-  Viewport,
-} from "next";
-
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 const siteUrl =
@@ -13,23 +9,18 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
 
   title: {
-    default: "STK Bakery",
-    template: "%s | STK Bakery",
+    default: "STK Lab — Premium Websites & Custom Web Applications",
+    template: "%s | STK Lab",
   },
 
   description:
-    "Custom cakes, desserts and an interactive cake builder by STK Bakery.",
+    "STK Lab designs and develops premium websites, e-commerce experiences, booking systems, configurators and custom business platforms.",
 
-  applicationName: "STK Bakery",
+  applicationName: "STK Lab",
 
-  authors: [
-    {
-      name: "STK Bakery",
-    },
-  ],
-
-  creator: "STK Bakery",
-  publisher: "STK Bakery",
+  authors: [{ name: "STK Lab" }],
+  creator: "STK Lab",
+  publisher: "STK Lab",
 
   formatDetection: {
     email: false,
@@ -40,7 +31,6 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-
     googleBot: {
       index: true,
       follow: true,
@@ -49,6 +39,30 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+
+  openGraph: {
+    type: "website",
+    siteName: "STK Lab",
+    title: "STK Lab — Premium Websites & Custom Web Applications",
+    description:
+      "Premium websites and custom digital systems for bakeries, restaurants, beauty, travel and growing businesses.",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "STK Lab",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "STK Lab — Premium Websites & Custom Web Applications",
+    description:
+      "Premium websites and custom digital systems for modern businesses.",
+    images: ["/og-image.jpg"],
+  },
 };
 
 export const viewport: Viewport = {
@@ -56,8 +70,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   viewportFit: "cover",
-
-  themeColor: "#f7f3ef",
+  themeColor: "#f6f2ed",
   colorScheme: "light",
 };
 

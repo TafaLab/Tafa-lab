@@ -1,0 +1,80 @@
+.site {
+  /* =========================================================
+     STK LAB — MASTER DESIGN TOKENS
+     Change this block to restyle all STK Lab core pages.
+     ========================================================= */
+
+  --stk-bg: #f6f2ed;
+  --stk-bg-translucent: rgba(246, 242, 237, 0.90);
+  --stk-surface: rgba(255, 255, 255, 0.48);
+  --stk-surface-card: rgba(255, 255, 255, 0.62);
+  --stk-surface-strong: #fffaf5;
+
+  --stk-text: #1f1b18;
+  --stk-muted: rgba(31, 27, 24, 0.60);
+  --stk-muted-strong: rgba(31, 27, 24, 0.52);
+  --stk-faint: rgba(31, 27, 24, 0.36);
+
+  --stk-dark: #241f1b;
+  --stk-dark-text: #ffffff;
+  --stk-dark-muted: rgba(255, 255, 255, 0.62);
+
+  --stk-border: rgba(31, 27, 24, 0.11);
+  --stk-border-dark: rgba(255, 255, 255, 0.14);
+
+  --stk-accent-soft: #d9cec4;
+  --stk-accent-panel: #e7ded6;
+  --stk-accent-panel-hover: #f2ebe5;
+  --stk-media-bg: #ddd3c9;
+
+  --stk-radius-card: 2rem;
+  --stk-radius-panel: 1.5rem;
+  --stk-radius-small: 1.25rem;
+  --stk-radius-pill: 999px;
+
+  --stk-shadow-card: 0 30px 80px rgba(0, 0, 0, 0.08);
+
+  --stk-container: 80rem;
+  --stk-section-space: 8rem;
+
+  --stk-motion-distance: 22px;
+  --stk-motion-duration: 720ms;
+  --stk-motion-ease: cubic-bezier(.22, 1, .36, 1);
+
+  min-height: 100vh;
+  background: var(--stk-bg);
+  color: var(--stk-text);
+}
+
+/* One optional future redesign can be tested simply by replacing tokens above.
+   Page content, portfolio links, images and project data do not need to change. */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(var(--stk-motion-distance));
+  transition:
+    opacity var(--stk-motion-duration) var(--stk-motion-ease),
+    transform var(--stk-motion-duration) var(--stk-motion-ease);
+  will-change: opacity, transform;
+}
+
+.revealVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.revealDelay1 { transition-delay: 70ms; }
+.revealDelay2 { transition-delay: 140ms; }
+.revealDelay3 { transition-delay: 210ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .revealVisible,
+  .revealDelay1,
+  .revealDelay2,
+  .revealDelay3 {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
