@@ -9,6 +9,7 @@ import {
 } from "next-intl/server";
 
 import { notFound } from "next/navigation";
+import Script from "next/script";
 
 import { routing } from "@/i18n/routing";
 
@@ -49,11 +50,30 @@ export default async function LocaleLayout({
     await getMessages();
 
   return (
-    <NextIntlClientProvider
-      locale={locale}
-      messages={messages}
-    >
-      {children}
-    </NextIntlClientProvider>
+    <>
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-7KW5HE8VL0"
+        strategy="afterInteractive"
+      />
+
+      <Script
+        id="google-analytics"
+        strategy="afterInteractive"
+      >
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-7KW5HE8VL0');
+        `}
+      </Script>
+
+      <NextIntlClientProvider
+        locale={locale}
+        messages={messages}
+      >
+        {children}
+      </NextIntlClientProvider>
+    </>
   );
 }
