@@ -34,7 +34,7 @@ export default function Footer({
       <Container className="footer-grid">
         <div className="footer-about">
           <Link
-            href={`/${locale}`}
+            href={`/${locale}/bakery`}
             className="brand footer-brand"
           >
             <span className="brand-logo">
@@ -74,7 +74,7 @@ export default function Footer({
             {text.gallery}
           </Link>
 
-          <Link href={`/${locale}/about`}>
+          <Link href={`/${locale}/bakery`}>
             {text.about}
           </Link>
 
@@ -87,10 +87,10 @@ export default function Footer({
           <strong>{text.contactTitle}</strong>
 
           <a
-            href="tel:+70000000000"
+            href="tel:+77476818493"
             className="footer-phone"
           >
-            +7 000 000 00 00
+            +7 747 681 84 93
           </a>
 
           <span>{text.schedule}</span>

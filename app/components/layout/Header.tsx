@@ -29,7 +29,7 @@ export default function Header({
     <header className="site-header">
       <Container className="header-inner">
         <Link
-          href={`/${locale}`}
+          href={`/${locale}/bakery`}
           className="brand"
         >
           <span className="brand-logo">

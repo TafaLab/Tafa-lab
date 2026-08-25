@@ -23,63 +23,71 @@ export default function ThankYouPage() {
         <p className="mx-auto mt-6 max-w-xl text-base leading-7 text-black/65 md:text-lg md:leading-8">
           {isEnglish ? (
             <>
-              We have received your request.
+              Your test order has been created.
               <br />
-              An STK Bakery manager will contact you shortly, review the cake
-              design, clarify the details and confirm the final price.
+              You can now open the demo admin panel and see how the order
+              appears to the bakery team.
             </>
           ) : (
             <>
-              Мы получили вашу заявку.
+              Ваш тестовый заказ создан.
               <br />
-              В ближайшее время менеджер STK Bakery свяжется с вами, проверит
-              оформление торта, уточнит детали и подтвердит окончательную
-              стоимость.
+              Теперь можно открыть демо-админку и увидеть, как заказ
+              отображается со стороны кондитерской.
             </>
           )}
         </p>
 
+        <Link
+          href={`/${locale}/admin/orders`}
+          className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-[#6a4433] px-6 py-4 text-center font-semibold text-white transition hover:opacity-90"
+        >
+          {isEnglish
+            ? "View My Order in the Admin Panel →"
+            : "Посмотреть мой заказ в админ-панели →"}
+        </Link>
+
         <div className="mt-10 rounded-2xl bg-[#f7f3ef] p-6 text-left">
           <h2 className="mb-3 text-lg font-semibold">
             {isEnglish
-              ? "What Happens Next?"
-              : "Что будет дальше?"}
+              ? "How the Demo Works"
+              : "Как работает демо"}
           </h2>
 
           <ul className="space-y-3 text-black/70">
             <li>
               ✔{" "}
               {isEnglish
-                ? "We will review the cake design."
-                : "Проверим оформление торта."}
+                ? "Open the public demo admin panel."
+                : "Откройте открытую демо-админку."}
             </li>
 
             <li>
               ✔{" "}
               {isEnglish
-                ? "We may suggest improvements if needed."
-                : "При необходимости предложим улучшения."}
+                ? "Your newest test order appears first."
+                : "Ваш новый тестовый заказ будет первым в списке."}
             </li>
 
             <li>
               ✔{" "}
               {isEnglish
-                ? "We will confirm the final price."
-                : "Подтвердим стоимость."}
+                ? "Open it and review the cake design and order details."
+                : "Откройте его и посмотрите дизайн торта и детали заказа."}
             </li>
 
             <li>
               ✔{" "}
               {isEnglish
-                ? "We will confirm the date and time."
-                : "Согласуем дату и время."}
+                ? "Try changing its status like a bakery manager."
+                : "Попробуйте изменить статус как менеджер кондитерской."}
             </li>
 
             <li>
               ✔{" "}
               {isEnglish
-                ? "We will prepare your cake."
-                : "Приготовим ваш торт."}
+                ? "This is a demonstration; no real cake will be produced."
+                : "Это демонстрация — настоящий торт не будет изготовлен."}
             </li>
           </ul>
         </div>
