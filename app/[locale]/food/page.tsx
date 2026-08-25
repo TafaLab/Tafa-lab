@@ -102,6 +102,75 @@ const sections: FoodSection[] = [
   },
 ];
 
+const ingredients: Record<string, [ru: string, en: string]> = {
+  "american-breakfast.webp": ["Яйца, бекон, сосиски, картофель, тосты, томаты и фасоль", "Eggs, bacon, sausages, potatoes, toast, tomatoes and beans"],
+  "english-breakfast.webp": ["Яйца, бекон, сосиски, фасоль, грибы, томаты и тосты", "Eggs, bacon, sausages, beans, mushrooms, tomatoes and toast"],
+  "italian-breakfast.webp": ["Яйца, прошутто, моцарелла, томаты, зелень и чиабатта", "Eggs, prosciutto, mozzarella, tomatoes, greens and ciabatta"],
+  "balinese-breakfast.webp": ["Рис, яйца, курица, овощи, авокадо и пряный соус", "Rice, eggs, chicken, vegetables, avocado and spiced sauce"],
+  "eggs-benedict-bacon.webp": ["Яйца пашот, бекон, английская булочка и соус голландез", "Poached eggs, bacon, English muffin and hollandaise sauce"],
+  "eggs-benedict-salmon.webp": ["Яйца пашот, лосось, английская булочка, шпинат и голландез", "Poached eggs, salmon, English muffin, spinach and hollandaise"],
+  "omelette-mozzarella-tomatoes.webp": ["Яйца, моцарелла, томаты, сливки и свежая зелень", "Eggs, mozzarella, tomatoes, cream and fresh herbs"],
+  "omelette-mushrooms-spinach.webp": ["Яйца, грибы, шпинат, сливки и сыр", "Eggs, mushrooms, spinach, cream and cheese"],
+  "scrambled-eggs-avocado.webp": ["Яйца, авокадо, сливочное масло, зелень и тосты", "Eggs, avocado, butter, greens and toast"],
+  "avocado-toast-poached-egg.webp": ["Хлеб на закваске, авокадо, яйцо пашот, зелень и семена", "Sourdough bread, avocado, poached egg, greens and seeds"],
+  "salmon-avocado-toast.webp": ["Хлеб на закваске, лосось, авокадо, крем-сыр и зелень", "Sourdough bread, salmon, avocado, cream cheese and greens"],
+  "mushroom-egg-toast.webp": ["Хлеб на закваске, грибы, яйцо, крем-сыр и зелень", "Sourdough bread, mushrooms, egg, cream cheese and greens"],
+  "syrniki-berries.webp": ["Творог, яйцо, мука, ваниль, сметана и свежие ягоды", "Cottage cheese, egg, flour, vanilla, sour cream and fresh berries"],
+  "pancakes-berries.webp": ["Панкейки, свежие ягоды, сливочный крем и кленовый сироп", "Pancakes, fresh berries, cream and maple syrup"],
+  "pancakes-banana-caramel.webp": ["Панкейки, банан, карамельный соус, сливки и орехи", "Pancakes, banana, caramel sauce, cream and nuts"],
+  "yogurt-granola-tropical-fruits.webp": ["Натуральный йогурт, гранола, манго, ананас и кокос", "Natural yogurt, granola, mango, pineapple and coconut"],
+  "ricotta-berry-toast.webp": ["Хлеб на закваске, рикотта, свежие ягоды, мёд и орехи", "Sourdough bread, ricotta, fresh berries, honey and nuts"],
+  "avocado-bowl.webp": ["Авокадо, киноа, яйцо, овощи, зелень и семена", "Avocado, quinoa, egg, vegetables, greens and seeds"],
+  "berry-bowl.webp": ["Ягодное смузи, банан, гранола, свежие ягоды и семена чиа", "Berry smoothie, banana, granola, fresh berries and chia seeds"],
+  "chocolate-bowl.webp": ["Какао, банан, йогурт, гранола, орехи и шоколад", "Cocoa, banana, yogurt, granola, nuts and chocolate"],
+  "mango-bowl.webp": ["Манго, банан, йогурт, гранола, кокос и семена чиа", "Mango, banana, yogurt, granola, coconut and chia seeds"],
+  "rice-vegetable-taco-bowl.webp": ["Рис, фасоль, кукуруза, овощи, авокадо и соус сальса", "Rice, beans, corn, vegetables, avocado and salsa"],
+  "balinese-chicken-bowl.webp": ["Рис, курица, овощи, авокадо, зелень и балийский соус", "Rice, chicken, vegetables, avocado, greens and Balinese sauce"],
+  "tropical-shrimp-bowl.webp": ["Креветки, рис, манго, авокадо, овощи и цитрусовый соус", "Shrimp, rice, mango, avocado, vegetables and citrus dressing"],
+  "tuna-poke-bowl.webp": ["Тунец, рис, авокадо, огурец, эдамаме и кунжутный соус", "Tuna, rice, avocado, cucumber, edamame and sesame dressing"],
+  "croissant-caprese.webp": ["Круассан, моцарелла, томаты, базилик и соус песто", "Croissant, mozzarella, tomatoes, basil and pesto"],
+  "croissant-ham-cheese.webp": ["Круассан, ветчина, сыр, листья салата и горчичный соус", "Croissant, ham, cheese, lettuce and mustard sauce"],
+  "croissant-mozzarella-pesto-tomatoes.webp": ["Круассан, моцарелла, томаты, песто и руккола", "Croissant, mozzarella, tomatoes, pesto and arugula"],
+  "croissant-mushrooms-spinach-cheese.webp": ["Круассан, грибы, шпинат, сыр и сливочный соус", "Croissant, mushrooms, spinach, cheese and cream sauce"],
+  "croissant-salmon-cream-cheese-avocado.webp": ["Круассан, лосось, крем-сыр, авокадо и зелень", "Croissant, salmon, cream cheese, avocado and greens"],
+  "croissant-scrambled-eggs-bacon.webp": ["Круассан, яичный скрэмбл, бекон, сыр и зелень", "Croissant, scrambled eggs, bacon, cheese and greens"],
+  "croissant-tuna-egg-salad.webp": ["Круассан, тунец, яйцо, листья салата и сливочный соус", "Croissant, tuna, egg, lettuce and creamy dressing"],
+  "croissant-turkey-cheese-tomatoes.webp": ["Круассан, индейка, сыр, томаты и листья салата", "Croissant, turkey, cheese, tomatoes and lettuce"],
+  "pasta-carbonara.webp.jpg": ["Спагетти, бекон, яйцо, пармезан и чёрный перец", "Spaghetti, bacon, egg, Parmesan and black pepper"],
+  "pasta-bolognese.webp.jpg": ["Паста, говяжий фарш, томаты, овощи и пармезан", "Pasta, minced beef, tomatoes, vegetables and Parmesan"],
+  "pasta-chicken-mushrooms.webp.jpg": ["Паста, курица, грибы, сливки, чеснок и пармезан", "Pasta, chicken, mushrooms, cream, garlic and Parmesan"],
+  "pasta-salmon-cream-sauce.webp.jpg": ["Паста, лосось, сливки, чеснок, зелень и пармезан", "Pasta, salmon, cream, garlic, herbs and Parmesan"],
+  "pasta-pesto-chicken.webp.jpg": ["Паста, курица, песто, сливки, томаты и пармезан", "Pasta, chicken, pesto, cream, tomatoes and Parmesan"],
+  "pasta-arrabbiata.webp.jpg": ["Паста, томаты, чеснок, перец чили, базилик и пармезан", "Pasta, tomatoes, garlic, chilli, basil and Parmesan"],
+  "pasta-pomodoro-basil.webp.jpg": ["Паста, томаты, базилик, чеснок, оливковое масло и пармезан", "Pasta, tomatoes, basil, garlic, olive oil and Parmesan"],
+  "pasta-seafood.webp.jpg": ["Паста, креветки, кальмары, мидии, томаты и чеснок", "Pasta, shrimp, squid, mussels, tomatoes and garlic"],
+  "truffle-pasta-mushrooms.webp.jpg": ["Паста, грибы, сливки, трюфельное масло и пармезан", "Pasta, mushrooms, cream, truffle oil and Parmesan"],
+  "caesar-salad-chicken.webp.jpg": ["Курица, романо, томаты, пармезан, крутоны и соус Цезарь", "Chicken, romaine, tomatoes, Parmesan, croutons and Caesar dressing"],
+  "caesar-salad-shrimp.webp.jpg": ["Креветки, романо, томаты, пармезан, крутоны и соус Цезарь", "Shrimp, romaine, tomatoes, Parmesan, croutons and Caesar dressing"],
+  "burrata-tomatoes.webp.jpg": ["Буррата, томаты, базилик, оливковое масло и бальзамик", "Burrata, tomatoes, basil, olive oil and balsamic"],
+  "caprese-salad.webp.jpg": ["Моцарелла, томаты, базилик, оливковое масло и бальзамик", "Mozzarella, tomatoes, basil, olive oil and balsamic"],
+  "green-salad-avocado.webp.jpg": ["Авокадо, микс салатов, огурец, брокколи, семена и цитрусовая заправка", "Avocado, mixed greens, cucumber, broccoli, seeds and citrus dressing"],
+  "salad-salmon-avocado.webp.jpg": ["Лосось, авокадо, микс салатов, огурец и лимонная заправка", "Salmon, avocado, mixed greens, cucumber and lemon dressing"],
+  "salad-shrimp-mango.webp.jpg": ["Креветки, манго, авокадо, микс салатов и цитрусовая заправка", "Shrimp, mango, avocado, mixed greens and citrus dressing"],
+  "tuna-salad.webp.jpg": ["Тунец, микс салатов, яйцо, томаты, оливки и горчичная заправка", "Tuna, mixed greens, egg, tomatoes, olives and mustard dressing"],
+  "warm-chicken-salad.webp.jpg": ["Курица, тёплые овощи, микс салатов, томаты и медово-горчичная заправка", "Chicken, warm vegetables, mixed greens, tomatoes and honey mustard dressing"],
+  "chicken-soup.webp.jpg": ["Куриный бульон, курица, лапша, морковь, лук и зелень", "Chicken broth, chicken, noodles, carrot, onion and herbs"],
+  "cream-mushroom-soup.webp.jpg": ["Грибы, сливки, картофель, лук, чеснок и крутоны", "Mushrooms, cream, potato, onion, garlic and croutons"],
+  "cream-pumpkin-soup.webp.jpg": ["Тыква, сливки, морковь, лук, специи и семена", "Pumpkin, cream, carrot, onion, spices and seeds"],
+  "minestrone-soup.webp.jpg": ["Томаты, фасоль, паста, сезонные овощи и зелень", "Tomatoes, beans, pasta, seasonal vegetables and herbs"],
+  "tomato-soup-basil.webp.jpg": ["Томаты, базилик, сливки, чеснок и крутоны", "Tomatoes, basil, cream, garlic and croutons"],
+  "bruschetta-tomatoes.webp.jpg": ["Чиабатта, томаты, базилик, чеснок и оливковое масло", "Ciabatta, tomatoes, basil, garlic and olive oil"],
+  "bruschetta-salmon.webp.jpg": ["Чиабатта, лосось, крем-сыр, огурец и зелень", "Ciabatta, salmon, cream cheese, cucumber and greens"],
+  "bruschetta-mushrooms.webp.jpg": ["Чиабатта, грибы, крем-сыр, чеснок и зелень", "Ciabatta, mushrooms, cream cheese, garlic and greens"],
+  "focaccia-rosemary.webp.jpg": ["Пшеничная мука, оливковое масло, розмарин и морская соль", "Wheat flour, olive oil, rosemary and sea salt"],
+};
+
+function getIngredients(image: string, en: boolean) {
+  const fileName = image.split("/").at(-1) ?? "";
+  const value = ingredients[fileName];
+  return value ? value[en ? 1 : 0] : "";
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const en = locale === "en";
@@ -126,6 +195,7 @@ export default async function FoodPage({ params }: { params: Promise<{ locale: s
         <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#8b6250]">STK Bakery</span>
         <h1 className="mt-4 text-4xl font-semibold tracking-[-0.04em] md:text-6xl">{en ? "Food & Breakfast Menu" : "Еда и завтраки"}</h1>
         <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-black/60 md:text-lg">{en ? "A visual menu of breakfasts, bowls, croissants, pasta, salads, soups and light snacks." : "Визуальное меню завтраков, боулов, круассанов, пасты, салатов, супов и лёгких закусок."}</p>
+        <p className="mx-auto mt-3 max-w-2xl text-xs leading-5 text-black/45">{en ? "Demo prices and ingredients. Final recipes, allergens and prices are confirmed by the bakery." : "Цены и состав указаны для демонстрации. Итоговые рецептуры, аллергены и цены подтверждаются кондитерской."}</p>
       </section>
 
       <nav className="sticky top-0 z-30 overflow-x-auto border-b border-black/10 bg-[#faf8f6]/95 px-4 py-3 backdrop-blur-md">
@@ -145,9 +215,12 @@ export default async function FoodPage({ params }: { params: Promise<{ locale: s
               {section.items.map((item, itemIndex) => (
                 <article key={item.image} className="group overflow-hidden rounded-3xl border border-black/10 bg-white shadow-[0_12px_35px_rgba(61,43,34,0.05)]">
                   <div className="relative aspect-[4/3] overflow-hidden bg-[#eee7e1]"><Image src={item.image} alt={en ? item.en : item.ru} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw" className="object-cover transition duration-500 group-hover:scale-[1.03]" /></div>
-                  <div className="flex items-start justify-between gap-4 p-5">
-                    <h3 className="text-lg font-semibold leading-6">{en ? item.en : item.ru}</h3>
-                    <span className="shrink-0 rounded-full bg-[#f2e8e1] px-3 py-1.5 text-sm font-bold text-[#6a4433]">${section.prices[itemIndex]}</span>
+                  <div className="p-5">
+                    <div className="flex items-start justify-between gap-4">
+                      <h3 className="text-lg font-semibold leading-6">{en ? item.en : item.ru}</h3>
+                      <span className="shrink-0 rounded-full bg-[#f2e8e1] px-3 py-1.5 text-sm font-bold text-[#6a4433]">${section.prices[itemIndex]}</span>
+                    </div>
+                    <p className="mt-3 text-sm leading-6 text-black/55">{getIngredients(item.image, en)}</p>
                   </div>
                 </article>
               ))}
