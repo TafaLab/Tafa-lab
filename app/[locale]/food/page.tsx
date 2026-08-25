@@ -9,11 +9,11 @@ import { ruMessages } from "@/messages/ru";
 
 type Locale = "ru" | "en";
 type FoodItem = { image: string; ru: string; en: string };
-type FoodSection = { id: string; ru: string; en: string; items: FoodItem[] };
+type FoodSection = { id: string; ru: string; en: string; prices: number[]; items: FoodItem[] };
 
 const sections: FoodSection[] = [
   {
-    id: "breakfasts", ru: "Завтраки и тосты", en: "Breakfasts & Toasts", items: [
+    id: "breakfasts", ru: "Завтраки и тосты", en: "Breakfasts & Toasts", prices: [13, 14, 12, 13, 11, 13, 10, 10, 9, 9, 12, 9], items: [
       { image: "/images/food/breakfasts/american-breakfast.webp", ru: "Американский завтрак", en: "American Breakfast" },
       { image: "/images/food/breakfasts/english-breakfast.webp", ru: "Английский завтрак", en: "English Breakfast" },
       { image: "/images/food/breakfasts/italian-breakfast.webp", ru: "Итальянский завтрак", en: "Italian Breakfast" },
@@ -29,7 +29,7 @@ const sections: FoodSection[] = [
     ],
   },
   {
-    id: "sweet-breakfasts", ru: "Сладкие завтраки", en: "Sweet Breakfasts", items: [
+    id: "sweet-breakfasts", ru: "Сладкие завтраки", en: "Sweet Breakfasts", prices: [9, 8, 9, 8, 8], items: [
       { image: "/images/food/sweetbreakfasts/syrniki-berries.webp", ru: "Сырники с ягодами", en: "Syrniki with Berries" },
       { image: "/images/food/sweetbreakfasts/pancakes-berries.webp", ru: "Панкейки с ягодами", en: "Pancakes with Berries" },
       { image: "/images/food/sweetbreakfasts/pancakes-banana-caramel.webp", ru: "Панкейки с бананом и карамелью", en: "Banana Caramel Pancakes" },
@@ -38,7 +38,7 @@ const sections: FoodSection[] = [
     ],
   },
   {
-    id: "bowls", ru: "Боулы", en: "Bowls", items: [
+    id: "bowls", ru: "Боулы", en: "Bowls", prices: [10, 9, 9, 10, 11, 12, 13, 13], items: [
       { image: "/images/food/bowls/avocado-bowl.webp", ru: "Боул с авокадо", en: "Avocado Bowl" },
       { image: "/images/food/bowls/berry-bowl.webp", ru: "Ягодный боул", en: "Berry Bowl" },
       { image: "/images/food/bowls/chocolate-bowl.webp", ru: "Шоколадный боул", en: "Chocolate Bowl" },
@@ -50,7 +50,7 @@ const sections: FoodSection[] = [
     ],
   },
   {
-    id: "croissants", ru: "Круассаны", en: "Croissants", items: [
+    id: "croissants", ru: "Круассаны", en: "Croissants", prices: [7, 7, 8, 8, 10, 8, 8, 8], items: [
       { image: "/images/food/croissants/croissant-caprese.webp", ru: "Круассан Капрезе", en: "Caprese Croissant" },
       { image: "/images/food/croissants/croissant-ham-cheese.webp", ru: "Круассан с ветчиной и сыром", en: "Ham & Cheese Croissant" },
       { image: "/images/food/croissants/croissant-mozzarella-pesto-tomatoes.webp", ru: "Круассан с моцареллой, песто и томатами", en: "Mozzarella, Pesto & Tomato Croissant" },
@@ -62,7 +62,7 @@ const sections: FoodSection[] = [
     ],
   },
   {
-    id: "pasta", ru: "Паста", en: "Pasta", items: [
+    id: "pasta", ru: "Паста", en: "Pasta", prices: [13, 13, 14, 16, 14, 11, 11, 16, 15], items: [
       { image: "/images/food/pasta/pasta-carbonara.webp.jpg", ru: "Карбонара", en: "Carbonara" },
       { image: "/images/food/pasta/pasta-bolognese.webp.jpg", ru: "Болоньезе", en: "Bolognese" },
       { image: "/images/food/pasta/pasta-chicken-mushrooms.webp.jpg", ru: "Паста с курицей и грибами", en: "Chicken & Mushroom Pasta" },
@@ -75,7 +75,7 @@ const sections: FoodSection[] = [
     ],
   },
   {
-    id: "salads", ru: "Салаты", en: "Salads", items: [
+    id: "salads", ru: "Салаты", en: "Salads", prices: [11, 13, 13, 10, 10, 14, 13, 11, 12], items: [
       { image: "/images/food/salads/caesar-salad-chicken.webp.jpg", ru: "Цезарь с курицей", en: "Chicken Caesar Salad" },
       { image: "/images/food/salads/caesar-salad-shrimp.webp.jpg", ru: "Цезарь с креветками", en: "Shrimp Caesar Salad" },
       { image: "/images/food/salads/burrata-tomatoes.webp.jpg", ru: "Буррата с томатами", en: "Burrata with Tomatoes" },
@@ -88,7 +88,7 @@ const sections: FoodSection[] = [
     ],
   },
   {
-    id: "soups-and-snacks", ru: "Супы и закуски", en: "Soups & Snacks", items: [
+    id: "soups-and-snacks", ru: "Супы и закуски", en: "Soups & Snacks", prices: [8, 8, 8, 8, 7, 6, 8, 7, 5], items: [
       { image: "/images/food/soups-and-snacks/chicken-soup.webp.jpg", ru: "Куриный суп", en: "Chicken Soup" },
       { image: "/images/food/soups-and-snacks/cream-mushroom-soup.webp.jpg", ru: "Грибной крем-суп", en: "Cream of Mushroom Soup" },
       { image: "/images/food/soups-and-snacks/cream-pumpkin-soup.webp.jpg", ru: "Тыквенный крем-суп", en: "Cream of Pumpkin Soup" },
@@ -142,10 +142,13 @@ export default async function FoodPage({ params }: { params: Promise<{ locale: s
               <span className="text-sm text-black/40">{section.items.length} {en ? "items" : "позиций"}</span>
             </div>
             <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {section.items.map((item) => (
+              {section.items.map((item, itemIndex) => (
                 <article key={item.image} className="group overflow-hidden rounded-3xl border border-black/10 bg-white shadow-[0_12px_35px_rgba(61,43,34,0.05)]">
                   <div className="relative aspect-[4/3] overflow-hidden bg-[#eee7e1]"><Image src={item.image} alt={en ? item.en : item.ru} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw" className="object-cover transition duration-500 group-hover:scale-[1.03]" /></div>
-                  <div className="p-5"><h3 className="text-lg font-semibold leading-6">{en ? item.en : item.ru}</h3></div>
+                  <div className="flex items-start justify-between gap-4 p-5">
+                    <h3 className="text-lg font-semibold leading-6">{en ? item.en : item.ru}</h3>
+                    <span className="shrink-0 rounded-full bg-[#f2e8e1] px-3 py-1.5 text-sm font-bold text-[#6a4433]">${section.prices[itemIndex]}</span>
+                  </div>
                 </article>
               ))}
             </div>
