@@ -20,7 +20,7 @@ import type {
 
 import { getCakeBySlug } from "@/lib/cake-service";
 
-import { formatPrice } from "@/lib/cake-builder/utils";
+import { formatUsdFromKzt } from "@/lib/currency";
 
 import { enMessages } from "@/messages/en";
 import { ruMessages } from "@/messages/ru";
@@ -365,20 +365,14 @@ export default function CakeDetailsPage() {
 
                         <div className="mt-2 flex items-center gap-2">
                           <span className="font-semibold text-[#6a4433]">
-                            {formatPrice(
-                              variant.price,
-                            )}{" "}
-                            ₸
+                            {formatUsdFromKzt(variant.price)}
                           </span>
 
                           {variant.oldPrice &&
                             variant.oldPrice >
                               variant.price && (
                               <span className="text-sm text-black/35 line-through">
-                                {formatPrice(
-                                  variant.oldPrice,
-                                )}{" "}
-                                ₸
+                                {formatUsdFromKzt(variant.oldPrice)}
                               </span>
                             )}
                         </div>
@@ -405,17 +399,11 @@ export default function CakeDetailsPage() {
 
             <strong className="mt-2 block text-3xl">
               {selectedVariant
-                ? `${formatPrice(
-                    selectedVariant.price,
-                  )} ₸`
+                ? formatUsdFromKzt(selectedVariant.price)
                 : cake.minimumPrice > 0
                   ? isEnglish
-                    ? `from ${formatPrice(
-                        cake.minimumPrice,
-                      )} ₸`
-                    : `от ${formatPrice(
-                        cake.minimumPrice,
-                      )} ₸`
+                    ? `from ${formatUsdFromKzt(cake.minimumPrice)}`
+                    : `от ${formatUsdFromKzt(cake.minimumPrice)}`
                   : isEnglish
                     ? "To be confirmed"
                     : "Уточняется"}

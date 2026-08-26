@@ -38,10 +38,10 @@ const englishCategoryLabels: Record<
     "Tiered Cakes",
 
   "promo-9990":
-    "From 9,990 ₸",
+    "$20 Cakes",
 
   "promo-10990":
-    "From 10,990 ₸",
+    "$22 Cakes",
 
   popular: "Popular",
 
