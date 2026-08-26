@@ -178,6 +178,7 @@ export default function GalleryPage() {
             <Link
               href={`/${locale}/builder`}
               className="mt-7 inline-flex min-h-12 items-center justify-center rounded-full bg-white px-7 py-3 font-semibold text-[#684336] no-underline transition hover:-translate-y-0.5 hover:bg-[#f8eeea]"
+              style={{ color: "#684336" }}
             >
               {isEnglish
                 ? "Open Cake Builder"

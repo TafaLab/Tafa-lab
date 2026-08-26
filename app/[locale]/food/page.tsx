@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 
+import FoodMenuClient, { type FoodMenuSection } from "@/app/components/food/FoodMenuClient";
 import Footer from "@/app/components/layout/Footer";
 import Header from "@/app/components/layout/Header";
 import { enMessages } from "@/messages/en";
@@ -187,6 +187,17 @@ export default async function FoodPage({ params }: { params: Promise<{ locale: s
   const locale = value as Locale;
   const en = locale === "en";
   const text = en ? enMessages : ruMessages;
+  const menuSections: FoodMenuSection[] = sections.map((section) => ({
+    id: section.id,
+    name: en ? section.en : section.ru,
+    items: section.items.map((item, index) => ({
+      id: `${section.id}-${index}`,
+      image: item.image,
+      name: en ? item.en : item.ru,
+      ingredients: getIngredients(item.image, en),
+      price: section.prices[index],
+    })),
+  }));
 
   return (
     <main className="min-h-screen bg-[#faf8f6] text-[#342923]">
@@ -198,36 +209,7 @@ export default async function FoodPage({ params }: { params: Promise<{ locale: s
         <p className="mx-auto mt-3 max-w-2xl text-xs leading-5 text-black/45">{en ? "Demo prices and ingredients. Final recipes, allergens and prices are confirmed by the bakery." : "Цены и состав указаны для демонстрации. Итоговые рецептуры, аллергены и цены подтверждаются кондитерской."}</p>
       </section>
 
-      <nav className="sticky top-0 z-30 overflow-x-auto border-b border-black/10 bg-[#faf8f6]/95 px-4 py-3 backdrop-blur-md">
-        <div className="mx-auto flex w-max max-w-7xl gap-2">
-          {sections.map((section) => <a key={section.id} href={`#${section.id}`} className="whitespace-nowrap rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-medium transition hover:border-[#6a4433]/35">{en ? section.en : section.ru}</a>)}
-        </div>
-      </nav>
-
-      <div className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
-        {sections.map((section, index) => (
-          <section id={section.id} key={section.id} className={`scroll-mt-24 ${index ? "mt-20 md:mt-28" : ""}`}>
-            <div className="flex items-end justify-between gap-5 border-b border-black/10 pb-5">
-              <div><span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#a67b65]">{String(index + 1).padStart(2, "0")}</span><h2 className="mt-2 text-3xl font-semibold tracking-[-0.035em] md:text-5xl">{en ? section.en : section.ru}</h2></div>
-              <span className="text-sm text-black/40">{section.items.length} {en ? "items" : "позиций"}</span>
-            </div>
-            <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {section.items.map((item, itemIndex) => (
-                <article key={item.image} className="group overflow-hidden rounded-3xl border border-black/10 bg-white shadow-[0_12px_35px_rgba(61,43,34,0.05)]">
-                  <div className="relative aspect-[4/3] overflow-hidden bg-[#eee7e1]"><Image src={item.image} alt={en ? item.en : item.ru} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw" className="object-cover transition duration-500 group-hover:scale-[1.03]" /></div>
-                  <div className="p-5">
-                    <div className="flex items-start justify-between gap-4">
-                      <h3 className="text-lg font-semibold leading-6">{en ? item.en : item.ru}</h3>
-                      <span className="shrink-0 rounded-full bg-[#f2e8e1] px-3 py-1.5 text-sm font-bold text-[#6a4433]">${section.prices[itemIndex]}</span>
-                    </div>
-                    <p className="mt-3 text-sm leading-6 text-black/55">{getIngredients(item.image, en)}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-        ))}
-      </div>
+      <FoodMenuClient sections={menuSections} locale={locale} />
       <Footer locale={locale} text={text.footer} />
     </main>
   );
