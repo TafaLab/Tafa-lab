@@ -456,6 +456,7 @@ export default function AdminOrdersPage() {
       ? "Phone not provided"
       : "Телефон не указан";
   const selectedFoodOrder = getFoodOrder(selectedOrder);
+  const selectedReadyCake = selectedOrder?.cake_color === "READY_CAKE";
         return (
     <div className="admin-page">
       <section className="admin-page-heading">
@@ -565,6 +566,11 @@ export default function AdminOrdersPage() {
                             {locale === "en" ? "Food order" : "Заказ еды"}
                           </span>
                         )}
+                        {order.cake_color === "READY_CAKE" && (
+                          <span className="mt-2 inline-flex rounded-full bg-[#f3e9e2] px-3 py-1 text-xs font-semibold text-[#6a4433]">
+                            {locale === "en" ? "Ready cake" : "Готовый торт"}
+                          </span>
+                        )}
 
                         <span className="mt-1 block text-sm text-black/55">
                           {order.customer_name ||
@@ -595,7 +601,7 @@ export default function AdminOrdersPage() {
                       </div>
 
                       <strong>
-                        {order.weight === "FOOD_ORDER" ? "$" : ""}{formatPrice(Number(order.price ?? 0))}{order.weight === "FOOD_ORDER" ? "" : ` ${text.common.currency}`}
+                        {order.weight === "FOOD_ORDER" || order.cake_color === "READY_CAKE" ? "$" : ""}{formatPrice(Number(order.price ?? 0))}{order.weight === "FOOD_ORDER" || order.cake_color === "READY_CAKE" ? "" : ` ${text.common.currency}`}
                       </strong>
                     </div>
                   </button>
@@ -916,7 +922,7 @@ export default function AdminOrdersPage() {
                 </div>
                                            <aside>
                   <div className="sticky top-6">
-                    {!selectedFoodOrder && <StaticCakePreview
+                    {!selectedFoodOrder && !selectedReadyCake && <StaticCakePreview
                       base={selectedCake}
                       decorations={selectedOrder.decorations ?? []}
                       inscription={selectedOrder.inscription}
@@ -931,7 +937,7 @@ export default function AdminOrdersPage() {
                       </span>
 
                       <strong className="mt-1 block text-3xl">
-                        {selectedFoodOrder ? "$" : ""}{formatPrice(Number(selectedOrder.price ?? 0))}{selectedFoodOrder ? "" : ` ${text.common.currency}`}
+                        {selectedFoodOrder || selectedReadyCake ? "$" : ""}{formatPrice(Number(selectedOrder.price ?? 0))}{selectedFoodOrder || selectedReadyCake ? "" : ` ${text.common.currency}`}
                       </strong>
                     </div>
                   </div>

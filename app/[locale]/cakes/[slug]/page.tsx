@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import {
   useEffect,
@@ -21,6 +21,8 @@ import type {
 import { getCakeBySlug } from "@/lib/cake-service";
 
 import { formatUsdFromKzt } from "@/lib/currency";
+import { defaultInscription, fillings } from "@/lib/cake-builder/constants";
+import type { Filling } from "@/lib/cake-builder/types";
 
 import { enMessages } from "@/messages/en";
 import { ruMessages } from "@/messages/ru";
@@ -28,6 +30,7 @@ import { ruMessages } from "@/messages/ru";
 type Locale = "ru" | "en";
 
 export default function CakeDetailsPage() {
+  const router = useRouter();
   const params = useParams<{
     slug: string;
   }>();
@@ -65,6 +68,8 @@ export default function CakeDetailsPage() {
 
   const [error, setError] =
     useState<string | null>(null);
+  const [selectedFilling, setSelectedFilling] = useState<Filling>("snickers");
+  const [addedToCart, setAddedToCart] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -161,6 +166,34 @@ export default function CakeDetailsPage() {
       cake,
       selectedVariantId,
     ]);
+
+  const filling = fillings.find((item) => item.value === selectedFilling) ?? fillings[0];
+  const englishFillingNames: Record<Filling, string> = {
+    snickers: "Snickers",
+    "whoopie-pie": "Whoopie Pie",
+    honey: "Honey Cake",
+    "chocolate-banana": "Chocolate Banana",
+    pistachio: "Pistachio",
+    "milk-girl": "Milk Girl",
+    "red-velvet": "Red Velvet",
+  };
+
+  function addReadyCakeToCart() {
+    if (!cake || !selectedVariant) return;
+    const priceUsd = Math.round(selectedVariant.price / 500) + Math.round(filling.price / 500);
+    sessionStorage.setItem("milky-cake-order", JSON.stringify({
+      weight: selectedVariant.weightKg,
+      filling: filling.value,
+      color: "white",
+      decorations: [],
+      inscription: defaultInscription,
+      comment: `${isEnglish ? "Ready cake" : "Готовый торт"}: ${cake.name}`,
+      price: priceUsd,
+      currency: "USD",
+      readyCake: { name: cake.name, image: cake.imageUrl },
+    }));
+    setAddedToCart(true);
+  }
 
   if (isLoading) {
     return (
@@ -345,11 +378,10 @@ export default function CakeDetailsPage() {
                       <button
                         type="button"
                         key={variant.id}
-                        onClick={() =>
-                          setSelectedVariantId(
-                            variant.id,
-                          )
-                        }
+                        onClick={() => {
+                          setSelectedVariantId(variant.id);
+                          setAddedToCart(false);
+                        }}
                         className={`rounded-2xl border p-4 text-left transition ${
                           active
                             ? "border-[#6a4433] bg-[#f3e9e2] ring-2 ring-[#6a4433]/10"
@@ -390,6 +422,13 @@ export default function CakeDetailsPage() {
             )}
           </div>
 
+          <div className="mt-8 border-t border-black/10 pt-7">
+            <h2 className="text-lg font-semibold">{isEnglish ? "Choose Filling" : "Выберите начинку"}</h2>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {fillings.map((item) => <button key={item.value} type="button" onClick={() => { setSelectedFilling(item.value); setAddedToCart(false); }} className={`rounded-2xl border p-4 text-left transition ${selectedFilling === item.value ? "border-[#6a4433] bg-[#f3e9e2] ring-2 ring-[#6a4433]/10" : "border-black/10 bg-white hover:border-[#6a4433]/30"}`}><strong className="block">{isEnglish ? englishFillingNames[item.value] : item.label}</strong><span className="mt-1 block text-xs leading-5 text-black/50">{item.description}</span>{item.price > 0 && <span className="mt-2 block text-sm font-semibold text-[#6a4433]">+${Math.round(item.price / 500)}</span>}</button>)}
+            </div>
+          </div>
+
           <div className="mt-8 rounded-2xl bg-[#f7f3ef] p-5">
             <span className="text-sm text-black/50">
               {isEnglish
@@ -399,7 +438,7 @@ export default function CakeDetailsPage() {
 
             <strong className="mt-2 block text-3xl">
               {selectedVariant
-                ? formatUsdFromKzt(selectedVariant.price)
+                ? `$${Math.round(selectedVariant.price / 500) + Math.round(filling.price / 500)}`
                 : cake.minimumPrice > 0
                   ? isEnglish
                     ? `from ${formatUsdFromKzt(cake.minimumPrice)}`
@@ -410,15 +449,11 @@ export default function CakeDetailsPage() {
             </strong>
           </div>
 
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <Link
-              href={`/${locale}/builder`}
-              className="rounded-full bg-[#6a4433] px-6 py-4 text-center font-semibold text-white transition hover:opacity-90"
-            >
-              {isEnglish
-                ? "Customize This Cake"
-                : "Изменить этот торт"}
-            </Link>
+          <button type="button" onClick={addReadyCakeToCart} disabled={!selectedVariant} className="mt-6 w-full rounded-full bg-[#6a4433] px-6 py-4 text-center font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{addedToCart ? (isEnglish ? "Added to cart ✓" : "Добавлено в корзину ✓") : (isEnglish ? "Add to cart" : "Добавить в корзину")}</button>
+          {addedToCart && <button type="button" onClick={() => router.push(`/${locale}/checkout`)} className="mt-3 w-full rounded-full border border-[#6a4433] px-6 py-4 text-center font-semibold text-[#6a4433]">{isEnglish ? "Proceed to checkout →" : "Перейти к оформлению →"}</button>}
+
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <Link href={`/${locale}/builder`} className="rounded-full border border-[#6a4433] px-6 py-4 text-center font-semibold text-[#6a4433] transition hover:bg-[#f7f3ef]">{isEnglish ? "Customize in Builder" : "Изменить в конструкторе"}</Link>
 
             <Link
               href={`/${locale}/cakes`}

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 
@@ -38,6 +39,8 @@ type OrderData = {
   inscription: InscriptionSettings;
   comment: string;
   price: number;
+  currency?: "USD";
+  readyCake?: { name: string; image: string };
 };
 
 const englishFillingLabels: Record<
@@ -282,9 +285,7 @@ export default function CheckoutPage() {
           selectedFilling?.label ??
           "",
 
-        cake_color:
-          selectedCake?.id ??
-          order.color,
+        cake_color: order.readyCake ? "READY_CAKE" : selectedCake?.id ?? order.color,
 
         decorations:
           order.decorations,
@@ -610,17 +611,7 @@ export default function CheckoutPage() {
 
             {selectedCake && (
               <div className="mt-5 overflow-hidden rounded-2xl bg-[#f5f1ed]">
-                <StaticCakePreview
-                  base={
-                    selectedCake
-                  }
-                  decorations={
-                    order.decorations
-                  }
-                  inscription={
-                    order.inscription
-                  }
-                />
+                {order.readyCake ? <div className="relative aspect-square overflow-hidden rounded-2xl"><Image src={order.readyCake.image} alt={order.readyCake.name} fill className="object-cover" sizes="420px" /></div> : <StaticCakePreview base={selectedCake} decorations={order.decorations} inscription={order.inscription} />}
               </div>
             )}
 
@@ -719,10 +710,7 @@ export default function CheckoutPage() {
               </span>
 
               <strong className="mt-2 block text-3xl">
-                {formatPrice(
-                  order.price,
-                )}{" "}
-                ₸
+                {order.currency === "USD" ? "$" : ""}{formatPrice(order.price)}{order.currency === "USD" ? "" : " ₸"}
               </strong>
             </div>
 
