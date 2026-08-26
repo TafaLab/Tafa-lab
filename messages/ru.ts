@@ -210,7 +210,7 @@ export const ruMessages = {
         "от 18 000 ₸",
 
       image:
-        "/images/cake-classic.jpg",
+        "/cakes/elegant-04.jpg.jpg",
     },
 
     {
