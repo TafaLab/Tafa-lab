@@ -207,7 +207,7 @@ export const ruMessages = {
         "Праздничный торт",
 
       price:
-        "от 18 000 ₸",
+        "от $35",
 
       image:
         "/cakes/elegant-04.jpg.jpg",
@@ -221,7 +221,7 @@ export const ruMessages = {
         "Торт с ягодами",
 
       price:
-        "от 22 000 ₸",
+        "от $45",
 
       image:
         "/images/cake-berry.jpg",
@@ -235,7 +235,7 @@ export const ruMessages = {
         "Детский торт",
 
       price:
-        "от 25 000 ₸",
+        "от $50",
 
       image:
         "/images/cake-kids.jpg",
