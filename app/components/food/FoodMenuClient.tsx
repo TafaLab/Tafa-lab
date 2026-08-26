@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+
+import { supabase } from "@/lib/supabase";
 
 export type FoodMenuItem = {
   id: string;
@@ -27,6 +29,13 @@ export default function FoodMenuClient({ sections, locale }: { sections: FoodMen
   const [cartOpen, setCartOpen] = useState(false);
   const [cart, setCart] = useState<CartLine[]>([]);
   const [ready, setReady] = useState(false);
+  const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [deliveryType, setDeliveryType] = useState<"pickup" | "delivery">("pickup");
+  const [address, setAddress] = useState("");
+  const [comment, setComment] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -45,14 +54,6 @@ export default function FoodMenuClient({ sections, locale }: { sections: FoodMen
   const count = cart.reduce((sum, item) => sum + item.quantity, 0);
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  const whatsappHref = useMemo(() => {
-    const lines = cart.map((item) => `${item.quantity} × ${item.name} — $${item.price * item.quantity}`);
-    const message = en
-      ? `Hello! I would like to order:\n${lines.join("\n")}\nTotal: $${total}`
-      : `Здравствуйте! Хочу заказать:\n${lines.join("\n")}\nИтого: $${total}`;
-    return `https://wa.me/77471818493?text=${encodeURIComponent(message)}`;
-  }, [cart, en, total]);
-
   function add(item: FoodMenuItem) {
     setCart((current) => {
       const found = current.find((line) => line.id === item.id);
@@ -68,6 +69,50 @@ export default function FoodMenuClient({ sections, locale }: { sections: FoodMen
     setCart((current) => current
       .map((line) => line.id === id ? { ...line, quantity: line.quantity + delta } : line)
       .filter((line) => line.quantity > 0));
+  }
+
+  async function submitOrder(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (saving || cart.length === 0) return;
+    if (!customerName.trim() || !customerPhone.trim()) {
+      window.alert(en ? "Please enter your name and phone number." : "Введите имя и номер телефона.");
+      return;
+    }
+    if (deliveryType === "delivery" && !address.trim()) {
+      window.alert(en ? "Please enter the delivery address." : "Введите адрес доставки.");
+      return;
+    }
+
+    setSaving(true);
+    const foodOrder = {
+      type: "food",
+      items: cart.map(({ id, name, price, quantity }) => ({ id, name, price, quantity })),
+      comment: comment.trim() || null,
+    };
+    const { error } = await supabase.from("orders").insert({
+      customer_name: customerName.trim(),
+      customer_phone: customerPhone.trim(),
+      customer_email: null,
+      customer_messenger: null,
+      delivery_type: deliveryType,
+      delivery_date: null,
+      delivery_time: null,
+      address: deliveryType === "delivery" ? address.trim() : null,
+      weight: "FOOD_ORDER",
+      filling: "",
+      cake_color: "white",
+      decorations: [],
+      inscription: null,
+      customer_comment: JSON.stringify(foodOrder),
+      price: total,
+    });
+    setSaving(false);
+    if (error) {
+      window.alert(error.message);
+      return;
+    }
+    setCart([]);
+    setSuccess(true);
   }
 
   return <>
@@ -107,7 +152,17 @@ export default function FoodMenuClient({ sections, locale }: { sections: FoodMen
       <aside className="flex h-full w-full max-w-md flex-col bg-[#faf8f6] p-5 shadow-2xl" onMouseDown={(event) => event.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-black/10 pb-5"><div><span className="text-xs uppercase tracking-[.18em] text-black/40">STK Bakery</span><h2 className="mt-1 text-3xl font-semibold">{en ? "Cart" : "Корзина"}</h2></div><button type="button" onClick={() => setCartOpen(false)} className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white text-xl">×</button></div>
         <div className="flex-1 space-y-4 overflow-y-auto py-5">{cart.length === 0 ? <p className="rounded-2xl border border-dashed border-black/15 p-6 text-black/50">{en ? "Your cart is empty." : "Корзина пока пустая."}</p> : cart.map((item) => <div key={item.id} className="flex gap-4 rounded-2xl bg-white p-3 shadow-sm"><div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl"><Image src={item.image} alt={item.name} fill className="object-cover" sizes="80px"/></div><div className="min-w-0 flex-1"><h3 className="font-semibold leading-5">{item.name}</h3><p className="mt-1 text-sm text-[#6a4433]">${item.price}</p><div className="mt-2 flex items-center gap-3"><button type="button" onClick={() => changeQuantity(item.id, -1)} className="h-8 w-8 rounded-full border border-black/10">−</button><span>{item.quantity}</span><button type="button" onClick={() => changeQuantity(item.id, 1)} className="h-8 w-8 rounded-full border border-black/10">+</button></div></div></div>)}</div>
-        <div className="border-t border-black/10 pt-5"><div className="mb-4 flex items-center justify-between text-lg"><span>{en ? "Total" : "Итого"}</span><strong>${total}</strong></div>{cart.length > 0 && <a href={whatsappHref} target="_blank" rel="noreferrer" className="flex w-full items-center justify-center rounded-full bg-[#6a4433] px-6 py-4 font-semibold text-white no-underline" style={{color:"#fff"}}>{en ? "Order via WhatsApp" : "Оформить через WhatsApp"}</a>}</div>
+        <div className="border-t border-black/10 pt-5">
+          <div className="mb-4 flex items-center justify-between text-lg"><span>{en ? "Total" : "Итого"}</span><strong>${total}</strong></div>
+          {success ? <div className="rounded-2xl bg-[#e8f3e9] p-5 text-center text-[#35503a]"><strong className="block text-lg">{en ? "Order placed" : "Заказ оформлен"}</strong><p className="mt-2 text-sm">{en ? "The order is now visible in the bakery admin panel." : "Заказ уже появился в админке пекарни."}</p><a href={`/${locale}/admin/orders`} className="mt-4 inline-flex font-semibold underline underline-offset-4">{en ? "Open admin orders" : "Открыть заказы в админке"}</a></div> : cart.length > 0 && <form onSubmit={submitOrder} className="space-y-3">
+            <input value={customerName} onChange={(event) => setCustomerName(event.target.value)} required placeholder={en ? "Your name" : "Ваше имя"} className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 outline-none focus:border-[#6a4433]" />
+            <input value={customerPhone} onChange={(event) => setCustomerPhone(event.target.value)} required placeholder={en ? "Phone number" : "Номер телефона"} className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 outline-none focus:border-[#6a4433]" />
+            <select value={deliveryType} onChange={(event) => setDeliveryType(event.target.value as "pickup" | "delivery")} className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 outline-none focus:border-[#6a4433]"><option value="pickup">{en ? "Pickup" : "Самовывоз"}</option><option value="delivery">{en ? "Delivery" : "Доставка"}</option></select>
+            {deliveryType === "delivery" && <input value={address} onChange={(event) => setAddress(event.target.value)} required placeholder={en ? "Delivery address" : "Адрес доставки"} className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 outline-none focus:border-[#6a4433]" />}
+            <textarea value={comment} onChange={(event) => setComment(event.target.value)} rows={2} placeholder={en ? "Order comment" : "Комментарий к заказу"} className="w-full resize-none rounded-2xl border border-black/10 bg-white px-4 py-3 outline-none focus:border-[#6a4433]" />
+            <button disabled={saving} type="submit" className="w-full rounded-full bg-[#6a4433] px-6 py-4 font-semibold text-white disabled:opacity-60">{saving ? (en ? "Placing order…" : "Оформляем…") : (en ? "Place order" : "Оформить заказ")}</button>
+          </form>}
+        </div>
       </aside>
     </div>}
   </>;
