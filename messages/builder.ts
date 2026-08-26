@@ -297,10 +297,10 @@ const ru: BuilderMessages = {
         "Надпись можно двигать, увеличивать, уменьшать и изгибать.",
 
       notesLabel:
-        "Дополнительные пожелания",
+        "Аллергии и особые пожелания",
 
       notesPlaceholder:
-        "Опишите тематику праздника, оттенки и другие детали.",
+        "Например: аллергия на орехи, без лактозы, убрать определённый ингредиент. Также укажите тематику и другие детали.",
     },
   },
 
@@ -573,10 +573,10 @@ const en: BuilderMessages = {
         "The message can be moved, resized and curved.",
 
       notesLabel:
-        "Additional Notes",
+        "Allergies and Special Requests",
 
       notesPlaceholder:
-        "Describe the event theme, colors and any other details.",
+        "For example: nut allergy, lactose-free, or remove a specific ingredient. You can also describe the theme and other details.",
     },
   },
 

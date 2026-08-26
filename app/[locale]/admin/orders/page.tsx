@@ -813,7 +813,7 @@ export default function AdminOrdersPage() {
                   {selectedFoodOrder ? <div className="rounded-3xl bg-[#f8f5f2] p-6">
                     <h3 className="text-xl font-semibold">{locale === "en" ? "Food order" : "Заказ еды"}</h3>
                     <div className="mt-5 space-y-3">{selectedFoodOrder.items.map((item) => <div key={item.id} className="flex items-start justify-between gap-4 rounded-2xl bg-white p-4"><div><strong>{item.name}</strong><p className="mt-1 text-sm text-black/50">{item.quantity} × ${item.price}</p></div><strong>${item.quantity * item.price}</strong></div>)}</div>
-                    <div className="mt-6"><span className="text-sm text-black/45">{locale === "en" ? "Comment" : "Комментарий"}</span><p className="mt-2 whitespace-pre-wrap rounded-2xl bg-white p-4">{selectedFoodOrder.comment || "—"}</p></div>
+                    <div className="mt-6"><span className="text-sm text-black/45">{locale === "en" ? "Allergies and special requests" : "Аллергии и особые пожелания"}</span><p className="mt-2 whitespace-pre-wrap rounded-2xl bg-white p-4">{selectedFoodOrder.comment || "—"}</p></div>
                   </div> : <div className="rounded-3xl bg-[#f8f5f2] p-6">
                     <h3 className="text-xl font-semibold">
                       {

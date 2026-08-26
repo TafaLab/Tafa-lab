@@ -345,14 +345,14 @@ export default function CheckoutPage() {
               : "Оформление заказа"}
           </h1>
 
-          <Link
-            href={`/${locale}`}
-            className="text-sm text-black/55"
-          >
-            {isEnglish
-              ? "Home"
-              : "На главную"}
-          </Link>
+          <div className="flex flex-wrap gap-4 text-sm">
+            <Link href={`/${locale}/bakery`} className="text-black/55">
+              {isEnglish ? "Bakery home" : "Главная пекарни"}
+            </Link>
+            <Link href={`/${locale}/admin/orders`} className="font-semibold text-[#6a4433]">
+              {isEnglish ? "Demo admin →" : "Демо-админка →"}
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -701,8 +701,8 @@ export default function CheckoutPage() {
               <div className="mt-5 rounded-2xl border border-black/10 bg-[#fffaf7] p-4">
                 <span className="text-xs font-semibold uppercase tracking-[0.14em] text-black/40">
                   {isEnglish
-                    ? "Additional Notes"
-                    : "Дополнительные пожелания"}
+                    ? "Allergies and Special Requests"
+                    : "Аллергии и особые пожелания"}
                 </span>
 
                 <p className="mt-2 text-sm leading-6 text-black/65">

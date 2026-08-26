@@ -241,7 +241,7 @@ export default function AdminSidebar() {
           </div>
 
           <Link
-            href={`/${locale}`}
+            href={`/${locale}/bakery`}
             className="admin-store-link"
           >
             <span>←</span>

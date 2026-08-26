@@ -94,10 +94,10 @@ export default function ThankYouPage() {
 
         <div className="mt-10 flex flex-col gap-4 sm:flex-row">
           <Link
-            href={`/${locale}`}
+            href={`/${locale}/bakery`}
             className="flex-1 rounded-full bg-[#6a4433] px-6 py-4 text-center font-semibold text-white transition hover:opacity-90"
           >
-            {isEnglish ? "Back to Home" : "На главную"}
+            {isEnglish ? "Back to Bakery" : "На главную пекарни"}
           </Link>
 
           <Link

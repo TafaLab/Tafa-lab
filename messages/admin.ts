@@ -558,7 +558,7 @@ const ru: AdminMessages = {
       inscription: "Надпись",
       noInscription: "Нет",
       comment:
-        "Комментарий клиента",
+        "Аллергии и особые пожелания",
       noComment:
         "Комментарий отсутствует",
       price: "Стоимость",
@@ -1003,7 +1003,7 @@ const en: AdminMessages = {
       decorations: "Decorations",
       inscription: "Inscription",
       noInscription: "None",
-      comment: "Customer Comment",
+      comment: "Allergies and Special Requests",
       noComment: "No comment provided",
       price: "Price",
     },

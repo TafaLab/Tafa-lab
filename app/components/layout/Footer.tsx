@@ -81,6 +81,10 @@ export default function Footer({
           <Link href={`/${locale}/contacts`}>
             {text.contacts}
           </Link>
+
+          <Link href={`/${locale}/admin/orders`}>
+            {locale === "en" ? "Demo admin" : "Демо-админка"}
+          </Link>
         </div>
 
         <div className="footer-column">
