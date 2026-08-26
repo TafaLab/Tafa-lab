@@ -99,7 +99,15 @@ export default function Footer({
 
       <Container className="footer-bottom">
         <span>{text.copyright}</span>
-        <span>{text.slogan}</span>
+        <span>
+          {text.slogan}
+          {" · "}
+          <Link href={`/${locale}`} className="underline decoration-current/30 underline-offset-4">
+            {locale === "en"
+              ? "Demo by STK Lab"
+              : "Демо-проект STK Lab"}
+          </Link>
+        </span>
       </Container>
     </footer>
   );
