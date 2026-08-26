@@ -31,10 +31,12 @@ const copy = {
     systemEyebrow:"Beauty CRM", systemTitle:"Manage the business behind the appointments.",
     systemText:"For growing studios we can build CRM, appointment management, client records, revenue analytics, team performance, inventory and reporting.",
     portfolioTitle:"Beauty websites you can explore",
-    portfolioText:"Two complete demo experiences for different beauty businesses: a calm premium spa and a fashion-forward hair and beauty salon.",
+    portfolioText:"Four distinct demo experiences: a calm spa, a refined salon, an evidence-based cosmetology clinic and a fearless creative color studio.",
     portfolio:[
       ["Serena Spa & Wellness","Premium wellness website with rituals, programs, gift certificates and booking.","/images/stk-lab/beauty/demos/serena-spa-hero.png","Open demo","spa-demo"],
       ["Muse Hair & Beauty","Modern salon website with services, prices, artists, portfolio and online booking.","/images/stk-lab/beauty/demos/muse-salon-hero.png","Open demo","beauty-salon-demo"],
+      ["Aurea Cosmetology","Clinical beauty website focused on skin diagnostics, transparent protocols and specialist trust.","/images/stk-lab/beauty/demos/aurea-cosmetology-hero.png","Open demo","cosmetology-demo"],
+      ["VOLT Color Studio","Audacious creative salon website for vivid color, graphic cuts and editorial looks.","/images/stk-lab/beauty/demos/volt-salon-hero.png","Open demo","color-salon-demo"],
     ],
     processTitle:"From concept to launch",
     process:[
@@ -83,10 +85,12 @@ const copy = {
     systemEyebrow:"Beauty CRM", systemTitle:"Управляйте бизнесом за пределами календаря записей.",
     systemText:"Для растущих студий можем создать CRM, управление записями и клиентами, аналитику выручки, показатели мастеров, склад и отчётность.",
     portfolioTitle:"Beauty-сайты, которые можно открыть",
-    portfolioText:"Две полноценные демо-версии для разных beauty-бизнесов: спокойный премиальный SPA и современный салон волос и красоты.",
+    portfolioText:"Четыре совершенно разные демо-версии: спокойный SPA, элегантный салон, доказательная косметология и дерзкая студия креативного цвета.",
     portfolio:[
       ["Serena Spa & Wellness","Премиальный wellness-сайт с ритуалами, программами, сертификатами и записью.","/images/stk-lab/beauty/demos/serena-spa-hero.png","Открыть демо","spa-demo"],
       ["Muse Hair & Beauty","Современный сайт салона с услугами, ценами, мастерами, работами и онлайн-записью.","/images/stk-lab/beauty/demos/muse-salon-hero.png","Открыть демо","beauty-salon-demo"],
+      ["Aurea Cosmetology","Клинический beauty-сайт с диагностикой кожи, понятными протоколами и акцентом на доверие.","/images/stk-lab/beauty/demos/aurea-cosmetology-hero.png","Открыть демо","cosmetology-demo"],
+      ["VOLT Color Studio","Дерзкий сайт креативного салона с ярким цветом, графичными стрижками и editorial-образами.","/images/stk-lab/beauty/demos/volt-salon-hero.png","Открыть демо","color-salon-demo"],
     ],
     processTitle:"От идеи до запуска",
     process:[
@@ -130,7 +134,7 @@ export default function BeautyIndustryPage({locale}:{locale:Locale}) {
     <Feature image="/images/stk-lab/beauty/beauty-services-catalogue.webp" eyebrow={t.catalogueEyebrow} title={t.catalogueTitle} text={t.catalogueText} reverse/>
     <Feature image="/images/stk-lab/beauty/beauty-crm-dashboard.webp" eyebrow={t.systemEyebrow} title={t.systemTitle} text={t.systemText} dark/>
 
-    <section id="portfolio" className="bg-[var(--stk-surface-strong)] py-24 md:py-32"><div className="mx-auto max-w-7xl px-5 md:px-8"><p className="text-xs font-semibold uppercase tracking-[.24em] text-[color:var(--stk-muted-strong)]">{locale==="ru"?"2 доступных проекта":"2 available projects"}</p><h2 className="mt-4 text-4xl tracking-[-.045em] md:text-6xl">{t.portfolioTitle}</h2><p className="mt-6 max-w-3xl text-lg leading-8 text-[color:var(--stk-muted)]">{t.portfolioText}</p><div className="mt-14 grid gap-5 md:grid-cols-2">{t.portfolio.map(([name,desc,img,status,route])=><Link key={name} href={`/${locale}/${route}`} target="_blank" className="group overflow-hidden rounded-[var(--stk-radius-card)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)]"><div className="relative aspect-[16/10] overflow-hidden"><Image src={img} alt={name} fill className="object-cover transition duration-700 group-hover:scale-[1.03]" sizes="(max-width:768px) 95vw, 48vw"/><span className="absolute bottom-5 left-5 rounded-full bg-white/90 px-3 py-1.5 text-xs text-black">{status}</span></div><div className="p-6 md:p-8"><h3 className="text-3xl tracking-[-.04em]">{name}</h3><p className="mt-3 leading-7 text-[color:var(--stk-muted)]">{desc}</p><div className="mt-6 text-sm font-medium">{locale==="ru"?"Открыть сайт":"Open website"} →</div></div></Link>)}</div></div></section>
+    <section id="portfolio" className="bg-[var(--stk-surface-strong)] py-24 md:py-32"><div className="mx-auto max-w-7xl px-5 md:px-8"><p className="text-xs font-semibold uppercase tracking-[.24em] text-[color:var(--stk-muted-strong)]">{locale==="ru"?"4 доступных проекта":"4 available projects"}</p><h2 className="mt-4 text-4xl tracking-[-.045em] md:text-6xl">{t.portfolioTitle}</h2><p className="mt-6 max-w-3xl text-lg leading-8 text-[color:var(--stk-muted)]">{t.portfolioText}</p><div className="mt-14 grid gap-5 md:grid-cols-2">{t.portfolio.map(([name,desc,img,status,route])=><Link key={name} href={`/${locale}/${route}`} target="_blank" className="group overflow-hidden rounded-[var(--stk-radius-card)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)]"><div className="relative aspect-[16/10] overflow-hidden"><Image src={img} alt={name} fill className="object-cover transition duration-700 group-hover:scale-[1.03]" sizes="(max-width:768px) 95vw, 48vw"/><span className="absolute bottom-5 left-5 rounded-full bg-white/90 px-3 py-1.5 text-xs text-black">{status}</span></div><div className="p-6 md:p-8"><h3 className="text-3xl tracking-[-.04em]">{name}</h3><p className="mt-3 leading-7 text-[color:var(--stk-muted)]">{desc}</p><div className="mt-6 text-sm font-medium">{locale==="ru"?"Открыть сайт":"Open website"} →</div></div></Link>)}</div></div></section>
 
     <section id="process" className="bg-[var(--stk-accent-soft)] py-24 md:py-32"><div className="mx-auto max-w-7xl px-5 md:px-8"><h2 className="text-4xl tracking-[-.045em] md:text-6xl">{t.processTitle}</h2><div className="mt-16 divide-y divide-[color:var(--stk-border)] border-y border-[color:var(--stk-border)]">{t.process.map(([num,name,text])=><div key={num} className="grid gap-4 py-8 md:grid-cols-[100px_1fr_1.4fr]"><span className="text-sm text-[color:var(--stk-faint)]">{num}</span><h3 className="text-2xl">{name}</h3><p className="leading-7 text-[color:var(--stk-muted)]">{text}</p></div>)}</div></div></section>
 
