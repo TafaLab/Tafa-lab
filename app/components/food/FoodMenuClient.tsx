@@ -50,7 +50,7 @@ export default function FoodMenuClient({ sections, locale }: { sections: FoodMen
     const message = en
       ? `Hello! I would like to order:\n${lines.join("\n")}\nTotal: $${total}`
       : `Здравствуйте! Хочу заказать:\n${lines.join("\n")}\nИтого: $${total}`;
-    return `https://wa.me/77476818493?text=${encodeURIComponent(message)}`;
+    return `https://wa.me/77471818493?text=${encodeURIComponent(message)}`;
   }, [cart, en, total]);
 
   function add(item: FoodMenuItem) {

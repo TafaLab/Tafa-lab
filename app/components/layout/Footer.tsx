@@ -87,10 +87,10 @@ export default function Footer({
           <strong>{text.contactTitle}</strong>
 
           <a
-            href="tel:+77476818493"
+            href="tel:+77471818493"
             className="footer-phone"
           >
-            +7 747 681 84 93
+            +7 747 181 84 93
           </a>
 
           <span>{text.schedule}</span>
