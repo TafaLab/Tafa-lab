@@ -238,6 +238,7 @@ export default function AdminOrdersPage() {
       await supabase
         .from("orders")
         .select("*")
+        .neq("weight", "DEMO_SITE_ORDER")
         .order("created_at", {
           ascending: false,
         });

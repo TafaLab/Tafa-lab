@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import DemoSiteOrderForm from "@/app/components/demo/DemoSiteOrderForm";
 
 type Locale = "ru" | "en";
 
@@ -45,7 +46,7 @@ export default async function TravelDemo({ params }: { params: Promise<{ locale:
   const locale = value as Locale, t = copy[locale], other = locale === "ru" ? "en" : "ru";
   const images = ["/images/stk-lab/travel/travel-website-hero.webp", "/images/stk-lab/travel/travel-digital-concierge.webp", "/images/stk-lab/travel/travel-itinerary.webp"];
   return <main className="min-h-screen bg-[#f4f0e8] text-[#243127]">
-    <div className="bg-[#243127] px-5 py-2 text-center text-[11px] tracking-[.16em] text-white/65"><Link href={`/${locale}/industries/travel`} className="text-white">{t.demo} · {t.back} →</Link></div>
+    <div className="bg-[#243127] px-5 py-2 text-center text-[11px] tracking-[.16em] text-white/65"><Link href={`/${locale}/industries/travel`} className="text-white">{t.demo} · {t.back} →</Link><span className="mx-2">·</span><Link href={`/${locale}/demo-admin`} className="text-white">{locale === "ru" ? "Демо-админка" : "Demo admin"} →</Link></div>
     <header className="absolute left-0 right-0 z-30 border-b border-white/15 text-white"><div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 md:px-8"><Link href={`/${locale}/travel-demo`} className="font-serif text-2xl tracking-[.2em]">VELARIA</Link><nav className="hidden gap-8 text-sm md:flex">{t.nav.map((x,i)=><a key={x} href={i===0?"#destinations":i===1?"#journeys":i===2?"#about":"#contact"}>{x}</a>)}</nav><Link href={`/${other}/travel-demo`} className="rounded-full border border-white/30 px-3 py-2 text-xs uppercase">{other}</Link></div></header>
 
     <section className="relative min-h-[820px] overflow-hidden bg-[#243127] text-white"><Image src="/images/stk-lab/travel/travel-website-hero.webp" alt="Velaria bespoke travel" fill priority className="object-cover opacity-55" sizes="100vw"/><div className="absolute inset-0 bg-gradient-to-r from-[#17231b]/90 via-[#17231b]/55 to-transparent"/><div className="relative mx-auto flex min-h-[820px] max-w-7xl items-center px-5 pb-36 pt-32 md:px-8"><div className="max-w-3xl"><p className="text-xs uppercase tracking-[.3em] text-white/65">{t.eyebrow}</p><h1 className="mt-7 font-serif text-6xl leading-[.94] tracking-[-.045em] sm:text-7xl lg:text-[7rem]">{t.title}</h1><p className="mt-8 max-w-xl text-lg leading-8 text-white/75">{t.text}</p><div className="mt-10 flex flex-wrap gap-3"><a href="#contact" className="rounded-full bg-[#d8b57b] px-7 py-4 font-semibold text-[#1d281f]">{t.start}</a><a href="#destinations" className="rounded-full border border-white/30 px-7 py-4">{t.explore}</a></div></div></div>
@@ -58,7 +59,7 @@ export default async function TravelDemo({ params }: { params: Promise<{ locale:
 
     <section id="journeys" className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-28 md:grid-cols-2 md:px-8 md:py-36"><div className="relative aspect-[4/3] overflow-hidden rounded-[2rem]"><Image src="/images/stk-lab/travel/travel-digital-concierge.webp" alt="Velaria digital concierge" fill className="object-cover" sizes="(max-width:768px) 95vw, 50vw"/></div><div><p className="text-xs uppercase tracking-[.28em] text-[#8d744f]">{t.appEyebrow}</p><h2 className="mt-5 font-serif text-5xl tracking-[-.04em] md:text-7xl">{t.appTitle}</h2><p className="mt-7 text-lg leading-8 text-black/55">{t.appText}</p></div></section>
     <section className="bg-[#d9c5a5] px-5 py-24 text-center md:py-32"><blockquote className="mx-auto max-w-5xl font-serif text-4xl italic leading-tight md:text-7xl">“{t.quote}”</blockquote></section>
-    <section id="contact" className="bg-[#17231b] px-5 py-28 text-white md:py-36"><div className="mx-auto max-w-5xl text-center"><h2 className="font-serif text-5xl tracking-[-.04em] md:text-8xl">{t.cta}</h2><p className="mx-auto mt-7 max-w-2xl text-lg leading-8 text-white/60">{t.ctaText}</p><button type="button" className="mt-10 rounded-full bg-[#d8b57b] px-8 py-4 font-semibold text-[#17231b]">{t.ctaButton}</button></div></section>
+    <section id="contact" className="bg-[#17231b] px-5 py-28 text-white md:py-36"><div className="mx-auto max-w-5xl text-center"><h2 className="font-serif text-5xl tracking-[-.04em] md:text-8xl">{t.cta}</h2><p className="mx-auto mt-7 max-w-2xl text-lg leading-8 text-white/60">{t.ctaText}</p><DemoSiteOrderForm locale={locale} siteName="Velaria Travel" /></div></section>
     <footer className="bg-[#101912] px-5 py-8 text-white/50"><div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 text-sm md:flex-row"><span>© 2026 VELARIA</span><span>{t.demo}</span></div></footer>
   </main>;
 }
