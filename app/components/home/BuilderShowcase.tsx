@@ -60,7 +60,7 @@ export default function BuilderShowcase({
               <div className="builder-photo">
                 <div className="builder-photo-image">
                   <Image
-                    src="/images/hero-cake.jpg"
+                    src="/cakes/tiered-01.jpg.jpg"
                     alt={
                       locale === "ru"
                         ? "Предпросмотр элегантного розового торта"
