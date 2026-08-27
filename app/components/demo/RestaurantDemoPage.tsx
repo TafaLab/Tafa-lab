@@ -4,9 +4,17 @@ import Link from "next/link";
 import DemoSiteOrderForm from "./DemoSiteOrderForm";
 
 type Locale = "ru" | "en";
-type Kind = "vegan" | "halal" | "japanese";
+type Kind = "mediterranean" | "vegan" | "halal" | "japanese";
 
 const data = {
+  mediterranean: {
+    brand: "LIMONÉ",
+    hero: "/images/stk-lab/restaurants/restaurant-website-hero.webp",
+    storyImage: "/images/stk-lab/restaurants/demos/verdant-open-kitchen-v1.webp",
+    bg: "#f6f1e7", ink: "#294232", accent: "#e8b84a", soft: "#eee3c9",
+    en: { label:"Mediterranean kitchen · seasonal table", title:"Sunlight, season and the pleasure of sharing.", text:"A relaxed Mediterranean restaurant shaped by coastal ingredients, open-fire cooking and generous hospitality.", cta:"Reserve a table", menu:"From the coast", story:"Made for long lunches", storyText:"Seasonal produce, bright citrus, olive oil and the warmth of the grill come together in dishes designed for the whole table.", stats:[["14","seasonal dishes"],["6 days","lunch and dinner"],["20","private guests"]], dishes:[["Whipped feta","roasted peppers, warm bread","$10"],["Charred octopus","lemon, potato, oregano","$19"],["Sea bass crudo","citrus, olive oil, herbs","$18"],["Lemon chicken","artichoke, green olives","$21"],["Wild mushroom orzo","parmesan, thyme","$17"],["Olive oil cake","lemon cream","$9"]], form:"Plan your table", formText:"Choose a date, party size and tell us if you are celebrating." },
+    ru: { label:"Средиземноморская кухня · сезонное меню", title:"Солнце, сезон и удовольствие быть вместе.", text:"Спокойный средиземноморский ресторан с прибрежными продуктами, открытым огнём и щедрым гостеприимством.", cta:"Забронировать стол", menu:"Вкус побережья", story:"Для долгих обедов", storyText:"Сезонные продукты, яркие цитрусы, оливковое масло и тепло гриля объединяются в блюдах для общего стола.", stats:[["14","сезонных блюд"],["6 дней","обеды и ужины"],["20","гостей в private room"]], dishes:[["Взбитая фета","печёный перец, тёплый хлеб","$10"],["Осьминог на гриле","лимон, картофель, орегано","$19"],["Крудо из сибаса","цитрус, оливковое масло, травы","$18"],["Лимонный цыплёнок","артишок, зелёные оливки","$21"],["Орзо с лесными грибами","пармезан, тимьян","$17"],["Пирог с оливковым маслом","лимонный крем","$9"]], form:"Запланируйте встречу", formText:"Выберите дату, количество гостей и сообщите, если у вас праздник." },
+  },
   vegan: {
     brand: "VERDANT",
     hero: "/images/stk-lab/restaurants/demos/verde-restaurant-hero-v2.webp",
@@ -37,7 +45,7 @@ export default function RestaurantDemoPage({ locale, kind }: { locale: Locale; k
   const item = data[kind];
   const t = item[locale];
   const other = locale === "ru" ? "en" : "ru";
-  const route = kind === "vegan" ? "vegan-restaurant-demo" : kind === "halal" ? "halal-restaurant-demo" : "japanese-restaurant-demo";
+  const route = kind === "mediterranean" ? "limone-restaurant-demo" : kind === "vegan" ? "vegan-restaurant-demo" : kind === "halal" ? "halal-restaurant-demo" : "japanese-restaurant-demo";
   const dark = kind === "japanese";
   const japanese = kind === "japanese";
   return <main style={{background:item.bg,color:item.ink}} className="min-h-screen">
