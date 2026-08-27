@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import Button from "@/app/components/ui/Button";
 import Container from "@/app/components/ui/Container";
 import SectionLabel from "@/app/components/ui/SectionLabel";
@@ -56,7 +58,18 @@ export default function BuilderShowcase({
               </div>
 
               <div className="builder-photo">
-                <div className="builder-photo-image" />
+                <div className="builder-photo-image">
+                  <Image
+                    src="/cakes/tiered-01.jpg.jpg"
+                    alt={
+                      locale === "ru"
+                        ? "Предпросмотр элегантного розового торта"
+                        : "Preview of an elegant pink custom cake"
+                    }
+                    fill
+                    sizes="(max-width: 900px) 70vw, 420px"
+                  />
+                </div>
                 <span>{text.preview}</span>
               </div>
             </div>

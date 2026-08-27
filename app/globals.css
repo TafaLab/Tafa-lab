@@ -732,8 +732,15 @@ img {
   background: linear-gradient(145deg, #fce8ee, #f5d5df);
 }
 
+.builder-photo-image {
+  position: absolute;
+  inset: 0;
+}
 
-
+.builder-photo-image img {
+  object-fit: cover;
+  object-position: center 44%;
+}
 
 .builder-photo span {
   position: absolute;

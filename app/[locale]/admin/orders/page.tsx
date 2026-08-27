@@ -83,6 +83,22 @@ type Order = {
     | null;
 };
 
+type FoodOrderPayload = {
+  type: "food";
+  items: Array<{ id: string; name: string; price: number; quantity: number }>;
+  comment: string | null;
+};
+
+function getFoodOrder(order: Order | null): FoodOrderPayload | null {
+  if (!order || order.weight !== "FOOD_ORDER" || !order.customer_comment) return null;
+  try {
+    const parsed = JSON.parse(order.customer_comment) as FoodOrderPayload;
+    return parsed.type === "food" && Array.isArray(parsed.items) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function AdminOrdersPage() {
   const currentLocale =
     useLocale();
@@ -222,6 +238,7 @@ export default function AdminOrdersPage() {
       await supabase
         .from("orders")
         .select("*")
+        .neq("weight", "DEMO_SITE_ORDER")
         .order("created_at", {
           ascending: false,
         });
@@ -270,7 +287,11 @@ export default function AdminOrdersPage() {
   }
 
   useEffect(() => {
-    void loadOrders();
+    const timer = window.setTimeout(() => {
+      void loadOrders();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   async function changeStatus(
@@ -439,6 +460,8 @@ export default function AdminOrdersPage() {
     locale === "en"
       ? "Phone not provided"
       : "Телефон не указан";
+  const selectedFoodOrder = getFoodOrder(selectedOrder);
+  const selectedReadyCake = selectedOrder?.cake_color === "READY_CAKE";
         return (
     <div className="admin-page">
       <section className="admin-page-heading">
@@ -543,6 +566,17 @@ export default function AdminOrdersPage() {
                               .toUpperCase()}
                         </strong>
 
+                        {order.weight === "FOOD_ORDER" && (
+                          <span className="mt-2 inline-flex rounded-full bg-[#e8f1e8] px-3 py-1 text-xs font-semibold text-[#35503a]">
+                            {locale === "en" ? "Food order" : "Заказ еды"}
+                          </span>
+                        )}
+                        {order.cake_color === "READY_CAKE" && (
+                          <span className="mt-2 inline-flex rounded-full bg-[#f3e9e2] px-3 py-1 text-xs font-semibold text-[#6a4433]">
+                            {locale === "en" ? "Ready cake" : "Готовый торт"}
+                          </span>
+                        )}
+
                         <span className="mt-1 block text-sm text-black/55">
                           {order.customer_name ||
                             text.common
@@ -572,15 +606,7 @@ export default function AdminOrdersPage() {
                       </div>
 
                       <strong>
-                        {formatPrice(
-                          Number(
-                            order.price ?? 0,
-                          ),
-                        )}{" "}
-                        {
-                          text.common
-                            .currency
-                        }
+                        {order.weight === "FOOD_ORDER" || order.cake_color === "READY_CAKE" ? "$" : ""}{formatPrice(Number(order.price ?? 0))}{order.weight === "FOOD_ORDER" || order.cake_color === "READY_CAKE" ? "" : ` ${text.common.currency}`}
                       </strong>
                     </div>
                   </button>
@@ -795,7 +821,11 @@ export default function AdminOrdersPage() {
                     </dl>
                   </div>
 
-                  <div className="rounded-3xl bg-[#f8f5f2] p-6">
+                  {selectedFoodOrder ? <div className="rounded-3xl bg-[#f8f5f2] p-6">
+                    <h3 className="text-xl font-semibold">{locale === "en" ? "Food order" : "Заказ еды"}</h3>
+                    <div className="mt-5 space-y-3">{selectedFoodOrder.items.map((item) => <div key={item.id} className="flex items-start justify-between gap-4 rounded-2xl bg-white p-4"><div><strong>{item.name}</strong><p className="mt-1 text-sm text-black/50">{item.quantity} × ${item.price}</p></div><strong>${item.quantity * item.price}</strong></div>)}</div>
+                    <div className="mt-6"><span className="text-sm text-black/45">{locale === "en" ? "Allergies and special requests" : "Аллергии и особые пожелания"}</span><p className="mt-2 whitespace-pre-wrap rounded-2xl bg-white p-4">{selectedFoodOrder.comment || "—"}</p></div>
+                  </div> : <div className="rounded-3xl bg-[#f8f5f2] p-6">
                     <h3 className="text-xl font-semibold">
                       {
                         text.orders.cake
@@ -893,20 +923,15 @@ export default function AdminOrdersPage() {
                             .noComment}
                       </p>
                     </div>
-                  </div>
+                  </div>}
                 </div>
                                            <aside>
                   <div className="sticky top-6">
-                    <StaticCakePreview
+                    {!selectedFoodOrder && !selectedReadyCake && <StaticCakePreview
                       base={selectedCake}
-                      decorations={
-                        selectedOrder.decorations ??
-                        []
-                      }
-                      inscription={
-                        selectedOrder.inscription
-                      }
-                    />
+                      decorations={selectedOrder.decorations ?? []}
+                      inscription={selectedOrder.inscription}
+                    />}
 
                     <div className="mt-5 rounded-2xl bg-[#6a4433] p-5 text-white">
                       <span className="text-sm text-white/70">
@@ -917,16 +942,7 @@ export default function AdminOrdersPage() {
                       </span>
 
                       <strong className="mt-1 block text-3xl">
-                        {formatPrice(
-                          Number(
-                            selectedOrder.price ??
-                              0,
-                          ),
-                        )}{" "}
-                        {
-                          text.common
-                            .currency
-                        }
+                        {selectedFoodOrder || selectedReadyCake ? "$" : ""}{formatPrice(Number(selectedOrder.price ?? 0))}{selectedFoodOrder || selectedReadyCake ? "" : ` ${text.common.currency}`}
                       </strong>
                     </div>
                   </div>

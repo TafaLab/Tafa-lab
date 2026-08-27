@@ -12,7 +12,7 @@ const copy = {
     eyebrow:"Websites & digital systems for travel businesses",
     title:"Travel websites that turn inspiration into carefully planned journeys.",
     text:"Premium websites and custom travel systems for agencies, tour operators and bespoke travel companies — trip builders, itineraries, bookings, CRM, operations and digital concierge experiences.",
-    primary:"Explore travel solutions", secondary:"Discuss a project",
+    primary:"View travel websites", secondary:"Discuss a project",
     introTitle:"From the first idea to the final transfer — one connected digital journey.",
     introText:"We combine destination-led editorial design with practical travel technology, helping clients discover, plan and experience a trip while giving the travel team control over requests, bookings, payments and operations.",
     servicesTitle:"Digital solutions for travel companies",
@@ -30,13 +30,13 @@ const copy = {
     itineraryText:"Hotels, restaurants, activities, transfers, reservations and daily plans stay organized and easy to access throughout the trip.",
     crmEyebrow:"Travel CRM", crmTitle:"Manage every trip from first request to return home.",
     crmText:"For travel teams we can build CRM and operations tools for enquiries, clients, bookings, payments, suppliers, trip statuses, margins and reporting.",
-    portfolioTitle:"Travel projects",
-    portfolioText:"Live travel websites created by STK Lab. Where a full case is not ready yet, we show a clear coming-soon placeholder instead of presenting a concept as completed work.",
+    portfolioTitle:"Websites for travel businesses",
+    portfolioText:"This is the main STK Lab travel collection: a destination platform, a bespoke agency, an extreme expedition company and a travel hacking academy.",
     portfolio:[
-      ["STK Travel","Travel guide platform with destination guides, practical articles and consultation flow.","/images/stk-lab/travel/travel-website-hero.webp","Live project","https://stk-labs.tilda.ws"],
-      ["Luxury Travel Agency","Premium bespoke travel website project.","/images/stk-lab/travel/travel-trip-builder.webp","Coming soon",""],
-      ["Boutique Tour Operator","Editorial tour and destination website project.","/images/stk-lab/travel/travel-itinerary.webp","Coming soon",""],
-      ["Travel Concierge Platform","Private travel concierge website and client experience.","/images/stk-lab/travel/travel-digital-concierge.webp","Coming soon",""],
+      ["STK Travel","Travel guide platform with destination guides, practical articles and consultation flow.","/images/stk-lab/travel/travel-website-hero-v2.webp","Live project","https://stk-labs.tilda.ws"],
+      ["Velaria Travel","Premium bespoke travel agency demo with curated journeys and digital concierge.","/images/stk-lab/travel/velaria/velaria-hero.webp","Open demo","travel-demo"],
+      ["Altitude Expeditions","Extreme and sports expedition website featuring the Himalayas, Amazon, Patagonia and Arctic journeys.","/images/stk-lab/travel/altitude/altitude-hero.webp","Open demo","expedition-demo"],
+      ["Milewise Academy","Travel hacking education platform covering fares, miles, loyalty programs and complex itineraries.","/images/stk-lab/travel/milewise/milewise-hero.webp","Open demo","travel-hacking-demo"],
     ],
     processTitle:"From concept to launch",
     process:[
@@ -66,7 +66,7 @@ const copy = {
     eyebrow:"Сайты и цифровые системы для travel-бизнеса",
     title:"Travel-сайты, которые превращают вдохновение в продуманное путешествие.",
     text:"Премиальные сайты и индивидуальные системы для агентств, туроператоров и travel-компаний: конструктор поездки, маршруты, бронирования, CRM, операционное управление и digital concierge.",
-    primary:"Смотреть travel-решения", secondary:"Обсудить проект",
+    primary:"Смотреть travel-сайты", secondary:"Обсудить проект",
     introTitle:"От первой идеи до последнего трансфера — один связанный цифровой путь.",
     introText:"Мы соединяем эмоциональный дизайн направлений с практичными travel-технологиями: клиенту удобно выбирать и планировать поездку, а команда контролирует заявки, бронирования, оплаты и операции.",
     servicesTitle:"Цифровые решения для travel-компаний",
@@ -84,13 +84,13 @@ const copy = {
     itineraryText:"Отели, рестораны, активности, трансферы, бронирования и планы по дням организованы и доступны клиенту на протяжении всей поездки.",
     crmEyebrow:"Travel CRM", crmTitle:"Управляйте каждой поездкой от первой заявки до возвращения клиента.",
     crmText:"Для travel-команд можем создать CRM и операционные инструменты для заявок, клиентов, бронирований, оплат, поставщиков, статусов поездки, маржи и отчётности.",
-    portfolioTitle:"Travel-проекты",
-    portfolioText:"Здесь показываем именно живые сайты STK Lab. Если полноценный кейс ещё не создан, вместо выдуманной работы стоит честная заглушка «Проект готовится».",
+    portfolioTitle:"Сайты для туристического бизнеса",
+    portfolioText:"Это общая витрина travel-направления STK Lab: платформа направлений, агентство индивидуальных путешествий, компания экстремальных экспедиций и школа travel hacking.",
     portfolio:[
-      ["STK Travel","Travel-платформа с гайдами по направлениям, полезными статьями и консультациями.","/images/stk-lab/travel/travel-website-hero.webp","Живой проект","https://stk-labs.tilda.ws"],
-      ["Luxury Travel Agency","Премиальный сайт для индивидуальных путешествий.","/images/stk-lab/travel/travel-trip-builder.webp","Проект готовится",""],
-      ["Boutique Tour Operator","Editorial-сайт туров и направлений.","/images/stk-lab/travel/travel-itinerary.webp","Проект готовится",""],
-      ["Travel Concierge Platform","Сайт и клиентский кабинет для персонального travel-консьержа.","/images/stk-lab/travel/travel-digital-concierge.webp","Проект готовится",""],
+      ["STK Travel","Travel-платформа с гайдами по направлениям, полезными статьями и консультациями.","/images/stk-lab/travel/travel-website-hero-v2.webp","Живой проект","https://stk-labs.tilda.ws"],
+      ["Velaria Travel","Премиальный демо-сайт агентства индивидуальных путешествий с маршрутами и digital concierge.","/images/stk-lab/travel/velaria/velaria-hero.webp","Открыть демо","travel-demo"],
+      ["Altitude Expeditions","Сайт экстремальных и спортивных экспедиций: Гималаи, Амазония, Патагония и Арктика.","/images/stk-lab/travel/altitude/altitude-hero.webp","Открыть демо","expedition-demo"],
+      ["Milewise Academy","Образовательная платформа по travel hacking: тарифы, мили, бонусные программы и сложные маршруты.","/images/stk-lab/travel/milewise/milewise-hero.webp","Открыть демо","travel-hacking-demo"],
     ],
     processTitle:"От идеи до запуска",
     process:[
@@ -124,17 +124,22 @@ export default function TravelIndustryPage({locale}:{locale:Locale}) {
   return <StkSiteShell>
     <header className="sticky top-0 z-50 border-b border-[color:var(--stk-border)] bg-[color:var(--stk-bg-translucent)] backdrop-blur-xl"><div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8"><Link href={`/${locale}`} className="text-lg font-semibold tracking-[-.03em]">STK Lab</Link><nav className="hidden gap-7 text-sm md:flex"><a href="#services">{locale==="ru"?"Решения":"Solutions"}</a><a href="#portfolio">{locale==="ru"?"Работы":"Portfolio"}</a><a href="#process">{locale==="ru"?"Процесс":"Process"}</a><a href="#contact">{locale==="ru"?"Контакты":"Contact"}</a></nav><Link href={`/${other}/industries/travel`} className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase">{other}</Link></div></header>
 
-    <section className="mx-auto grid max-w-7xl items-center gap-12 px-5 pb-20 pt-16 md:grid-cols-[1.05fr_.95fr] md:px-8 md:pb-28 md:pt-24"><StkReveal><div><p className="text-xs font-semibold uppercase tracking-[.25em] text-[color:var(--stk-muted-strong)]">{t.eyebrow}</p><h1 className="mt-6 text-balance text-5xl font-medium tracking-[-.055em] md:text-7xl lg:text-[5rem] lg:leading-[.98]">{t.title}</h1><p className="mt-7 max-w-2xl text-lg leading-8 text-[color:var(--stk-muted)]">{t.text}</p><div className="mt-9 flex flex-wrap gap-3"><a href="#services" className="rounded-full bg-[var(--stk-dark)] px-6 py-3.5 text-sm" style={{color:"#fff"}}>{t.primary}</a><a href={`${whatsapp}?text=${message}`} target="_blank" rel="noreferrer" className="rounded-full border border-[color:var(--stk-border)] px-6 py-3.5 text-sm" style={{color:"var(--stk-text)"}}>{t.secondary}</a></div></div></StkReveal><StkReveal delay={1}><div className="relative aspect-[4/3] overflow-hidden rounded-[var(--stk-radius-card)] bg-[var(--stk-media-bg)]"><Image src="/images/stk-lab/travel/travel-website-hero.webp" alt="Premium travel website" fill priority className="object-cover" sizes="(max-width:768px) 95vw, 45vw"/></div></StkReveal></section>
+    <section className="mx-auto grid max-w-7xl items-center gap-12 px-5 pb-20 pt-16 md:grid-cols-[1.05fr_.95fr] md:px-8 md:pb-28 md:pt-24"><StkReveal><div><p className="text-xs font-semibold uppercase tracking-[.25em] text-[color:var(--stk-muted-strong)]">{t.eyebrow}</p><h1 className="mt-6 text-balance text-5xl font-medium tracking-[-.055em] md:text-7xl lg:text-[5rem] lg:leading-[.98]">{t.title}</h1><p className="mt-7 max-w-2xl text-lg leading-8 text-[color:var(--stk-muted)]">{t.text}</p><div className="mt-9 flex flex-wrap gap-3"><a href="#portfolio" className="rounded-full bg-[var(--stk-dark)] px-6 py-3.5 text-sm" style={{color:"#fff"}}>{t.primary}</a><a href={`${whatsapp}?text=${message}`} target="_blank" rel="noreferrer" className="rounded-full border border-[color:var(--stk-border)] px-6 py-3.5 text-sm" style={{color:"var(--stk-text)"}}>{t.secondary}</a></div></div></StkReveal><StkReveal delay={1}><div className="relative aspect-[4/3] overflow-hidden rounded-[var(--stk-radius-card)] bg-[var(--stk-media-bg)]"><Image src="/images/stk-lab/travel/travel-website-hero-v2.webp" alt="Premium travel website" fill priority className="object-cover" sizes="(max-width:768px) 95vw, 45vw"/></div></StkReveal></section>
 
     <section className="border-y border-[color:var(--stk-border)] bg-[color:var(--stk-surface)]"><div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 md:grid-cols-2 md:px-8 md:py-28"><h2 className="text-4xl tracking-[-.045em] md:text-6xl">{t.introTitle}</h2><p className="text-lg leading-8 text-[color:var(--stk-muted)]">{t.introText}</p></div></section>
 
     <section id="services" className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"><h2 className="max-w-3xl text-4xl tracking-[-.045em] md:text-6xl">{t.servicesTitle}</h2><div className="mt-14 grid border-l border-t border-[color:var(--stk-border)] sm:grid-cols-2 lg:grid-cols-3">{t.services.map(([name,price,text],i)=><div key={name} className="min-h-[300px] border-b border-r border-[color:var(--stk-border)] p-7 md:p-9"><div className="flex justify-between gap-4"><span className="text-xs text-[color:var(--stk-faint)]">{String(i+1).padStart(2,"0")}</span><span className="text-sm font-medium">{price}</span></div><h3 className="mt-16 text-2xl tracking-[-.035em]">{name}</h3><p className="mt-4 leading-7 text-[color:var(--stk-muted)]">{text}</p></div>)}</div></section>
 
-    <Feature image="/images/stk-lab/travel/travel-trip-builder.webp" eyebrow={t.builderEyebrow} title={t.builderTitle} text={t.builderText}/>
-    <Feature image="/images/stk-lab/travel/travel-itinerary.webp" eyebrow={t.itineraryEyebrow} title={t.itineraryTitle} text={t.itineraryText} reverse/>
-    <Feature image="/images/stk-lab/travel/travel-crm-dashboard.webp" eyebrow={t.crmEyebrow} title={t.crmTitle} text={t.crmText} dark/>
+    <Feature image="/images/stk-lab/travel/travel-trip-builder-v2.webp" eyebrow={t.builderEyebrow} title={t.builderTitle} text={t.builderText}/>
+    <Feature image="/images/stk-lab/travel/travel-itinerary-v2.webp" eyebrow={t.itineraryEyebrow} title={t.itineraryTitle} text={t.itineraryText} reverse/>
+    <Feature image="/images/stk-lab/travel/travel-crm-dashboard-v2.webp" eyebrow={t.crmEyebrow} title={t.crmTitle} text={t.crmText} dark/>
 
-    <section id="portfolio" className="bg-[var(--stk-surface-strong)] py-24 md:py-32"><div className="mx-auto max-w-7xl px-5 md:px-8"><h2 className="text-4xl tracking-[-.045em] md:text-6xl">{t.portfolioTitle}</h2><p className="mt-6 max-w-3xl text-lg leading-8 text-[color:var(--stk-muted)]">{t.portfolioText}</p><div className="mt-14 grid gap-5 md:grid-cols-2">{t.portfolio.map(([name,desc,img,status,url],i)=>{const card=<div className="group h-full overflow-hidden rounded-[var(--stk-radius-card)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)]"><div className="relative aspect-[16/10] overflow-hidden"><Image src={img} alt={name} fill className="object-cover transition duration-700 group-hover:scale-[1.03]" sizes="(max-width:768px) 95vw, 48vw"/><div className={`absolute inset-0 ${url?"":"bg-[var(--stk-dark)]/20"}`}/><span className="absolute bottom-5 left-5 rounded-full bg-white/90 px-3 py-1.5 text-xs">{status}</span></div><div className="p-6 md:p-8"><h3 className="text-3xl tracking-[-.04em]">{name}</h3><p className="mt-3 leading-7 text-[color:var(--stk-muted)]">{desc}</p>{url&&<div className="mt-6 text-sm font-medium">{locale==="ru"?"Открыть проект":"View live project"} →</div>}</div></div>;return url?<a key={name} href={url} target="_blank" rel="noreferrer" className={i===0?"md:col-span-2":""}>{card}</a>:<div key={name}>{card}</div>})}</div></div></section>
+    <section className="mx-auto grid max-w-7xl gap-5 px-5 py-24 md:grid-cols-2 md:px-8 md:py-32">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--stk-radius-card)]"><Image src="/images/stk-lab/travel/travel-bookings-operations-v2.webp" alt="Travel booking operations" fill className="object-cover" sizes="(max-width:768px) 95vw, 50vw"/></div>
+      <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--stk-radius-card)]"><Image src="/images/stk-lab/travel/travel-digital-concierge-v2.webp" alt="Digital travel concierge" fill className="object-cover" sizes="(max-width:768px) 95vw, 50vw"/></div>
+    </section>
+
+    <section id="portfolio" className="bg-[var(--stk-surface-strong)] py-24 md:py-32"><div className="mx-auto max-w-7xl px-5 md:px-8"><p className="text-xs font-semibold uppercase tracking-[.24em] text-[color:var(--stk-muted-strong)]">{locale==="ru"?"4 доступных проекта":"4 available projects"}</p><h2 className="mt-4 text-4xl tracking-[-.045em] md:text-6xl">{t.portfolioTitle}</h2><p className="mt-6 max-w-3xl text-lg leading-8 text-[color:var(--stk-muted)]">{t.portfolioText}</p><div className="mt-14 grid gap-5 md:grid-cols-2">{t.portfolio.map(([name,desc,img,status,url])=>{const localRoutes:Record<string,string>={"travel-demo":`/${locale}/travel-demo`,"expedition-demo":`/${locale}/expedition-demo`,"travel-hacking-demo":`/${locale}/travel-hacking-demo`};const href=localRoutes[url]??url;const card=<div className="group h-full overflow-hidden rounded-[var(--stk-radius-card)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)]"><div className="relative aspect-[16/10] overflow-hidden"><Image src={img} alt={name} fill className="object-cover transition duration-700 group-hover:scale-[1.03]" sizes="(max-width:768px) 95vw, 48vw"/><span className="absolute bottom-5 left-5 rounded-full bg-white/90 px-3 py-1.5 text-xs text-black">{status}</span></div><div className="p-6 md:p-8"><h3 className="text-3xl tracking-[-.04em]">{name}</h3><p className="mt-3 leading-7 text-[color:var(--stk-muted)]">{desc}</p><div className="mt-6 text-sm font-medium">{locale==="ru"?"Открыть сайт":"Open website"} →</div></div></div>;return <a key={name} href={href} target="_blank" rel="noreferrer">{card}</a>})}</div></div></section>
 
     <section id="process" className="bg-[var(--stk-accent-soft)] py-24 md:py-32"><div className="mx-auto max-w-7xl px-5 md:px-8"><h2 className="text-4xl tracking-[-.045em] md:text-6xl">{t.processTitle}</h2><div className="mt-16 divide-y divide-[color:var(--stk-border)] border-y border-[color:var(--stk-border)]">{t.process.map(([num,name,text])=><div key={num} className="grid gap-4 py-8 md:grid-cols-[100px_1fr_1.4fr]"><span className="text-sm text-[color:var(--stk-faint)]">{num}</span><h3 className="text-2xl">{name}</h3><p className="leading-7 text-[color:var(--stk-muted)]">{text}</p></div>)}</div></div></section>
 

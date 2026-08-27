@@ -108,7 +108,11 @@ export default function AdminSidebar() {
     );
 
   useEffect(() => {
-    setOpen(false);
+    const timer = window.setTimeout(() => {
+      setOpen(false);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [pathname]);
 
   useEffect(() => {
@@ -241,7 +245,7 @@ export default function AdminSidebar() {
           </div>
 
           <Link
-            href={`/${locale}`}
+            href={`/${locale}/bakery`}
             className="admin-store-link"
           >
             <span>←</span>

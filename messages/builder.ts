@@ -25,6 +25,9 @@ type BuilderMessages = {
     description: string;
     stageTitle: string;
     stageDescription: string;
+    demoTitle: string;
+    demoDescription: string;
+    demoLink: string;
   };
 
   preview: {
@@ -153,6 +156,15 @@ const ru: BuilderMessages = {
 
     stageDescription:
       "Предварительная версия заказа",
+
+    demoTitle:
+      "Это демонстрационная версия",
+
+    demoDescription:
+      "Создайте торт и оформите тестовый заказ. Используйте вымышленные контактные данные — после оформления вы сможете увидеть результат в открытой админ-панели.",
+
+    demoLink:
+      "Посмотреть заказы в админ-панели",
   },
 
   preview: {
@@ -285,10 +297,10 @@ const ru: BuilderMessages = {
         "Надпись можно двигать, увеличивать, уменьшать и изгибать.",
 
       notesLabel:
-        "Дополнительные пожелания",
+        "Аллергии и особые пожелания",
 
       notesPlaceholder:
-        "Опишите тематику праздника, оттенки и другие детали.",
+        "Например: аллергия на орехи, без лактозы, убрать определённый ингредиент. Также укажите тематику и другие детали.",
     },
   },
 
@@ -420,6 +432,15 @@ const en: BuilderMessages = {
 
     stageDescription:
       "Preliminary order preview",
+
+    demoTitle:
+      "This is a demo version",
+
+    demoDescription:
+      "Design a cake and place a test order. Use fictional contact details — after checkout you can see the result in the public demo admin panel.",
+
+    demoLink:
+      "View orders in the admin panel",
   },
 
   preview: {
@@ -552,10 +573,10 @@ const en: BuilderMessages = {
         "The message can be moved, resized and curved.",
 
       notesLabel:
-        "Additional Notes",
+        "Allergies and Special Requests",
 
       notesPlaceholder:
-        "Describe the event theme, colors and any other details.",
+        "For example: nut allergy, lactose-free, or remove a specific ingredient. You can also describe the theme and other details.",
     },
   },
 

@@ -34,7 +34,7 @@ export default function Footer({
       <Container className="footer-grid">
         <div className="footer-about">
           <Link
-            href={`/${locale}`}
+            href={`/${locale}/bakery`}
             className="brand footer-brand"
           >
             <span className="brand-logo">
@@ -74,12 +74,16 @@ export default function Footer({
             {text.gallery}
           </Link>
 
-          <Link href={`/${locale}/about`}>
+          <Link href={`/${locale}/bakery`}>
             {text.about}
           </Link>
 
           <Link href={`/${locale}/contacts`}>
             {text.contacts}
+          </Link>
+
+          <Link href={`/${locale}/admin/orders`}>
+            {locale === "en" ? "Demo admin" : "Демо-админка"}
           </Link>
         </div>
 
@@ -87,10 +91,10 @@ export default function Footer({
           <strong>{text.contactTitle}</strong>
 
           <a
-            href="tel:+70000000000"
+            href="tel:+77471818493"
             className="footer-phone"
           >
-            +7 000 000 00 00
+            +7 747 181 84 93
           </a>
 
           <span>{text.schedule}</span>
@@ -99,7 +103,15 @@ export default function Footer({
 
       <Container className="footer-bottom">
         <span>{text.copyright}</span>
-        <span>{text.slogan}</span>
+        <span>
+          {text.slogan}
+          {" · "}
+          <Link href={`/${locale}`} className="underline decoration-current/30 underline-offset-4">
+            {locale === "en"
+              ? "Demo by STK Lab"
+              : "Демо-проект STK Lab"}
+          </Link>
+        </span>
       </Container>
     </footer>
   );

@@ -74,11 +74,11 @@ export const cakeCategories = [
   },
   {
     value: "promo-9990",
-    label: "За 9 990 ₸",
+    label: "За $20",
   },
   {
     value: "promo-10990",
-    label: "За 10 990 ₸",
+    label: "За $22",
   },
   {
     value: "popular",

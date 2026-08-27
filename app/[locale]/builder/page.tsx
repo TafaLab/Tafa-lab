@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 import {
   useCallback,
   useMemo,
@@ -90,6 +92,7 @@ function InspectorButton({
 }
 
 export default function BuilderPage() {
+  const router = useRouter();
   const currentLocale = useLocale();
   const locale: BuilderLocale =
     currentLocale === "en" ? "en" : "ru";
@@ -219,7 +222,7 @@ export default function BuilderPage() {
       }),
     );
 
-    window.location.href = `/${locale}/checkout`;
+    router.push(`/${locale}/checkout`);
   };
 
   return (
@@ -249,17 +252,26 @@ export default function BuilderPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 rounded-2xl bg-white/65 px-4 py-3 md:gap-4 md:px-5 md:py-4">
-            <span className="text-2xl font-semibold text-[#a67b65] md:text-3xl">
-              01
-            </span>
-            <div>
-              <strong className="block text-sm md:text-base">
-                {text.hero.stageTitle}
-              </strong>
-              <small className="text-xs text-black/55 md:text-sm">
-                {text.hero.stageDescription}
-              </small>
+          <div className="max-w-md rounded-2xl border border-[#a67b65]/20 bg-white/75 px-4 py-4 md:px-5 md:py-5">
+            <div className="flex items-start gap-3">
+              <span className="rounded-full bg-[#6a4433] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white">
+                Demo
+              </span>
+
+              <div>
+                <strong className="block text-sm md:text-base">
+                  {text.hero.demoTitle}
+                </strong>
+                <p className="mt-1.5 text-xs leading-5 text-black/60 md:text-sm md:leading-6">
+                  {text.hero.demoDescription}
+                </p>
+                <Link
+                  href={`/${locale}/admin/orders`}
+                  className="mt-3 inline-flex text-xs font-semibold text-[#6a4433] underline decoration-[#6a4433]/30 underline-offset-4 md:text-sm"
+                >
+                  {text.hero.demoLink} →
+                </Link>
+              </div>
             </div>
           </div>
         </div>

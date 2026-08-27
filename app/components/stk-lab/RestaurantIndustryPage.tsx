@@ -35,14 +35,12 @@ const copy = {
     systemEyebrow:"Restaurant Operations", systemTitle:"One system for the business behind the dining room.",
     systemText:"For restaurants that need more than a marketing website, we build dashboards for revenue, orders, expenses, inventory, teams, schedules, payroll, reports and multiple locations.",
     projectsTitle:"Restaurant projects",
-    projectsText:"Live restaurant experiences and product concepts by STK Lab. Limoné opens as a complete live project; additional restaurant cases will be added here as they are built.",
+    projectsText:"Four complete restaurant experiences in four distinct directions. Open every project, explore the guest journey and send a test reservation to the public demo admin.",
     projects:[
       ["Limoné","Mediterranean restaurant website with seasonal menu, spaces, private dining and reservations.","/images/stk-lab/restaurants/restaurant-website-hero.webp","Live project","https://stklab.tilda.ws/lemons"],
-      ["Digital Menu & Ordering","Responsive menu and direct ordering experience.","/images/stk-lab/restaurants/digital-menu-ordering.webp","Product concept",""],
-      ["Table Reservations","Integrated booking flow designed around the restaurant brand.","/images/stk-lab/restaurants/table-reservation.webp","Product concept",""],
-      ["Restaurant Management","Multi-location owner dashboard for sales, profit and operations.","/images/stk-lab/restaurants/restaurant-management-dashboard.webp","Business system",""],
-      ["POS + Kitchen","Connected front-of-house and kitchen order workflow.","/images/stk-lab/restaurants/restaurant-pos-kitchen.webp","Business system",""],
-      ["Owner Mobile","Mobile analytics for revenue, branches, alerts and daily performance.","/images/stk-lab/restaurants/restaurant-owner-mobile.webp","Business system",""],
+      ["VERDANT","Light plant-led restaurant with a seasonal menu, local growers and table reservations.","/images/stk-lab/restaurants/demos/verdant-vegan-hero.png","Vegan demo","vegan-restaurant-demo"],
+      ["NOOR Table","Contemporary halal restaurant for family dining, celebrations and private events.","/images/stk-lab/restaurants/demos/noor-halal-hero.png","Halal demo","halal-restaurant-demo"],
+      ["KURO Robata","Dark Japanese fire kitchen with a robata counter and an intimate booking flow.","/images/stk-lab/restaurants/demos/kuro-robata-hero.png","Japanese demo","japanese-restaurant-demo"],
     ],
     processTitle:"From concept to launch",
     processText:"We build around how the restaurant actually sells and operates, not around a generic template.",
@@ -96,14 +94,12 @@ const copy = {
     systemEyebrow:"Управление рестораном", systemTitle:"Одна система для бизнеса за пределами зала.",
     systemText:"Если ресторану нужен не только маркетинговый сайт, создаём панели для выручки, заказов, расходов, склада, команды, графиков, зарплаты, отчётов и нескольких филиалов.",
     projectsTitle:"Ресторанные проекты",
-    projectsText:"Живые ресторанные проекты и продуктовые решения STK Lab. Limoné открывается как полноценный готовый проект; сюда же будем добавлять следующие 3–4 ресторанных кейса.",
+    projectsText:"Четыре полноценных ресторанных проекта в совершенно разных направлениях. Откройте каждый сайт, пройдите путь гостя и отправьте тестовую бронь в открытую демо-админку.",
     projects:[
       ["Limoné","Средиземноморский ресторан: сезонное меню, пространства, private dining и бронирование.","/images/stk-lab/restaurants/restaurant-website-hero.webp","Живой проект","https://stklab.tilda.ws/lemons"],
-      ["Цифровое меню и заказ","Адаптивное меню и прямое оформление заказа.","/images/stk-lab/restaurants/digital-menu-ordering.webp","Концепт продукта",""],
-      ["Бронирование столиков","Встроенный booking flow в визуальном стиле ресторана.","/images/stk-lab/restaurants/table-reservation.webp","Концепт продукта",""],
-      ["Управление рестораном","Дашборд владельца для продаж, прибыли, филиалов и операций.","/images/stk-lab/restaurants/restaurant-management-dashboard.webp","Бизнес-система",""],
-      ["POS + кухня","Связанный процесс заказа между залом и кухней.","/images/stk-lab/restaurants/restaurant-pos-kitchen.webp","Бизнес-система",""],
-      ["Мобильный кабинет владельца","Выручка, филиалы, уведомления и ежедневные показатели в телефоне.","/images/stk-lab/restaurants/restaurant-owner-mobile.webp","Бизнес-система",""],
+      ["VERDANT","Светлый растительный ресторан с сезонным меню, локальными фермами и бронированием.","/images/stk-lab/restaurants/demos/verdant-vegan-hero.png","Vegan demo","vegan-restaurant-demo"],
+      ["NOOR Table","Современный халяльный ресторан для семейных встреч, праздников и закрытых ужинов.","/images/stk-lab/restaurants/demos/noor-halal-hero.png","Halal demo","halal-restaurant-demo"],
+      ["KURO Robata","Тёмная японская кухня огня с робата-стойкой и камерным сценарием бронирования.","/images/stk-lab/restaurants/demos/kuro-robata-hero.png","Japanese demo","japanese-restaurant-demo"],
     ],
     processTitle:"От идеи до запуска",
     processText:"Мы строим проект вокруг того, как ресторан реально продаёт и работает, а не вокруг универсального шаблона.",
@@ -150,7 +146,7 @@ export default function RestaurantIndustryPage({locale}:{locale:Locale}) {
     <Feature image="/images/stk-lab/restaurants/table-reservation.webp" eyebrow={t.bookingEyebrow} title={t.bookingTitle} text={t.bookingText} reverse/>
     <Feature image="/images/stk-lab/restaurants/restaurant-management-dashboard.webp" eyebrow={t.systemEyebrow} title={t.systemTitle} text={t.systemText} dark/>
 
-    <section id="portfolio" className="bg-[var(--stk-surface-strong)] py-24 md:py-32"><div className="mx-auto max-w-7xl px-5 md:px-8"><div className="max-w-3xl"><p className="text-xs font-semibold uppercase tracking-[.24em] text-[#806d59]">Portfolio</p><h2 className="mt-4 text-4xl tracking-[-.045em] md:text-6xl">{t.projectsTitle}</h2><p className="mt-6 text-lg leading-8 text-[color:var(--stk-muted)]">{t.projectsText}</p></div><div className="mt-14 grid gap-5 md:grid-cols-2">{t.projects.map(([name,desc,img,status,url],i)=>{const card=<div className="group h-full overflow-hidden rounded-[var(--stk-radius-card)] border border-[color:var(--stk-border)] bg-[#f5f0e8]"><div className={`relative overflow-hidden ${i===0?"aspect-[16/8]":"aspect-[16/10]"}`}><Image src={img} alt={name} fill className="object-cover transition duration-700 group-hover:scale-[1.03]" sizes="(max-width:768px) 95vw, 48vw"/><span className="absolute bottom-5 left-5 rounded-full bg-white/90 px-3 py-1.5 text-xs backdrop-blur">{status}</span></div><div className="p-6 md:p-8"><h3 className="text-3xl tracking-[-.04em]">{name}</h3><p className="mt-3 leading-7 text-[color:var(--stk-muted)]">{desc}</p>{url&&<div className="mt-6 text-sm font-medium">{locale==="ru"?"Открыть проект":"View live project"} →</div>}</div></div>;return url?<a key={name} href={url} target="_blank" rel="noreferrer" className={i===0?"md:col-span-2":""}>{card}</a>:<div key={name}>{card}</div>})}</div></div></section>
+    <section id="portfolio" className="bg-[var(--stk-surface-strong)] py-24 md:py-32"><div className="mx-auto max-w-7xl px-5 md:px-8"><div className="max-w-3xl"><p className="text-xs font-semibold uppercase tracking-[.24em] text-[#806d59]">Portfolio · 4</p><h2 className="mt-4 text-4xl tracking-[-.045em] md:text-6xl">{t.projectsTitle}</h2><p className="mt-6 text-lg leading-8 text-[color:var(--stk-muted)]">{t.projectsText}</p></div><div className="mt-14 grid gap-5 md:grid-cols-2">{t.projects.map(([name,desc,img,status,url])=>{const card=<div className="group h-full overflow-hidden rounded-[var(--stk-radius-card)] border border-[color:var(--stk-border)] bg-[#f5f0e8]"><div className="relative aspect-[16/10] overflow-hidden"><Image src={img} alt={name} fill className="object-cover transition duration-700 group-hover:scale-[1.03]" sizes="(max-width:768px) 95vw, 48vw"/><span className="absolute bottom-5 left-5 rounded-full bg-white/90 px-3 py-1.5 text-xs backdrop-blur">{status}</span></div><div className="p-6 md:p-8"><h3 className="text-3xl tracking-[-.04em]">{name}</h3><p className="mt-3 leading-7 text-[color:var(--stk-muted)]">{desc}</p><div className="mt-6 text-sm font-medium">{locale==="ru"?"Открыть проект":"Open project"} →</div></div></div>;return url.startsWith("http")?<a key={name} href={url} target="_blank" rel="noreferrer">{card}</a>:<Link key={name} href={`/${locale}/${url}`}>{card}</Link>})}</div></div></section>
 
     <section id="process" className="bg-[var(--stk-accent-soft)] py-24 md:py-32"><div className="mx-auto max-w-7xl px-5 md:px-8"><div className="grid gap-8 md:grid-cols-2"><h2 className="text-4xl tracking-[-.045em] md:text-6xl">{t.processTitle}</h2><p className="max-w-xl text-lg leading-8 text-[color:var(--stk-muted)]">{t.processText}</p></div><div className="mt-16 divide-y divide-black/15 border-y border-[color:var(--stk-border)]">{t.process.map(([num,name,text])=><div key={num} className="grid gap-4 py-8 md:grid-cols-[100px_1fr_1.4fr]"><span className="text-sm text-[color:var(--stk-faint)]">{num}</span><h3 className="text-2xl tracking-[-.035em]">{name}</h3><p className="max-w-xl leading-7 text-[color:var(--stk-muted)]">{text}</p></div>)}</div></div></section>
 

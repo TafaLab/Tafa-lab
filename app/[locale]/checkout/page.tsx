@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 
@@ -38,6 +39,8 @@ type OrderData = {
   inscription: InscriptionSettings;
   comment: string;
   price: number;
+  currency?: "USD";
+  readyCake?: { name: string; image: string };
 };
 
 const englishFillingLabels: Record<
@@ -130,30 +133,34 @@ export default function CheckoutPage() {
     useState("");
 
   useEffect(() => {
-    const raw =
-      sessionStorage.getItem(
-        "milky-cake-order",
-      );
+    const timer = window.setTimeout(() => {
+      const raw =
+        sessionStorage.getItem(
+          "milky-cake-order",
+        );
 
-    if (!raw) {
-      router.replace(
-        `/${locale}/builder`,
-      );
+      if (!raw) {
+        router.replace(
+          `/${locale}/builder`,
+        );
 
-      return;
-    }
+        return;
+      }
 
-    try {
-      const parsed =
-        JSON.parse(raw) as OrderData;
+      try {
+        const parsed =
+          JSON.parse(raw) as OrderData;
 
-      setOrder(parsed);
-      setLoading(false);
-    } catch {
-      router.replace(
-        `/${locale}/builder`,
-      );
-    }
+        setOrder(parsed);
+        setLoading(false);
+      } catch {
+        router.replace(
+          `/${locale}/builder`,
+        );
+      }
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [locale, router]);
 
   const selectedWeight =
@@ -282,9 +289,7 @@ export default function CheckoutPage() {
           selectedFilling?.label ??
           "",
 
-        cake_color:
-          selectedCake?.id ??
-          order.color,
+        cake_color: order.readyCake ? "READY_CAKE" : selectedCake?.id ?? order.color,
 
         decorations:
           order.decorations,
@@ -345,14 +350,14 @@ export default function CheckoutPage() {
               : "Оформление заказа"}
           </h1>
 
-          <Link
-            href={`/${locale}`}
-            className="text-sm text-black/55"
-          >
-            {isEnglish
-              ? "Home"
-              : "На главную"}
-          </Link>
+          <div className="flex flex-wrap gap-4 text-sm">
+            <Link href={`/${locale}/bakery`} className="text-black/55">
+              {isEnglish ? "Bakery home" : "Главная пекарни"}
+            </Link>
+            <Link href={`/${locale}/admin/orders`} className="font-semibold text-[#6a4433]">
+              {isEnglish ? "Demo admin →" : "Демо-админка →"}
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -610,17 +615,7 @@ export default function CheckoutPage() {
 
             {selectedCake && (
               <div className="mt-5 overflow-hidden rounded-2xl bg-[#f5f1ed]">
-                <StaticCakePreview
-                  base={
-                    selectedCake
-                  }
-                  decorations={
-                    order.decorations
-                  }
-                  inscription={
-                    order.inscription
-                  }
-                />
+                {order.readyCake ? <div className="relative aspect-square overflow-hidden rounded-2xl"><Image src={order.readyCake.image} alt={order.readyCake.name} fill className="object-cover" sizes="420px" /></div> : <StaticCakePreview base={selectedCake} decorations={order.decorations} inscription={order.inscription} />}
               </div>
             )}
 
@@ -701,8 +696,8 @@ export default function CheckoutPage() {
               <div className="mt-5 rounded-2xl border border-black/10 bg-[#fffaf7] p-4">
                 <span className="text-xs font-semibold uppercase tracking-[0.14em] text-black/40">
                   {isEnglish
-                    ? "Additional Notes"
-                    : "Дополнительные пожелания"}
+                    ? "Allergies and Special Requests"
+                    : "Аллергии и особые пожелания"}
                 </span>
 
                 <p className="mt-2 text-sm leading-6 text-black/65">
@@ -719,10 +714,7 @@ export default function CheckoutPage() {
               </span>
 
               <strong className="mt-2 block text-3xl">
-                {formatPrice(
-                  order.price,
-                )}{" "}
-                ₸
+                {order.currency === "USD" ? "$" : ""}{formatPrice(order.price)}{order.currency === "USD" ? "" : " ₸"}
               </strong>
             </div>
 

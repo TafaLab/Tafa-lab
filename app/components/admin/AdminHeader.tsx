@@ -23,13 +23,20 @@ export default function AdminHeader() {
     <header className="admin-header">
       <div>
         <span className="admin-header-caption">
-          {text.caption}
+          {locale === "en" ? "PUBLIC DEMO ADMIN" : "ОТКРЫТАЯ ДЕМО-АДМИНКА"}
         </span>
 
         <strong>{text.title}</strong>
       </div>
 
       <div className="admin-header-actions">
+        <Link
+          href={`/${locale}/bakery`}
+          className="admin-header-secondary-button"
+        >
+          {locale === "en" ? "Open bakery site" : "Открыть сайт пекарни"}
+        </Link>
+
         <Link
           href={`/${locale}/cakes`}
           className="admin-header-secondary-button"

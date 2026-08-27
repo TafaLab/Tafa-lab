@@ -5,7 +5,7 @@ import { useLocale } from "next-intl";
 
 import type { Cake } from "@/lib/cake-types";
 
-import { formatPrice } from "@/lib/cake-builder/utils";
+import { formatUsdFromKzt } from "@/lib/currency";
 
 type Props = {
   cake: Cake;
@@ -39,12 +39,8 @@ export default function CakeCard({
   const priceLabel =
     cake.minimumPrice > 0
       ? isEnglish
-        ? `from ${formatPrice(
-            cake.minimumPrice,
-          )} ₸`
-        : `от ${formatPrice(
-            cake.minimumPrice,
-          )} ₸`
+        ? `from ${formatUsdFromKzt(cake.minimumPrice)}`
+        : `от ${formatUsdFromKzt(cake.minimumPrice)}`
       : isEnglish
         ? "Price to be confirmed"
         : "Цена уточняется";
@@ -111,10 +107,7 @@ export default function CakeCard({
               variant.oldPrice >
                 variant.price && (
                 <div className="text-sm text-black/40 line-through">
-                  {formatPrice(
-                    variant.oldPrice,
-                  )}{" "}
-                  ₸
+                  {formatUsdFromKzt(variant.oldPrice)}
                 </div>
               )}
 

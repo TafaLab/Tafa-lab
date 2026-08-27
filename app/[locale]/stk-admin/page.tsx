@@ -23,7 +23,6 @@ type Lead = {
 };
 
 declare global {
-  // eslint-disable-next-line no-var
   var __stkLabSupabase: SupabaseClient | undefined;
 }
 
@@ -113,7 +112,15 @@ export default function StkAdminPage() {
     return()=>data.subscription.unsubscribe();
   },[]);
 
-  useEffect(()=>{if(user)load();else{setLeads([]);setSelectedId(null)}},[user]);
+  useEffect(()=>{
+    const timer=window.setTimeout(()=>{
+      if(user)void load();
+      else{setLeads([]);setSelectedId(null)}
+    },0);
+    return()=>window.clearTimeout(timer);
+    // `load` intentionally uses the latest selected lead only when auth changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[user]);
 
   const counts=useMemo(()=>{
     const r:Record<LeadFilter,number>={all:leads.length,new:0,contacted:0,in_progress:0,won:0,lost:0};

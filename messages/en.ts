@@ -208,10 +208,10 @@ export const enMessages = {
         "Celebration Cake",
 
       price:
-        "from 18,000 ₸",
+        "from $35",
 
       image:
-        "/images/cake-classic.jpg",
+        "/cakes/elegant-04.jpg.jpg",
     },
 
     {
@@ -222,7 +222,7 @@ export const enMessages = {
         "Berry Cake",
 
       price:
-        "from 22,000 ₸",
+        "from $45",
 
       image:
         "/images/cake-berry.jpg",
@@ -236,7 +236,7 @@ export const enMessages = {
         "Kids’ Cake",
 
       price:
-        "from 25,000 ₸",
+        "from $50",
 
       image:
         "/images/cake-kids.jpg",

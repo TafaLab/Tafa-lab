@@ -13,8 +13,6 @@ import Script from "next/script";
 
 import { routing } from "@/i18n/routing";
 
-type Locale = "ru" | "en";
-
 type LocaleLayoutProps = {
   children: React.ReactNode;
 
