@@ -33,10 +33,10 @@ const copy = {
     portfolioTitle:"Beauty websites you can explore",
     portfolioText:"Four distinct demo experiences: a calm spa, a refined salon, an evidence-based cosmetology clinic and a fearless creative color studio.",
     portfolio:[
-      ["Serena Spa & Wellness","Premium wellness website with rituals, programs, gift certificates and booking.","/images/stk-lab/beauty/demos/serena-spa-hero.png","Open demo","spa-demo"],
-      ["Muse Hair & Beauty","Modern salon website with services, prices, artists, portfolio and online booking.","/images/stk-lab/beauty/demos/muse-salon-hero.png","Open demo","beauty-salon-demo"],
-      ["Aurea Cosmetology","Clinical beauty website focused on skin diagnostics, transparent protocols and specialist trust.","/images/stk-lab/beauty/demos/aurea-cosmetology-hero.png","Open demo","cosmetology-demo"],
-      ["VOLT Color Studio","Audacious creative salon website for vivid color, graphic cuts and editorial looks.","/images/stk-lab/beauty/demos/volt-salon-hero.png","Open demo","color-salon-demo"],
+      ["Serena Spa & Wellness","Premium wellness website with rituals, programs, gift certificates and booking.","/images/stk-lab/beauty/demos/sora-spa-hero-v2.webp","Open demo","spa-demo"],
+      ["Muse Hair & Beauty","Modern salon website with services, prices, artists, portfolio and online booking.","/images/stk-lab/beauty/demos/muse-salon-hero-v2.webp","Open demo","beauty-salon-demo"],
+      ["Aurea Cosmetology","Clinical beauty website focused on skin diagnostics, transparent protocols and specialist trust.","/images/stk-lab/beauty/demos/aurea-clinic-hero-v2.webp","Open demo","cosmetology-demo"],
+      ["VOLT Color Studio","Audacious creative salon website for vivid color, graphic cuts and editorial looks.","/images/stk-lab/beauty/demos/volt-salon-hero-v2.webp","Open demo","color-salon-demo"],
     ],
     processTitle:"From concept to launch",
     process:[
@@ -87,10 +87,10 @@ const copy = {
     portfolioTitle:"Beauty-сайты, которые можно открыть",
     portfolioText:"Четыре совершенно разные демо-версии: спокойный SPA, элегантный салон, доказательная косметология и дерзкая студия креативного цвета.",
     portfolio:[
-      ["Serena Spa & Wellness","Премиальный wellness-сайт с ритуалами, программами, сертификатами и записью.","/images/stk-lab/beauty/demos/serena-spa-hero.png","Открыть демо","spa-demo"],
-      ["Muse Hair & Beauty","Современный сайт салона с услугами, ценами, мастерами, работами и онлайн-записью.","/images/stk-lab/beauty/demos/muse-salon-hero.png","Открыть демо","beauty-salon-demo"],
-      ["Aurea Cosmetology","Клинический beauty-сайт с диагностикой кожи, понятными протоколами и акцентом на доверие.","/images/stk-lab/beauty/demos/aurea-cosmetology-hero.png","Открыть демо","cosmetology-demo"],
-      ["VOLT Color Studio","Дерзкий сайт креативного салона с ярким цветом, графичными стрижками и editorial-образами.","/images/stk-lab/beauty/demos/volt-salon-hero.png","Открыть демо","color-salon-demo"],
+      ["Serena Spa & Wellness","Премиальный wellness-сайт с ритуалами, программами, сертификатами и записью.","/images/stk-lab/beauty/demos/sora-spa-hero-v2.webp","Открыть демо","spa-demo"],
+      ["Muse Hair & Beauty","Современный сайт салона с услугами, ценами, мастерами, работами и онлайн-записью.","/images/stk-lab/beauty/demos/muse-salon-hero-v2.webp","Открыть демо","beauty-salon-demo"],
+      ["Aurea Cosmetology","Клинический beauty-сайт с диагностикой кожи, понятными протоколами и акцентом на доверие.","/images/stk-lab/beauty/demos/aurea-clinic-hero-v2.webp","Открыть демо","cosmetology-demo"],
+      ["VOLT Color Studio","Дерзкий сайт креативного салона с ярким цветом, графичными стрижками и editorial-образами.","/images/stk-lab/beauty/demos/volt-salon-hero-v2.webp","Открыть демо","color-salon-demo"],
     ],
     processTitle:"От идеи до запуска",
     process:[
