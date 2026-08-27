@@ -220,10 +220,9 @@ export default function BakeryIndustryPage({ locale }: { locale: StkLabLocale })
       <section id="portfolio" className="bg-[var(--stk-surface-strong)] py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-5 md:px-8"><div className="max-w-3xl"><p className="text-xs font-semibold uppercase tracking-[.24em] text-[#8b6d62]">Portfolio</p><h2 className="mt-4 text-4xl tracking-[-.045em] md:text-6xl">{t.projectsTitle}</h2><p className="mt-6 text-lg leading-8 text-[color:var(--stk-muted)]">{t.projectsText}</p></div>
           <div className="mt-14 grid gap-5 md:grid-cols-2">
-            {t.projects.map(([name,desc,img,status,route,externalUrl],i)=>{
-              const hasLink = Boolean(route || externalUrl);
+            {t.projects.map(([name,desc,img,status,route],i)=>{
+              const hasLink = Boolean(route);
               const inner=<div className="group overflow-hidden rounded-[var(--stk-radius-card)] border border-[color:var(--stk-border)] bg-[#f5f0ea]"><div className={`relative overflow-hidden ${i===0?"aspect-[16/8]":"aspect-[16/10]"}`}><Image src={img} alt={name} fill className="object-cover transition duration-700 group-hover:scale-[1.03]" sizes="(max-width:768px) 95vw, 48vw"/><div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent"/><span className="absolute bottom-5 left-5 rounded-full bg-white/90 px-3 py-1.5 text-xs backdrop-blur">{status}</span></div><div className="p-6 md:p-8"><h3 className="text-3xl tracking-[-.04em]">{name}</h3><p className="mt-3 leading-7 text-[color:var(--stk-muted)]">{desc}</p>{hasLink&&<div className="mt-6 text-sm font-medium">{locale==="ru"?"Открыть проект":"View project"} →</div>}</div></div>;
-              if (externalUrl) return <a key={name} href={externalUrl} target="_blank" rel="noreferrer" className={i===0?"md:col-span-2":""}>{inner}</a>;
               return route?<Link key={name} href={`/${locale}/${route}`} className={i===0?"md:col-span-2":""}>{inner}</Link>:<div key={name}>{inner}</div>
             })}
           </div>
