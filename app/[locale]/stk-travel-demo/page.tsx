@@ -9,7 +9,7 @@ type Locale = "ru" | "en";
 
 export const metadata: Metadata = {
   title: "STK Travel — Destination Guides Demo",
-  description: "A travel guides and consultation platform demo by STK Lab.",
+  description: "A travel guides and consultation platform demo by Tafa Lab.",
   robots: { index: false, follow: false },
 };
 
@@ -30,7 +30,7 @@ const copy = {
     cards: [["Амальфи","Италия · побережье и маленькие города"],["Бали","Индонезия · остров без туристических клише"],["Япония","Токио — Киото · первый маршрут"],["Исландия","Кольцевая дорога · природа и аренда авто"]],
     guideTitle: "Всё важное до покупки билета", guides: [["Сезон и погода","Когда ехать, чего ожидать и что взять с собой."],["Бюджет без сюрпризов","Перелёт, жильё, транспорт, еда и реальный запас расходов."],["Маршрут по дням","Логичная последовательность без лишних переездов и спешки."],["Правила и документы","Виза, въезд, страховка, связь и важные местные особенности."]],
     form: "Нужен маршрут именно под вас?", formText: "Расскажите о направлении, датах и формате отдыха — мы подготовим основу поездки.",
-    demo: "Демонстрационная travel-платформа STK Lab", back: "Все travel-проекты",
+    demo: "Демонстрационная travel-платформа Tafa Lab", back: "Все travel-проекты",
   },
   en: {
     eyebrow: "Guides, itineraries and honest advice", title: "Travel with more confidence.", text: "A practical travel platform with tested itineraries, clear destination guides and consultations for independent travelers.", cta: "Choose a destination", consult: "Get a consultation",
@@ -38,7 +38,7 @@ const copy = {
     cards: [["Amalfi","Italy · coast and small towns"],["Bali","Indonesia · beyond the tourist clichés"],["Japan","Tokyo — Kyoto · a first itinerary"],["Iceland","Ring Road · nature and car rental"]],
     guideTitle: "Everything to know before booking", guides: [["Season and weather","When to go, what to expect and what to pack."],["A realistic budget","Flights, stays, transport, food and a sensible reserve."],["A day-by-day route","A logical journey without needless transfers or rushing."],["Rules and documents","Entry, insurance, connectivity and important local details."]],
     form: "Need an itinerary built around you?", formText: "Tell us the destination, dates and travel style, and we will shape the foundation of your trip.",
-    demo: "A demonstration travel platform by STK Lab", back: "All travel projects",
+    demo: "A demonstration travel platform by Tafa Lab", back: "All travel projects",
   },
 } as const;
 
