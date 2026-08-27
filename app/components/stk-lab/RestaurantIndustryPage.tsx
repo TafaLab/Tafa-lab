@@ -37,7 +37,7 @@ const copy = {
     projectsTitle:"Restaurant projects",
     projectsText:"Four complete restaurant experiences in four distinct directions. Open every project, explore the guest journey and send a test reservation to the public demo admin.",
     projects:[
-      ["Limoné","Mediterranean restaurant website with seasonal menu, spaces, private dining and reservations.","/images/stk-lab/restaurants/restaurant-website-hero.webp","Live project","https://stklab.tilda.ws/lemons"],
+      ["Limoné","Mediterranean restaurant website with seasonal menu, spaces, private dining and reservations.","/images/stk-lab/restaurants/restaurant-website-hero.webp","Open demo","limone-restaurant-demo"],
       ["VERDANT","Light plant-led restaurant with a seasonal menu, local growers and table reservations.","/images/stk-lab/restaurants/demos/verde-restaurant-hero-v2.webp","Vegan demo","vegan-restaurant-demo"],
       ["NOOR Table","Contemporary halal restaurant for family dining, celebrations and private events.","/images/stk-lab/restaurants/demos/noor-halal-hero-v2.webp","Halal demo","halal-restaurant-demo"],
       ["KURO Robata","Dark Japanese fire kitchen with a robata counter and an intimate booking flow.","/images/stk-lab/restaurants/demos/kaiseki-restaurant-hero-v2.webp","Japanese demo","japanese-restaurant-demo"],
@@ -96,7 +96,7 @@ const copy = {
     projectsTitle:"Ресторанные проекты",
     projectsText:"Четыре полноценных ресторанных проекта в совершенно разных направлениях. Откройте каждый сайт, пройдите путь гостя и отправьте тестовую бронь в открытую демо-админку.",
     projects:[
-      ["Limoné","Средиземноморский ресторан: сезонное меню, пространства, private dining и бронирование.","/images/stk-lab/restaurants/restaurant-website-hero.webp","Живой проект","https://stklab.tilda.ws/lemons"],
+      ["Limoné","Средиземноморский ресторан: сезонное меню, пространства, private dining и бронирование.","/images/stk-lab/restaurants/restaurant-website-hero.webp","Открыть демо","limone-restaurant-demo"],
       ["VERDANT","Светлый растительный ресторан с сезонным меню, локальными фермами и бронированием.","/images/stk-lab/restaurants/demos/verde-restaurant-hero-v2.webp","Vegan demo","vegan-restaurant-demo"],
       ["NOOR Table","Современный халяльный ресторан для семейных встреч, праздников и закрытых ужинов.","/images/stk-lab/restaurants/demos/noor-halal-hero-v2.webp","Halal demo","halal-restaurant-demo"],
       ["KURO Robata","Тёмная японская кухня огня с робата-стойкой и камерным сценарием бронирования.","/images/stk-lab/restaurants/demos/kaiseki-restaurant-hero-v2.webp","Japanese demo","japanese-restaurant-demo"],
