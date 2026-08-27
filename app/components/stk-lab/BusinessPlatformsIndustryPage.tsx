@@ -33,10 +33,10 @@ const copy = {
     portfolioTitle:"Business platform projects",
     portfolioText:"Four working concepts show how a platform changes for different business needs. Open each demo, compare the interface and send a test request to the public demo admin.",
     portfolio:[
-      ["NEXUS / ONE","Live control of orders, branches, stock and teams for a multi-location business.","/images/stk-lab/business-platforms/demos/nexus-operations.png","Operations demo","operations-platform-demo"],
-      ["STOCKFLOW","Industrial inventory, purchasing, suppliers and warehouse transfers.","/images/stk-lab/business-platforms/demos/stockflow-inventory.png","Inventory demo","inventory-platform-demo"],
-      ["PULSE PEOPLE","Friendly scheduling, attendance, leave and payroll experience for teams.","/images/stk-lab/business-platforms/demos/pulse-workforce.png","Workforce demo","workforce-platform-demo"],
-      ["LEDGER / PRIVATE","Executive cash flow, profitability, forecasts and approval intelligence.","/images/stk-lab/business-platforms/demos/ledger-finance.png","Finance demo","finance-platform-demo"],
+      ["NEXUS / ONE","Live control of orders, branches, stock and teams for a multi-location business.","/images/stk-lab/business-platforms/demos/nexus-operations-hero-v2.webp","Operations demo","operations-platform-demo"],
+      ["STOCKFLOW","Industrial inventory, purchasing, suppliers and warehouse transfers.","/images/stk-lab/business-platforms/demos/stockflow-inventory-hero-v2.webp","Inventory demo","inventory-platform-demo"],
+      ["PULSE PEOPLE","Friendly scheduling, attendance, leave and payroll experience for teams.","/images/stk-lab/business-platforms/demos/pulse-workforce-hero-v2.webp","Workforce demo","workforce-platform-demo"],
+      ["LEDGER / PRIVATE","Executive cash flow, profitability, forecasts and approval intelligence.","/images/stk-lab/business-platforms/demos/ledger-finance-hero-v2.webp","Finance demo","finance-platform-demo"],
     ],
     processTitle:"How we build internal platforms",
     process:[
@@ -87,10 +87,10 @@ const copy = {
     portfolioTitle:"Проекты бизнес-платформ",
     portfolioText:"Четыре рабочие концепции показывают, как платформа меняется под разные задачи бизнеса. Откройте каждую демо-версию, сравните интерфейс и отправьте тестовую заявку в открытую админку.",
     portfolio:[
-      ["NEXUS / ONE","Живое управление заказами, филиалами, складом и командами бизнеса.","/images/stk-lab/business-platforms/demos/nexus-operations.png","Operations demo","operations-platform-demo"],
-      ["STOCKFLOW","Индустриальный склад, закупки, поставщики и перемещения товара.","/images/stk-lab/business-platforms/demos/stockflow-inventory.png","Inventory demo","inventory-platform-demo"],
-      ["PULSE PEOPLE","Графики, посещаемость, отпуска и зарплаты в дружелюбном интерфейсе.","/images/stk-lab/business-platforms/demos/pulse-workforce.png","Workforce demo","workforce-platform-demo"],
-      ["LEDGER / PRIVATE","Денежный поток, прибыльность, прогнозы и согласования для владельца.","/images/stk-lab/business-platforms/demos/ledger-finance.png","Finance demo","finance-platform-demo"],
+      ["NEXUS / ONE","Живое управление заказами, филиалами, складом и командами бизнеса.","/images/stk-lab/business-platforms/demos/nexus-operations-hero-v2.webp","Operations demo","operations-platform-demo"],
+      ["STOCKFLOW","Индустриальный склад, закупки, поставщики и перемещения товара.","/images/stk-lab/business-platforms/demos/stockflow-inventory-hero-v2.webp","Inventory demo","inventory-platform-demo"],
+      ["PULSE PEOPLE","Графики, посещаемость, отпуска и зарплаты в дружелюбном интерфейсе.","/images/stk-lab/business-platforms/demos/pulse-workforce-hero-v2.webp","Workforce demo","workforce-platform-demo"],
+      ["LEDGER / PRIVATE","Денежный поток, прибыльность, прогнозы и согласования для владельца.","/images/stk-lab/business-platforms/demos/ledger-finance-hero-v2.webp","Finance demo","finance-platform-demo"],
     ],
     processTitle:"Как мы создаём внутренние платформы",
     process:[
