@@ -61,7 +61,7 @@ export async function generateMetadata({
     openGraph: {
       type: "website",
       url: `/${locale}/industries/${industry}`,
-      siteName: "STK Lab",
+      siteName: "Tafa Lab",
       locale: isRu ? "ru_RU" : "en_US",
       alternateLocale: [isRu ? "en_US" : "ru_RU"],
       title: t.metaTitle,

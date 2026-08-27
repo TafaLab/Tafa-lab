@@ -108,8 +108,8 @@ export default function Footer({
           {" · "}
           <Link href={`/${locale}`} className="underline decoration-current/30 underline-offset-4">
             {locale === "en"
-              ? "Demo by STK Lab"
-              : "Демо-проект STK Lab"}
+              ? "Demo by Tafa Lab"
+              : "Демо-проект Tafa Lab"}
           </Link>
         </span>
       </Container>

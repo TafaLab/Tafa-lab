@@ -31,8 +31,8 @@ export default function Header({
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-2 text-center text-[11px] leading-4 sm:text-xs">
           <span className="text-white/65">
             {locale === "en"
-              ? "A demonstration project by STK Lab"
-              : "Демонстрационный проект STK Lab"}
+              ? "A demonstration project by Tafa Lab"
+              : "Демонстрационный проект Tafa Lab"}
           </span>
           <Link
             href={`/${locale}`}

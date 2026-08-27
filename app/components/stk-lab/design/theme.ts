@@ -1,5 +1,5 @@
 /**
- * Shared semantic class names for STK Lab core pages.
+ * Shared semantic class names for Tafa Lab core pages.
  * Visual values themselves live in StkTheme.module.css.
  * Future redesigns should start there instead of editing every page.
  */

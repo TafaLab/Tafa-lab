@@ -6,7 +6,7 @@ import DemoSiteOrderForm from "@/app/components/demo/DemoSiteOrderForm";
 
 type Locale = "ru" | "en";
 
-export const metadata: Metadata = { title: "ALTITUDE — Extreme Expeditions", description: "Extreme and sports travel agency demo by STK Lab.", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: "ALTITUDE — Extreme Expeditions", description: "Extreme and sports travel agency demo by Tafa Lab.", robots: { index: false, follow: false } };
 
 const copy = {
   ru: {

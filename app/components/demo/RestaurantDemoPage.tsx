@@ -4,17 +4,9 @@ import Link from "next/link";
 import DemoSiteOrderForm from "./DemoSiteOrderForm";
 
 type Locale = "ru" | "en";
-type Kind = "mediterranean" | "vegan" | "halal" | "japanese";
+type Kind = "vegan" | "halal" | "japanese";
 
 const data = {
-  mediterranean: {
-    brand: "LIMONÉ",
-    hero: "/images/stk-lab/restaurants/restaurant-website-hero.webp",
-    storyImage: "/images/stk-lab/restaurants/demos/verdant-open-kitchen-v1.webp",
-    bg: "#f6f1e7", ink: "#294232", accent: "#e8b84a", soft: "#eee3c9",
-    en: { label:"Mediterranean kitchen · seasonal table", title:"Sunlight, season and the pleasure of sharing.", text:"A relaxed Mediterranean restaurant shaped by coastal ingredients, open-fire cooking and generous hospitality.", cta:"Reserve a table", menu:"From the coast", story:"Made for long lunches", storyText:"Seasonal produce, bright citrus, olive oil and the warmth of the grill come together in dishes designed for the whole table.", stats:[["14","seasonal dishes"],["6 days","lunch and dinner"],["20","private guests"]], dishes:[["Whipped feta","roasted peppers, warm bread","$10"],["Charred octopus","lemon, potato, oregano","$19"],["Sea bass crudo","citrus, olive oil, herbs","$18"],["Lemon chicken","artichoke, green olives","$21"],["Wild mushroom orzo","parmesan, thyme","$17"],["Olive oil cake","lemon cream","$9"]], form:"Plan your table", formText:"Choose a date, party size and tell us if you are celebrating." },
-    ru: { label:"Средиземноморская кухня · сезонное меню", title:"Солнце, сезон и удовольствие быть вместе.", text:"Спокойный средиземноморский ресторан с прибрежными продуктами, открытым огнём и щедрым гостеприимством.", cta:"Забронировать стол", menu:"Вкус побережья", story:"Для долгих обедов", storyText:"Сезонные продукты, яркие цитрусы, оливковое масло и тепло гриля объединяются в блюдах для общего стола.", stats:[["14","сезонных блюд"],["6 дней","обеды и ужины"],["20","гостей в private room"]], dishes:[["Взбитая фета","печёный перец, тёплый хлеб","$10"],["Осьминог на гриле","лимон, картофель, орегано","$19"],["Крудо из сибаса","цитрус, оливковое масло, травы","$18"],["Лимонный цыплёнок","артишок, зелёные оливки","$21"],["Орзо с лесными грибами","пармезан, тимьян","$17"],["Пирог с оливковым маслом","лимонный крем","$9"]], form:"Запланируйте встречу", formText:"Выберите дату, количество гостей и сообщите, если у вас праздник." },
-  },
   vegan: {
     brand: "VERDANT",
     hero: "/images/stk-lab/restaurants/demos/verde-restaurant-hero-v2.webp",
@@ -45,12 +37,12 @@ export default function RestaurantDemoPage({ locale, kind }: { locale: Locale; k
   const item = data[kind];
   const t = item[locale];
   const other = locale === "ru" ? "en" : "ru";
-  const route = kind === "mediterranean" ? "limone-restaurant-demo" : kind === "vegan" ? "vegan-restaurant-demo" : kind === "halal" ? "halal-restaurant-demo" : "japanese-restaurant-demo";
+  const route = kind === "vegan" ? "vegan-restaurant-demo" : kind === "halal" ? "halal-restaurant-demo" : "japanese-restaurant-demo";
   const dark = kind === "japanese";
   const japanese = kind === "japanese";
   return <main style={{background:item.bg,color:item.ink}} className="min-h-screen">
     <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 px-4 py-2 text-center text-[11px] uppercase tracking-[.18em] opacity-80">
-      <span>{locale==="ru"?"Демо-ресторан · создано STK Lab":"Demo restaurant · created by STK Lab"}</span>
+      <span>{locale==="ru"?"Демо-ресторан · создано Tafa Lab":"Demo restaurant · created by Tafa Lab"}</span>
       <Link className="underline underline-offset-4" href={`/${locale}/industries/restaurants`}>{locale==="ru"?"Все ресторанные сайты":"All restaurant sites"} →</Link>
       <Link className="underline underline-offset-4" href={`/${locale}/demo-admin`}>{locale==="ru"?"Демо-админка":"Demo admin"} →</Link>
     </div>
@@ -65,6 +57,6 @@ export default function RestaurantDemoPage({ locale, kind }: { locale: Locale; k
     <section id="menu" className="px-5 py-24 md:px-10 md:py-32" style={{background:item.soft}}><div className="mx-auto max-w-7xl"><div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between"><div><p className="text-xs uppercase tracking-[.3em] opacity-55">À la carte</p><h2 className={`${japanese?"font-sans font-black uppercase":"font-serif"} mt-4 text-5xl tracking-[-.05em] md:text-7xl`}>{t.menu}</h2></div><p className="max-w-sm text-sm leading-6 opacity-55">{locale==="ru"?"Пример интерактивного меню. Состав и цены можно редактировать из административной панели.":"Interactive menu example. Dishes and prices can be managed from the restaurant dashboard."}</p></div><div className="mt-14 grid gap-x-12 md:grid-cols-2">{t.dishes.map(([name,desc,price],i)=><article key={name} className="grid grid-cols-[42px_1fr_auto] gap-4 border-t py-7" style={{borderColor:dark?"#ffffff22":"#173f2c2a"}}><span className="text-xs opacity-35">0{i+1}</span><div><h3 className="text-xl font-semibold">{name}</h3><p className="mt-2 text-sm opacity-55">{desc}</p></div><strong style={{color:item.accent}}>{price}</strong></article>)}</div></div></section>
 
     <section id="book" className="px-5 py-24 text-white md:px-10 md:py-32" style={{background:japanese?"#080808":"#173f2c"}}><div className="mx-auto max-w-5xl text-center"><p className="text-xs uppercase tracking-[.3em] text-white/45">{locale==="ru"?"Бронирование · демо":"Reservation · demo"}</p><h2 className={`${japanese?"font-sans font-black uppercase":"font-serif"} mt-5 text-5xl tracking-[-.05em] md:text-7xl`}>{t.form}</h2><p className="mx-auto mt-5 max-w-xl text-lg text-white/60">{t.formText}</p><DemoSiteOrderForm locale={locale} siteName={`${item.brand} — restaurant reservation`} kind="restaurant" /></div></section>
-    <footer className="flex flex-col gap-3 px-5 py-8 text-xs opacity-60 md:flex-row md:justify-between md:px-10"><span>© 2026 {item.brand}</span><span>{locale==="ru"?"Демонстрационный сайт STK Lab":"A demonstration website by STK Lab"}</span></footer>
+    <footer className="flex flex-col gap-3 px-5 py-8 text-xs opacity-60 md:flex-row md:justify-between md:px-10"><span>© 2026 {item.brand}</span><span>{locale==="ru"?"Демонстрационный сайт Tafa Lab":"A demonstration website by Tafa Lab"}</span></footer>
   </main>;
 }

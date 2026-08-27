@@ -8,7 +8,7 @@ type Locale = "ru" | "en";
 
 export const metadata: Metadata = {
   title: "Velaria — Bespoke Travel",
-  description: "A premium travel agency demo website by STK Lab.",
+  description: "A premium travel agency demo website by Tafa Lab.",
   robots: { index: false, follow: false },
 };
 
@@ -31,7 +31,7 @@ const copy = {
     appEyebrow: "Всё путешествие в телефоне", appTitle: "Ваш личный маршрут и консьерж всегда рядом.", appText: "Планы по дням, бронирования, адреса, билеты и связь с менеджером — в одном удобном пространстве.",
     quote: "Лучшее путешествие — то, в котором вам не нужно думать об организации.",
     cta: "Куда вы хотите отправиться дальше?", ctaText: "Расскажите о поездке, которую представляете. Мы превратим идею в продуманный маршрут.", ctaButton: "Начать планирование",
-    demo: "Демо-сайт турагентства · создано STK Lab", back: "Вернуться в STK Lab",
+    demo: "Демо-сайт турагентства · создано Tafa Lab", back: "Вернуться в Tafa Lab",
   },
   en: {
     nav: ["Destinations", "Journeys", "About", "Contact"], eyebrow: "Bespoke journeys around the world", title: "Journeys crafted around you.", text: "Rare places, characterful stays and seamless planning — from the first idea until you return home.", start: "Create your journey", explore: "Explore destinations",
@@ -44,7 +44,7 @@ const copy = {
     service: [["24/7","Support throughout your trip"],["120+","Trusted hotels and partners"],["1","Personal travel designer"],["100%","Tailored to your wishes"]],
     methodEyebrow: "The Velaria way", methodTitle: "We do not sell tours. We design experiences.", method: [["01","Conversation","We learn your pace, interests and idea of a perfect escape."],["02","Journey design","We curate stays, places and experiences into one considered story."],["03","Care","We handle reservations, documents, transfers and support throughout."]],
     appEyebrow: "Your journey in one place", appTitle: "A personal itinerary and concierge, always close.", appText: "Daily plans, reservations, addresses, tickets and your travel designer — beautifully organized in one space.", quote: "The finest journey is the one where you never need to think about logistics.",
-    cta: "Where would you like to go next?", ctaText: "Tell us about the trip in your imagination. We will shape it into a seamless journey.", ctaButton: "Start planning", demo: "Travel agency demo · created by STK Lab", back: "Back to STK Lab",
+    cta: "Where would you like to go next?", ctaText: "Tell us about the trip in your imagination. We will shape it into a seamless journey.", ctaButton: "Start planning", demo: "Travel agency demo · created by Tafa Lab", back: "Back to Tafa Lab",
   },
 } as const;
 

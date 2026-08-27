@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { StkLabLocale } from "@/app/components/stk-lab/content";
 import StkSiteShell from "./design/StkSiteShell";
 import StkLeadForm from "./StkLeadForm";
+import TafaLabLogo from "./TafaLabLogo";
 
 const whatsapp = "https://wa.me/77471818493";
 
@@ -40,13 +41,13 @@ const copy = {
       ["Accept Orders 24/7", "Your bakery keeps receiving orders even when you're busy, asleep or serving customers in-store."],
     ],
     projectsTitle: "Featured Bakery Projects",
-    projectsText: "Examples of bakery, cake-studio and dessert-brand experiences created by STK Lab. Each direction is built around the products, style and business goals of the brand.",
+    projectsText: "Examples of bakery, cake-studio and dessert-brand experiences created by Tafa Lab. Each direction is built around the products, style and business goals of the brand.",
     projects: [
       ["STK Bakery", "Premium website + interactive Cake Builder", "/images/stk-lab/bakery/stk-bakery.webp", "Live demo", "bakery"],
-      ["Veloura Cakes", "Luxury cake studio with visual cake customization", "/images/stk-lab/bakery/veloura-cakes.webp", "Live demo", "veloura-cakes-demo"],
-      ["Maison Levain", "Artisan European bakery with online pre-order experience", "/images/stk-lab/bakery/maison-sucre.webp", "Live demo", "maison-levain-demo"],
-      ["Éclair Maison", "Luxury French pâtisserie with catalogue, ordering and delivery flow", "/images/stk-lab/bakery/bakery-online-store.webp", "Live demo", "eclair-maison-demo"],
-      ["Bakery Admin", "Order management dashboard for bakery teams and owners", "/images/stk-lab/bakery/bakery-admin-dashboard.webp", "Business system", "admin"],
+      ["Veloura Cakes", "Luxury cake studio with visual cake customization", "/images/stk-lab/bakery/veloura-cakes.webp", "Live project", "", "https://stklab.tilda.ws/velouracakes"],
+      ["Maison Levain", "Artisan European bakery with online pre-order experience", "/images/stk-lab/bakery/maison-sucre.webp", "Live project", "", "https://stklab.tilda.ws/bakery_maison_levain"],
+      ["Éclair Maison", "Luxury French pâtisserie with catalogue, ordering and delivery flow", "/images/stk-lab/bakery/bakery-online-store.webp", "Live project", "", "https://stklab.tilda.ws/clairmaison"],
+      ["Bakery Admin", "Order management dashboard for bakery teams and owners", "/images/stk-lab/bakery/bakery-admin-dashboard.webp", "Business system", ""],
     ],
     processTitle: "Our Design Process",
     processText: "From the first conversation to the final launch, every step is planned to create a website that reflects your brand and supports your business.",
@@ -113,10 +114,10 @@ const copy = {
     projectsText: "Примеры цифровых решений для пекарен, кондитерских студий и десертных брендов. Каждый проект создаётся вокруг продукции, визуального стиля и бизнес-задач бренда.",
     projects: [
       ["STK Bakery", "Премиальный сайт + интерактивный конструктор тортов", "/images/stk-lab/bakery/stk-bakery.webp", "Рабочее демо", "bakery"],
-      ["Veloura Cakes", "Luxury cake studio с визуальной кастомизацией тортов", "/images/stk-lab/bakery/veloura-cakes.webp", "Рабочее демо", "veloura-cakes-demo"],
-      ["Maison Levain", "Ремесленная европейская пекарня с онлайн-предзаказом", "/images/stk-lab/bakery/maison-sucre.webp", "Рабочее демо", "maison-levain-demo"],
-      ["Éclair Maison", "Luxury pâtisserie с каталогом, заказом и доставкой", "/images/stk-lab/bakery/bakery-online-store.webp", "Рабочее демо", "eclair-maison-demo"],
-      ["Bakery Admin", "Система управления заказами для команды и владельца кондитерской", "/images/stk-lab/bakery/bakery-admin-dashboard.webp", "Бизнес-система", "admin"],
+      ["Veloura Cakes", "Luxury cake studio с визуальной кастомизацией тортов", "/images/stk-lab/bakery/veloura-cakes.webp", "Живой проект", "", "https://stklab.tilda.ws/velouracakes"],
+      ["Maison Levain", "Ремесленная европейская пекарня с онлайн-предзаказом", "/images/stk-lab/bakery/maison-sucre.webp", "Живой проект", "", "https://stklab.tilda.ws/bakery_maison_levain"],
+      ["Éclair Maison", "Luxury pâtisserie с каталогом, заказом и доставкой", "/images/stk-lab/bakery/bakery-online-store.webp", "Живой проект", "", "https://stklab.tilda.ws/clairmaison"],
+      ["Bakery Admin", "Система управления заказами для команды и владельца кондитерской", "/images/stk-lab/bakery/bakery-admin-dashboard.webp", "Бизнес-система", ""],
     ],
     processTitle: "Наш процесс разработки",
     processText: "От первой беседы до финального запуска каждый этап продуман так, чтобы сайт отражал ваш бренд и помогал развитию бизнеса.",
@@ -158,7 +159,7 @@ export default function BakeryIndustryPage({ locale }: { locale: StkLabLocale })
     <StkSiteShell>
       <header className="sticky top-0 z-50 border-b border-[color:var(--stk-border)] bg-[#f5f0ea]/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
-          <Link href={`/${locale}`} className="text-lg font-semibold tracking-[-0.03em]">STK Lab</Link>
+          <Link href={`/${locale}`} aria-label="Tafa Lab"><TafaLabLogo priority /></Link>
           <nav className="hidden items-center gap-7 text-sm md:flex">
             <Link href={`/${locale}`}>{t.nav.home}</Link>
             <a href="#services">{t.nav.services}</a>
@@ -180,7 +181,7 @@ export default function BakeryIndustryPage({ locale }: { locale: StkLabLocale })
           <div className="relative mx-auto aspect-[4/5] w-full max-w-[530px] overflow-hidden rounded-[var(--stk-radius-card)] bg-[#ded0c7] shadow-[0_30px_80px_rgba(69,43,33,.12)]">
             <Image src="/cakes/elegant-01.jpg.jpg" alt="Premium bakery cake" fill priority className="object-cover" sizes="(max-width:768px) 90vw, 40vw" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-white/5" />
-            <div className="absolute bottom-5 left-5 rounded-full bg-white/90 px-4 py-2 text-xs uppercase tracking-[.18em] backdrop-blur">STK Lab · Bakery</div>
+            <div className="absolute bottom-5 left-5 rounded-full bg-white/90 px-4 py-2 text-xs uppercase tracking-[.18em] backdrop-blur">Tafa Lab · Bakery</div>
           </div>
         </div>
       </section>
@@ -220,9 +221,10 @@ export default function BakeryIndustryPage({ locale }: { locale: StkLabLocale })
       <section id="portfolio" className="bg-[var(--stk-surface-strong)] py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-5 md:px-8"><div className="max-w-3xl"><p className="text-xs font-semibold uppercase tracking-[.24em] text-[#8b6d62]">Portfolio</p><h2 className="mt-4 text-4xl tracking-[-.045em] md:text-6xl">{t.projectsTitle}</h2><p className="mt-6 text-lg leading-8 text-[color:var(--stk-muted)]">{t.projectsText}</p></div>
           <div className="mt-14 grid gap-5 md:grid-cols-2">
-            {t.projects.map(([name,desc,img,status,route],i)=>{
-              const hasLink = Boolean(route);
+            {t.projects.map(([name,desc,img,status,route,externalUrl],i)=>{
+              const hasLink = Boolean(route || externalUrl);
               const inner=<div className="group overflow-hidden rounded-[var(--stk-radius-card)] border border-[color:var(--stk-border)] bg-[#f5f0ea]"><div className={`relative overflow-hidden ${i===0?"aspect-[16/8]":"aspect-[16/10]"}`}><Image src={img} alt={name} fill className="object-cover transition duration-700 group-hover:scale-[1.03]" sizes="(max-width:768px) 95vw, 48vw"/><div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent"/><span className="absolute bottom-5 left-5 rounded-full bg-white/90 px-3 py-1.5 text-xs backdrop-blur">{status}</span></div><div className="p-6 md:p-8"><h3 className="text-3xl tracking-[-.04em]">{name}</h3><p className="mt-3 leading-7 text-[color:var(--stk-muted)]">{desc}</p>{hasLink&&<div className="mt-6 text-sm font-medium">{locale==="ru"?"Открыть проект":"View project"} →</div>}</div></div>;
+              if (externalUrl) return <a key={name} href={externalUrl} target="_blank" rel="noreferrer" className={i===0?"md:col-span-2":""}>{inner}</a>;
               return route?<Link key={name} href={`/${locale}/${route}`} className={i===0?"md:col-span-2":""}>{inner}</Link>:<div key={name}>{inner}</div>
             })}
           </div>
@@ -231,11 +233,11 @@ export default function BakeryIndustryPage({ locale }: { locale: StkLabLocale })
 
       <section className="bg-[var(--stk-accent-soft)] py-24 md:py-32"><div className="mx-auto max-w-7xl px-5 md:px-8"><div className="grid gap-8 md:grid-cols-2"><h2 className="text-4xl tracking-[-.045em] md:text-6xl">{t.processTitle}</h2><p className="max-w-xl text-lg leading-8 text-[color:var(--stk-muted)]">{t.processText}</p></div><div className="mt-16 divide-y divide-black/15 border-y border-[color:var(--stk-border)]">{t.process.map(([num,name,text])=><div key={num} className="grid gap-4 py-8 md:grid-cols-[100px_1fr_1.4fr] md:items-start"><span className="text-sm text-[color:var(--stk-faint)]">{num}</span><h3 className="text-2xl tracking-[-.035em]">{name}</h3><p className="max-w-xl leading-7 text-[color:var(--stk-muted)]">{text}</p></div>)}</div></div></section>
 
-      <section className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"><div className="max-w-3xl"><h2 className="text-4xl tracking-[-.045em] md:text-6xl">{t.packagesTitle}</h2><p className="mt-6 text-lg leading-8 text-[color:var(--stk-muted)]">{t.packagesText}</p></div><div className="mt-14 grid gap-5 lg:grid-cols-3">{t.packages.map(([name,price,text],i)=><div key={name} className={`rounded-[var(--stk-radius-card)] border p-8 ${i===2?"border-[#2a211d] bg-[#2a211d] text-white":"border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)]"}`}><p className={`text-xs uppercase tracking-[.2em] ${i===2?"text-white/50":"text-[color:var(--stk-faint)]"}`}>{i===2?(locale==="ru"?"Самый функциональный":"Most capable"):"STK Lab"}</p><h3 className="mt-10 text-3xl tracking-[-.04em]">{name}</h3><div className="mt-5 text-5xl tracking-[-.05em]">{price}</div><p className={`mt-6 leading-7 ${i===2?"text-white/60":"text-[color:var(--stk-muted)]"}`}>{text}</p><a href={`${whatsapp}?text=${message}`} target="_blank" rel="noreferrer" className={`mt-10 inline-flex rounded-full px-5 py-3 text-sm ${i===2?"bg-white":"bg-[#2a211d]"}`} style={{ color: i === 2 ? "#000000" : "#ffffff" }}>{t.contactCta}</a></div>)}</div></section>
+      <section className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"><div className="max-w-3xl"><h2 className="text-4xl tracking-[-.045em] md:text-6xl">{t.packagesTitle}</h2><p className="mt-6 text-lg leading-8 text-[color:var(--stk-muted)]">{t.packagesText}</p></div><div className="mt-14 grid gap-5 lg:grid-cols-3">{t.packages.map(([name,price,text],i)=><div key={name} className={`rounded-[var(--stk-radius-card)] border p-8 ${i===2?"border-[#2a211d] bg-[#2a211d] text-white":"border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)]"}`}><p className={`text-xs uppercase tracking-[.2em] ${i===2?"text-white/50":"text-[color:var(--stk-faint)]"}`}>{i===2?(locale==="ru"?"Самый функциональный":"Most capable"):"Tafa Lab"}</p><h3 className="mt-10 text-3xl tracking-[-.04em]">{name}</h3><div className="mt-5 text-5xl tracking-[-.05em]">{price}</div><p className={`mt-6 leading-7 ${i===2?"text-white/60":"text-[color:var(--stk-muted)]"}`}>{text}</p><a href={`${whatsapp}?text=${message}`} target="_blank" rel="noreferrer" className={`mt-10 inline-flex rounded-full px-5 py-3 text-sm ${i===2?"bg-white":"bg-[#2a211d]"}`} style={{ color: i === 2 ? "#000000" : "#ffffff" }}>{t.contactCta}</a></div>)}</div></section>
 
       <section className="border-y border-[color:var(--stk-border)] bg-[var(--stk-surface-strong)] py-24 md:py-32"><div className="mx-auto grid max-w-7xl gap-12 px-5 md:grid-cols-[.75fr_1.25fr] md:px-8"><h2 className="text-4xl tracking-[-.045em] md:text-6xl">{t.faqTitle}</h2><div className="divide-y divide-black/10 border-y border-[color:var(--stk-border)]">{t.faqs.map(([q,a])=><details key={q} className="group py-6"><summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-xl tracking-[-.025em]"><span>{q}</span><span className="text-[color:var(--stk-faint)] transition group-open:rotate-45">+</span></summary><p className="max-w-2xl pb-2 pt-5 leading-7 text-[color:var(--stk-muted)]">{a}</p></details>)}</div></div></section>
 
-      <section aria-label={locale==="ru"?"Другие направления STK Lab":"Other STK Lab industries"} className="border-t border-[color:var(--stk-border)]"><div className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-24"><div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between"><div><p className="text-xs font-semibold uppercase tracking-[.24em] text-[color:var(--stk-muted-strong)]">{locale==="ru"?"Другие направления":"Other industries"}</p><h2 className="mt-4 text-3xl tracking-[-.04em] md:text-5xl">{locale==="ru"?"Посмотрите другие решения STK Lab":"Explore other STK Lab solutions"}</h2></div><Link href={`/${locale}`} className="text-sm font-medium">{locale==="ru"?"На главную STK Lab":"STK Lab home"} →</Link></div><div className="mt-10 grid gap-3 sm:grid-cols-2"><Link href={`/${locale}/industries/restaurants`} className="flex items-center justify-between rounded-[var(--stk-radius-small)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)] px-5 py-4 transition hover:-translate-y-0.5"><span>{locale==="ru"?"Рестораны":"Restaurants"}</span><span aria-hidden="true">→</span></Link><Link href={`/${locale}/industries/beauty`} className="flex items-center justify-between rounded-[var(--stk-radius-small)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)] px-5 py-4 transition hover:-translate-y-0.5"><span>{locale==="ru"?"Beauty и салоны":"Beauty & Salons"}</span><span aria-hidden="true">→</span></Link><Link href={`/${locale}/industries/travel`} className="flex items-center justify-between rounded-[var(--stk-radius-small)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)] px-5 py-4 transition hover:-translate-y-0.5"><span>{locale==="ru"?"Travel":"Travel"}</span><span aria-hidden="true">→</span></Link><Link href={`/${locale}/industries/business-platforms`} className="flex items-center justify-between rounded-[var(--stk-radius-small)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)] px-5 py-4 transition hover:-translate-y-0.5"><span>{locale==="ru"?"Бизнес-платформы":"Business Platforms"}</span><span aria-hidden="true">→</span></Link></div></div></section>
+      <section aria-label={locale==="ru"?"Другие направления Tafa Lab":"Other Tafa Lab industries"} className="border-t border-[color:var(--stk-border)]"><div className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-24"><div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between"><div><p className="text-xs font-semibold uppercase tracking-[.24em] text-[color:var(--stk-muted-strong)]">{locale==="ru"?"Другие направления":"Other industries"}</p><h2 className="mt-4 text-3xl tracking-[-.04em] md:text-5xl">{locale==="ru"?"Посмотрите другие решения Tafa Lab":"Explore other Tafa Lab solutions"}</h2></div><Link href={`/${locale}`} className="text-sm font-medium">{locale==="ru"?"На главную Tafa Lab":"Tafa Lab home"} →</Link></div><div className="mt-10 grid gap-3 sm:grid-cols-2"><Link href={`/${locale}/industries/restaurants`} className="flex items-center justify-between rounded-[var(--stk-radius-small)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)] px-5 py-4 transition hover:-translate-y-0.5"><span>{locale==="ru"?"Рестораны":"Restaurants"}</span><span aria-hidden="true">→</span></Link><Link href={`/${locale}/industries/beauty`} className="flex items-center justify-between rounded-[var(--stk-radius-small)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)] px-5 py-4 transition hover:-translate-y-0.5"><span>{locale==="ru"?"Beauty и салоны":"Beauty & Salons"}</span><span aria-hidden="true">→</span></Link><Link href={`/${locale}/industries/travel`} className="flex items-center justify-between rounded-[var(--stk-radius-small)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)] px-5 py-4 transition hover:-translate-y-0.5"><span>{locale==="ru"?"Travel":"Travel"}</span><span aria-hidden="true">→</span></Link><Link href={`/${locale}/industries/business-platforms`} className="flex items-center justify-between rounded-[var(--stk-radius-small)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)] px-5 py-4 transition hover:-translate-y-0.5"><span>{locale==="ru"?"Бизнес-платформы":"Business Platforms"}</span><span aria-hidden="true">→</span></Link></div></div></section>
 
       <section id="contact" className="px-5 py-10 md:px-8 md:py-16">
         <div className="mx-auto max-w-7xl rounded-[var(--stk-radius-card)] bg-[var(--stk-dark)] px-6 py-14 text-white md:px-12 md:py-20">
