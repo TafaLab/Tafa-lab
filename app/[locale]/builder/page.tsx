@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 import {
   useCallback,
   useMemo,
@@ -91,6 +92,7 @@ function InspectorButton({
 }
 
 export default function BuilderPage() {
+  const router = useRouter();
   const currentLocale = useLocale();
   const locale: BuilderLocale =
     currentLocale === "en" ? "en" : "ru";
@@ -220,7 +222,7 @@ export default function BuilderPage() {
       }),
     );
 
-    window.location.href = `/${locale}/checkout`;
+    router.push(`/${locale}/checkout`);
   };
 
   return (

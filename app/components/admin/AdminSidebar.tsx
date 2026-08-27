@@ -108,7 +108,11 @@ export default function AdminSidebar() {
     );
 
   useEffect(() => {
-    setOpen(false);
+    const timer = window.setTimeout(() => {
+      setOpen(false);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [pathname]);
 
   useEffect(() => {

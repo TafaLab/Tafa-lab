@@ -133,30 +133,34 @@ export default function CheckoutPage() {
     useState("");
 
   useEffect(() => {
-    const raw =
-      sessionStorage.getItem(
-        "milky-cake-order",
-      );
+    const timer = window.setTimeout(() => {
+      const raw =
+        sessionStorage.getItem(
+          "milky-cake-order",
+        );
 
-    if (!raw) {
-      router.replace(
-        `/${locale}/builder`,
-      );
+      if (!raw) {
+        router.replace(
+          `/${locale}/builder`,
+        );
 
-      return;
-    }
+        return;
+      }
 
-    try {
-      const parsed =
-        JSON.parse(raw) as OrderData;
+      try {
+        const parsed =
+          JSON.parse(raw) as OrderData;
 
-      setOrder(parsed);
-      setLoading(false);
-    } catch {
-      router.replace(
-        `/${locale}/builder`,
-      );
-    }
+        setOrder(parsed);
+        setLoading(false);
+      } catch {
+        router.replace(
+          `/${locale}/builder`,
+        );
+      }
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [locale, router]);
 
   const selectedWeight =

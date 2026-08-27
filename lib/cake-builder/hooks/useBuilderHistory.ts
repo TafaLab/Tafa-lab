@@ -58,8 +58,11 @@ export function useBuilderHistory({
 
   const onRestoreRef = useRef(onRestore);
 
-  const [, setHistoryVersion] =
-    useState(0);
+  const [historyState, setHistoryState] =
+    useState({
+      canUndo: false,
+      canRedo: false,
+    });
 
   useEffect(() => {
     onRestoreRef.current = onRestore;
@@ -72,9 +75,12 @@ export function useBuilderHistory({
 
   const refreshHistoryState =
     useCallback(() => {
-      setHistoryVersion(
-        (current) => current + 1,
-      );
+      setHistoryState({
+        canUndo:
+          historyPastRef.current.length > 0,
+        canRedo:
+          historyFutureRef.current.length > 0,
+      });
     }, []);
 
   const setDecorationsWithoutHistory =
@@ -278,12 +284,6 @@ export function useBuilderHistory({
     refreshHistoryState();
   }, [refreshHistoryState]);
 
-  const canUndo =
-    historyPastRef.current.length > 0;
-
-  const canRedo =
-    historyFutureRef.current.length > 0;
-
   return {
     decorationInstances,
     decorationInstancesRef,
@@ -293,8 +293,8 @@ export function useBuilderHistory({
 
     undo,
     redo,
-    canUndo,
-    canRedo,
+    canUndo: historyState.canUndo,
+    canRedo: historyState.canRedo,
 
     beginInteraction,
     updateDuringInteraction,
