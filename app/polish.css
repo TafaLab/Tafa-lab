@@ -37,6 +37,10 @@
 .mobile-nav-menu nav a { border-radius: 14px; padding: 13px 15px; color: var(--brown); font-weight: 700; }
 .mobile-nav-menu nav a:hover { background: var(--pink-light); color: var(--pink-dark); }
 
+.language-switcher .language-switcher-link-active {
+  color: #ffffff;
+}
+
 .floating-price-link {
   position: fixed;
   right: 18px;
