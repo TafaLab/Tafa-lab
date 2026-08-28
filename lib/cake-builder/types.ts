@@ -29,6 +29,7 @@ export type FillingOption = {
  */
 export type CakeView =
   | "front"
+  | "side"
   | "top";
 
 /**
