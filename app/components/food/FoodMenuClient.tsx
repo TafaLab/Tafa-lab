@@ -155,12 +155,12 @@ export default function FoodMenuClient({ sections, locale }: { sections: FoodMen
         <div className="flex items-center justify-between border-b border-black/10 pb-5"><div><span className="text-xs uppercase tracking-[.18em] text-black/40">STK Bakery</span><h2 className="mt-1 text-3xl font-semibold">{en ? "Cart" : "Корзина"}</h2></div><button type="button" onClick={() => setCartOpen(false)} className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white text-xl">×</button></div>
         {success ? (
           <div className="py-8">
-            <div className="rounded-3xl bg-[#e8f3e9] p-7 text-center text-[#35503a]">
-              <span className="text-4xl">✓</span>
-              <strong className="mt-3 block text-2xl">{en ? "Order placed" : "Заказ оформлен"}</strong>
-              <p className="mt-3 text-sm leading-6">{en ? "The order is now visible in the bakery admin panel." : "Заказ уже появился в админке пекарни."}</p>
-              <a href={`/${locale}/admin/orders`} className="brown-link-white mt-6 inline-flex w-full items-center justify-center rounded-full bg-[#35503a] px-5 py-3 font-semibold text-white">{en ? "Open admin orders" : "Открыть заказы в админке"}</a>
-              <button type="button" onClick={() => { setSuccess(false); setCartOpen(false); }} className="mt-3 w-full rounded-full border border-[#35503a]/25 bg-white px-5 py-3 font-semibold text-[#35503a]">{en ? "Continue shopping" : "Продолжить покупки"}</button>
+            <div className="rounded-3xl border border-[#6a4433]/10 bg-[#fffaf7] p-7 text-center text-[#342923] shadow-sm">
+              <span className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-[#f7e8e4] text-4xl text-[#ec4d84]">✓</span>
+              <strong className="mt-5 block text-3xl">{en ? "Thank you for your order!" : "Спасибо за заказ!"}</strong>
+              <p className="mt-3 text-sm leading-6 text-black/60">{en ? "Your test food order has been created and is already visible in the bakery admin panel." : "Ваш тестовый заказ еды создан и уже появился в админке пекарни."}</p>
+              <a href={`/${locale}/admin/orders`} className="brown-link-white mt-6 inline-flex w-full items-center justify-center rounded-full bg-[#6a4433] px-5 py-4 font-semibold text-white shadow-sm">{en ? "View order in admin" : "Посмотреть заказ в админке"}</a>
+              <button type="button" onClick={() => { setSuccess(false); setCartOpen(false); }} className="mt-3 w-full rounded-full border border-[#6a4433] bg-white px-5 py-4 font-semibold text-[#6a4433]">{en ? "Continue shopping" : "Продолжить покупки"}</button>
             </div>
           </div>
         ) : (<>
