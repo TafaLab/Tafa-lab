@@ -35,6 +35,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly" as const,
     },
     {
+      path: "/industries/entertainment",
+      priority: 0.9,
+      changeFrequency: "weekly" as const,
+    },
+    {
+      path: "/price",
+      priority: 0.9,
+      changeFrequency: "weekly" as const,
+    },
+    {
       path: "/contacts",
       priority: 0.7,
       changeFrequency: "monthly" as const,
