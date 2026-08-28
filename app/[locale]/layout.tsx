@@ -10,6 +10,7 @@ import {
 
 import { notFound } from "next/navigation";
 import Script from "next/script";
+import Link from "next/link";
 
 import { routing } from "@/i18n/routing";
 
@@ -49,6 +50,9 @@ export default async function LocaleLayout({
 
   return (
     <>
+      <Script id="document-language" strategy="beforeInteractive">
+        {`document.documentElement.lang=${JSON.stringify(locale)};`}
+      </Script>
       <Script
         src="https://www.googletagmanager.com/gtag/js?id=G-7KW5HE8VL0"
         strategy="afterInteractive"
@@ -72,6 +76,13 @@ export default async function LocaleLayout({
       >
         {children}
       </NextIntlClientProvider>
+      <Link
+        href={`/${locale}/price`}
+        className="fixed bottom-4 left-4 z-[90] rounded-full border border-white/25 bg-[#211d19]/90 px-4 py-2.5 text-xs font-semibold text-white shadow-lg backdrop-blur-md transition hover:-translate-y-0.5"
+        style={{ color: "#ffffff" }}
+      >
+        {locale === "ru" ? "Общий прайс" : "Full price"} →
+      </Link>
     </>
   );
 }
