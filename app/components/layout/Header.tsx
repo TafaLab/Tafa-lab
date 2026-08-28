@@ -86,6 +86,10 @@ export default function Header({
           <Link href={`/${locale}/contacts`}>
             {text.contacts}
           </Link>
+
+          <Link href={`/${locale}/price`}>
+            {locale === "en" ? "Price" : "Цены"}
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3">
