@@ -1,3 +1,193 @@
 "use client";
-import {useState} from "react";
-export default function EventInteractiveExperience({locale,mode}:{locale:"ru"|"en";mode:"events"|"animators"|"kids"}){const ru=locale==="ru";const [event,setEvent]=useState(mode==="events"?"Wedding":"Kids Party"),[guests,setGuests]=useState(32),[style,setStyle]=useState("Tropical"),[extras,setExtras]=useState<string[]>(["Decor","DJ"]),[budget,setBudget]=useState(1850),[reveal,setReveal]=useState(false);const toggle=(x:string)=>setExtras(v=>v.includes(x)?v.filter(i=>i!==x):[...v,x]);const total=500+guests*20+extras.length*180;return <section className="bg-[#210e19] px-5 py-24 text-white md:px-10 md:py-32"><div className="mx-auto max-w-7xl"><p className="text-xs uppercase tracking-[.25em] text-[#e6a7be]">Event Builder · AI Planner</p><h2 className="mt-5 max-w-5xl text-5xl md:text-7xl">{ru?"Сыграйте с будущим праздником":"Play with your future celebration"}</h2><div className="mt-12 grid gap-5 lg:grid-cols-2"><div className="rounded-3xl bg-white p-7 text-black"><p>{ru?"Что празднуем?":"What are we celebrating?"}</p><div className="mt-4 flex flex-wrap gap-2">{["Wedding","Birthday","Gender Reveal","Bachelorette","Kids Party","Corporate"].map(x=><button key={x} onClick={()=>setEvent(x)} className="rounded-full border px-4 py-2" style={{background:event===x?"#e6a7be":undefined}}>{x}</button>)}</div><p className="mt-7">{ru?"Гостей":"Guests"} · {guests}</p><input type="range" min="10" max="120" step="2" value={guests} onChange={e=>setGuests(Number(e.target.value))} className="mt-2 w-full"/><p className="mt-7">{ru?"Стиль":"Style"}</p><div className="mt-3 flex flex-wrap gap-2">{["Minimal","Luxury","Boho","Neon","Tropical","Vintage"].map(x=><button key={x} onClick={()=>setStyle(x)} className="rounded-full border px-4 py-2" style={{background:style===x?"#e6a7be":undefined}}>{x}</button>)}</div><div className="mt-7 grid grid-cols-2 gap-2">{["DJ","Photographer","Animator","Catering","Decor","Flowers","Show","Photobooth"].map(x=><button key={x} onClick={()=>toggle(x)} className="rounded-xl border p-3 text-left" style={{background:extras.includes(x)?"#e6a7be":undefined}}>+ {x}</button>)}</div></div><div className="rounded-3xl bg-[#f1d9e4] p-7 text-black"><p className="text-xs uppercase tracking-[.2em] opacity-45">Your Event</p><h3 className="mt-4 text-4xl">{event} · {style}</h3><p className="mt-3 opacity-55">{guests} guests · {extras.join(" · ")}</p><div className="mt-8 grid grid-cols-3 gap-2">{["ARCH","TABLES","DANCE FLOOR","DJ","BAR","PHOTO ZONE"].map(x=><div key={x} className="flex aspect-square items-center justify-center rounded-xl border border-black/15 bg-white text-center text-xs">{x}</div>)}</div><div className="mt-8 flex justify-between border-t pt-5"><strong className="text-4xl">${total}</strong><a href="#book" className="rounded-full bg-[#210e19] px-5 py-3 text-white">{ru?"Получить предложение":"Request proposal"}</a></div></div></div><div className="mt-5 grid gap-5 md:grid-cols-2"><div className="rounded-3xl bg-white p-7 text-black"><h3 className="text-2xl">AI Event Planner</h3><p className="mt-4 rounded-xl bg-[#f5eff2] p-4">“{ru?`Хочу ${event.toLowerCase()} на ${guests} человек в стиле ${style}, с ${extras.join(", ")}.`:`I want a ${style} ${event.toLowerCase()} for ${guests} people with ${extras.join(", ")}.`}”</p><p className="mt-5 opacity-55">Venue $500 · Decor $250 · Entertainment $300 · Food $600 · Photo $200</p></div><div className="rounded-3xl bg-[#e6a7be] p-7 text-black"><h3 className="text-2xl">{event==="Gender Reveal"?"Boy or Girl?":ru?"Праздник по бюджету":"Event by budget"}</h3>{event==="Gender Reveal"?<><button onClick={()=>setReveal(true)} className="mt-8 w-full rounded-full bg-[#210e19] px-5 py-4 text-white">{reveal?"🎉 IT’S A SURPRISE!":"3 · 2 · 1 · REVEAL"}</button></>:<><input type="range" min="300" max="5000" step="50" value={budget} onChange={e=>setBudget(Number(e.target.value))} className="mt-8 w-full"/><strong className="mt-4 block text-4xl">${budget}</strong><p className="mt-3">✓ Venue ✓ Decor ✓ Entertainment {budget>1200?"✓ DJ ✓ Photographer":""}</p></>}</div></div></div></section>}
+import { useState } from "react";
+export default function EventInteractiveExperience({
+  locale,
+  mode,
+}: {
+  locale: "ru" | "en";
+  mode: "events" | "animators" | "kids";
+}) {
+  const ru = locale === "ru";
+  const [event, setEvent] = useState(
+      mode === "events" ? "Wedding" : "Kids Party",
+    ),
+    [guests, setGuests] = useState(32),
+    [style, setStyle] = useState("Tropical"),
+    [extras, setExtras] = useState<string[]>(["Decor", "DJ"]),
+    [budget, setBudget] = useState(1850),
+    [reveal, setReveal] = useState(false);
+  const toggle = (x: string) =>
+    setExtras((v) => (v.includes(x) ? v.filter((i) => i !== x) : [...v, x]));
+  const total = 500 + guests * 20 + extras.length * 180;
+  return (
+    <section className="bg-[#210e19] px-5 py-24 text-white md:px-10 md:py-32">
+      <div className="mx-auto max-w-7xl">
+        <p className="text-xs uppercase tracking-[.25em] text-[#e6a7be]">
+          Event Builder · AI Planner
+        </p>
+        <h2 className="mt-5 max-w-5xl text-5xl md:text-7xl">
+          {ru
+            ? "Сыграйте с будущим праздником"
+            : "Play with your future celebration"}
+        </h2>
+        <div className="mt-12 grid gap-5 lg:grid-cols-2">
+          <div className="rounded-3xl bg-white p-7 text-black">
+            <p>{ru ? "Что празднуем?" : "What are we celebrating?"}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {[
+                "Wedding",
+                "Birthday",
+                "Gender Reveal",
+                "Bachelorette",
+                "Kids Party",
+                "Corporate",
+              ].map((x) => (
+                <button
+                  key={x}
+                  onClick={() => setEvent(x)}
+                  className="rounded-full border px-4 py-2"
+                  style={{ background: event === x ? "#e6a7be" : undefined }}
+                >
+                  {x}
+                </button>
+              ))}
+            </div>
+            <p className="mt-7">
+              {ru ? "Гостей" : "Guests"} · {guests}
+            </p>
+            <input
+              type="range"
+              min="10"
+              max="120"
+              step="2"
+              value={guests}
+              onChange={(e) => setGuests(Number(e.target.value))}
+              className="mt-2 w-full"
+            />
+            <p className="mt-7">{ru ? "Стиль" : "Style"}</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {["Minimal", "Luxury", "Boho", "Neon", "Tropical", "Vintage"].map(
+                (x) => (
+                  <button
+                    key={x}
+                    onClick={() => setStyle(x)}
+                    className="rounded-full border px-4 py-2"
+                    style={{ background: style === x ? "#e6a7be" : undefined }}
+                  >
+                    {x}
+                  </button>
+                ),
+              )}
+            </div>
+            <div className="mt-7 grid grid-cols-2 gap-2">
+              {[
+                "DJ",
+                "Photographer",
+                "Animator",
+                "Catering",
+                "Decor",
+                "Flowers",
+                "Show",
+                "Photobooth",
+              ].map((x) => (
+                <button
+                  key={x}
+                  onClick={() => toggle(x)}
+                  className="rounded-xl border p-3 text-left"
+                  style={{
+                    background: extras.includes(x) ? "#e6a7be" : undefined,
+                  }}
+                >
+                  + {x}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-3xl bg-[#f1d9e4] p-7 text-black">
+            <p className="text-xs uppercase tracking-[.2em] opacity-45">
+              Your Event
+            </p>
+            <h3 className="mt-4 text-4xl">
+              {event} · {style}
+            </h3>
+            <p className="mt-3 opacity-55">
+              {guests} guests · {extras.join(" · ")}
+            </p>
+            <div className="mt-8 grid grid-cols-3 gap-2">
+              {["ARCH", "TABLES", "DANCE FLOOR", "DJ", "BAR", "PHOTO ZONE"].map(
+                (x) => (
+                  <div
+                    key={x}
+                    className="flex aspect-square items-center justify-center rounded-xl border border-black/15 bg-white text-center text-xs"
+                  >
+                    {x}
+                  </div>
+                ),
+              )}
+            </div>
+            <div className="mt-8 flex justify-between border-t pt-5">
+              <strong className="text-4xl">${total}</strong>
+              <a
+                href="#book"
+                className="rounded-full bg-[#210e19] px-5 py-3 text-white"
+              >
+                {ru ? "Получить предложение" : "Request proposal"}
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="mt-5 grid gap-5 md:grid-cols-2">
+          <div className="rounded-3xl bg-white p-7 text-black">
+            <h3 className="text-2xl">AI Event Planner</h3>
+            <p className="mt-4 rounded-xl bg-[#f5eff2] p-4">
+              “
+              {ru
+                ? `Хочу ${event.toLowerCase()} на ${guests} человек в стиле ${style}, с ${extras.join(", ")}.`
+                : `I want a ${style} ${event.toLowerCase()} for ${guests} people with ${extras.join(", ")}.`}
+              ”
+            </p>
+            <p className="mt-5 opacity-55">
+              Venue $500 · Guest service ${guests * 20} · Selected extras ${extras.length * 180} · Total ${total}
+            </p>
+          </div>
+          <div className="rounded-3xl bg-[#e6a7be] p-7 text-black">
+            <h3 className="text-2xl">
+              {event === "Gender Reveal"
+                ? "Boy or Girl?"
+                : ru
+                  ? "Праздник по бюджету"
+                  : "Event by budget"}
+            </h3>
+            {event === "Gender Reveal" ? (
+              <>
+                <button
+                  onClick={() => setReveal(true)}
+                  className="mt-8 w-full rounded-full bg-[#210e19] px-5 py-4 text-white"
+                >
+                  {reveal ? "🎉 IT’S A SURPRISE!" : "3 · 2 · 1 · REVEAL"}
+                </button>
+              </>
+            ) : (
+              <>
+                <input
+                  type="range"
+                  min="300"
+                  max="5000"
+                  step="50"
+                  value={budget}
+                  onChange={(e) => setBudget(Number(e.target.value))}
+                  className="mt-8 w-full"
+                />
+                <strong className="mt-4 block text-4xl">${budget}</strong>
+                <p className="mt-3">
+                  ✓ Venue ✓ Decor ✓ Entertainment{" "}
+                  {budget > 1200 ? "✓ DJ ✓ Photographer" : ""}
+                </p>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
