@@ -22,7 +22,7 @@ const copy = {
     servicesTitle:"Digital solutions for restaurants",
     servicesText:"Start with a focused website or build a connected restaurant ecosystem. Every solution is adapted to the concept, service model and operational needs.",
     services:[
-      ["Restaurant Website","from $700","Premium responsive website with menu, story, locations, contacts and reservation calls to action."],
+      ["Restaurant Website","from $800","Premium responsive website with menu, story, locations, contacts and reservation calls to action."],
       ["Digital Menu & Online Ordering","from $450","Mobile-first menu with categories, modifiers, cart and direct online ordering."],
       ["Table Reservations","from $350","Integrated booking flow for date, time, party size and seating preferences."],
       ["POS & Kitchen Workflow","Custom","Connected ordering workflow from front of house to kitchen preparation statuses."],
@@ -38,7 +38,7 @@ const copy = {
     projectsTitle:"Restaurant projects",
     projectsText:"Four complete restaurant experiences in four distinct directions. Open every project, explore the guest journey and send a test reservation to the public demo admin.",
     projects:[
-      ["Limoné","Mediterranean restaurant website with seasonal menu, spaces, private dining and reservations.","/images/stk-lab/restaurants/restaurant-website-hero.webp","Live project","https://stklab.tilda.ws/lemons"],
+      ["Limoné","Mediterranean restaurant website with seasonal menu, spaces, private dining and reservations.","/images/stk-lab/restaurants/restaurant-website-hero.webp","Live project","limone-restaurant-demo"],
       ["VERDANT","Light plant-led restaurant with a seasonal menu, local growers and table reservations.","/images/stk-lab/restaurants/demos/verde-restaurant-hero-v2.webp","Vegan demo","vegan-restaurant-demo"],
       ["NOOR Table","Contemporary halal restaurant for family dining, celebrations and private events.","/images/stk-lab/restaurants/demos/noor-halal-hero-v2.webp","Halal demo","halal-restaurant-demo"],
       ["KURO Robata","Dark Japanese fire kitchen with a robata counter and an intimate booking flow.","/images/stk-lab/restaurants/demos/kaiseki-restaurant-hero-v2.webp","Japanese demo","japanese-restaurant-demo"],
@@ -55,8 +55,8 @@ const copy = {
     packagesTitle:"Start with the right scope",
     packagesText:"Final pricing depends on content, integrations, number of locations and custom functionality.",
     packages:[
-      ["Restaurant Presence","from $700","Brand website, menu, location, contact and reservation CTA."],
-      ["Ordering Experience","from $1,100","Website plus digital menu, ordering flow and conversion-focused guest journey."],
+      ["Restaurant Presence","from $800","Brand website, menu, location, contact and reservation CTA."],
+      ["Ordering Experience","from $2,000","Website plus digital menu, ordering flow and conversion-focused guest journey."],
       ["Restaurant Platform","Custom","Custom operations platform, dashboards, branches, staff and business workflows."],
     ],
     faqTitle:"FAQ",
@@ -81,7 +81,7 @@ const copy = {
     servicesTitle:"Цифровые решения для ресторанов",
     servicesText:"Можно начать с сайта или построить связанную ресторанную экосистему. Решение адаптируется под концепцию, формат обслуживания и реальные процессы бизнеса.",
     services:[
-      ["Сайт ресторана","от $700","Премиальный адаптивный сайт с меню, историей, локациями, контактами и бронированием."],
+      ["Сайт ресторана","от $800","Премиальный адаптивный сайт с меню, историей, локациями, контактами и бронированием."],
       ["Цифровое меню и онлайн-заказ","от $450","Mobile-first меню с категориями, модификаторами, корзиной и прямым оформлением заказа."],
       ["Бронирование столиков","от $350","Встроенный сценарий выбора даты, времени, количества гостей и зоны посадки."],
       ["POS и кухня","Индивидуально","Связанный процесс заказа от зала или кассы до статусов приготовления на кухне."],
@@ -97,7 +97,7 @@ const copy = {
     projectsTitle:"Ресторанные проекты",
     projectsText:"Четыре полноценных ресторанных проекта в совершенно разных направлениях. Откройте каждый сайт, пройдите путь гостя и отправьте тестовую бронь в открытую демо-админку.",
     projects:[
-      ["Limoné","Средиземноморский ресторан: сезонное меню, пространства, private dining и бронирование.","/images/stk-lab/restaurants/restaurant-website-hero.webp","Живой проект","https://stklab.tilda.ws/lemons"],
+      ["Limoné","Средиземноморский ресторан: сезонное меню, пространства, private dining и бронирование.","/images/stk-lab/restaurants/restaurant-website-hero.webp","Живой проект","limone-restaurant-demo"],
       ["VERDANT","Светлый растительный ресторан с сезонным меню, локальными фермами и бронированием.","/images/stk-lab/restaurants/demos/verde-restaurant-hero-v2.webp","Vegan demo","vegan-restaurant-demo"],
       ["NOOR Table","Современный халяльный ресторан для семейных встреч, праздников и закрытых ужинов.","/images/stk-lab/restaurants/demos/noor-halal-hero-v2.webp","Halal demo","halal-restaurant-demo"],
       ["KURO Robata","Тёмная японская кухня огня с робата-стойкой и камерным сценарием бронирования.","/images/stk-lab/restaurants/demos/kaiseki-restaurant-hero-v2.webp","Japanese demo","japanese-restaurant-demo"],
@@ -114,8 +114,8 @@ const copy = {
     packagesTitle:"Выберите подходящий масштаб",
     packagesText:"Финальная стоимость зависит от контента, интеграций, количества филиалов и индивидуального функционала.",
     packages:[
-      ["Restaurant Presence","от $700","Брендовый сайт, меню, локация, контакты и переход к бронированию."],
-      ["Ordering Experience","от $1,100","Сайт + цифровое меню, онлайн-заказ и продуманный путь гостя."],
+      ["Restaurant Presence","от $800","Брендовый сайт, меню, локация, контакты и переход к бронированию."],
+      ["Ordering Experience","от $2,000","Сайт + цифровое меню, онлайн-заказ и продуманный путь гостя."],
       ["Restaurant Platform","Индивидуально","Операционная система, дашборды, филиалы, сотрудники и бизнес-процессы."],
     ],
     faqTitle:"Частые вопросы",
