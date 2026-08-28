@@ -42,7 +42,7 @@ import type {
   InscriptionSettings,
 } from "@/lib/cake-builder/types";
 
-import { formatPrice } from "@/lib/cake-builder/utils";
+import { formatUsdFromKzt } from "@/lib/currency";
 
 import { builderMessages, type BuilderLocale } from "@/messages/builder";
 import { enMessages } from "@/messages/en";
@@ -218,7 +218,8 @@ export default function BuilderPage() {
         decorations: decorationInstances,
         inscription,
         comment,
-        price: totalPrice,
+        price: Math.round(totalPrice / 500),
+        currency: "USD",
       }),
     );
 
@@ -488,7 +489,7 @@ export default function BuilderPage() {
                 />
                 <PreviewValue
                   label={text.preview.price}
-                  value={`${formatPrice(totalPrice)} ₸`}
+                  value={formatUsdFromKzt(totalPrice)}
                 />
               </div>
             </div>
@@ -515,7 +516,7 @@ export default function BuilderPage() {
                 >
                   <strong className="block text-lg">{item.label}</strong>
                   <span className="mt-1 block text-sm text-black/55">
-                    {formatPrice(item.price)} ₸
+                    {formatUsdFromKzt(item.price)}
                   </span>
                 </button>
               ))}
@@ -550,7 +551,7 @@ export default function BuilderPage() {
                   <small className="shrink-0 font-semibold text-[#7c5645]">
                     {item.price === 0
                       ? text.sections.filling.included
-                      : `+${formatPrice(item.price)} ₸`}
+                      : `+${formatUsdFromKzt(item.price)}`}
                   </small>
                 </button>
               ))}
@@ -696,7 +697,7 @@ export default function BuilderPage() {
               {text.summary.label}
             </span>
             <strong className="mt-2 block text-4xl">
-              {formatPrice(totalPrice)} ₸
+              {formatUsdFromKzt(totalPrice)}
             </strong>
             <p className="mt-4 max-w-xl text-sm leading-6 text-white/65">
               {text.summary.description}
