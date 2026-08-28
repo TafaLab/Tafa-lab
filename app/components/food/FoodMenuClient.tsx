@@ -159,7 +159,7 @@ export default function FoodMenuClient({ sections, locale }: { sections: FoodMen
               <span className="text-4xl">✓</span>
               <strong className="mt-3 block text-2xl">{en ? "Order placed" : "Заказ оформлен"}</strong>
               <p className="mt-3 text-sm leading-6">{en ? "The order is now visible in the bakery admin panel." : "Заказ уже появился в админке пекарни."}</p>
-              <a href={`/${locale}/admin/orders`} className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-[#35503a] px-5 py-3 font-semibold text-white">{en ? "Open admin orders" : "Открыть заказы в админке"}</a>
+              <a href={`/${locale}/admin/orders`} className="brown-link-white mt-6 inline-flex w-full items-center justify-center rounded-full bg-[#35503a] px-5 py-3 font-semibold text-white">{en ? "Open admin orders" : "Открыть заказы в админке"}</a>
               <button type="button" onClick={() => { setSuccess(false); setCartOpen(false); }} className="mt-3 w-full rounded-full border border-[#35503a]/25 bg-white px-5 py-3 font-semibold text-[#35503a]">{en ? "Continue shopping" : "Продолжить покупки"}</button>
             </div>
           </div>
