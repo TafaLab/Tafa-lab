@@ -5,6 +5,7 @@ import StkReveal from "./design/StkReveal";
 import StkLeadForm from "./StkLeadForm";
 import TafaLabLogo from "./TafaLabLogo";
 import BusinessIdeasSection from "./BusinessIdeasSection";
+import FullPriceLink from "./FullPriceLink";
 
 type Locale = "ru" | "en";
 const whatsapp = "https://wa.me/77471818493";
@@ -131,7 +132,7 @@ const copy = {
     packages: [
       [
         "Operations Core",
-        "Custom",
+        "from $4,000",
         "Core dashboard plus the highest-priority operational modules for your business.",
       ],
       [
@@ -293,7 +294,7 @@ const copy = {
     packages: [
       [
         "Operations Core",
-        "Индивидуально",
+        "от $4,000",
         "Основной dashboard и самые приоритетные операционные модули.",
       ],
       [
@@ -357,6 +358,7 @@ export default function BusinessPlatformsIndustryPage({
             <a href="#services">{locale === "ru" ? "Решения" : "Solutions"}</a>
             <a href="#portfolio">{locale === "ru" ? "Проекты" : "Projects"}</a>
             <a href="#process">{locale === "ru" ? "Процесс" : "Process"}</a>
+            <Link href={`/${locale}/price`}>{locale === "ru" ? "Цены" : "Price"}</Link>
             <a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
           </nav>
           <Link
@@ -651,6 +653,7 @@ export default function BusinessPlatformsIndustryPage({
             </div>
           ))}
         </div>
+        <FullPriceLink locale={locale} />
       </section>
 
       <section className="border-y border-[color:var(--stk-border)] bg-[var(--stk-surface-strong)] py-24 md:py-32">
