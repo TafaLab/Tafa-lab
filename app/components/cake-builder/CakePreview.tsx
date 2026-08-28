@@ -139,6 +139,7 @@ export default function CakePreview({
 
   const [view, setView] =
     useState<CakeView>("front");
+  const [rotationY, setRotationY] = useState(-38);
 
   const stageRef =
     useRef<HTMLDivElement | null>(null);
@@ -216,6 +217,11 @@ export default function CakePreview({
               ru: "Сверху",
               en: "Top",
             },
+            {
+              value: "side" as const,
+              ru: "3D / сбоку",
+              en: "3D / Side",
+            },
           ]
         ).map((option) => {
           const active = view === option.value;
@@ -242,6 +248,15 @@ export default function CakePreview({
         })}
       </div>
 
+      {view === "side" && (
+        <div className="relative z-50 mx-auto mb-3 flex w-[min(92%,520px)] items-center gap-3 rounded-2xl border border-[#6a4433]/10 bg-white/90 px-4 py-3 shadow-sm">
+          <button type="button" onClick={() => setRotationY((value) => Math.max(-70, value - 15))} className="h-10 w-10 rounded-full bg-[#6a4433] text-white" aria-label={isEnglish ? "Rotate left" : "Повернуть влево"}>↶</button>
+          <input aria-label={isEnglish ? "Cake rotation" : "Поворот торта"} type="range" min="-70" max="70" value={rotationY} onChange={(event) => setRotationY(Number(event.target.value))} className="w-full" />
+          <button type="button" onClick={() => setRotationY((value) => Math.min(70, value + 15))} className="h-10 w-10 rounded-full bg-[#6a4433] text-white" aria-label={isEnglish ? "Rotate right" : "Повернуть вправо"}>↷</button>
+          <button type="button" onClick={() => setRotationY(0)} className="rounded-full border border-[#6a4433]/15 px-3 py-2 text-xs font-semibold text-[#6a4433]">0°</button>
+        </div>
+      )}
+
       <div
         ref={stageRef}
         className="
@@ -265,7 +280,7 @@ export default function CakePreview({
           event.preventDefault();
         }}
       >
-        {view === "front" ? (
+        {view !== "top" ? (
           <img
             src={base.src}
             alt={
@@ -284,6 +299,7 @@ export default function CakePreview({
               object-contain
             "
             draggable={false}
+            style={view === "side" ? { transform: `perspective(1100px) rotateY(${rotationY}deg) scaleX(${Math.max(.62, 1 - Math.abs(rotationY) / 190)})`, transformOrigin: "center" } : undefined}
           />
         ) : (
           <div
@@ -306,6 +322,7 @@ export default function CakePreview({
             overflow-visible
             [&_.decoration-instance]:pointer-events-auto
           "
+          style={view === "side" ? { transform: `perspective(1100px) rotateY(${rotationY}deg) scaleX(${Math.max(.62, 1 - Math.abs(rotationY) / 190)})`, transformOrigin: "center" } : undefined}
         >
           <DecorationLayer
             view={view}
@@ -356,7 +373,7 @@ export default function CakePreview({
           />
         </div>
 
-        {view === "front" && (
+        {view !== "top" && (
           <div
             className="
               pointer-events-none
@@ -366,6 +383,7 @@ export default function CakePreview({
               overflow-visible
               [&_*]:pointer-events-auto
             "
+            style={view === "side" ? { transform: `perspective(1100px) rotateY(${rotationY}deg) scaleX(${Math.max(.62, 1 - Math.abs(rotationY) / 190)})`, transformOrigin: "center" } : undefined}
           >
             <InscriptionLayer
               stageRef={
