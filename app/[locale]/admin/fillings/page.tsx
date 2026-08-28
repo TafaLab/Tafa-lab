@@ -14,18 +14,16 @@ const pageText = {
     title: "Начинки",
     description:
       "Здесь будут названия, описания, изображения и дополнительная стоимость начинок.",
-    emptyTitle: "Раздел начинок подготовлен",
-    emptyDescription:
-      "Полное управление начинками добавим после запуска основного каталога.",
+    emptyTitle: "Активные начинки",
+    emptyDescription: "Начинки, доступные клиенту в конструкторе торта.",
   },
   en: {
     eyebrow: "Catalogue",
     title: "Fillings",
     description:
       "This section will contain filling names, descriptions, images and additional prices.",
-    emptyTitle: "Fillings section is ready",
-    emptyDescription:
-      "Full filling management will be added after the main catalogue is launched.",
+    emptyTitle: "Active fillings",
+    emptyDescription: "Fillings currently available in the cake builder.",
   },
 } satisfies Record<
   Locale,
@@ -49,6 +47,9 @@ export default async function AdminFillingsPage({
 
   const locale = localeParam as Locale;
   const text = pageText[locale];
+  const fillings = locale === "ru"
+    ? [["Сникерс", "Шоколад, арахис и карамель", "$0"], ["Вупи пай", "Шоколадные коржи и сливочный крем", "$0"], ["Медовик", "Медовые коржи и сметанный крем", "$0"], ["Шоколад-банан", "Шоколад, банан и нежный крем", "$0"], ["Фисташковая", "Фисташковые коржи и крем", "+$1"], ["Красный бархат", "Бархатные коржи и крем-чиз", "+$1"]]
+    : [["Snickers", "Chocolate, peanuts and caramel", "$0"], ["Whoopie pie", "Chocolate sponge and cream", "$0"], ["Honey cake", "Honey layers and sour cream", "$0"], ["Chocolate banana", "Chocolate, banana and cream", "$0"], ["Pistachio", "Pistachio sponge and cream", "+$1"], ["Red velvet", "Velvet sponge and cream cheese", "+$1"]];
 
   return (
     <div className="admin-page">
@@ -62,14 +63,18 @@ export default async function AdminFillingsPage({
         </div>
       </section>
 
-      <section className="admin-empty-state">
-        <span className="admin-empty-icon" aria-hidden="true">
-          ◎
-        </span>
-
-        <h2>{text.emptyTitle}</h2>
-
-        <p>{text.emptyDescription}</p>
+      <section className="rounded-[2rem] border border-black/10 bg-white p-6 shadow-sm md:p-9">
+        <h2 className="text-3xl font-semibold">{text.emptyTitle}</h2>
+        <p className="mt-2 text-black/50">{text.emptyDescription}</p>
+        <div className="mt-8 divide-y divide-black/10 border-y border-black/10">
+          {fillings.map(([name, description, price], index) => (
+            <article key={name} className="grid gap-3 py-5 sm:grid-cols-[56px_1fr_auto] sm:items-center">
+              <span className="text-sm text-[#ec4d84]">{String(index + 1).padStart(2, "0")}</span>
+              <div><h3 className="text-xl font-semibold">{name}</h3><p className="mt-1 text-sm text-black/50">{description}</p></div>
+              <strong className="rounded-full bg-[#f7ede7] px-4 py-2 text-sm">{price}</strong>
+            </article>
+          ))}
+        </div>
       </section>
     </div>
   );

@@ -10,7 +10,8 @@ import {
 
 import { notFound } from "next/navigation";
 import Script from "next/script";
-import Link from "next/link";
+import FloatingPriceLink from "@/app/components/layout/FloatingPriceLink";
+import SiteMotion from "@/app/components/layout/SiteMotion";
 
 import { routing } from "@/i18n/routing";
 
@@ -76,13 +77,8 @@ export default async function LocaleLayout({
       >
         {children}
       </NextIntlClientProvider>
-      <Link
-        href={`/${locale}/price`}
-        className="fixed bottom-4 left-4 z-[90] rounded-full border border-white/25 bg-[#211d19]/90 px-4 py-2.5 text-xs font-semibold text-white shadow-lg backdrop-blur-md transition hover:-translate-y-0.5"
-        style={{ color: "#ffffff" }}
-      >
-        {locale === "ru" ? "Общий прайс" : "Full price"} →
-      </Link>
+      <SiteMotion />
+      <FloatingPriceLink locale={locale} />
     </>
   );
 }

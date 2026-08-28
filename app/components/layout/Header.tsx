@@ -93,6 +93,22 @@ export default function Header({
         </nav>
 
         <div className="flex items-center gap-3">
+          <details className="mobile-nav-menu">
+            <summary aria-label={locale === "en" ? "Open navigation" : "Открыть меню"}>
+              <span />
+              <span />
+              <span />
+            </summary>
+            <nav aria-label={locale === "en" ? "Mobile navigation" : "Мобильная навигация"}>
+              <Link href={`/${locale}/cakes`}>{text.cakes}</Link>
+              <Link href={`/${locale}/builder`}>{text.builder}</Link>
+              <Link href={`/${locale}/food`}>{text.food}</Link>
+              <Link href={`/${locale}/gallery`}>{text.gallery}</Link>
+              <Link href={`/${locale}/contacts`}>{text.contacts}</Link>
+              <Link href={`/${locale}/price`}>{locale === "en" ? "Price" : "Цены"}</Link>
+            </nav>
+          </details>
+
           <LanguageSwitcher
             locale={locale}
           />

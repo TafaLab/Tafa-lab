@@ -25,6 +25,22 @@ const industries = [
   ["Business platforms", "business-platforms", [["Operations core", "from $4,000"], ["Multi-branch system", "Custom"], ["CRM / HR / inventory modules", "Custom"], ["Full internal platform", "Custom"]]],
 ] as const;
 
+const ruBaseDescriptions = [
+  "Стратегия, индивидуальный дизайн, адаптивная разработка, форма заявки и базовая SEO-настройка.",
+  "Структура сайта, фирменная визуальная система, адаптивные страницы, формы, основы SEO и аналитики.",
+  "Сайт с каталогом, корзиной или бронированием, CMS/админкой и необходимыми интеграциями.",
+  "Индивидуальное приложение, панели управления, роли, права доступа, конфигураторы, автоматизация и API.",
+] as const;
+
+const ruIndustries = [
+  ["Пекарни и кондитерские", [["Каталог продукции", "$500"], ["Форма индивидуального заказа", "$300"], ["Конструктор торта", "$2,000"], ["3D-модель продукта или торта", "Индивидуально"]]],
+  ["Рестораны и кафе", [["Цифровое меню", "$450"], ["Бронирование столиков", "$350"], ["QR-заказ за столом", "$650"], ["Платформа управления рестораном", "от $4,000"]]],
+  ["Красота и wellness", [["Каталог услуг", "$300"], ["Онлайн-запись", "$350"], ["Beauty-тест или подбор специалиста", "$450"], ["Виртуальная примерка / AI", "Индивидуально"]]],
+  ["Туризм и гостеприимство", [["Цифровой маршрут", "$450"], ["Конструктор поездки", "$650"], ["Бронирование или заявка", "$350"], ["Туристическая бизнес-платформа", "от $4,000"]]],
+  ["События и развлечения", [["Программы и пакеты", "$300"], ["Сценарий бронирования", "$350"], ["Интерактивный конструктор события", "$650"], ["Платформа управления событиями", "от $4,000"]]],
+  ["Бизнес-платформы", [["Операционная система", "от $4,000"], ["Система для нескольких филиалов", "Индивидуально"], ["Модули CRM / HR / склад", "Индивидуально"], ["Полная внутренняя платформа", "Индивидуально"]]],
+] as const;
+
 export default async function PricePage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   const ru = locale === "ru";
@@ -79,7 +95,7 @@ export default async function PricePage({ params }: { params: Promise<{ locale: 
             {base.map(([number, name, scope, price, text], index) => (
               <article key={name} className="grid gap-5 py-8 md:grid-cols-[70px_1fr_180px_180px] md:items-center">
                 <span className="text-sm text-black/35">{number}</span>
-                <div><h3 className="text-3xl">{ru ? ["Лендинг", "Фирменный сайт", "Магазин или бронирование", "Индивидуальная платформа"][index] : name}</h3><p className="mt-3 max-w-2xl leading-7 text-black/55">{text}</p></div>
+                <div><h3 className="text-3xl">{ru ? ["Лендинг", "Фирменный сайт", "Магазин или бронирование", "Индивидуальная платформа"][index] : name}</h3><p className="mt-3 max-w-2xl leading-7 text-black/55">{ru ? ruBaseDescriptions[index] : text}</p></div>
                 <span className="text-sm uppercase tracking-[.16em] text-black/45">{ru ? ["1 страница", "до 5 страниц", "до 12 страниц", "индивидуальный объём"][index] : scope}</span>
                 <strong className="text-4xl tracking-[-.04em]">{ru ? "от " : "from "}{price}</strong>
               </article>
@@ -93,14 +109,18 @@ export default async function PricePage({ params }: { params: Promise<{ locale: 
         <h2 className="mt-5 max-w-4xl text-5xl tracking-[-.05em] md:text-7xl">{ru ? "Функции для конкретного бизнеса." : "Capabilities shaped for each business."}</h2>
         <p className="mt-7 max-w-3xl text-lg leading-8 text-black/55">{ru ? "Цены ниже — это стоимость отдельного модуля, добавляемого к подходящему базовому пакету. Они не заменяют стоимость самого сайта." : "Prices below are for individual modules added to an appropriate core package. They do not replace the website price."}</p>
         <div className="mt-14 grid gap-5 md:grid-cols-2">
-          {industries.map(([title, route, items], block) => (
+          {industries.map(([title, route, items], block) => {
+            const localizedTitle = ru ? ruIndustries[block][0] : title;
+            const localizedItems = ru ? ruIndustries[block][1] : items;
+            return (
             <article key={route} className={`rounded-[2rem] border border-black/10 p-7 md:p-9 ${block === 5 ? "bg-[#211d19] text-white" : "bg-white"}`}>
-              <div className="flex items-start justify-between gap-4"><h3 className="text-3xl">{title}</h3><Link href={`/${locale}/industries/${route}`} className="rounded-full border border-current/20 px-3 py-2 text-xs">{ru ? "Раздел" : "Explore"} →</Link></div>
+              <div className="flex items-start justify-between gap-4"><h3 className="text-3xl">{localizedTitle}</h3><Link href={`/${locale}/industries/${route}`} className="rounded-full border border-current/20 px-3 py-2 text-xs">{ru ? "Раздел" : "Explore"} →</Link></div>
               <div className="mt-8 divide-y divide-current/10 border-y border-current/10">
-                {items.map(([name, price]) => <div key={name} className="flex items-center justify-between gap-5 py-4"><span className="opacity-65">{name}</span><strong className="whitespace-nowrap">{price}</strong></div>)}
+                {localizedItems.map(([name, price]) => <div key={name} className="flex items-center justify-between gap-5 py-4"><span className="opacity-65">{name}</span><strong className="whitespace-nowrap">{price}</strong></div>)}
               </div>
             </article>
-          ))}
+            );
+          })}
         </div>
       </section>
 
