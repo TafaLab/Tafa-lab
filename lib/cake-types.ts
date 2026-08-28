@@ -62,7 +62,7 @@ export const cakeCategories = [
   },
   {
     value: "gender-party",
-    label: "Gender Party",
+    label: "Гендер-пати",
   },
   {
     value: "bento",
