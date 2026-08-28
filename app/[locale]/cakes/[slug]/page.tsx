@@ -29,6 +29,37 @@ import { ruMessages } from "@/messages/ru";
 
 type Locale = "ru" | "en";
 
+const categoryLabels: Record<Locale, Record<string, string>> = {
+  ru: {
+    kids: "Детские",
+    girls: "Для девочек",
+    boys: "Для мальчиков",
+    babies: "Для малышей",
+    women: "Для женщин",
+    men: "Для мужчин",
+    birthday: "На день рождения",
+    "gender-party": "Гендер-пати",
+    bento: "Бенто",
+    tiered: "Многоярусные",
+    popular: "Популярные",
+    new: "Новинки",
+  },
+  en: {
+    kids: "Kids",
+    girls: "Girls",
+    boys: "Boys",
+    babies: "Babies",
+    women: "Women",
+    men: "Men",
+    birthday: "Birthday",
+    "gender-party": "Gender Reveal",
+    bento: "Bento Cakes",
+    tiered: "Tiered Cakes",
+    popular: "Popular",
+    new: "New",
+  },
+};
+
 export default function CakeDetailsPage() {
   const router = useRouter();
   const params = useParams<{
@@ -352,7 +383,7 @@ export default function CakeDetailsPage() {
                     key={category}
                     className="rounded-full border border-black/10 bg-[#f7f3ef] px-4 py-2 text-xs font-semibold text-black/60"
                   >
-                    {category}
+                    {categoryLabels[locale][category] ?? category}
                   </span>
                 ),
               )}
