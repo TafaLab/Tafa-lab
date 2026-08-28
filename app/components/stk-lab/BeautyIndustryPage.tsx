@@ -18,7 +18,7 @@ const copy = {
     introText:"We connect editorial design with the practical tools a beauty business needs: clear services and pricing, frictionless booking, client management, team schedules and business analytics.",
     servicesTitle:"Digital solutions for beauty businesses",
     services:[
-      ["Beauty Website","from $650","Premium responsive website with services, specialists, pricing, gallery, contacts and booking calls to action."],
+      ["Beauty Website","from $800","Premium responsive website with services, specialists, pricing, gallery, contacts and booking calls to action."],
       ["Online Booking","from $350","Service, specialist, date and time selection in a clean branded booking flow."],
       ["Services Catalogue","from $300","Elegant mobile-first catalogue with categories, duration, prices and direct booking."],
       ["CRM & Client Management","Custom","Appointments, client history, statuses, retention and operational workflows."],
@@ -49,8 +49,8 @@ const copy = {
     ],
     packagesTitle:"Choose the right starting point",
     packages:[
-      ["Beauty Presence","from $650","Brand website, services, pricing, specialists and booking CTA."],
-      ["Booking Experience","from $950","Website plus services catalogue and branded appointment flow."],
+      ["Beauty Presence","from $800","Brand website, services, pricing, specialists and booking CTA."],
+      ["Booking Experience","from $2,000","Website plus services catalogue and branded appointment flow."],
       ["Beauty Platform","Custom","CRM, schedules, client management, analytics and owner tools."],
     ],
     faqTitle:"FAQ",
@@ -72,7 +72,7 @@ const copy = {
     introText:"Мы соединяем editorial-дизайн с инструментами, которые нужны beauty-бизнесу: понятные услуги и цены, быстрая запись, управление клиентами, расписание команды и бизнес-аналитика.",
     servicesTitle:"Цифровые решения для beauty-бизнеса",
     services:[
-      ["Сайт салона","от $650","Премиальный адаптивный сайт с услугами, мастерами, ценами, галереей, контактами и записью."],
+      ["Сайт салона","от $800","Премиальный адаптивный сайт с услугами, мастерами, ценами, галереей, контактами и записью."],
       ["Онлайн-запись","от $350","Выбор услуги, мастера, даты и времени в аккуратном branded booking flow."],
       ["Каталог услуг","от $300","Красивый mobile-first каталог с категориями, длительностью, ценами и переходом к записи."],
       ["CRM и клиенты","Индивидуально","Записи, история клиентов, статусы, возвратность и операционные процессы."],
@@ -103,8 +103,8 @@ const copy = {
     ],
     packagesTitle:"Выберите подходящий старт",
     packages:[
-      ["Beauty Presence","от $650","Брендовый сайт, услуги, цены, мастера и переход к записи."],
-      ["Booking Experience","от $950","Сайт + каталог услуг + фирменный сценарий онлайн-записи."],
+      ["Beauty Presence","от $800","Брендовый сайт, услуги, цены, мастера и переход к записи."],
+      ["Booking Experience","от $2,000","Сайт + каталог услуг + фирменный сценарий онлайн-записи."],
       ["Beauty Platform","Индивидуально","CRM, расписание, клиенты, аналитика и инструменты владельца."],
     ],
     faqTitle:"Частые вопросы",
