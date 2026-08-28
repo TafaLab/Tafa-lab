@@ -90,6 +90,10 @@ export default function Header({
           <Link href={`/${locale}/price`}>
             {locale === "en" ? "Price" : "Цены"}
           </Link>
+
+          <Link href={`/${locale}/checkout`}>
+            {locale === "en" ? "Cart" : "Корзина"}
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3">
@@ -106,6 +110,7 @@ export default function Header({
               <Link href={`/${locale}/gallery`}>{text.gallery}</Link>
               <Link href={`/${locale}/contacts`}>{text.contacts}</Link>
               <Link href={`/${locale}/price`}>{locale === "en" ? "Price" : "Цены"}</Link>
+              <Link href={`/${locale}/checkout`}>{locale === "en" ? "🛒 Cart" : "🛒 Корзина"}</Link>
             </nav>
           </details>
 

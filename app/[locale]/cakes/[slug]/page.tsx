@@ -481,7 +481,7 @@ export default function CakeDetailsPage() {
           </div>
 
           <button type="button" onClick={addReadyCakeToCart} disabled={!selectedVariant} className="mt-6 w-full rounded-full bg-[#6a4433] px-6 py-4 text-center font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{addedToCart ? (isEnglish ? "Added to cart ✓" : "Добавлено в корзину ✓") : (isEnglish ? "Add to cart" : "Добавить в корзину")}</button>
-          {addedToCart && <button type="button" onClick={() => router.push(`/${locale}/checkout`)} className="mt-3 w-full rounded-full border border-[#6a4433] px-6 py-4 text-center font-semibold text-[#6a4433]">{isEnglish ? "Proceed to checkout →" : "Перейти к оформлению →"}</button>}
+          {addedToCart && <button type="button" onClick={() => router.push(`/${locale}/checkout`)} className="mt-3 w-full rounded-full border border-[#6a4433] px-6 py-4 text-center font-semibold text-[#6a4433]">{isEnglish ? "Open cart and checkout →" : "Открыть корзину и оформить →"}</button>}
 
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             <Link href={`/${locale}/builder`} className="rounded-full border border-[#6a4433] px-6 py-4 text-center font-semibold text-[#6a4433] transition hover:bg-[#f7f3ef]">{isEnglish ? "Customize in Builder" : "Изменить в конструкторе"}</Link>
