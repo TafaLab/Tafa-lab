@@ -4,6 +4,7 @@ import StkLeadForm from "./StkLeadForm";
 import TafaLabLogo from "./TafaLabLogo";
 import StkSiteShell from "./design/StkSiteShell";
 import EventIdeasSection from "./EventIdeasSection";
+import FullPriceLink from "./FullPriceLink";
 
 type Locale = "ru" | "en";
 const copy = {
@@ -17,7 +18,7 @@ const copy = {
       ["Event & wedding website", "from $800"],
       ["Programs & packages", "from $300"],
       ["Booking journey", "from $350"],
-      ["Custom event platform", "Custom"],
+      ["Custom event platform", "from $4,000"],
     ],
     cards: [
       [
@@ -51,7 +52,7 @@ const copy = {
       ["Сайт событий и свадеб", "от $800"],
       ["Программы и пакеты", "от $300"],
       ["Сценарий бронирования", "от $350"],
-      ["Event-платформа", "Индивидуально"],
+      ["Event-платформа", "от $4,000"],
     ],
     cards: [
       [
@@ -93,6 +94,7 @@ export default function EntertainmentIndustryPage({
           <nav className="hidden gap-8 text-sm md:flex">
             <a href="#projects">{locale === "ru" ? "Проекты" : "Projects"}</a>
             <a href="#services">{locale === "ru" ? "Решения" : "Solutions"}</a>
+            <Link href={`/${locale}/price`}>{locale === "ru" ? "Цены" : "Price"}</Link>
             <a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
           </nav>
           <Link
@@ -175,6 +177,7 @@ export default function EntertainmentIndustryPage({
             </div>
           ))}
         </div>
+        <FullPriceLink locale={locale} />
       </section>
       <EventIdeasSection locale={locale} />
       <section id="contact" className="px-5 pb-10 md:px-8">
