@@ -18,7 +18,7 @@ const copy = {
     introText:"We combine destination-led editorial design with practical travel technology, helping clients discover, plan and experience a trip while giving the travel team control over requests, bookings, payments and operations.",
     servicesTitle:"Digital solutions for travel companies",
     services:[
-      ["Travel Website","from $750","Premium responsive website with destinations, experiences, hotels, private tours and enquiry flows."],
+      ["Travel Website","from $800","Premium responsive website with destinations, experiences, hotels, private tours and enquiry flows."],
       ["Custom Trip Builder","from $650","Interactive journey builder for dates, travelers, hotels, experiences, transfers and special requests."],
       ["Digital Itinerary","from $450","Beautiful day-by-day itinerary with reservations, locations, transfers and trip information."],
       ["Travel CRM","Custom","Requests, clients, trips, bookings, payments, managers, statuses and business analytics."],
@@ -49,8 +49,8 @@ const copy = {
     ],
     packagesTitle:"Choose the right starting point",
     packages:[
-      ["Travel Presence","from $750","Brand website, destinations, experiences, enquiry and contact flow."],
-      ["Journey Experience","from $1,350","Website plus trip builder and digital itinerary experience."],
+      ["Travel Presence","from $800","Brand website, destinations, experiences, enquiry and contact flow."],
+      ["Journey Experience","from $2,000","Website plus trip builder and digital itinerary experience."],
       ["Travel Platform","Custom","CRM, bookings, operations, payments, analytics and traveler tools."],
     ],
     faqTitle:"FAQ",
@@ -72,7 +72,7 @@ const copy = {
     introText:"Мы соединяем эмоциональный дизайн направлений с практичными travel-технологиями: клиенту удобно выбирать и планировать поездку, а команда контролирует заявки, бронирования, оплаты и операции.",
     servicesTitle:"Цифровые решения для travel-компаний",
     services:[
-      ["Travel-сайт","от $750","Премиальный адаптивный сайт с направлениями, впечатлениями, отелями, частными турами и заявками."],
+      ["Travel-сайт","от $800","Премиальный адаптивный сайт с направлениями, впечатлениями, отелями, частными турами и заявками."],
       ["Конструктор путешествия","от $650","Интерактивный выбор дат, путешественников, отеля, активностей, трансферов и пожеланий."],
       ["Цифровой маршрут","от $450","Красивый маршрут по дням с бронированиями, локациями, трансферами и информацией о поездке."],
       ["Travel CRM","Индивидуально","Заявки, клиенты, поездки, бронирования, оплаты, менеджеры, статусы и аналитика."],
@@ -103,8 +103,8 @@ const copy = {
     ],
     packagesTitle:"Выберите подходящий старт",
     packages:[
-      ["Travel Presence","от $750","Брендовый сайт, направления, впечатления, заявки и контакты."],
-      ["Journey Experience","от $1,350","Сайт + конструктор путешествия + цифровой маршрут."],
+      ["Travel Presence","от $800","Брендовый сайт, направления, впечатления, заявки и контакты."],
+      ["Journey Experience","от $2,000","Сайт + конструктор путешествия + цифровой маршрут."],
       ["Travel Platform","Индивидуально","CRM, бронирования, операции, оплаты, аналитика и инструменты путешественника."],
     ],
     faqTitle:"Частые вопросы",
