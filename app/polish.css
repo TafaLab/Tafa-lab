@@ -72,6 +72,7 @@
 @media (max-width: 600px) {
   .site-header .header-button { display: none; }
   .mobile-nav-menu nav { right: -72px; }
+  .floating-price-link { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
