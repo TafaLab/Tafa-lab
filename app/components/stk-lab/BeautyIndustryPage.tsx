@@ -5,6 +5,7 @@ import StkReveal from "./design/StkReveal";
 import StkLeadForm from "./StkLeadForm";
 import TafaLabLogo from "./TafaLabLogo";
 import BeautyIdeasSection from "./BeautyIdeasSection";
+import FullPriceLink from "./FullPriceLink";
 
 type Locale = "ru" | "en";
 const whatsapp = "https://wa.me/77471818493";
@@ -147,7 +148,7 @@ const copy = {
       ],
       [
         "Beauty Platform",
-        "Custom",
+        "from $4,000",
         "CRM, schedules, client management, analytics and owner tools.",
       ],
     ],
@@ -314,7 +315,7 @@ const copy = {
       ],
       [
         "Beauty Platform",
-        "Индивидуально",
+        "от $4,000",
         "CRM, расписание, клиенты, аналитика и инструменты владельца.",
       ],
     ],
@@ -364,6 +365,7 @@ export default function BeautyIndustryPage({ locale }: { locale: Locale }) {
             <a href="#services">{locale === "ru" ? "Решения" : "Solutions"}</a>
             <a href="#portfolio">{locale === "ru" ? "Работы" : "Portfolio"}</a>
             <a href="#process">{locale === "ru" ? "Процесс" : "Process"}</a>
+            <Link href={`/${locale}/price`}>{locale === "ru" ? "Цены" : "Price"}</Link>
             <a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
           </nav>
           <Link
@@ -597,6 +599,7 @@ export default function BeautyIndustryPage({ locale }: { locale: Locale }) {
             </div>
           ))}
         </div>
+        <FullPriceLink locale={locale} />
       </section>
 
       <section className="border-y border-[color:var(--stk-border)] bg-[var(--stk-surface-strong)] py-24 md:py-32">
