@@ -44,18 +44,30 @@ export default async function PricePage({ params }: { params: Promise<{ locale: 
         </div>
       </header>
 
-      <section className="mx-auto grid max-w-7xl gap-12 px-5 pb-24 pt-20 md:grid-cols-[1.15fr_.85fr] md:px-8 md:pb-32 md:pt-28">
+      <section className="mx-auto grid max-w-7xl gap-12 px-5 pb-24 pt-16 md:grid-cols-[1.3fr_.7fr] md:items-end md:gap-16 md:px-8 md:pb-32 md:pt-24">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[.25em] text-[#806d59]">Tafa Lab · Price</p>
-          <h1 className="mt-6 max-w-5xl text-6xl font-medium leading-[.94] tracking-[-.06em] md:text-8xl">
-            {ru ? "Понятная основа. Точный объём — до начала работы." : "A clear starting point. Exact scope before work begins."}
+          <h1 className="mt-6 max-w-4xl text-[3.4rem] font-medium leading-[.98] tracking-[-.055em] sm:text-6xl md:text-[5.25rem] lg:text-[6.25rem]">
+            {ru ? (
+              <>
+                Понятные цены.<br />
+                Точный объём<br />
+                <span className="text-[#806d59]">до начала работы.</span>
+              </>
+            ) : (
+              <>
+                Clear pricing.<br />
+                Exact scope<br />
+                <span className="text-[#806d59]">before work begins.</span>
+              </>
+            )}
           </h1>
         </div>
-        <div className="self-end rounded-[2rem] bg-[#211d19] p-8 text-white md:p-10">
+        <div className="self-end rounded-[2rem] bg-[#211d19] p-8 text-white shadow-[0_24px_70px_rgba(33,29,25,.16)] md:p-10">
           <p className="text-lg leading-8 text-white/65">
             {ru ? "Все суммы указаны в долларах США. Базовый пакет определяет тип проекта, а отраслевые модули добавляются только при необходимости." : "All prices are in US dollars. The core package defines the project type; industry modules are added only when needed."}
           </p>
-          <a href="#base" className="mt-8 inline-flex rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#211d19]">{ru ? "Посмотреть прайс" : "View pricing"} ↓</a>
+          <a href="#base" className="mt-8 inline-flex items-center rounded-full bg-white px-6 py-3 text-sm font-semibold" style={{ color: "#211d19" }}>{ru ? "Посмотреть прайс" : "View pricing"} ↓</a>
         </div>
       </section>
 
@@ -99,7 +111,7 @@ export default async function PricePage({ params }: { params: Promise<{ locale: 
             <p>{ru ? "До начала проекта фиксируются страницы, функции, интеграции, сроки и итоговая стоимость." : "Pages, features, integrations, timing and final cost are confirmed before the project begins."}</p>
             <p>{ru ? "Контент, сложные сторонние сервисы, платные лицензии и нестандартные AI-функции рассчитываются отдельно только после согласования." : "Content production, complex third-party services, paid licenses and advanced AI capabilities are estimated separately after approval."}</p>
             <p>{ru ? "Оплату можно разделить на этапы в соответствии с этапами разработки." : "Payment can be divided into milestones that follow the development stages."}</p>
-            <a href="https://wa.me/77077552211" target="_blank" rel="noreferrer" className="inline-flex rounded-full bg-[#211d19] px-6 py-4 text-sm font-semibold text-white">{ru ? "Рассчитать проект" : "Estimate a project"} →</a>
+            <a href="https://wa.me/77077552211" target="_blank" rel="noreferrer" className="inline-flex items-center rounded-full bg-[#211d19] px-6 py-4 text-sm font-semibold" style={{ color: "#ffffff" }}>{ru ? "Рассчитать проект" : "Estimate a project"} →</a>
           </div>
         </div>
       </section>
