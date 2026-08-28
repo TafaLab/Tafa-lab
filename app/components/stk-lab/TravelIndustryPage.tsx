@@ -40,6 +40,11 @@ const copy = {
         "Beautiful day-by-day itinerary with reservations, locations, transfers and trip information.",
       ],
       [
+        "Tour Operator API Integration",
+        "Custom",
+        "Live tours, departure dates, prices and availability from connected tour operators — searchable directly on your website.",
+      ],
+      [
         "Travel CRM",
         "Custom",
         "Requests, clients, trips, bookings, payments, managers, statuses and business analytics.",
@@ -59,6 +64,11 @@ const copy = {
     builderTitle: "Let clients shape the journey before they send the request.",
     builderText:
       "A guided trip builder collects destination, dates, travelers, hotel preferences, experiences, transfers and special requests in one premium flow.",
+    apiEyebrow: "Live Tour Inventory",
+    apiTitle: "Show tours that are actually available — without updating the website by hand.",
+    apiText:
+      "We can connect tour operator APIs so the catalogue receives current packages, departure dates, prices, remaining availability and booking statuses. Clients search and compare live offers on your website, then send an enquiry or continue to booking.",
+    apiPoints: ["Live tours and departures", "Current prices and availability", "Filters and AI-assisted matching", "Enquiry or booking handoff"],
     itineraryEyebrow: "Interactive Itinerary",
     itineraryTitle: "Put the entire journey in one elegant digital space.",
     itineraryText:
@@ -153,6 +163,10 @@ const copy = {
         "Yes. We can create structured enquiry or trip-builder flows around the way your company plans journeys.",
       ],
       [
+        "Can the website show live tours from tour operators?",
+        "Yes. When a tour operator provides API access, the website can automatically display current tours, departure dates, prices and availability. Sold-out or unavailable offers can be hidden or marked without manual catalogue updates.",
+      ],
+      [
         "Can clients receive a digital itinerary?",
         "Yes. It can include daily plans, hotels, restaurants, transfers, activities, reservations and important documents.",
       ],
@@ -201,6 +215,11 @@ const copy = {
         "Красивый маршрут по дням с бронированиями, локациями, трансферами и информацией о поездке.",
       ],
       [
+        "Интеграция API туроператоров",
+        "Индивидуально",
+        "Актуальные туры, даты вылетов, цены и наличие из систем подключённых туроператоров — с поиском прямо на вашем сайте.",
+      ],
+      [
         "Travel CRM",
         "Индивидуально",
         "Заявки, клиенты, поездки, бронирования, оплаты, менеджеры, статусы и аналитика.",
@@ -220,6 +239,11 @@ const copy = {
     builderTitle: "Клиент формирует поездку ещё до отправки заявки.",
     builderText:
       "Пошаговый конструктор собирает направление, даты, количество путешественников, отель, впечатления, трансферы и особые пожелания в одном премиальном сценарии.",
+    apiEyebrow: "Актуальная база туров",
+    apiTitle: "Показывайте только те туры, которые действительно доступны сейчас.",
+    apiText:
+      "Мы можем подключить API туроператоров: сайт автоматически получает актуальные туры, даты вылетов, цены, количество доступных мест и статусы бронирования. Клиент ищет и сравнивает предложения на вашем сайте, а затем оставляет заявку или переходит к бронированию.",
+    apiPoints: ["Актуальные туры и даты", "Текущие цены и наличие", "Фильтры и AI-подбор", "Заявка или переход к бронированию"],
     itineraryEyebrow: "Интерактивный маршрут",
     itineraryTitle: "Всё путешествие — в одном красивом цифровом пространстве.",
     itineraryText:
@@ -313,6 +337,10 @@ const copy = {
       [
         "Можно собирать индивидуальные заявки на путешествия?",
         "Да. Можно сделать обычную структурированную заявку или полноценный trip builder под процесс вашей компании.",
+      ],
+      [
+        "Можно показывать актуальные туры разных туроператоров?",
+        "Да. Если туроператор предоставляет API-доступ, сайт автоматически показывает доступные туры, даты вылетов, цены и наличие. Проданные или недоступные предложения можно скрывать или отмечать без ручного обновления каталога.",
       ],
       [
         "Можно выдавать клиенту цифровой маршрут?",
@@ -453,6 +481,26 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
       </section>
 
       <TravelIdeasSection locale={locale} />
+
+      <section className="border-y border-[color:var(--stk-border)] bg-[var(--stk-dark)] py-24 text-white md:py-32">
+        <div className="mx-auto grid max-w-7xl gap-12 px-5 md:grid-cols-[.8fr_1.2fr] md:px-8">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[.24em] text-white/45">{t.apiEyebrow}</p>
+            <h2 className="mt-5 text-4xl tracking-[-.045em] md:text-6xl">{t.apiTitle}</h2>
+          </div>
+          <div>
+            <p className="max-w-2xl text-lg leading-8 text-white/65">{t.apiText}</p>
+            <div className="mt-9 grid gap-px overflow-hidden rounded-[var(--stk-radius-small)] bg-white/15 sm:grid-cols-2">
+              {t.apiPoints.map((point, index) => (
+                <div key={point} className="bg-[var(--stk-dark)] p-5">
+                  <span className="text-xs text-white/35">0{index + 1}</span>
+                  <strong className="mt-8 block text-lg">{point}</strong>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       <Feature
         image="/images/stk-lab/travel/travel-trip-builder-v2.webp"
