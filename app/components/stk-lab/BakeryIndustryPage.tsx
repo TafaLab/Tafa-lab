@@ -4,6 +4,7 @@ import type { StkLabLocale } from "@/app/components/stk-lab/content";
 import StkSiteShell from "./design/StkSiteShell";
 import StkLeadForm from "./StkLeadForm";
 import TafaLabLogo from "./TafaLabLogo";
+import BakeryIdeasSection from "./BakeryIdeasSection";
 
 const whatsapp = "https://wa.me/77471818493";
 
@@ -212,6 +213,8 @@ export default function BakeryIndustryPage({ locale }: { locale: StkLabLocale })
           <div><p className="text-xs font-semibold uppercase tracking-[.25em] text-white/45">{t.builderEyebrow}</p><h2 className="mt-5 text-4xl tracking-[-.045em] md:text-6xl">{t.builderTitle}</h2><p className="mt-7 max-w-xl text-lg leading-8 text-white/65">{t.builderText}</p><Link href={`/${locale}/bakery`} className="mt-9 inline-flex rounded-full bg-white px-6 py-3.5 text-sm" style={{ color: "#000000" }}>{t.builderCta} ↗</Link></div>
         </div>
       </section>
+
+      <BakeryIdeasSection locale={locale} />
 
       <section className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
         <div className="max-w-3xl"><h2 className="text-4xl tracking-[-.045em] md:text-6xl">{t.benefitsTitle}</h2><p className="mt-6 text-lg leading-8 text-[color:var(--stk-muted)]">{t.benefitsText}</p></div>
