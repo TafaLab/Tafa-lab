@@ -306,7 +306,7 @@ export default function DecorationLayer({
       TOP_VIEW_RADIUS - instance.width / 2,
     );
 
-    if (view === "front") {
+    if (view === "front" || view === "side") {
       if (instance.topView) {
         return topToFront(instance.topView);
       }
@@ -386,7 +386,7 @@ export default function DecorationLayer({
     instance: DecorationInstance,
     changes: Partial<DecorationViewTransform>,
   ) {
-    if (view === "front") {
+    if (view === "front" || view === "side") {
       const currentFront = getTransform(instance);
       const nextFront = {
         ...currentFront,
@@ -726,7 +726,7 @@ export default function DecorationLayer({
         rawY,
       );
 
-      const insertDepth = view === "front"
+      const insertDepth = view !== "top"
         ? calculateInsertDepth(
           instance,
           snapped.x,
@@ -736,7 +736,7 @@ export default function DecorationLayer({
 
       setGuides(snapped.guides);
 
-      if (view === "front") {
+      if (view === "front" || view === "side") {
         const nextFront: DecorationViewTransform = {
           ...getTransform(instance),
           x: Math.round(snapped.x),
@@ -930,7 +930,7 @@ export default function DecorationLayer({
             Boolean(asset.stick);
 
           const inserted =
-            view === "front" &&
+            view !== "top" &&
             hasInsertedAsset;
 
           const showTopInserted =
