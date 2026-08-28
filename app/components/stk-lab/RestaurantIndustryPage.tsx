@@ -4,6 +4,7 @@ import StkSiteShell from "./design/StkSiteShell";
 import StkReveal from "./design/StkReveal";
 import StkLeadForm from "./StkLeadForm";
 import TafaLabLogo from "./TafaLabLogo";
+import RestaurantIdeasSection from "./RestaurantIdeasSection";
 
 type Locale = "ru" | "en";
 
@@ -142,6 +143,8 @@ export default function RestaurantIndustryPage({locale}:{locale:Locale}) {
     <section className="border-y border-[color:var(--stk-border)] bg-[color:var(--stk-surface)]"><div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 md:grid-cols-2 md:px-8 md:py-28"><h2 className="text-4xl tracking-[-.045em] md:text-6xl">{t.introTitle}</h2><div className="space-y-6 text-lg leading-8 text-[color:var(--stk-muted)]"><p>{t.intro1}</p><p>{t.intro2}</p></div></div></section>
 
     <section id="services" className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"><div className="max-w-3xl"><h2 className="text-4xl tracking-[-.045em] md:text-6xl">{t.servicesTitle}</h2><p className="mt-6 text-lg leading-8 text-[color:var(--stk-muted)]">{t.servicesText}</p></div><div className="mt-14 grid border-l border-t border-[color:var(--stk-border)] sm:grid-cols-2 lg:grid-cols-3">{t.services.map(([name,price,text],i)=><div key={name} className="min-h-[300px] border-b border-r border-[color:var(--stk-border)] p-7 md:p-9"><div className="flex justify-between gap-4"><span className="text-xs text-[color:var(--stk-faint)]">{String(i+1).padStart(2,"0")}</span><span className="text-sm font-medium">{price}</span></div><h3 className="mt-16 text-2xl tracking-[-.035em]">{name}</h3><p className="mt-4 leading-7 text-[color:var(--stk-muted)]">{text}</p></div>)}</div></section>
+
+    <RestaurantIdeasSection locale={locale} />
 
     <Feature image="/images/stk-lab/restaurants/digital-menu-ordering.webp" eyebrow={t.orderingEyebrow} title={t.orderingTitle} text={t.orderingText}/>
     <Feature image="/images/stk-lab/restaurants/table-reservation.webp" eyebrow={t.bookingEyebrow} title={t.bookingTitle} text={t.bookingText} reverse/>
