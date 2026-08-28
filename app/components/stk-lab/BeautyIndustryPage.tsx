@@ -32,12 +32,13 @@ const copy = {
     systemEyebrow:"Beauty CRM", systemTitle:"Manage the business behind the appointments.",
     systemText:"For growing studios we can build CRM, appointment management, client records, revenue analytics, team performance, inventory and reporting.",
     portfolioTitle:"Beauty websites you can explore",
-    portfolioText:"Four distinct demo experiences: a calm spa, a refined salon, an evidence-based cosmetology clinic and a fearless creative color studio.",
+    portfolioText:"Five distinct demo experiences: a calm spa, a refined salon, an evidence-based clinic, a creative color studio and a crafted barbershop.",
     portfolio:[
       ["Serena Spa & Wellness","Premium wellness website with rituals, programs, gift certificates and booking.","/images/stk-lab/beauty/demos/sora-spa-hero-v2.webp","Open demo","spa-demo"],
       ["Muse Hair & Beauty","Modern salon website with services, prices, artists, portfolio and online booking.","/images/stk-lab/beauty/demos/muse-salon-hero-v2.webp","Open demo","beauty-salon-demo"],
       ["Aurea Cosmetology","Clinical beauty website focused on skin diagnostics, transparent protocols and specialist trust.","/images/stk-lab/beauty/demos/aurea-clinic-hero-v2.webp","Open demo","cosmetology-demo"],
       ["VOLT Color Studio","Audacious creative salon website for vivid color, graphic cuts and editorial looks.","/images/stk-lab/beauty/demos/volt-salon-hero-v2.webp","Open demo","color-salon-demo"],
+      ["IRONWOOD Barbershop","Dark editorial barbershop with services, barber profiles, client memory and chair booking.","/images/stk-lab/beauty/demos/ironwood-barbershop-hero-v1.webp","Open demo","ironwood-barbershop-demo"],
     ],
     processTitle:"From concept to launch",
     process:[
@@ -86,12 +87,13 @@ const copy = {
     systemEyebrow:"Beauty CRM", systemTitle:"Управляйте бизнесом за пределами календаря записей.",
     systemText:"Для растущих студий можем создать CRM, управление записями и клиентами, аналитику выручки, показатели мастеров, склад и отчётность.",
     portfolioTitle:"Beauty-сайты, которые можно открыть",
-    portfolioText:"Четыре совершенно разные демо-версии: спокойный SPA, элегантный салон, доказательная косметология и дерзкая студия креативного цвета.",
+    portfolioText:"Пять совершенно разных демо-версий: SPA, салон, косметология, студия цвета и ремесленный барбершоп.",
     portfolio:[
       ["Serena Spa & Wellness","Премиальный wellness-сайт с ритуалами, программами, сертификатами и записью.","/images/stk-lab/beauty/demos/sora-spa-hero-v2.webp","Открыть демо","spa-demo"],
       ["Muse Hair & Beauty","Современный сайт салона с услугами, ценами, мастерами, работами и онлайн-записью.","/images/stk-lab/beauty/demos/muse-salon-hero-v2.webp","Открыть демо","beauty-salon-demo"],
       ["Aurea Cosmetology","Клинический beauty-сайт с диагностикой кожи, понятными протоколами и акцентом на доверие.","/images/stk-lab/beauty/demos/aurea-clinic-hero-v2.webp","Открыть демо","cosmetology-demo"],
       ["VOLT Color Studio","Дерзкий сайт креативного салона с ярким цветом, графичными стрижками и editorial-образами.","/images/stk-lab/beauty/demos/volt-salon-hero-v2.webp","Открыть демо","color-salon-demo"],
+      ["IRONWOOD Barbershop","Тёмный editorial-сайт барбершопа с услугами, профилями мастеров, историей клиента и записью.","/images/stk-lab/beauty/demos/ironwood-barbershop-hero-v1.webp","Открыть демо","ironwood-barbershop-demo"],
     ],
     processTitle:"От идеи до запуска",
     process:[
