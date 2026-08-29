@@ -154,7 +154,7 @@ export default function CakePreview({
       }}
     >
       <div
-        className="relative z-50 mx-auto mb-2 flex w-fit rounded-full border border-[#6a4433]/10 bg-white/90 p-1 shadow-sm backdrop-blur-sm sm:mb-3"
+        className="relative z-50 mx-auto mb-2 grid w-full max-w-[520px] grid-cols-3 rounded-full border border-[#6a4433]/10 bg-white/90 p-1 shadow-sm backdrop-blur-sm sm:mb-3"
         role="group"
         aria-label={isEnglish ? "Cake view" : "Вид торта"}
         onPointerDown={(event) => {
@@ -174,8 +174,8 @@ export default function CakePreview({
           },
           {
             value: "side" as const,
-            ru: "3D / сбоку",
-            en: "3D / Side",
+            ru: "3D",
+            en: "3D",
           },
         ].map((option) => {
           const active = view === option.value;
@@ -188,7 +188,7 @@ export default function CakePreview({
               onClick={() => {
                 changeView(option.value);
               }}
-              className={`min-h-10 rounded-full px-5 text-sm font-semibold transition sm:px-7 ${
+              className={`min-h-10 min-w-0 rounded-full px-2 text-xs font-semibold transition sm:px-5 sm:text-sm ${
                 active
                   ? "bg-[#6a4433] text-white shadow-sm"
                   : "text-[#6a4433] hover:bg-[#6a4433]/5"
