@@ -298,9 +298,12 @@ export default function CakeThreePreview(props: Props) {
       const width = Math.max(0.32, (item.width / 730) * R * 2),
         aspect = asset.originalWidth / Math.max(asset.originalHeight, 1),
         selected = item.instanceId === props.selectedDecorationId;
+      const selectedScale = selected ? 1.1 : 1;
+      const displayWidth = width * selectedScale;
+      const displayHeight = (width / Math.max(aspect, 0.25)) * selectedScale;
       sprite.scale.set(
-        width * (selected ? 1.1 : 1),
-        (width / Math.max(aspect, 0.25)) * (selected ? 1.1 : 1),
+        displayWidth * (item.flipX ? -1 : 1),
+        displayHeight * (item.flipY ? -1 : 1),
         1,
       );
       sprite.material.rotation = (-item.rotation * Math.PI) / 180;
@@ -312,7 +315,7 @@ export default function CakeThreePreview(props: Props) {
         const view = item.topView ?? { x: C, y: C };
         sprite.position.set(
           ((view.x - C) / TR) * R * 0.9,
-          H / 2 + sprite.scale.y * 0.38,
+          H / 2 + displayHeight * 0.38,
           ((view.y - C) / TR) * R * 0.9,
         );
       } else {
