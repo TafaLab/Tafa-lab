@@ -2,12 +2,7 @@
 
 import { useLocale } from "next-intl";
 
-import {
-  useRef,
-  useState,
-  type PointerEvent as ReactPointerEvent,
-  type RefObject,
-} from "react";
+import { useRef, useState, type RefObject } from "react";
 
 import type { CakeBaseAsset } from "@/lib/cake-builder/assets";
 
@@ -19,6 +14,7 @@ import type {
 
 import DecorationLayer from "./DecorationLayer";
 import InscriptionLayer from "./InscriptionLayer";
+import CakeThreePreview from "./CakeThreePreview";
 
 type CakePreviewProps = {
   base: CakeBaseAsset;
@@ -109,12 +105,6 @@ export default function CakePreview({
   const isEnglish = locale === "en";
 
   const [view, setView] = useState<CakeView>("front");
-  const [rotationY, setRotationY] = useState(-38);
-  const rotationDragRef = useRef<{
-    pointerId: number;
-    startX: number;
-    startRotation: number;
-  } | null>(null);
 
   const stageRef = useRef<HTMLDivElement | null>(null);
 
@@ -137,32 +127,6 @@ export default function CakePreview({
   };
 
   const topColor = cakeTopColors[base.id] ?? "#f3ead8";
-
-  const clampRotation = (value: number) => Math.max(-78, Math.min(78, value));
-
-  const startCakeRotation = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (view !== "side" || event.target !== event.currentTarget) return;
-    rotationDragRef.current = {
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      startRotation: rotationY,
-    };
-    event.currentTarget.setPointerCapture(event.pointerId);
-  };
-
-  const moveCakeRotation = (event: ReactPointerEvent<HTMLDivElement>) => {
-    const drag = rotationDragRef.current;
-    if (!drag || drag.pointerId !== event.pointerId) return;
-    setRotationY(
-      clampRotation(drag.startRotation + (event.clientX - drag.startX) * 0.55),
-    );
-  };
-
-  const finishCakeRotation = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (rotationDragRef.current?.pointerId === event.pointerId) {
-      rotationDragRef.current = null;
-    }
-  };
 
   return (
     <div
@@ -236,54 +200,19 @@ export default function CakePreview({
         })}
       </div>
 
-      {view === "side" && (
-        <div className="relative z-50 mx-auto mb-3 w-[min(92%,520px)] rounded-2xl border border-[#6a4433]/10 bg-white/90 px-4 py-3 shadow-sm">
-          <p className="mb-2 text-center text-xs font-medium text-[#6a4433]/70">
-            {isEnglish
-              ? "Drag the cake or use the slider"
-              : "Потяните торт влево или вправо"}
-          </p>
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setRotationY((value) => clampRotation(value - 15))}
-              className="h-10 w-10 rounded-full bg-[#6a4433] text-white"
-              aria-label={isEnglish ? "Rotate left" : "Повернуть влево"}
-            >
-              ↶
-            </button>
-            <input
-              aria-label={isEnglish ? "Cake rotation" : "Поворот торта"}
-              type="range"
-              min="-78"
-              max="78"
-              value={rotationY}
-              onChange={(event) => setRotationY(Number(event.target.value))}
-              className="w-full"
-            />
-            <button
-              type="button"
-              onClick={() => setRotationY((value) => clampRotation(value + 15))}
-              className="h-10 w-10 rounded-full bg-[#6a4433] text-white"
-              aria-label={isEnglish ? "Rotate right" : "Повернуть вправо"}
-            >
-              ↷
-            </button>
-            <button
-              type="button"
-              onClick={() => setRotationY(0)}
-              className="rounded-full border border-[#6a4433]/15 px-3 py-2 text-xs font-semibold text-[#6a4433]"
-            >
-              0°
-            </button>
-          </div>
-        </div>
-      )}
-
-      <div className="relative mx-auto aspect-[1/1.28] w-[90%] sm:w-[89%] md:w-[88%]">
-        <div
-          ref={stageRef}
-          className="
+      {view === "side" ? (
+        <CakeThreePreview
+          base={base}
+          color={topColor}
+          decorations={decorations}
+          inscription={inscription}
+          isEnglish={isEnglish}
+        />
+      ) : (
+        <div className="relative mx-auto aspect-[1/1.28] w-[90%] sm:w-[89%] md:w-[88%]">
+          <div
+            ref={stageRef}
+            className="
           cake-builder-stage
           absolute
           bottom-0
@@ -294,26 +223,22 @@ export default function CakePreview({
           touch-none
           overflow-visible
         "
-          onPointerDown={(event) => {
-            startCakeRotation(event);
-            clearSelectionFromBackground(event.target, event.currentTarget);
-          }}
-          onPointerMove={moveCakeRotation}
-          onPointerUp={finishCakeRotation}
-          onPointerCancel={finishCakeRotation}
-          onContextMenu={(event) => {
-            event.preventDefault();
-          }}
-        >
-          {view !== "top" ? (
-            <img
-              src={base.src}
-              alt={
-                isEnglish
-                  ? `Round cake: ${base.name}`
-                  : `Круглый торт: ${base.name}`
-              }
-              className="
+            onPointerDown={(event) => {
+              clearSelectionFromBackground(event.target, event.currentTarget);
+            }}
+            onContextMenu={(event) => {
+              event.preventDefault();
+            }}
+          >
+            {view === "front" ? (
+              <img
+                src={base.src}
+                alt={
+                  isEnglish
+                    ? `Round cake: ${base.name}`
+                    : `Круглый торт: ${base.name}`
+                }
+                className="
               pointer-events-none
               absolute
               inset-0
@@ -323,33 +248,22 @@ export default function CakePreview({
               select-none
               object-contain
             "
-              draggable={false}
-              style={
-                view === "side"
-                  ? {
-                      transform: `perspective(1100px) rotateY(${rotationY}deg)`,
-                      transformOrigin: "center",
-                      transition: rotationDragRef.current
-                        ? "none"
-                        : "transform 180ms ease",
-                    }
-                  : undefined
-              }
-            />
-          ) : (
-            <div
-              className="pointer-events-none absolute left-1/2 top-1/2 z-0 aspect-square w-[58.2%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-black/10 shadow-[0_18px_35px_rgba(67,45,34,0.18),inset_0_3px_9px_rgba(255,255,255,0.65),inset_0_-5px_12px_rgba(70,44,31,0.08)]"
-              style={{
-                background: `radial-gradient(circle at 38% 30%, color-mix(in srgb, ${topColor} 84%, white), ${topColor} 58%, color-mix(in srgb, ${topColor} 90%, #5a3828))`,
-              }}
-              aria-hidden="true"
-            >
-              <span className="absolute inset-[2.5%] rounded-full border border-white/25" />
-            </div>
-          )}
+                draggable={false}
+              />
+            ) : (
+              <div
+                className="pointer-events-none absolute left-1/2 top-1/2 z-0 aspect-square w-[58.2%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-black/10 shadow-[0_18px_35px_rgba(67,45,34,0.18),inset_0_3px_9px_rgba(255,255,255,0.65),inset_0_-5px_12px_rgba(70,44,31,0.08)]"
+                style={{
+                  background: `radial-gradient(circle at 38% 30%, color-mix(in srgb, ${topColor} 84%, white), ${topColor} 58%, color-mix(in srgb, ${topColor} 90%, #5a3828))`,
+                }}
+                aria-hidden="true"
+              >
+                <span className="absolute inset-[2.5%] rounded-full border border-white/25" />
+              </div>
+            )}
 
-          <div
-            className="
+            <div
+              className="
             pointer-events-none
             absolute
             inset-0
@@ -357,44 +271,33 @@ export default function CakePreview({
             overflow-visible
             [&_.decoration-instance]:pointer-events-auto
           "
-            style={
-              view === "side"
-                ? {
-                    transform: `perspective(1100px) rotateY(${rotationY}deg)`,
-                    transformOrigin: "center",
-                    transition: rotationDragRef.current
-                      ? "none"
-                      : "transform 180ms ease",
-                  }
-                : undefined
-            }
-          >
-            <DecorationLayer
-              view={view}
-              stageRef={stageRef as RefObject<HTMLDivElement | null>}
-              instances={decorations}
-              selectedInstanceId={selectedDecorationId}
-              onSelect={onDecorationSelect}
-              onChange={onDecorationsChange}
-              onInteractionStart={onDecorationInteractionStart}
-              onInteractionEnd={onDecorationInteractionEnd}
-              onRemove={onDecorationRemove}
-              onDuplicate={onDecorationDuplicate}
-              onRotate={onDecorationRotate}
-              onResetRotation={onDecorationResetRotation}
-              onResetTransform={onDecorationResetTransform}
-              onFlipHorizontal={onDecorationFlipHorizontal}
-              onFlipVertical={onDecorationFlipVertical}
-              onBringForward={onDecorationBringForward}
-              onSendBackward={onDecorationSendBackward}
-              onBringToFront={onDecorationBringToFront}
-              onSendToBack={onDecorationSendToBack}
-            />
-          </div>
+            >
+              <DecorationLayer
+                view={view}
+                stageRef={stageRef as RefObject<HTMLDivElement | null>}
+                instances={decorations}
+                selectedInstanceId={selectedDecorationId}
+                onSelect={onDecorationSelect}
+                onChange={onDecorationsChange}
+                onInteractionStart={onDecorationInteractionStart}
+                onInteractionEnd={onDecorationInteractionEnd}
+                onRemove={onDecorationRemove}
+                onDuplicate={onDecorationDuplicate}
+                onRotate={onDecorationRotate}
+                onResetRotation={onDecorationResetRotation}
+                onResetTransform={onDecorationResetTransform}
+                onFlipHorizontal={onDecorationFlipHorizontal}
+                onFlipVertical={onDecorationFlipVertical}
+                onBringForward={onDecorationBringForward}
+                onSendBackward={onDecorationSendBackward}
+                onBringToFront={onDecorationBringToFront}
+                onSendToBack={onDecorationSendToBack}
+              />
+            </div>
 
-          {view !== "top" && (
-            <div
-              className="
+            {view === "front" && (
+              <div
+                className="
               pointer-events-none
               absolute
               inset-0
@@ -402,29 +305,19 @@ export default function CakePreview({
               overflow-visible
               [&_*]:pointer-events-auto
             "
-              style={
-                view === "side"
-                  ? {
-                      transform: `perspective(1100px) rotateY(${rotationY}deg)`,
-                      transformOrigin: "center",
-                      transition: rotationDragRef.current
-                        ? "none"
-                        : "transform 180ms ease",
-                    }
-                  : undefined
-              }
-            >
-              <InscriptionLayer
-                stageRef={stageRef as RefObject<HTMLDivElement | null>}
-                inscription={inscription}
-                selected={inscriptionSelected}
-                onSelect={onInscriptionSelect}
-                onChange={onInscriptionChange}
-              />
-            </div>
-          )}
+              >
+                <InscriptionLayer
+                  stageRef={stageRef as RefObject<HTMLDivElement | null>}
+                  inscription={inscription}
+                  selected={inscriptionSelected}
+                  onSelect={onInscriptionSelect}
+                  onChange={onInscriptionChange}
+                />
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

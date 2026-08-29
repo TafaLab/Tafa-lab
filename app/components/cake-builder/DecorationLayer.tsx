@@ -190,22 +190,6 @@ function constrainPointToCircle(x: number, y: number, radius: number) {
   };
 }
 
-function topToFront(
-  transform: DecorationViewTransform,
-): DecorationViewTransform {
-  return {
-    x:
-      FRONT_CAKE_CENTER_X +
-      ((transform.x - TOP_VIEW_CENTER) / TOP_VIEW_RADIUS) * FRONT_CAKE_RADIUS_X,
-    y:
-      FRONT_CAKE_CENTER_Y +
-      ((transform.y - TOP_VIEW_CENTER) / TOP_VIEW_RADIUS) * FRONT_CAKE_RADIUS_Y,
-    rotation: transform.rotation,
-    flipX: transform.flipX,
-    flipY: transform.flipY,
-  };
-}
-
 function frontToTop(
   transform: DecorationViewTransform,
   safeRadius: number,
