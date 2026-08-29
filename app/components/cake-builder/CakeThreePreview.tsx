@@ -357,7 +357,7 @@ export default function CakeThreePreview(props: Props) {
     <div className="relative mx-auto w-full">
       <div
         ref={hostRef}
-        className="h-[460px] w-full touch-none overflow-hidden rounded-[28px] border border-[#6a4433]/10 bg-[#ded1c8] sm:h-[540px]"
+        className="h-[430px] w-full touch-none overflow-hidden rounded-[28px] border border-[#6a4433]/10 bg-[#ded1c8] sm:h-[450px]"
         aria-label={
           props.isEnglish
             ? "Interactive 3D cake editor"
