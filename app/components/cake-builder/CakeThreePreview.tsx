@@ -56,21 +56,23 @@ export default function CakeThreePreview(props: Props) {
     const textureMap = textures.current;
     const spriteMap = sprites.current;
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#f5f1ed");
+    scene.background = new THREE.Color("#ded1c8");
     const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-    camera.position.set(6.8, 5.2, 8.4);
+    camera.position.set(8.8, 6.6, 10.8);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.08;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
     host.appendChild(renderer.domElement);
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.enablePan = false;
-    controls.minDistance = 6;
-    controls.maxDistance = 15;
+    controls.minDistance = 8.5;
+    controls.maxDistance = 19;
     controls.maxPolarAngle = Math.PI * 0.88;
-    controls.target.set(0, 0.15, 0);
+    controls.target.set(0, 0.05, 0);
     scene.add(new THREE.HemisphereLight(0xfffbf5, 0x72594b, 2.25));
     const light = new THREE.DirectionalLight(0xffffff, 3.2);
     light.position.set(-5, 8, 6);
@@ -337,7 +339,7 @@ export default function CakeThreePreview(props: Props) {
     <div className="relative mx-auto w-full">
       <div
         ref={hostRef}
-        className="h-[500px] w-full touch-none overflow-hidden rounded-[28px] border border-[#6a4433]/10 bg-[#f5f1ed] sm:h-[610px]"
+        className="h-[460px] w-full touch-none overflow-hidden rounded-[28px] border border-[#6a4433]/10 bg-[#ded1c8] sm:h-[540px]"
         aria-label={
           props.isEnglish
             ? "Interactive 3D cake editor"
