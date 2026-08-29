@@ -362,7 +362,7 @@ export default function BuilderPage() {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-4 gap-1.5 p-2">
+                      <div className="grid grid-cols-8 gap-1 p-2">
                         <InspectorButton
                           label={text.preview.duplicate}
                           icon="⧉"
