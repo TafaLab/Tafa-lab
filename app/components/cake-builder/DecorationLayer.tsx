@@ -281,6 +281,14 @@ export default function DecorationLayer({
     const safeTopRadius = Math.max(40, TOP_VIEW_RADIUS - instance.width / 2);
 
     if (view === "front" || view === "side") {
+      if (instance.frontView) {
+        return instance.frontView;
+      }
+
+      if (instance.topView) {
+        return topToFrontSurface(instance.topView);
+      }
+
       return {
         x: instance.x,
         y: instance.y,
@@ -353,6 +361,7 @@ export default function DecorationLayer({
         ...changes,
       };
       updateInstance(instance.instanceId, {
+        frontView: nextFront,
         x: nextFront.x,
         y: nextFront.y,
         rotation: nextFront.rotation,
@@ -370,6 +379,7 @@ export default function DecorationLayer({
 
     updateInstance(instance.instanceId, {
       topView: nextTop,
+      frontView: projectedFront,
       x: projectedFront.x,
       y: projectedFront.y,
       rotation: nextTop.rotation,
@@ -615,6 +625,7 @@ export default function DecorationLayer({
           y: Math.round(snapped.y),
         };
         updateInstance(instance.instanceId, {
+          frontView: nextFront,
           x: nextFront.x,
           y: nextFront.y,
           insertDepth,
