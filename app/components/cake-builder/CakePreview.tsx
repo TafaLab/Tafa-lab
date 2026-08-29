@@ -65,24 +65,9 @@ export default function CakePreview({
   const isEnglish = useLocale() === "en";
   return (
     <div
-      className="cake-builder-frame relative mx-auto w-full max-w-[680px] overflow-hidden rounded-3xl bg-[#f5f1ed] p-[3%] sm:p-[4%]"
+      className="cake-builder-frame relative mx-auto w-full max-w-[680px] overflow-hidden rounded-3xl bg-[#f5f1ed] p-2 sm:p-3"
       onContextMenu={(e) => e.preventDefault()}
     >
-      <div className="mb-3 px-1">
-        <div className="text-[11px] font-semibold uppercase tracking-[.18em] text-[#6a4433]/60">
-          {isEnglish
-            ? "One continuous workspace"
-            : "Единое рабочее пространство"}
-        </div>
-        <h3 className="mt-1 text-xl font-semibold text-[#35251f]">
-          {isEnglish ? "3D cake editor" : "3D-конструктор торта"}
-        </h3>
-        <p className="mt-1 text-sm text-[#6a4433]/70">
-          {isEnglish
-            ? "Rotate the cake and arrange décor directly on any side."
-            : "Вращайте торт и размещайте декор прямо на любой стороне."}
-        </p>
-      </div>
       <CakeThreePreview
         base={base}
         color={colors[base.id] ?? "#f3ead8"}
