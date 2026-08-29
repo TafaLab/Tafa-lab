@@ -259,6 +259,19 @@ export default function CakeThreePreview(props: Props) {
   useEffect(() => {
     const group = decorGroup.current;
     if (!group) return;
+    group.traverse((object) => {
+      if (object instanceof THREE.Sprite) {
+        object.material.map?.dispose();
+        object.material.dispose();
+      }
+      if (object instanceof THREE.Mesh) {
+        object.geometry.dispose();
+        (Array.isArray(object.material)
+          ? object.material
+          : [object.material]
+        ).forEach((material) => material.dispose());
+      }
+    });
     group.clear();
     sprites.current.clear();
     const loader = new THREE.TextureLoader();
@@ -285,15 +298,22 @@ export default function CakeThreePreview(props: Props) {
         texture.colorSpace = THREE.SRGBColorSpace;
         textures.current.set(source, texture);
       }
-      const sprite = new THREE.Sprite(
-        new THREE.SpriteMaterial({
-          map: texture,
-          transparent: true,
-          alphaTest: 0.035,
-          depthTest: true,
-          depthWrite: false,
-        }),
-      );
+      const displayTexture = texture.clone();
+      displayTexture.needsUpdate = true;
+      displayTexture.wrapS = THREE.RepeatWrapping;
+      displayTexture.wrapT = THREE.RepeatWrapping;
+      displayTexture.repeat.set(item.flipX ? -1 : 1, item.flipY ? -1 : 1);
+      displayTexture.offset.set(item.flipX ? 1 : 0, item.flipY ? 1 : 0);
+      const spriteMaterial = new THREE.SpriteMaterial({
+        map: displayTexture,
+        transparent: true,
+        alphaTest: 0.035,
+        depthTest: true,
+        depthWrite: false,
+      });
+      spriteMaterial.rotation = THREE.MathUtils.degToRad(-item.rotation);
+      spriteMaterial.needsUpdate = true;
+      const sprite = new THREE.Sprite(spriteMaterial);
       sprite.userData.instanceId = item.instanceId;
       const width = Math.max(0.32, (item.width / 730) * R * 2),
         aspect = asset.originalWidth / Math.max(asset.originalHeight, 1),
@@ -301,12 +321,7 @@ export default function CakeThreePreview(props: Props) {
       const selectedScale = selected ? 1.1 : 1;
       const displayWidth = width * selectedScale;
       const displayHeight = (width / Math.max(aspect, 0.25)) * selectedScale;
-      sprite.scale.set(
-        displayWidth * (item.flipX ? -1 : 1),
-        displayHeight * (item.flipY ? -1 : 1),
-        1,
-      );
-      sprite.material.rotation = (-item.rotation * Math.PI) / 180;
+      sprite.scale.set(displayWidth, displayHeight, 1);
       sprite.material.color.set(selected ? "#fff1bd" : "#ffffff");
       const useTop =
         item.surface === "top" ||
