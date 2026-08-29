@@ -3,12 +3,7 @@
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
-import {
-  useCallback,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { useCallback, useMemo, useState, type ReactNode } from "react";
 
 import Footer from "@/app/components/layout/Footer";
 import Header from "@/app/components/layout/Header";
@@ -37,10 +32,7 @@ import { useBuilderSelection } from "@/lib/cake-builder/hooks/useBuilderSelectio
 import { useDecorationActions } from "@/lib/cake-builder/hooks/useDecorationActions";
 import { useKeyboardShortcuts } from "@/lib/cake-builder/hooks/useKeyboardShortcuts";
 
-import type {
-  Filling,
-  InscriptionSettings,
-} from "@/lib/cake-builder/types";
+import type { Filling, InscriptionSettings } from "@/lib/cake-builder/types";
 
 import { formatUsdFromKzt } from "@/lib/currency";
 
@@ -76,9 +68,7 @@ function InspectorButton({
       <span
         aria-hidden="true"
         className={`flex h-7 w-7 items-center justify-center rounded-lg text-base font-bold ${
-          danger
-            ? "bg-white text-red-700"
-            : "bg-[#f3e9e2] text-[#6a4433]"
+          danger ? "bg-white text-red-700" : "bg-[#f3e9e2] text-[#6a4433]"
         }`}
       >
         {icon}
@@ -94,8 +84,7 @@ function InspectorButton({
 export default function BuilderPage() {
   const router = useRouter();
   const currentLocale = useLocale();
-  const locale: BuilderLocale =
-    currentLocale === "en" ? "en" : "ru";
+  const locale: BuilderLocale = currentLocale === "en" ? "en" : "ru";
 
   const text = builderMessages[locale];
   const siteText = locale === "en" ? enMessages : ruMessages;
@@ -133,17 +122,13 @@ export default function BuilderPage() {
     clearDecorationSelection,
   } = useBuilderSelection({ decorationInstances });
 
-  const {
-    selectedWeight,
-    selectedFilling,
-    selectedBase,
-    totalPrice,
-  } = useBuilderPrice({
-    weight,
-    filling,
-    baseId,
-    decorationInstances,
-  });
+  const { selectedWeight, selectedFilling, selectedBase, totalPrice } =
+    useBuilderPrice({
+      weight,
+      filling,
+      baseId,
+      decorationInstances,
+    });
 
   const {
     addDecoration,
@@ -228,10 +213,7 @@ export default function BuilderPage() {
 
   return (
     <main className="min-h-screen bg-[#f7f3ef] text-[#342923]">
-      <Header
-        locale={locale}
-        text={siteText.nav}
-      />
+      <Header locale={locale} text={siteText.nav} />
 
       <section className="border-b border-black/10 bg-[#efe3da]">
         <div className="mx-auto grid max-w-7xl gap-5 px-4 py-6 md:px-8 md:py-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-8 lg:py-12">
@@ -243,9 +225,7 @@ export default function BuilderPage() {
             <h1 className="mt-3 max-w-3xl text-[30px] font-semibold leading-[1.08] md:mt-4 md:text-6xl md:leading-tight">
               {text.hero.titleFirst}
               <br />
-              <span className="font-serif italic">
-                {text.hero.titleAccent}
-              </span>
+              <span className="font-serif italic">{text.hero.titleAccent}</span>
             </h1>
 
             <p className="mt-3 max-w-2xl text-sm leading-6 text-black/65 md:mt-5 md:text-base md:leading-7">
@@ -320,8 +300,8 @@ export default function BuilderPage() {
               </div>
             </div>
 
-            <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_190px] lg:items-start lg:gap-4">
-              <div className="mx-auto w-[min(58vw,230px)] sm:w-[min(54vw,250px)] md:w-[min(48vw,310px)] lg:w-full">
+            <div className="lg:flex lg:flex-col">
+              <div className="order-2 mx-auto w-[min(58vw,230px)] sm:w-[min(54vw,250px)] md:w-[min(48vw,310px)] lg:w-full">
                 <CakePreview
                   base={selectedBase}
                   decorations={decorationInstances}
@@ -349,11 +329,11 @@ export default function BuilderPage() {
                 />
               </div>
 
-              <aside className="hidden min-w-0 lg:block">
-                <div className="sticky top-6 overflow-hidden rounded-2xl border border-black/10 bg-[#f8f0eb]">
+              <aside className="order-1 mb-4 hidden min-w-0 lg:block">
+                <div className="overflow-hidden rounded-2xl border border-black/10 bg-[#f8f0eb] lg:grid lg:grid-cols-[220px_minmax(0,1fr)]">
                   {selectedInstance && selectedInstanceAsset ? (
                     <>
-                      <div className="border-b border-black/10 bg-white p-3">
+                      <div className="border-r border-black/10 bg-white p-3">
                         <span className="block text-[9px] font-semibold uppercase tracking-[0.14em] text-black/40">
                           {text.preview.selectedDecoration}
                         </span>
@@ -382,7 +362,7 @@ export default function BuilderPage() {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-1.5 p-2">
+                      <div className="grid grid-cols-4 gap-1.5 p-2">
                         <InspectorButton
                           label={text.preview.duplicate}
                           icon="⧉"
@@ -408,7 +388,9 @@ export default function BuilderPage() {
                           label={text.preview.mirror}
                           icon="↔"
                           onClick={() =>
-                            flipDecorationHorizontal(selectedInstance.instanceId)
+                            flipDecorationHorizontal(
+                              selectedInstance.instanceId,
+                            )
                           }
                         />
                         <InspectorButton
@@ -443,7 +425,7 @@ export default function BuilderPage() {
                       </div>
                     </>
                   ) : (
-                    <div className="flex min-h-[260px] flex-col items-center justify-center p-4 text-center">
+                    <div className="flex min-h-[90px] items-center justify-center gap-4 p-4 text-left lg:col-span-2">
                       <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-xl text-[#6a4433] shadow-sm">
                         ✦
                       </span>
@@ -653,7 +635,8 @@ export default function BuilderPage() {
               <div className="mt-5 border-t border-black/10 pt-5">
                 <div className="flex items-center justify-between gap-3">
                   <strong>
-                    {text.sections.decorations.added}: {decorationInstances.length}
+                    {text.sections.decorations.added}:{" "}
+                    {decorationInstances.length}
                   </strong>
                   <button
                     type="button"
@@ -693,9 +676,7 @@ export default function BuilderPage() {
           </BuilderSection>
 
           <section className="rounded-3xl bg-[#432e25] p-6 text-white md:p-8">
-            <span className="text-sm text-white/60">
-              {text.summary.label}
-            </span>
+            <span className="text-sm text-white/60">{text.summary.label}</span>
             <strong className="mt-2 block text-4xl">
               {formatUsdFromKzt(totalPrice)}
             </strong>
@@ -714,10 +695,7 @@ export default function BuilderPage() {
         </div>
       </section>
 
-      <Footer
-        locale={locale}
-        text={siteText.footer}
-      />
+      <Footer locale={locale} text={siteText.footer} />
     </main>
   );
 }
