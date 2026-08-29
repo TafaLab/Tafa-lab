@@ -208,7 +208,7 @@ export default function CakeThreePreview(props: Props) {
     const resize = () => {
       const w = Math.max(host.clientWidth, 280),
         h = Math.max(host.clientHeight, 380);
-      renderer.setSize(w, h, false);
+      renderer.setSize(w, h);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
     };
