@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local archives and notes
+*.zip
+SEO-CHECK-PHASE12.txt
+STK-LAB-SEO-NEXT-STEP.txt
