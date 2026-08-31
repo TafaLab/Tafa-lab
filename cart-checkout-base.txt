@@ -1658,7 +1658,7 @@ export default function HomePage() {
       <header className="site-header">
         <div className="container header-inner">
           <Link href="/" className="brand">
-            <span className="brand-logo">SB</span>
+            <span className="brand-logo">STK</span>
 
             <span className="brand-text">
               STK <strong>Bakery</strong>
@@ -2015,7 +2015,7 @@ export default function HomePage() {
         <div className="container footer-grid">
           <div className="footer-about">
             <Link href="/" className="brand footer-brand">
-              <span className="brand-logo">SB</span>
+              <span className="brand-logo">STK</span>
 
               <span className="brand-text">
                 STK <strong>Bakery</strong>

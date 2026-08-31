@@ -126,7 +126,7 @@ export default function AdminSidebar() {
     <aside className="admin-sidebar">
       <div className="admin-sidebar-brand">
         <Link href="/admin" className="admin-sidebar-logo">
-          SB
+          STK
         </Link>
 
         <div>

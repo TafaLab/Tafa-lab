@@ -38,7 +38,7 @@ export default function Footer({
             className="brand footer-brand"
           >
             <span className="brand-logo">
-              SB
+              STK
             </span>
 
             <span className="brand-text">

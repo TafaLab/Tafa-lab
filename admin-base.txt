@@ -5,9 +5,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Milky Cake вЂ” С‚РѕСЂС‚С‹ РЅР° Р·Р°РєР°Р·",
+  title: "STK Bakery",
   description:
-    "РўРѕСЂС‚С‹, РґРµСЃРµСЂС‚С‹ Рё РµРґР° РЅР° Р·Р°РєР°Р·. РЎРѕР±РµСЂРёС‚Рµ СЃРѕР±СЃС‚РІРµРЅРЅС‹Р№ С‚РѕСЂС‚ РІ РёРЅС‚РµСЂР°РєС‚РёРІРЅРѕРј РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРµ Milky Cake.",
+    "Professional bakery website, cake builder and order management platform.",
 };
 
 export default function RootLayout({
