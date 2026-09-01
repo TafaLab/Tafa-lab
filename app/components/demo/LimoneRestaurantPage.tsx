@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import DemoSiteOrderForm from "./DemoSiteOrderForm";
+import LimoneHeroMotion from "./LimoneHeroMotion";
 
 type Locale = "ru" | "en";
 const text = {
@@ -107,6 +108,7 @@ export default function LimoneRestaurantPage({ locale }: { locale: Locale }) {
           className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/25 to-transparent" />
+        <LimoneHeroMotion />
         <div className="relative z-10 w-full px-5 pb-16 md:px-10 md:pb-20">
           <p className="text-xs uppercase tracking-[.3em]">{t.eyebrow}</p>
           <h1 className="mt-5 max-w-5xl font-serif text-7xl leading-[.84] tracking-[-.06em] md:text-[9rem]">
