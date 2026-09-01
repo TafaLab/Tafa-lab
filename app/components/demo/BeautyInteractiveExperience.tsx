@@ -281,12 +281,12 @@ function Skin({ locale }: { locale: "ru" | "en" }) {
 function Spa({ locale }: { locale: "ru" | "en" }) {
   const ru = locale === "ru";
   const rituals = [
-    { id: "stillness", ru: "Тишина", en: "Stillness", duration: 90 },
-    { id: "restore", ru: "Восстановление", en: "Restore", duration: 75 },
-    { id: "radiance", ru: "Сияние", en: "Radiance", duration: 80 },
-    { id: "balance", ru: "Баланс", en: "Balance", duration: 120 },
-    { id: "together", ru: "Для двоих", en: "Together", duration: 120 },
-    { id: "serena-day", ru: "День Serena", en: "Serena Day", duration: 300 },
+    { id: "stillness", ru: "Тишина", en: "Stillness", duration: 90, price: 85 },
+    { id: "restore", ru: "Восстановление", en: "Restore", duration: 75, price: 95 },
+    { id: "radiance", ru: "Сияние", en: "Radiance", duration: 80, price: 110 },
+    { id: "balance", ru: "Баланс", en: "Balance", duration: 120, price: 145 },
+    { id: "together", ru: "Для двоих", en: "Together", duration: 120, price: 260 },
+    { id: "serena-day", ru: "День Serena", en: "Serena Day", duration: 300, price: 320 },
   ];
   const [ritual, setRitual] = useState("stillness");
   const [mood, setMood] = useState("Relax"),
@@ -468,7 +468,7 @@ function Spa({ locale }: { locale: "ru" | "en" }) {
           </div>
           <div className="mt-8 flex items-center justify-between border-t border-white/20 pt-5">
             <strong className="text-3xl">
-              ${({ 60: 85, 75: 95, 80: 110, 90: 85, 120: 145, 180: 260, 300: 320 } as Record<number, number>)[duration] + extras.length * 12}
+              ${((duration === selectedRitual.duration ? selectedRitual.price : ({ 60: 85, 75: 95, 80: 110, 90: 85, 120: 145, 180: 260, 300: 320 } as Record<number, number>)[duration] ?? selectedRitual.price) + extras.length * 12)}
             </strong>
             <a
               href="#contact"
