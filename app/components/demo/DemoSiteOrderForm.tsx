@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 type DemoFormKind = "travel" | "academy" | "beauty" | "restaurant" | "bakery" | "business";
 
@@ -10,6 +10,22 @@ export default function DemoSiteOrderForm({ locale, siteName, kind }: { locale: 
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [prefill, setPrefill] = useState({ subject: "", message: "" });
+
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem("stk-demo-selection");
+      if (!raw) return;
+      const selection = JSON.parse(raw) as { subject?: string; message?: string };
+      setPrefill({
+        subject: typeof selection.subject === "string" ? selection.subject : "",
+        message: typeof selection.message === "string" ? selection.message : "",
+      });
+      sessionStorage.removeItem("stk-demo-selection");
+    } catch {
+      // Ignore malformed or unavailable browser storage.
+    }
+  }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -40,6 +56,7 @@ export default function DemoSiteOrderForm({ locale, siteName, kind }: { locale: 
       return;
     }
     form.reset();
+    setPrefill({ subject: "", message: "" });
     setSuccess(true);
   }
 
@@ -78,5 +95,5 @@ export default function DemoSiteOrderForm({ locale, siteName, kind }: { locale: 
       submit: en ? "Send platform request" : "Отправить заявку на платформу",
     },
   }[kind];
-  return <form onSubmit={submit} onFocusCapture={()=>{if(!startedAt.current)startedAt.current=Date.now()}} className="mx-auto mt-10 max-w-3xl rounded-[2rem] border border-white/15 bg-white/[.06] p-5 text-left md:p-8"><div className="grid gap-4 md:grid-cols-2"><input name="name" required placeholder={en ? "Your name" : "Ваше имя"} className={input}/><input name="contact" required placeholder={en ? "Email or phone" : "Email или телефон"} className={input}/></div><input name="subject" placeholder={formCopy.subject} className={`${input} mt-4`}/><textarea name="message" rows={4} placeholder={formCopy.message} className={`${input} mt-4 resize-y`}/>{error&&<p className="mt-4 text-sm text-red-200">{error}</p>}<button disabled={saving} className="mt-5 w-full rounded-full bg-[#d8b57b] px-7 py-4 font-semibold text-[#17231b] disabled:opacity-60">{saving ? (en ? "Sending…" : "Отправляем…") : formCopy.submit}</button></form>;
+  return <form onSubmit={submit} onFocusCapture={()=>{if(!startedAt.current)startedAt.current=Date.now()}} className="mx-auto mt-10 max-w-3xl rounded-[2rem] border border-white/15 bg-white/[.06] p-5 text-left md:p-8"><div className="grid gap-4 md:grid-cols-2"><input name="name" required placeholder={en ? "Your name" : "Ваше имя"} className={input}/><input name="contact" required placeholder={en ? "Email or phone" : "Email или телефон"} className={input}/></div><input name="subject" value={prefill.subject} onChange={(event) => setPrefill((value) => ({ ...value, subject: event.target.value }))} placeholder={formCopy.subject} className={`${input} mt-4`}/><textarea name="message" rows={4} value={prefill.message} onChange={(event) => setPrefill((value) => ({ ...value, message: event.target.value }))} placeholder={formCopy.message} className={`${input} mt-4 resize-y`}/>{error&&<p className="mt-4 text-sm text-red-200">{error}</p>}<button disabled={saving} className="mt-5 w-full rounded-full bg-[#d8b57b] px-7 py-4 font-semibold text-[#17231b] disabled:opacity-60">{saving ? (en ? "Sending…" : "Отправляем…") : formCopy.submit}</button></form>;
 }
