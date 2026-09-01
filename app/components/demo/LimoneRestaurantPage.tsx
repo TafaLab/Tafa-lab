@@ -201,8 +201,8 @@ export default function LimoneRestaurantPage({ locale }: { locale: Locale }) {
       >
         <div className="relative min-h-[620px]">
           <Image
-            src="https://static.tildacdn.ink/tild6435-3732-4566-b866-363235303032/photo-1564936281499-.jpg"
-            alt="Limoné chef"
+            src="/images/stk-lab/restaurants/demos/limone-lemon-tree.jpg"
+            alt="Limoné lemon tree"
             fill
             unoptimized
             className="object-cover"
