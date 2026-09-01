@@ -36,6 +36,32 @@ function payload(order: DemoOrder | null): Payload | null {
   }
 }
 
+const demoCompanies = [
+  { name: "Serena Spa & Wellness", category: "Beauty", href: "/spa-demo" },
+  { name: "Muse Hair & Beauty Salon", category: "Beauty" },
+  { name: "Aurea Clinical Cosmetology", category: "Beauty" },
+  { name: "VOLT Creative Color Studio", category: "Beauty" },
+  { name: "VELOURA CAKES — bakery order", category: "Bakery" },
+  { name: "MAISON LEVAIN — bakery order", category: "Bakery" },
+  { name: "ÉCLAIR MAISON — bakery order", category: "Bakery" },
+  { name: "LIMONÉ — restaurant reservation", category: "Restaurants" },
+  { name: "VERDANT — restaurant reservation", category: "Restaurants" },
+  { name: "NOOR TABLE — restaurant reservation", category: "Restaurants" },
+  { name: "KURO 炉端 — restaurant reservation", category: "Restaurants" },
+  { name: "SMART TABLE — restaurant order", category: "Restaurants" },
+  { name: "Velaria Travel", category: "Travel", href: "/travel-demo" },
+  { name: "Altitude Expeditions", category: "Travel" },
+  { name: "Milewise Travel Hacking Academy", category: "Academy" },
+  { name: "NEXUS / ONE — business platform", category: "Business" },
+  { name: "STOCKFLOW — business platform", category: "Business" },
+  { name: "PULSE PEOPLE — business platform", category: "Business" },
+  { name: "LEDGER / PRIVATE — business platform", category: "Business" },
+  { name: "IRONWOOD — enquiry", category: "Events" },
+  { name: "VELVET STAGE — enquiry", category: "Events" },
+  { name: "SPARK! — enquiry", category: "Events" },
+  { name: "WONDERNEST — enquiry", category: "Events" },
+] as const;
+
 export default function DemoAdminPage() {
   const locale = useLocale() === "en" ? "en" : "ru";
   const en = locale === "en";
@@ -43,6 +69,8 @@ export default function DemoAdminPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [companyFilter, setCompanyFilter] = useState("all");
+  const [companyMenuOpen, setCompanyMenuOpen] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -71,6 +99,18 @@ export default function DemoAdminPage() {
     queueMicrotask(() => void load());
   }, []);
   const selected = orders.find((x) => x.id === selectedId) ?? null;
+  const visibleOrders = useMemo(
+    () =>
+      companyFilter === "all"
+        ? orders
+        : orders.filter((order) => payload(order)?.siteName === companyFilter),
+    [orders, companyFilter],
+  );
+  const activeCompanies = useMemo(
+    () => new Set(orders.map((order) => payload(order)?.siteName).filter(Boolean)).size,
+    [orders],
+  );
+  const newOrders = orders.filter((order) => order.status === "new").length;
   const details = useMemo(() => payload(selected), [selected]);
   const labels: Record<Status, string> = en
     ? {
@@ -105,30 +145,69 @@ export default function DemoAdminPage() {
 
   return (
     <main className="min-h-screen bg-[#f2efe9] text-[#211a17]">
-      <header className="border-b border-black/10 bg-[#211a17] text-white">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-5 py-5 md:px-8">
-          <div>
-            <p className="text-xs uppercase tracking-[.2em] text-white/45">
-              {en ? "PUBLIC DEMO ADMIN" : "ОТКРЫТАЯ ДЕМО-АДМИНКА"}
-            </p>
-            <strong className="mt-1 block text-xl">
-              Tafa Lab · Demo Projects
-            </strong>
+      <header className="sticky top-0 z-30 border-b border-white/10 bg-[#211a17]/95 text-white shadow-lg backdrop-blur-xl">
+        <div className="mx-auto max-w-7xl px-5 py-4 md:px-8">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-[10px] uppercase tracking-[.24em] text-white/45">
+                {en ? "PUBLIC DEMO ADMIN" : "ОТКРЫТАЯ ДЕМО-АДМИНКА"}
+              </p>
+              <strong className="mt-1 block text-lg tracking-[-.02em]">
+                Tafa Lab · Demo Projects
+              </strong>
+            </div>
+            <div className="flex items-center gap-2">
+              <Link href={`/${locale}`} className="hidden rounded-full bg-white px-4 py-2 text-sm text-[#211a17] sm:block">
+                Tafa Lab
+              </Link>
+              <button
+                type="button"
+                onClick={() => setCompanyMenuOpen((value) => !value)}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-xl md:hidden"
+                aria-label={en ? "Open companies" : "Открыть список компаний"}
+                aria-expanded={companyMenuOpen}
+              >
+                {companyMenuOpen ? "×" : "☰"}
+              </button>
+            </div>
           </div>
-          <div className="flex gap-3">
-            <Link
-              href={`/${locale}/travel-demo`}
-              className="rounded-full border border-white/20 px-4 py-2 text-sm"
+          <div className="mt-4 hidden items-center gap-2 overflow-x-auto pb-1 md:flex">
+            <button
+              type="button"
+              onClick={() => setCompanyFilter("all")}
+              className={`shrink-0 rounded-full px-3 py-2 text-xs ${companyFilter === "all" ? "bg-white text-[#211a17]" : "border border-white/15 text-white/70"}`}
             >
-              Velaria
-            </Link>
-            <Link
-              href={`/${locale}`}
-              className="rounded-full bg-white px-4 py-2 text-sm text-[#211a17]"
-            >
-              Tafa Lab
-            </Link>
+              {en ? "All companies" : "Все компании"}
+            </button>
+            {demoCompanies.map((company) => (
+              <button
+                type="button"
+                key={company.name}
+                onClick={() => setCompanyFilter(company.name)}
+                className={`shrink-0 rounded-full px-3 py-2 text-xs ${companyFilter === company.name ? "bg-[#d8b57b] text-[#211a17]" : "border border-white/15 text-white/70"}`}
+              >
+                {company.name.split(" — ")[0]}
+              </button>
+            ))}
           </div>
+          {companyMenuOpen && (
+            <div className="mt-4 grid gap-2 border-t border-white/10 pt-4 md:hidden">
+              <button type="button" onClick={() => { setCompanyFilter("all"); setCompanyMenuOpen(false); }} className="rounded-2xl bg-white px-4 py-3 text-left text-sm text-[#211a17]">
+                {en ? "All companies" : "Все компании"}
+              </button>
+              {demoCompanies.map((company) => (
+                <button
+                  type="button"
+                  key={company.name}
+                  onClick={() => { setCompanyFilter(company.name); setCompanyMenuOpen(false); }}
+                  className={`rounded-2xl px-4 py-3 text-left text-sm ${companyFilter === company.name ? "bg-[#d8b57b] text-[#211a17]" : "border border-white/10 bg-white/5 text-white"}`}
+                >
+                  <span className="block">{company.name}</span>
+                  <span className="mt-1 block text-xs opacity-50">{company.category}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </header>
       <section className="mx-auto max-w-7xl px-5 py-10 md:px-8">
@@ -137,7 +216,21 @@ export default function DemoAdminPage() {
             ? "This admin is an open demonstration. Visitors can submit test requests and change their statuses."
             : "Это открытая демонстрационная админка. Посетители могут отправлять тестовые заявки и менять их статусы."}
         </div>
-        <div className="mt-8 flex items-end justify-between">
+        <div className="mt-8 grid gap-3 sm:grid-cols-3">
+          <div className="rounded-3xl bg-[#211a17] p-5 text-white">
+            <p className="text-xs uppercase tracking-[.18em] text-white/45">{en ? "All requests" : "Все заявки"}</p>
+            <p className="mt-3 text-4xl">{orders.length}</p>
+          </div>
+          <div className="rounded-3xl border border-black/10 bg-white p-5">
+            <p className="text-xs uppercase tracking-[.18em] text-black/40">{en ? "New" : "Новые"}</p>
+            <p className="mt-3 text-4xl">{newOrders}</p>
+          </div>
+          <div className="rounded-3xl border border-black/10 bg-white p-5">
+            <p className="text-xs uppercase tracking-[.18em] text-black/40">{en ? "Active demos" : "Демо-компании"}</p>
+            <p className="mt-3 text-4xl">{activeCompanies}</p>
+          </div>
+        </div>
+        <div className="mt-8 flex items-end justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[.2em] text-black/35">
               TAFA LAB DEMO CRM
@@ -156,18 +249,27 @@ export default function DemoAdminPage() {
         {error && (
           <p className="mt-5 rounded-2xl bg-red-50 p-4 text-red-700">{error}</p>
         )}
+        <div className="mt-6 flex flex-wrap items-center gap-2">
+          <span className="mr-2 text-xs uppercase tracking-[.18em] text-black/40">
+            {en ? "Filter by company" : "Фильтр по компании"}
+          </span>
+          <span className="rounded-full bg-[#211a17] px-3 py-1.5 text-xs text-white">
+            {companyFilter === "all" ? (en ? "All companies" : "Все компании") : companyFilter}
+          </span>
+          <span className="text-xs text-black/40">· {visibleOrders.length} {en ? "requests" : "заявок"}</span>
+        </div>
         <div className="mt-8 grid gap-5 lg:grid-cols-[1fr_430px]">
           <div className="space-y-4">
             {loading ? (
               <div className="rounded-3xl bg-white p-8">
                 {en ? "Loading…" : "Загрузка…"}
               </div>
-            ) : orders.length === 0 ? (
+            ) : visibleOrders.length === 0 ? (
               <div className="rounded-3xl border border-dashed border-black/15 bg-white/50 p-10 text-black/45">
                 {en ? "No demo requests yet." : "Демо-заявок пока нет."}
               </div>
             ) : (
-              orders.map((order) => {
+              visibleOrders.map((order) => {
                 const item = payload(order);
                 return (
                   <button
