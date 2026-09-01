@@ -9,18 +9,18 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
 
   title: {
-    default: "STK Lab — Premium Websites & Custom Web Applications",
-    template: "%s | STK Lab",
+    default: "TAFA Lab — Premium Websites & Custom Web Applications",
+    template: "%s | TAFA Lab",
   },
 
   description:
-    "STK Lab designs and develops premium websites, e-commerce experiences, booking systems, configurators and custom business platforms.",
+    "TAFA Lab designs and develops premium websites, e-commerce experiences, booking systems, configurators and custom business platforms.",
 
-  applicationName: "STK Lab",
+  applicationName: "TAFA Lab",
 
-  authors: [{ name: "STK Lab" }],
-  creator: "STK Lab",
-  publisher: "STK Lab",
+  authors: [{ name: "TAFA Lab" }],
+  creator: "TAFA Lab",
+  publisher: "TAFA Lab",
 
   formatDetection: {
     email: false,
@@ -42,8 +42,8 @@ export const metadata: Metadata = {
 
   openGraph: {
     type: "website",
-    siteName: "STK Lab",
-    title: "STK Lab — Premium Websites & Custom Web Applications",
+    siteName: "TAFA Lab",
+    title: "TAFA Lab — Premium Websites & Custom Web Applications",
     description:
       "Premium websites and custom digital systems for bakeries, restaurants, beauty, travel and growing businesses.",
     images: [
@@ -51,14 +51,14 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "STK Lab",
+        alt: "TAFA Lab",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "STK Lab — Premium Websites & Custom Web Applications",
+    title: "TAFA Lab — Premium Websites & Custom Web Applications",
     description:
       "Premium websites and custom digital systems for modern businesses.",
     images: ["/og-image.jpg"],

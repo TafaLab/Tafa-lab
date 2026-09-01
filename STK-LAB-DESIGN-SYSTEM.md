@@ -19,7 +19,7 @@ The token block controls:
 
 ## Shared primitives
 
-- `StkSiteShell.tsx` — applies the STK Lab theme to a core page.
+- `StkSiteShell.tsx` — applies the TAFA Lab theme to a core page.
 - `StkReveal.tsx` — shared scroll reveal animation with reduced-motion support.
 - `StkButton.tsx` — shared CTA/button treatment for new core pages.
 - `theme.ts` — semantic utility aliases for future components.

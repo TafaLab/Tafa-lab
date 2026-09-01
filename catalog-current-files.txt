@@ -641,7 +641,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "STK Bakery” С‚РѕСЂС‚С‹ РЅР° Р·Р°РєР°Р·",
+  title: "TAFA Bakery” С‚РѕСЂС‚С‹ РЅР° Р·Р°РєР°Р·",
   description:
     "Professional bakery website, cake builder and order management platform.",
 };
