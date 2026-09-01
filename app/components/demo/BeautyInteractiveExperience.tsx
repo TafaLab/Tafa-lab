@@ -287,6 +287,59 @@ function Spa({ locale }: { locale: "ru" | "en" }) {
     [extras, setExtras] = useState<string[]>(["Aromatherapy"]);
   const toggle = (x: string) =>
     setExtras((v) => (v.includes(x) ? v.filter((i) => i !== x) : [...v, x]));
+  const moodNames: Record<string, string> = {
+    Relax: ru ? "Расслабление" : "Relax",
+    Detox: ru ? "Детокс" : "Detox",
+    Exhausted: ru ? "Усталость" : "Exhausted",
+    Glow: ru ? "Сияние" : "Glow",
+  };
+  const scentNames: Record<string, string> = {
+    Eucalyptus: ru ? "Эвкалипт" : "Eucalyptus",
+    Rose: ru ? "Роза" : "Rose",
+    Citrus: ru ? "Цитрус" : "Citrus",
+    Lavender: ru ? "Лаванда" : "Lavender",
+    Sandalwood: ru ? "Сандал" : "Sandalwood",
+  };
+  const extraNames: Record<string, string> = {
+    Aromatherapy: ru ? "Ароматерапия" : "Aromatherapy",
+    "Hot stones": ru ? "Горячие камни" : "Hot stones",
+    Champagne: ru ? "Шампанское" : "Champagne",
+    "Private room": ru ? "Приватная комната" : "Private room",
+  };
+  const moodTitle = moodNames[mood];
+  const scentTitle = scentNames[scent];
+  const intensityTitle =
+    intensity < 35
+      ? ru
+        ? "Мягкая"
+        : "Gentle"
+      : intensity > 70
+        ? ru
+          ? "Глубокая"
+          : "Deep"
+        : ru
+          ? "Сбалансированная"
+          : "Balanced";
+  const journey = ru
+    ? "Тёплая ванна → Ароматерапия → Массаж → Уход за лицом → Чайная церемония"
+    : "Warm bath → Aromatherapy → Massage → Facial → Tea ceremony";
+  const saveSelection = () => {
+    try {
+      sessionStorage.setItem(
+        "stk-demo-selection",
+        JSON.stringify({
+          subject: ru
+            ? `SPA-ритуал: ${moodTitle} · ${scentTitle}, ${duration} мин`
+            : `SPA ritual: ${moodTitle} · ${scentTitle}, ${duration} min`,
+          message: ru
+            ? `${journey}. Интенсивность: ${intensityTitle}. Дополнительно: ${extras.map((item) => extraNames[item]).join(", ") || "без дополнительных услуг"}.`
+            : `${journey}. Intensity: ${intensityTitle}. Extras: ${extras.map((item) => extraNames[item]).join(", ") || "none"}.`,
+        }),
+      );
+    } catch {
+      // Continue to the form if browser storage is unavailable.
+    }
+  };
   return (
     <Wrap
       kicker={ru ? "Соберите свой SPA-ритуал" : "Build Your SPA Journey"}
@@ -388,6 +441,7 @@ function Spa({ locale }: { locale: "ru" | "en" }) {
             </strong>
             <a
               href="#contact"
+              onClick={saveSelection}
               className="rounded-full bg-white px-5 py-3 text-black"
               style={{ color: "#000000" }}
             >
