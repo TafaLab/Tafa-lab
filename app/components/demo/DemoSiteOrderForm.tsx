@@ -13,18 +13,23 @@ export default function DemoSiteOrderForm({ locale, siteName, kind }: { locale: 
   const [prefill, setPrefill] = useState({ subject: "", message: "" });
 
   useEffect(() => {
-    try {
-      const raw = sessionStorage.getItem("stk-demo-selection");
-      if (!raw) return;
-      const selection = JSON.parse(raw) as { subject?: string; message?: string };
-      setPrefill({
-        subject: typeof selection.subject === "string" ? selection.subject : "",
-        message: typeof selection.message === "string" ? selection.message : "",
-      });
-      sessionStorage.removeItem("stk-demo-selection");
-    } catch {
-      // Ignore malformed or unavailable browser storage.
-    }
+    const syncSelection = () => {
+      try {
+        const raw = sessionStorage.getItem("stk-demo-selection");
+        if (!raw) return;
+        const selection = JSON.parse(raw) as { subject?: string; message?: string };
+        setPrefill({
+          subject: typeof selection.subject === "string" ? selection.subject : "",
+          message: typeof selection.message === "string" ? selection.message : "",
+        });
+        sessionStorage.removeItem("stk-demo-selection");
+      } catch {
+        // Ignore malformed or unavailable browser storage.
+      }
+    };
+    syncSelection();
+    window.addEventListener("stk-demo-selection", syncSelection);
+    return () => window.removeEventListener("stk-demo-selection", syncSelection);
   }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
