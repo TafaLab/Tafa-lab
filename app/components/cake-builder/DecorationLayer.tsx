@@ -37,7 +37,7 @@ const TOP_VIEW_RADIUS = 489;
 const FRONT_CAKE_CENTER_X = 627;
 const FRONT_CAKE_CENTER_Y = 455;
 const FRONT_CAKE_RADIUS_X = 365;
-const FRONT_CAKE_RADIUS_Y = 100;
+const FRONT_CAKE_RADIUS_Y = 145;
 
 const dripColors: Record<string, string> = {
   "drip-dark": "#3f241b",
@@ -190,16 +190,23 @@ function constrainPointToCircle(x: number, y: number, radius: number) {
   };
 }
 
-function topToFront(
+function topToFrontSurface(
   transform: DecorationViewTransform,
 ): DecorationViewTransform {
+  const normalizedX = clamp(
+    (transform.x - TOP_VIEW_CENTER) / TOP_VIEW_RADIUS,
+    -1,
+    1,
+  );
+  const normalizedDepth = clamp(
+    (transform.y - TOP_VIEW_CENTER) / TOP_VIEW_RADIUS,
+    -1,
+    1,
+  );
+
   return {
-    x:
-      FRONT_CAKE_CENTER_X +
-      ((transform.x - TOP_VIEW_CENTER) / TOP_VIEW_RADIUS) * FRONT_CAKE_RADIUS_X,
-    y:
-      FRONT_CAKE_CENTER_Y +
-      ((transform.y - TOP_VIEW_CENTER) / TOP_VIEW_RADIUS) * FRONT_CAKE_RADIUS_Y,
+    x: FRONT_CAKE_CENTER_X + normalizedX * FRONT_CAKE_RADIUS_X,
+    y: FRONT_CAKE_CENTER_Y + normalizedDepth * FRONT_CAKE_RADIUS_Y,
     rotation: transform.rotation,
     flipX: transform.flipX,
     flipY: transform.flipY,
@@ -274,6 +281,14 @@ export default function DecorationLayer({
     const safeTopRadius = Math.max(40, TOP_VIEW_RADIUS - instance.width / 2);
 
     if (view === "front" || view === "side") {
+      if (instance.frontView) {
+        return instance.frontView;
+      }
+
+      if (instance.topView) {
+        return topToFrontSurface(instance.topView);
+      }
+
       return {
         x: instance.x,
         y: instance.y,
@@ -346,6 +361,7 @@ export default function DecorationLayer({
         ...changes,
       };
       updateInstance(instance.instanceId, {
+        frontView: nextFront,
         x: nextFront.x,
         y: nextFront.y,
         rotation: nextFront.rotation,
@@ -355,11 +371,20 @@ export default function DecorationLayer({
       return;
     }
 
+    const nextTop = {
+      ...getTransform(instance),
+      ...changes,
+    };
+    const projectedFront = topToFrontSurface(nextTop);
+
     updateInstance(instance.instanceId, {
-      topView: {
-        ...getTransform(instance),
-        ...changes,
-      },
+      topView: nextTop,
+      frontView: projectedFront,
+      x: projectedFront.x,
+      y: projectedFront.y,
+      rotation: nextTop.rotation,
+      flipX: nextTop.flipX,
+      flipY: nextTop.flipY,
     });
   }
 
@@ -600,6 +625,7 @@ export default function DecorationLayer({
           y: Math.round(snapped.y),
         };
         updateInstance(instance.instanceId, {
+          frontView: nextFront,
           x: nextFront.x,
           y: nextFront.y,
           insertDepth,
