@@ -22,10 +22,6 @@ export default function LimoneHeroMotion() {
 
   return (
     <div className="limone-hero-motion" aria-hidden="true">
-      <span className="limone-leaf limone-leaf-one" />
-      <span className="limone-leaf limone-leaf-two" />
-      <span className="limone-leaf limone-leaf-three" />
-      <span className="limone-leaf limone-leaf-four" />
       <span key={lemonKey} className="limone-falling-lemon" />
       <style jsx>{`
         .limone-hero-motion {
@@ -34,64 +30,6 @@ export default function LimoneHeroMotion() {
           inset: 0;
           overflow: hidden;
           pointer-events: none;
-        }
-
-        .limone-leaf {
-          position: absolute;
-          width: 82px;
-          height: 34px;
-          border-radius: 100% 0 100% 0;
-          background: linear-gradient(135deg, #6d8f3b 0%, #355b2d 55%, #18371f 100%);
-          border: 1px solid rgba(18, 39, 19, 0.72);
-          filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.28));
-          transform-origin: 0 50%;
-          animation: limone-leaf-sway 1.8s ease-in-out infinite alternate;
-        }
-
-        .limone-leaf::after {
-          content: "";
-          position: absolute;
-          top: 50%;
-          left: 8px;
-          width: calc(100% - 14px);
-          height: 2px;
-          border-radius: 999px;
-          background: rgba(15, 42, 20, 0.76);
-          transform: rotate(-9deg);
-          transform-origin: left center;
-        }
-
-        .limone-leaf-one {
-          top: 18%;
-          right: 12%;
-          transform: rotate(-26deg);
-        }
-
-        .limone-leaf-two {
-          top: 31%;
-          right: 25%;
-          width: 62px;
-          height: 26px;
-          transform: rotate(32deg);
-          animation-delay: -1.4s;
-        }
-
-        .limone-leaf-three {
-          top: 12%;
-          left: 23%;
-          width: 58px;
-          height: 24px;
-          transform: rotate(145deg);
-          animation-delay: -2.6s;
-        }
-
-        .limone-leaf-four {
-          top: 42%;
-          left: 38%;
-          width: 45px;
-          height: 19px;
-          transform: rotate(155deg);
-          animation-delay: -3.2s;
         }
 
         .limone-falling-lemon {
@@ -119,11 +57,6 @@ export default function LimoneHeroMotion() {
           transform: rotate(-24deg);
         }
 
-        @keyframes limone-leaf-sway {
-          0% { margin-left: -5px; rotate: -4deg; }
-          100% { margin-left: 8px; rotate: 6deg; }
-        }
-
         @keyframes limone-lemon-drop {
           0% { opacity: 0; transform: translate3d(0, -18px, 0) rotate(0deg); }
           10% { opacity: 1; }
@@ -132,7 +65,6 @@ export default function LimoneHeroMotion() {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .limone-leaf,
           .limone-falling-lemon {
             animation: none;
           }
