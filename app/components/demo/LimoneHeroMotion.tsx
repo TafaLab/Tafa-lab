@@ -44,7 +44,7 @@ export default function LimoneHeroMotion() {
           background: linear-gradient(135deg, rgba(123, 157, 60, 0.78), rgba(37, 72, 31, 0.9));
           filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.15));
           transform-origin: 0 50%;
-          animation: limone-leaf-sway 5.8s ease-in-out infinite alternate;
+          animation: limone-leaf-sway 3.6s ease-in-out infinite alternate;
         }
 
         .limone-leaf-one {
