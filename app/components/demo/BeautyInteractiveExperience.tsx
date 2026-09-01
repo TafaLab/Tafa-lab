@@ -336,6 +336,7 @@ function Spa({ locale }: { locale: "ru" | "en" }) {
             : `${journey}. Intensity: ${intensityTitle}. Extras: ${extras.map((item) => extraNames[item]).join(", ") || "none"}.`,
         }),
       );
+      window.dispatchEvent(new Event("stk-demo-selection"));
     } catch {
       // Continue to the form if browser storage is unavailable.
     }
