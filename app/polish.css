@@ -1,0 +1,89 @@
+.mobile-nav-menu {
+  display: none;
+  position: relative;
+}
+
+.mobile-nav-menu summary {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-content: center;
+  gap: 4px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: white;
+  cursor: pointer;
+  list-style: none;
+}
+
+.mobile-nav-menu summary::-webkit-details-marker { display: none; }
+.mobile-nav-menu summary span { width: 16px; height: 2px; border-radius: 4px; background: var(--brown); }
+.mobile-nav-menu nav {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: -112px;
+  z-index: 100;
+  display: grid;
+  width: min(84vw, 320px);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: rgba(255, 250, 247, 0.98);
+  padding: 10px;
+  box-shadow: 0 24px 60px rgba(56, 40, 37, 0.18);
+  backdrop-filter: blur(18px);
+}
+
+.mobile-nav-menu nav a { border-radius: 14px; padding: 13px 15px; color: var(--brown); font-weight: 700; }
+.mobile-nav-menu nav a:hover { background: var(--pink-light); color: var(--pink-dark); }
+
+.language-switcher .language-switcher-link-active {
+  color: #ffffff;
+}
+
+.brown-link-white {
+  color: #ffffff;
+}
+
+.floating-price-link {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 90;
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 999px;
+  background: rgba(33,29,25,.9);
+  padding: 11px 16px;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 12px 30px rgba(33,29,25,.2);
+  backdrop-filter: blur(12px);
+  transition: transform .25s ease, opacity .25s ease;
+}
+
+.floating-price-link:hover { transform: translateY(-3px); }
+
+.site-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .72s ease var(--reveal-delay, 0ms), transform .72s cubic-bezier(.22,1,.36,1) var(--reveal-delay, 0ms);
+}
+
+.site-reveal.site-reveal-visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 1050px) {
+  .mobile-nav-menu { display: block; }
+  .floating-price-link { right: 10px; bottom: 10px; padding: 9px 12px; font-size: 11px; }
+}
+
+@media (max-width: 600px) {
+  .site-header .header-button { display: none; }
+  .mobile-nav-menu nav { right: -72px; }
+  .floating-price-link { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-reveal, .site-reveal.site-reveal-visible { opacity: 1; transform: none; transition: none; }
+  .floating-price-link { transition: none; }
+}

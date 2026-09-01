@@ -38,7 +38,7 @@ export default function Footer({
             className="brand footer-brand"
           >
             <span className="brand-logo">
-              SB
+              STK
             </span>
 
             <span className="brand-text">
@@ -108,8 +108,8 @@ export default function Footer({
           {" · "}
           <Link href={`/${locale}`} className="underline decoration-current/30 underline-offset-4">
             {locale === "en"
-              ? "Demo by STK Lab"
-              : "Демо-проект STK Lab"}
+              ? "Demo by Tafa Lab"
+              : "Демо-проект Tafa Lab"}
           </Link>
         </span>
       </Container>

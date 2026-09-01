@@ -10,6 +10,8 @@ import {
 
 import { notFound } from "next/navigation";
 import Script from "next/script";
+import FloatingPriceLink from "@/app/components/layout/FloatingPriceLink";
+import SiteMotion from "@/app/components/layout/SiteMotion";
 
 import { routing } from "@/i18n/routing";
 
@@ -49,6 +51,9 @@ export default async function LocaleLayout({
 
   return (
     <>
+      <Script id="document-language" strategy="beforeInteractive">
+        {`document.documentElement.lang=${JSON.stringify(locale)};`}
+      </Script>
       <Script
         src="https://www.googletagmanager.com/gtag/js?id=G-7KW5HE8VL0"
         strategy="afterInteractive"
@@ -72,6 +77,8 @@ export default async function LocaleLayout({
       >
         {children}
       </NextIntlClientProvider>
+      <SiteMotion />
+      <FloatingPriceLink locale={locale} />
     </>
   );
 }

@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "./polish.css";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  "http://localhost:3000";
+  "https://tafalab.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -68,7 +69,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
   viewportFit: "cover",
   themeColor: "#f6f2ed",
   colorScheme: "light",

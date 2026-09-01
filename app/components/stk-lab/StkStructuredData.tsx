@@ -18,7 +18,7 @@ export default function StkStructuredData({
   const organization = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "STK Lab",
+    name: "Tafa Lab",
     url: `${base}/${locale}`,
     email: "suyunova.talifa@gmail.com",
     sameAs: ["https://t.me/STK_Lab"],
@@ -27,7 +27,7 @@ export default function StkStructuredData({
   const website = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "STK Lab",
+    name: "Tafa Lab",
     url: `${base}/${locale}`,
     inLanguage: locale,
   };
@@ -42,7 +42,7 @@ export default function StkStructuredData({
         inLanguage: locale,
         isPartOf: {
           "@type": "WebSite",
-          name: "STK Lab",
+          name: "Tafa Lab",
           url: `${base}/${locale}`,
         },
       }

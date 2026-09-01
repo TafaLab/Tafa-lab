@@ -76,6 +76,10 @@ export default async function AdminDashboardPage({
     ).format(value);
   }
 
+  function usdValue(value: number) {
+    return value >= 500 ? Math.round(value / 500) : Math.round(value);
+  }
+
   function formatOrderDate(
     value: string,
   ) {
@@ -284,9 +288,7 @@ export default async function AdminDashboardPage({
       label:
         text.dashboard.summary
           .revenueToday,
-      value: `${formatMoney(
-        revenueToday,
-      )} ${text.common.currency}`,
+      value: `$${formatMoney(usdValue(revenueToday))}`,
       description:
         text.dashboard.summary
           .revenueTodayDescription,
@@ -497,16 +499,7 @@ export default async function AdminDashboardPage({
                         </td>
 
                         <td className="px-6 py-4 text-right font-semibold">
-                          {formatMoney(
-                            Number(
-                              order.price ??
-                                0,
-                            ),
-                          )}{" "}
-                          {
-                            text.common
-                              .currency
-                          }
+                          ${formatMoney(usdValue(Number(order.price ?? 0)))}
                         </td>
                       </tr>
                     ),

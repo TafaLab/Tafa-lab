@@ -3,15 +3,146 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import DemoSiteOrderForm from "@/app/components/demo/DemoSiteOrderForm";
+import BeautyInteractiveExperience from "@/app/components/demo/BeautyInteractiveExperience";
 
-type Locale="ru"|"en";
-export const metadata:Metadata={title:"SERENA — Spa & Wellness",description:"Premium spa and wellness demo by STK Lab.",robots:{index:false,follow:false}};
-const copy={
-ru:{nav:["Ритуалы","Программы","Пространство","Запись"],eyebrow:"SPA · WELLNESS · ВОССТАНОВЛЕНИЕ",title:"Место, где тело вспоминает покой.",text:"Продуманные spa-ритуалы, терапевтический массаж и индивидуальные wellness-программы в пространстве тишины и заботы.",cta:"Выбрать ритуал",secondary:"Подарочный сертификат",servicesTitle:"Ритуалы Serena",servicesText:"Каждая процедура начинается с короткой консультации и адаптируется под ваше состояние сегодня.",services:[["Тишина","Расслабляющий массаж всего тела","90 мин · $85"],["Восстановление","Глубокая работа с мышцами и тёплые компрессы","75 мин · $95"],["Сияние","Уход за лицом, массаж и персональная маска","80 мин · $110"],["Баланс","Ароматерапия, скраб и обёртывание","120 мин · $145"],["Для двоих","Парный ритуал и приватная зона отдыха","120 мин · $260"],["День Serena","Хаммам, три процедуры и wellness-ланч","5 часов · $320"]],programTitle:"Не отдельная процедура, а путь к новому состоянию.",programs:[["Sleep Reset","3 недели","Массаж, дыхательные практики и вечерний протокол для глубокого сна."],["Body Recovery","4 недели","Восстановление после стресса и нагрузки с персональным планом процедур."],["Quiet Weekend","2 дня","Приватная перезагрузка с spa, мягким движением и спокойным питанием."]],values:[["12","терапевтов"],["6","приватных кабинетов"],["100%","натуральные составы"],["7 дней","в неделю"]],aboutTitle:"Тепло камня. Шум воды. Ничего лишнего.",aboutText:"Serena создана как последовательность спокойных пространств: термальная зона, кабинеты ритуалов, чайная комната и сад для отдыха после процедур.",formTitle:"Запланируйте время для себя.",formText:"Выберите желаемый ритуал или расскажите, какое состояние хотите изменить. Администратор поможет подобрать программу.",demo:"Демо-сайт SPA",back:"Beauty-витрина"},
-en:{nav:["Rituals","Programs","Space","Book"],eyebrow:"SPA · WELLNESS · RESTORATION",title:"A place where the body remembers calm.",text:"Considered spa rituals, therapeutic massage and personal wellness programs in a space designed for quiet and care.",cta:"Choose a ritual",secondary:"Gift certificate",servicesTitle:"Serena rituals",servicesText:"Every treatment begins with a short consultation and is adapted to how you feel today.",services:[["Stillness","Full-body relaxation massage","90 min · $85"],["Restore","Deep muscle work and warm compresses","75 min · $95"],["Radiance","Facial care, massage and personal mask","80 min · $110"],["Balance","Aromatherapy, body polish and wrap","120 min · $145"],["Together","Couples ritual and private relaxation suite","120 min · $260"],["Serena Day","Hammam, three treatments and wellness lunch","5 hours · $320"]],programTitle:"Not a single treatment, but a path to a new state.",programs:[["Sleep Reset","3 weeks","Massage, breath practices and an evening protocol for deeper sleep."],["Body Recovery","4 weeks","Recovery from stress and strain with a personal treatment plan."],["Quiet Weekend","2 days","A private reset with spa, gentle movement and nourishing food."]],values:[["12","therapists"],["6","private rooms"],["100%","natural formulas"],["7 days","a week"]],aboutTitle:"Warm stone. Moving water. Nothing unnecessary.",aboutText:"Serena unfolds through calm spaces: a thermal zone, treatment rooms, a tea lounge and a garden for resting after your ritual.",formTitle:"Make time for yourself.",formText:"Choose a ritual or tell us how you would like to feel. Our host will recommend the right experience.",demo:"Spa website demo",back:"Beauty collection"}} as const;
+type Locale = "ru" | "en";
+export const metadata: Metadata = {
+  title: "SERENA — Spa & Wellness",
+  description: "Premium spa and wellness demo by Tafa Lab.",
+  robots: { index: false, follow: false },
+};
+const copy = {
+  ru: {
+    nav: ["Ритуалы", "Программы", "Пространство", "Запись"],
+    eyebrow: "SPA · WELLNESS · ВОССТАНОВЛЕНИЕ",
+    title: "Место, где тело вспоминает покой.",
+    text: "Продуманные spa-ритуалы, терапевтический массаж и индивидуальные wellness-программы в пространстве тишины и заботы.",
+    cta: "Выбрать ритуал",
+    secondary: "Подарочный сертификат",
+    servicesTitle: "Ритуалы Serena",
+    servicesText:
+      "Каждая процедура начинается с короткой консультации и адаптируется под ваше состояние сегодня.",
+    services: [
+      ["Тишина", "Расслабляющий массаж всего тела", "90 мин · $85"],
+      [
+        "Восстановление",
+        "Глубокая работа с мышцами и тёплые компрессы",
+        "75 мин · $95",
+      ],
+      ["Сияние", "Уход за лицом, массаж и персональная маска", "80 мин · $110"],
+      ["Баланс", "Ароматерапия, скраб и обёртывание", "120 мин · $145"],
+      ["Для двоих", "Парный ритуал и приватная зона отдыха", "120 мин · $260"],
+      [
+        "День Serena",
+        "Хаммам, три процедуры и wellness-ланч",
+        "5 часов · $320",
+      ],
+    ],
+    programTitle: "Не отдельная процедура, а путь к новому состоянию.",
+    programs: [
+      [
+        "Sleep Reset",
+        "3 недели",
+        "Массаж, дыхательные практики и вечерний протокол для глубокого сна.",
+      ],
+      [
+        "Body Recovery",
+        "4 недели",
+        "Восстановление после стресса и нагрузки с персональным планом процедур.",
+      ],
+      [
+        "Quiet Weekend",
+        "2 дня",
+        "Приватная перезагрузка с spa, мягким движением и спокойным питанием.",
+      ],
+    ],
+    values: [
+      ["12", "терапевтов"],
+      ["6", "приватных кабинетов"],
+      ["100%", "натуральные составы"],
+      ["7 дней", "в неделю"],
+    ],
+    aboutTitle: "Тепло камня. Шум воды. Ничего лишнего.",
+    aboutText:
+      "Serena создана как последовательность спокойных пространств: термальная зона, кабинеты ритуалов, чайная комната и сад для отдыха после процедур.",
+    formTitle: "Запланируйте время для себя.",
+    formText:
+      "Выберите желаемый ритуал или расскажите, какое состояние хотите изменить. Администратор поможет подобрать программу.",
+    demo: "Демо-сайт SPA",
+    back: "Beauty-витрина",
+  },
+  en: {
+    nav: ["Rituals", "Programs", "Space", "Book"],
+    eyebrow: "SPA · WELLNESS · RESTORATION",
+    title: "A place where the body remembers calm.",
+    text: "Considered spa rituals, therapeutic massage and personal wellness programs in a space designed for quiet and care.",
+    cta: "Choose a ritual",
+    secondary: "Gift certificate",
+    servicesTitle: "Serena rituals",
+    servicesText:
+      "Every treatment begins with a short consultation and is adapted to how you feel today.",
+    services: [
+      ["Stillness", "Full-body relaxation massage", "90 min · $85"],
+      ["Restore", "Deep muscle work and warm compresses", "75 min · $95"],
+      ["Radiance", "Facial care, massage and personal mask", "80 min · $110"],
+      ["Balance", "Aromatherapy, body polish and wrap", "120 min · $145"],
+      [
+        "Together",
+        "Couples ritual and private relaxation suite",
+        "120 min · $260",
+      ],
+      [
+        "Serena Day",
+        "Hammam, three treatments and wellness lunch",
+        "5 hours · $320",
+      ],
+    ],
+    programTitle: "Not a single treatment, but a path to a new state.",
+    programs: [
+      [
+        "Sleep Reset",
+        "3 weeks",
+        "Massage, breath practices and an evening protocol for deeper sleep.",
+      ],
+      [
+        "Body Recovery",
+        "4 weeks",
+        "Recovery from stress and strain with a personal treatment plan.",
+      ],
+      [
+        "Quiet Weekend",
+        "2 days",
+        "A private reset with spa, gentle movement and nourishing food.",
+      ],
+    ],
+    values: [
+      ["12", "therapists"],
+      ["6", "private rooms"],
+      ["100%", "natural formulas"],
+      ["7 days", "a week"],
+    ],
+    aboutTitle: "Warm stone. Moving water. Nothing unnecessary.",
+    aboutText:
+      "Serena unfolds through calm spaces: a thermal zone, treatment rooms, a tea lounge and a garden for resting after your ritual.",
+    formTitle: "Make time for yourself.",
+    formText:
+      "Choose a ritual or tell us how you would like to feel. Our host will recommend the right experience.",
+    demo: "Spa website demo",
+    back: "Beauty collection",
+  },
+} as const;
 
-export default async function SpaDemo({params}:{params:Promise<{locale:string}>}){const{locale:value}=await params;if(value!=="ru"&&value!=="en")notFound();const locale=value as Locale,t=copy[locale],other=locale==="ru"?"en":"ru";
-const images=[
+export default async function SpaDemo({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale: value } = await params;
+  if (value !== "ru" && value !== "en") notFound();
+  const locale = value as Locale,
+    t = copy[locale],
+    other = locale === "ru" ? "en" : "ru";
+ const images = [
   "/images/stk-lab/beauty/demos/serena-stillness.png",
   "/images/stk-lab/beauty/demos/serena-restore.png",
   "/images/stk-lab/beauty/demos/serena-radiance.png",
@@ -19,13 +150,217 @@ const images=[
   "/images/stk-lab/beauty/demos/serena-together.png",
   "/images/stk-lab/beauty/demos/serena-day.png",
 ];
-return <main className="min-h-screen bg-[#f2ede4] text-[#30372e]">
-<div className="bg-[#56634e] px-4 py-2 text-center text-[11px] uppercase tracking-[.2em] text-white/80"><Link href={`/${locale}/industries/beauty`}>{t.demo} · {t.back} →</Link><span className="mx-3">·</span><Link href={`/${locale}/demo-admin`}>{locale==="ru"?"Демо-админка":"Demo admin"} →</Link></div>
-<header className="absolute left-0 right-0 z-20 border-b border-white/20 text-white"><div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 md:px-8"><Link href={`/${locale}/spa-demo`} className="font-serif text-2xl tracking-[.18em]">SERENA</Link><nav className="hidden gap-8 text-sm md:flex">{t.nav.map((x,i)=><a key={x} href={i===0?"#rituals":i===1?"#programs":i===2?"#space":"#contact"}>{x}</a>)}</nav><Link href={`/${other}/spa-demo`} className="rounded-full border border-white/35 px-4 py-2 text-xs uppercase">{other}</Link></div></header>
-<section className="relative flex min-h-[800px] items-center bg-cover bg-center text-white" style={{backgroundImage:'url("/images/stk-lab/beauty/demos/sora-spa-hero-v2.webp")'}}><div className="absolute inset-0 bg-gradient-to-r from-[#293126]/85 via-[#293126]/40 to-transparent"/><div className="relative mx-auto w-full max-w-7xl px-5 pt-20 md:px-8"><p className="text-xs uppercase tracking-[.3em] text-white/65">{t.eyebrow}</p><h1 className="mt-7 max-w-4xl font-serif text-6xl leading-[.95] tracking-[-.045em] md:text-8xl lg:text-[7rem]">{t.title}</h1><p className="mt-7 max-w-xl text-lg leading-8 text-white/75">{t.text}</p><div className="mt-9 flex flex-wrap gap-3"><a href="#rituals" className="rounded-full bg-[#d8c2a2] px-7 py-4 font-medium text-[#30372e]">{t.cta}</a><a href="#contact" className="rounded-full border border-white/35 px-7 py-4">{t.secondary}</a></div></div></section>
-<section className="bg-[#d8c2a2]"><div className="mx-auto grid max-w-7xl grid-cols-2 md:grid-cols-4">{t.values.map(([n,l])=><div key={l} className="p-6 md:p-8"><div className="font-serif text-4xl md:text-6xl">{n}</div><p className="mt-2 text-sm text-black/55">{l}</p></div>)}</div></section>
-<section id="rituals" className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"><p className="text-xs uppercase tracking-[.25em] text-[#7e735e]">SPA MENU</p><div className="mt-5 grid gap-6 md:grid-cols-2"><h2 className="font-serif text-5xl tracking-[-.04em] md:text-7xl">{t.servicesTitle}</h2><p className="text-lg leading-8 text-black/55">{t.servicesText}</p></div><div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{t.services.map(([name,text,price],i)=><article key={name} className="overflow-hidden rounded-[6rem] bg-white"><div className="relative aspect-[4/3]"><Image src={images[i]} alt={name} fill className="object-cover" sizes="(max-width:1024px) 90vw, 33vw"/></div><div className="p-6"><h3 className="font-serif text-3xl">{name}</h3><p className="mt-3 min-h-14 leading-6 text-black/50">{text}</p><p className="relative z-10 mt-3 border-t border-black/10 pt-3 pb-2 font-medium">{price}</p></div></article>)}</div></section>
-<section id="programs" className="bg-[#56634e] text-white"><div className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"><h2 className="max-w-4xl font-serif text-5xl tracking-[-.04em] md:text-7xl">{t.programTitle}</h2><div className="mt-14 grid gap-4 md:grid-cols-3">{t.programs.map(([name,time,text])=><div key={name} className="rounded-[2rem] border border-white/15 p-7"><p className="text-sm text-[#d8c2a2]">{time}</p><h3 className="mt-10 font-serif text-3xl">{name}</h3><p className="mt-4 leading-7 text-white/55">{text}</p></div>)}</div></div></section>
-<section id="space" className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-24 md:grid-cols-2 md:px-8 md:py-32"><div><p className="text-xs uppercase tracking-[.25em] text-[#7e735e]">THE SPACE</p><h2 className="mt-5 font-serif text-5xl tracking-[-.04em] md:text-7xl">{t.aboutTitle}</h2><p className="mt-7 text-lg leading-8 text-black/55">{t.aboutText}</p></div><div className="relative aspect-[4/3] overflow-hidden rounded-[2rem]"><Image src="/images/stk-lab/beauty/demos/sora-treatment-room-v1.webp" alt="Serena spa" fill className="object-cover" sizes="(max-width:768px) 95vw, 50vw"/></div></section>
-<section id="contact" className="bg-[#293126] px-5 py-24 text-white md:py-32"><div className="mx-auto max-w-5xl text-center"><h2 className="font-serif text-5xl tracking-[-.04em] md:text-8xl">{t.formTitle}</h2><p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/55">{t.formText}</p><DemoSiteOrderForm locale={locale} siteName="Serena Spa & Wellness" kind="beauty"/></div></section>
-</main>}
+  return (
+    <main className="min-h-screen bg-[#f2ede4] text-[#30372e]">
+      <div className="bg-[#56634e] px-4 py-2 text-center text-[11px] uppercase tracking-[.2em] text-white/80">
+        <Link href={`/${locale}/industries/beauty`}>
+          {t.demo} · {t.back} →
+        </Link>
+        <span className="mx-3">·</span>
+        <Link href={`/${locale}/demo-admin`}>
+          {locale === "ru" ? "Демо-админка" : "Demo admin"} →
+        </Link>
+      </div>
+      <header className="absolute left-0 right-0 z-20 border-b border-white/20 text-white">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 md:px-8">
+          <Link
+            href={`/${locale}/spa-demo`}
+            className="font-serif text-2xl tracking-[.18em]"
+          >
+            SERENA
+          </Link>
+          <nav className="hidden gap-8 text-sm md:flex">
+            {t.nav.map((x, i) => (
+              <a
+                key={x}
+                href={
+                  i === 0
+                    ? "#rituals"
+                    : i === 1
+                      ? "#programs"
+                      : i === 2
+                        ? "#space"
+                        : "#contact"
+                }
+              >
+                {x}
+              </a>
+            ))}
+          </nav>
+          <Link
+            href={`/${other}/spa-demo`}
+            className="rounded-full border border-white/35 px-4 py-2 text-xs uppercase"
+          >
+            {other}
+          </Link>
+        </div>
+      </header>
+      <section
+        className="relative flex min-h-[800px] items-center bg-cover bg-center text-white"
+        style={{
+          backgroundImage:
+            'url("/images/stk-lab/beauty/demos/sora-spa-hero-v2.webp")',
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-[#293126]/85 via-[#293126]/40 to-transparent" />
+        <div className="relative mx-auto w-full max-w-7xl px-5 pt-20 md:px-8">
+          <p className="text-xs uppercase tracking-[.3em] text-white/65">
+            {t.eyebrow}
+          </p>
+          <h1 className="mt-7 max-w-4xl font-serif text-6xl leading-[.95] tracking-[-.045em] md:text-8xl lg:text-[7rem]">
+            {t.title}
+          </h1>
+          <p className="mt-7 max-w-xl text-lg leading-8 text-white/75">
+            {t.text}
+          </p>
+          <div className="mt-9 flex flex-wrap gap-3">
+            <a
+              href="#rituals"
+              className="rounded-full bg-[#d8c2a2] px-7 py-4 font-medium text-[#30372e]"
+            >
+              {t.cta}
+            </a>
+            <a
+              href="#contact"
+              className="rounded-full border border-white/35 px-7 py-4"
+            >
+              {t.secondary}
+            </a>
+          </div>
+        </div>
+      </section>
+      <section className="bg-[#d8c2a2]">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 md:grid-cols-4">
+          {t.values.map(([n, l]) => (
+            <div key={l} className="p-6 md:p-8">
+              <div className="font-serif text-4xl md:text-6xl">{n}</div>
+              <p className="mt-2 text-sm text-black/55">{l}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section
+        id="rituals"
+        className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
+      >
+        <p className="text-xs uppercase tracking-[.25em] text-[#7e735e]">
+          SPA MENU
+        </p>
+        <div className="mt-5 grid gap-6 md:grid-cols-2">
+          <h2 className="font-serif text-5xl tracking-[-.04em] md:text-7xl">
+            {t.servicesTitle}
+          </h2>
+          <p className="text-lg leading-8 text-black/55">{t.servicesText}</p>
+        </div>
+        <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {t.services.map(([name, text, price], i) => (
+            <article
+              key={name}
+              className={`${i % 2 ? "rounded-[50%_50%_2rem_2rem]" : "rounded-[2rem_2rem_50%_50%]"} overflow-hidden bg-white pb-10`}
+            >
+              <div className="relative aspect-square">
+                <Image
+                  src={images[i]}
+                  alt={name}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width:1024px) 90vw, 33vw"
+                />
+              </div>
+              <div className="px-7 pt-7 text-center">
+                <h3 className="font-serif text-3xl">{name}</h3>
+                <p className="mt-3 min-h-14 leading-6 text-black/50">{text}</p>
+                <p className="mt-5 font-medium">{price}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+      <section id="programs" className="bg-[#56634e] text-white">
+        <div className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
+          <h2 className="max-w-4xl font-serif text-5xl tracking-[-.04em] md:text-7xl">
+            {t.programTitle}
+          </h2>
+          <div className="mt-14 flex flex-wrap justify-center gap-6">
+            {t.programs.map(([name, time, text], i) => (
+              <div
+                key={name}
+                className={`${i === 1 ? "h-96 w-96" : "h-80 w-80"} flex flex-col items-center justify-center rounded-full border border-white/20 p-10 text-center`}
+              >
+                <p className="text-sm text-[#d8c2a2]">{time}</p>
+                <h3 className="mt-8 font-serif text-3xl">{name}</h3>
+                <p className="mt-4 leading-7 text-white/55">{text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="bg-[#d8c2a2] px-5 py-24 md:py-32">
+        <div className="mx-auto max-w-5xl text-center">
+          <p className="text-xs uppercase tracking-[.25em] text-black/45">
+            {locale === "ru" ? "Письмо основательницы" : "Founder’s letter"}
+          </p>
+          <h2 className="mt-8 font-serif text-5xl tracking-[-.04em] md:text-7xl">
+            {locale === "ru"
+              ? "Здесь от вас ничего не требуется."
+              : "Nothing is required of you here."}
+          </h2>
+          <p className="mx-auto mt-8 max-w-3xl text-lg leading-9 text-black/55">
+            {locale === "ru"
+              ? "Я придумала Serena после года, в котором даже отдых превратился в задачу. Мне хотелось места без гонки за результатом: где можно перестать отвечать, выбирать и быть эффективной. Только тепло, вода, прикосновение и время вернуться к себе."
+              : "I imagined Serena after a year in which even rest felt like a task. I wanted a place without the pressure to improve: somewhere you can stop replying, choosing and performing. Just warmth, water, touch and time to return to yourself."}
+          </p>
+          <p className="mt-8 text-sm text-black/45">
+            —{" "}
+            {locale === "ru"
+              ? "Елена, основательница Serena"
+              : "Elena, founder of Serena"}
+          </p>
+        </div>
+      </section>
+      <section
+        id="space"
+        className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-24 md:grid-cols-2 md:px-8 md:py-32"
+      >
+        <div>
+          <p className="text-xs uppercase tracking-[.25em] text-[#7e735e]">
+            THE SPACE
+          </p>
+          <h2 className="mt-5 font-serif text-5xl tracking-[-.04em] md:text-7xl">
+            {t.aboutTitle}
+          </h2>
+          <p className="mt-7 text-lg leading-8 text-black/55">{t.aboutText}</p>
+        </div>
+        <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem]">
+          <Image
+            src="/images/stk-lab/beauty/demos/sora-treatment-room-v1.webp"
+            alt="Serena spa"
+            fill
+            className="object-cover"
+            sizes="(max-width:768px) 95vw, 50vw"
+          />
+        </div>
+      </section>
+      <BeautyInteractiveExperience locale={locale} mode="spa" />
+
+      <section
+        id="contact"
+        className="bg-[#293126] px-5 py-24 text-white md:py-32"
+      >
+        <div className="mx-auto max-w-5xl text-center">
+          <h2 className="font-serif text-5xl tracking-[-.04em] md:text-8xl">
+            {t.formTitle}
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/55">
+            {t.formText}
+          </p>
+          <DemoSiteOrderForm
+            locale={locale}
+            siteName="Serena Spa & Wellness"
+            kind="beauty"
+          />
+        </div>
+      </section>
+    </main>
+  );
+}

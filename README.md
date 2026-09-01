@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tafa Lab
 
-## Getting Started
+Custom websites, web applications and interactive digital solutions for modern businesses.
 
-First, run the development server:
+🌐 **Website:** https://tafalab.com
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## About
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Tafa Lab is a collection of custom web projects focused on combining clean design with practical business functionality.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The projects in this repository demonstrate solutions for different industries, including bakeries, restaurants, hospitality, beauty, travel and business management.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## What I Build
 
-## Learn More
+- Business and corporate websites
+- E-commerce and online ordering systems
+- Custom web applications
+- Admin dashboards and management systems
+- Booking and reservation systems
+- Interactive product configurators
+- 3D and interactive product experiences
+- API and third-party integrations
+- Multilingual websites
+- Responsive landing pages and multi-page websites
 
-To learn more about Next.js, take a look at the following resources:
+## Featured Projects
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Custom Cake Builder & E-commerce
+Interactive cake configurator with customizable decorations, fillings, sizes and other options, combined with an online catalog and ordering experience.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Restaurant Website & Reservations
+Modern restaurant experience with interactive menus, dish discovery, reservation functionality and responsive design.
 
-## Deploy on Vercel
+### Business Management Platform
+Multi-branch management system with sales, expenses, inventory, purchasing, employee scheduling, payroll and reporting.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Industry Website Demos
+A growing collection of website concepts and interactive demos for bakeries, restaurants, beauty businesses, travel companies and other industries.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Technologies
+
+**Frontend:** Next.js · React · TypeScript · JavaScript
+
+**Backend & Database:** Supabase
+
+**Development:** REST APIs · Third-party integrations · Responsive UI · Git · Vercel
+
+## Focus
+
+I focus on creating websites that are not only visually polished, but also useful for real business operations — from customer ordering and reservations to internal dashboards and management tools.
+
+---
+
+### Work With Me
+
+Available for freelance web development projects.
+
+🌐 https://tafalab.com

@@ -14,12 +14,12 @@ type Locale = "ru" | "en";
 
 const galleryImages = [
   {
-    src: "/images/gallery/cake-01.webp",
+    src: "/cakes/elegant-01.jpg.jpg",
     altRu: "Работа STK Bakery",
     altEn: "STK Bakery creation",
   },
   {
-    src: "/images/gallery/cake-02.webp",
+    src: "/cakes/barbie-cake-02.jpg",
     altRu: "Работа STK Bakery",
     altEn: "STK Bakery creation",
   },

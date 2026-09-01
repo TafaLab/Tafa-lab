@@ -35,7 +35,7 @@ export async function POST(request:Request){
       message:clean(body.message,3000)||null,locale:body.locale==="en"?"en":"ru",
       source_path:clean(body.sourcePath,500)||null,status:"new"
     });
-    if(error){console.error("STK Lab lead insert:",error.message);return NextResponse.json({error:"save_failed"},{status:500});}
+    if(error){console.error("Tafa Lab lead insert:",error.message);return NextResponse.json({error:"save_failed"},{status:500});}
     return NextResponse.json({ok:true},{status:201});
   }catch(e){console.error(e);return NextResponse.json({error:"bad_request"},{status:400});}
 }

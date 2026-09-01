@@ -202,7 +202,7 @@ export default function StkAdminPage() {
 
   if(!user)return <main className="flex min-h-screen items-center justify-center bg-[#f5f1ec] p-5 text-[#211a17]">
     <div className="w-full max-w-md rounded-[32px] border border-black/10 bg-white p-8 shadow-sm">
-      <b>STK Lab</b><h1 className="mt-8 text-3xl">Admin</h1><p className="mt-2 text-sm text-black/50">{t.login}</p>
+      <b>Tafa Lab</b><h1 className="mt-8 text-3xl">Admin</h1><p className="mt-2 text-sm text-black/50">{t.login}</p>
       <form onSubmit={login} className="mt-8 space-y-5">
         <label className="block text-sm">Email<input name="email" type="email" required className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></label>
         <label className="block text-sm">{t.password}<input name="password" type="password" required className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></label>
@@ -218,14 +218,14 @@ export default function StkAdminPage() {
   return <main className="min-h-screen bg-[#f5f1ec] text-[#211a17]">
     <header className="sticky top-0 z-20 border-b border-black/10 bg-[#f5f1ec]/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-6">
-        <div><b>STK Lab</b><div className="text-xs text-black/45">{t.admin}</div></div>
+        <div><b>Tafa Lab</b><div className="text-xs text-black/45">{t.admin}</div></div>
         <button onClick={()=>sb.auth.signOut()} className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm">{t.logout}</button>
       </div>
     </header>
 
     <section className="mx-auto max-w-7xl px-5 py-8 md:px-6 md:py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div><p className="text-xs uppercase tracking-[.2em] text-black/40">STK Lab Leads</p><h1 className="mt-2 text-4xl">{t.leads}</h1><p className="mt-2 text-sm text-black/50">{t.total}: {leads.length}</p></div>
+        <div><p className="text-xs uppercase tracking-[.2em] text-black/40">Tafa Lab Leads</p><h1 className="mt-2 text-4xl">{t.leads}</h1><p className="mt-2 text-sm text-black/50">{t.total}: {leads.length}</p></div>
         <button onClick={load} disabled={loading} className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm">{loading?t.refreshing:t.refresh}</button>
       </div>
 

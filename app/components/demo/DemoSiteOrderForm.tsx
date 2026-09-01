@@ -2,7 +2,7 @@
 
 import { FormEvent, useRef, useState } from "react";
 
-type DemoFormKind = "travel" | "academy" | "beauty" | "restaurant" | "business";
+type DemoFormKind = "travel" | "academy" | "beauty" | "restaurant" | "bakery" | "business";
 
 export default function DemoSiteOrderForm({ locale, siteName, kind }: { locale: "ru" | "en"; siteName: string; kind: DemoFormKind }) {
   const en = locale === "en";
@@ -66,6 +66,11 @@ export default function DemoSiteOrderForm({ locale, siteName, kind }: { locale: 
       subject: en ? "Date, time and number of guests" : "Дата, время и количество гостей",
       message: en ? "Allergies, dietary restrictions and special wishes" : "Аллергии, ограничения в питании и особые пожелания",
       submit: en ? "Send reservation request" : "Отправить заявку на бронь",
+    },
+    bakery: {
+      subject: en ? "Product, collection or celebration date" : "Продукт, коллекция или дата праздника",
+      message: en ? "Flavour, size, delivery and special wishes" : "Вкус, размер, доставка и особые пожелания",
+      submit: en ? "Send bakery request" : "Отправить заявку в пекарню",
     },
     business: {
       subject: en ? "Company, industry and number of branches" : "Компания, сфера и количество филиалов",

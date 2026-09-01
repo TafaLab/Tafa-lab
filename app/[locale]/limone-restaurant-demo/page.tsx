@@ -1,7 +1,7 @@
-import RestaurantDemoPage from "@/app/components/demo/RestaurantDemoPage";
+import LimoneRestaurantPage from "@/app/components/demo/LimoneRestaurantPage";
 
 export default async function Page({ params }: { params: Promise<{ locale: "ru" | "en" }> }) {
   const { locale } = await params;
 
-  return <RestaurantDemoPage locale={locale} kind="mediterranean" />;
+  return <LimoneRestaurantPage locale={locale} />;
 }

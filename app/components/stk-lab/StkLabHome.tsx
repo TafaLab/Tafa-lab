@@ -4,6 +4,8 @@ import { stkLabContent, type StkLabLocale } from "./content";
 import StkSiteShell from "./design/StkSiteShell";
 import StkReveal from "./design/StkReveal";
 import StkLeadForm from "./StkLeadForm";
+import TafaLabLogo from "./TafaLabLogo";
+import FullPriceLink from "./FullPriceLink";
 
 const whatsapp =
   "https://wa.me/77471818493?text=Hello%2C%20I%27d%20like%20to%20start%20a%20conversation%20about%20a%20new%20project.";
@@ -50,12 +52,12 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
     <StkSiteShell>
       <header className="sticky top-0 z-50 border-b border-[color:var(--stk-border)] bg-[color:var(--stk-bg-translucent)] backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
-          <Link href={`/${locale}`} className="text-lg font-semibold tracking-[-0.03em]">STK Lab</Link>
+          <Link href={`/${locale}`} aria-label="Tafa Lab"><TafaLabLogo priority /></Link>
           <nav className="hidden gap-7 text-sm text-[color:var(--stk-muted-strong)] lg:flex">
             <a href="#work">{t.nav.work}</a>
             <a href="#services">{t.nav.services}</a>
             <a href="#process">{t.nav.process}</a>
-            <a href="#pricing">{t.nav.pricing}</a>
+            <Link href={`/${locale}/price`}>{t.nav.pricing}</Link>
             <a href="#industries">{t.nav.industries}</a>
             <a href="#faq">{t.nav.faq}</a>
           </nav>
@@ -84,7 +86,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
             <div className="relative aspect-[4/5]">
               <Image
                 src="/images/stk-lab/home/stk-lab-hero.webp"
-                alt="STK Lab digital products across web, mobile and business platforms"
+                alt="Tafa Lab digital products across web, mobile and business platforms"
                 fill
                 priority
                 sizes="(min-width: 1024px) 42vw, 92vw"
@@ -117,7 +119,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
                   {imageSrc ? (
                     <Image
                       src={imageSrc}
-                      alt={`${p.name} — STK Lab project`}
+                      alt={`${p.name} — Tafa Lab project`}
                       fill
                       sizes={i === 0 ? "(min-width: 768px) 90vw, 94vw" : "(min-width: 768px) 44vw, 94vw"}
                       className="object-cover transition duration-700 group-hover:scale-[1.015]"
@@ -173,6 +175,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
         <div className="mt-12 grid gap-4 lg:grid-cols-4">
           {t.pricing.plans.map(([label,name,oldPrice,price,timing,features],i)=><div key={name as string} className={`rounded-[var(--stk-radius-card)] border p-6 ${i===2?"border-[var(--stk-dark)] bg-[var(--stk-dark)] text-white":"border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)]"}`}><p className="text-xs uppercase tracking-[.2em] opacity-55">{label as string}</p><h3 className="mt-4 text-2xl">{name as string}</h3><div className="mt-8 text-sm line-through opacity-40">{oldPrice as string}</div><div className="text-3xl tracking-[-.04em]">{price as string}</div><div className="mt-2 text-xs opacity-55">{timing as string}</div><ul className="mt-8 space-y-3 text-sm leading-6">{(features as readonly string[]).map(f=><li key={f}>• {f}</li>)}</ul><a href="#contact" style={{ color: i === 2 ? "#211a17" : "#ffffff" }} className={`mt-8 inline-flex rounded-full px-5 py-2.5 text-sm font-medium ${i===2?"bg-white":"bg-[var(--stk-dark)]"}`}>{t.nav.cta}</a></div>)}
         </div>
+        <FullPriceLink locale={locale} />
       </section>
 
       <section id="industries" className="bg-[var(--stk-accent-soft)] py-24 md:py-32">
@@ -205,7 +208,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
       </section>
 
       <footer className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-10 text-sm text-[color:var(--stk-muted-strong)] md:flex-row md:items-center md:justify-between md:px-8">
-        <span className="font-medium text-[var(--stk-text)]">STK Lab</span>
+        <span className="font-medium text-[var(--stk-text)]">Tafa Lab</span>
         <span>{t.footer}</span>
         <span>© {new Date().getFullYear()}</span>
       </footer>

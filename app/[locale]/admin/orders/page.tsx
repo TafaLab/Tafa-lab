@@ -99,6 +99,13 @@ function getFoodOrder(order: Order | null): FoodOrderPayload | null {
   }
 }
 
+function orderPriceUsd(order: Order) {
+  const value = Number(order.price ?? 0);
+  return order.weight === "FOOD_ORDER" || order.cake_color === "READY_CAKE"
+    ? Math.round(value)
+    : Math.round(value / 500);
+}
+
 export default function AdminOrdersPage() {
   const currentLocale =
     useLocale();
@@ -606,7 +613,7 @@ export default function AdminOrdersPage() {
                       </div>
 
                       <strong>
-                        {order.weight === "FOOD_ORDER" || order.cake_color === "READY_CAKE" ? "$" : ""}{formatPrice(Number(order.price ?? 0))}{order.weight === "FOOD_ORDER" || order.cake_color === "READY_CAKE" ? "" : ` ${text.common.currency}`}
+                        ${formatPrice(orderPriceUsd(order))}
                       </strong>
                     </div>
                   </button>
@@ -942,7 +949,7 @@ export default function AdminOrdersPage() {
                       </span>
 
                       <strong className="mt-1 block text-3xl">
-                        {selectedFoodOrder || selectedReadyCake ? "$" : ""}{formatPrice(Number(selectedOrder.price ?? 0))}{selectedFoodOrder || selectedReadyCake ? "" : ` ${text.common.currency}`}
+                        ${formatPrice(orderPriceUsd(selectedOrder))}
                       </strong>
                     </div>
                   </div>

@@ -40,7 +40,7 @@ export default function ThankYouPage() {
 
         <Link
           href={`/${locale}/admin/orders`}
-          className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-[#6a4433] px-6 py-4 text-center font-semibold text-white transition hover:opacity-90"
+          className="brown-link-white mt-8 inline-flex w-full items-center justify-center rounded-full bg-[#6a4433] px-6 py-4 text-center font-semibold text-white transition hover:opacity-90"
         >
           {isEnglish
             ? "View My Order in the Admin Panel →"
@@ -95,7 +95,7 @@ export default function ThankYouPage() {
         <div className="mt-10 flex flex-col gap-4 sm:flex-row">
           <Link
             href={`/${locale}/bakery`}
-            className="flex-1 rounded-full bg-[#6a4433] px-6 py-4 text-center font-semibold text-white transition hover:opacity-90"
+            className="brown-link-white flex-1 rounded-full bg-[#6a4433] px-6 py-4 text-center font-semibold text-white transition hover:opacity-90"
           >
             {isEnglish ? "Back to Bakery" : "На главную пекарни"}
           </Link>

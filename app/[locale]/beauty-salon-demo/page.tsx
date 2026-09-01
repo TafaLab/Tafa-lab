@@ -3,19 +3,319 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import DemoSiteOrderForm from "@/app/components/demo/DemoSiteOrderForm";
+import BeautyInteractiveExperience from "@/app/components/demo/BeautyInteractiveExperience";
 
-type Locale="ru"|"en";
-export const metadata:Metadata={title:"MUSE — Hair & Beauty Salon",description:"Fashion-forward beauty salon demo by STK Lab.",robots:{index:false,follow:false}};
-const copy={ru:{nav:["Услуги","Мастера","Работы","Запись"],eyebrow:"HAIR · COLOR · BEAUTY",title:"Ваш образ. Только выразительнее.",text:"Стрижки, сложное окрашивание, укладки, макияж и nail-сервис от команды мастеров, которые слышат клиента.",cta:"Записаться онлайн",secondary:"Смотреть работы",servicesTitle:"Услуги и цены",services:[["Женская стрижка","60–90 мин","от $35"],["Окрашивание","120–240 мин","от $85"],["Укладка","45–75 мин","от $28"],["Уход для волос","60 мин","от $42"],["Макияж","60–90 мин","от $45"],["Маникюр","75–120 мин","от $30"]],teamTitle:"Мастера с собственным почерком.",team:[["Анна Ли","Hair stylist · 8 лет"],["София Рей","Colorist · 10 лет"],["Мира Ким","Makeup artist · 7 лет"],["Лея Нова","Nail artist · 6 лет"]],lookTitle:"Новый образ начинается с хорошего разговора.",lookText:"На консультации обсуждаем привычный уход, желаемый результат и то, сколько времени вы готовы уделять образу каждый день.",benefits:[["4.9","рейтинг клиентов"],["8 400+","завершённых образов"],["72%","клиентов возвращаются"],["6 дней","работаем в неделю"]],formTitle:"Найдём ваше время и мастера.",formText:"Укажите желаемую услугу и удобный день. Запись появится в открытой демо-админке.",demo:"Демо-сайт салона красоты",back:"Beauty-витрина"},en:{nav:["Services","Artists","Looks","Book"],eyebrow:"HAIR · COLOR · BEAUTY",title:"Your look. Only more expressive.",text:"Cuts, dimensional color, styling, makeup and nails from artists who listen before they create.",cta:"Book online",secondary:"View our work",servicesTitle:"Services and prices",services:[["Women's cut","60–90 min","from $35"],["Color","120–240 min","from $85"],["Styling","45–75 min","from $28"],["Hair treatment","60 min","from $42"],["Makeup","60–90 min","from $45"],["Manicure","75–120 min","from $30"]],teamTitle:"Artists with a point of view.",team:[["Anna Lee","Hair stylist · 8 years"],["Sofia Ray","Colorist · 10 years"],["Mira Kim","Makeup artist · 7 years"],["Lea Nova","Nail artist · 6 years"]],lookTitle:"A new look starts with a good conversation.",lookText:"During consultation we discuss your routine, desired result and how much time you want to spend on your look each day.",benefits:[["4.9","client rating"],["8,400+","looks completed"],["72%","of clients return"],["6 days","open each week"]],formTitle:"Let us find your time and artist.",formText:"Tell us the service and preferred day. The booking will appear in the public demo admin.",demo:"Beauty salon website demo",back:"Beauty collection"}} as const;
+type Locale = "ru" | "en";
+export const metadata: Metadata = {
+  title: "MUSE — Hair & Beauty Salon",
+  description: "Fashion-forward beauty salon demo by Tafa Lab.",
+  robots: { index: false, follow: false },
+};
+const copy = {
+  ru: {
+    nav: ["Услуги", "Мастера", "Работы", "Запись"],
+    eyebrow: "HAIR · COLOR · BEAUTY",
+    title: "Ваш образ. Только выразительнее.",
+    text: "Стрижки, сложное окрашивание, укладки, макияж и nail-сервис от команды мастеров, которые слышат клиента.",
+    cta: "Записаться онлайн",
+    secondary: "Смотреть работы",
+    servicesTitle: "Услуги и цены",
+    services: [
+      ["Женская стрижка", "60–90 мин", "от $35"],
+      ["Окрашивание", "120–240 мин", "от $85"],
+      ["Укладка", "45–75 мин", "от $28"],
+      ["Уход для волос", "60 мин", "от $42"],
+      ["Макияж", "60–90 мин", "от $45"],
+      ["Маникюр", "75–120 мин", "от $30"],
+    ],
+    teamTitle: "Мастера с собственным почерком.",
+    team: [
+      ["Анна Ли", "Hair stylist · 8 лет"],
+      ["София Рей", "Colorist · 10 лет"],
+      ["Мира Ким", "Makeup artist · 7 лет"],
+      ["Лея Нова", "Nail artist · 6 лет"],
+    ],
+    lookTitle: "Новый образ начинается с хорошего разговора.",
+    lookText:
+      "На консультации обсуждаем привычный уход, желаемый результат и то, сколько времени вы готовы уделять образу каждый день.",
+    benefits: [
+      ["4.9", "рейтинг клиентов"],
+      ["8 400+", "завершённых образов"],
+      ["72%", "клиентов возвращаются"],
+      ["6 дней", "работаем в неделю"],
+    ],
+    formTitle: "Найдём ваше время и мастера.",
+    formText:
+      "Укажите желаемую услугу и удобный день. Запись появится в открытой демо-админке.",
+    demo: "Демо-сайт салона красоты",
+    back: "Beauty-витрина",
+  },
+  en: {
+    nav: ["Services", "Artists", "Looks", "Book"],
+    eyebrow: "HAIR · COLOR · BEAUTY",
+    title: "Your look. Only more expressive.",
+    text: "Cuts, dimensional color, styling, makeup and nails from artists who listen before they create.",
+    cta: "Book online",
+    secondary: "View our work",
+    servicesTitle: "Services and prices",
+    services: [
+      ["Women's cut", "60–90 min", "from $35"],
+      ["Color", "120–240 min", "from $85"],
+      ["Styling", "45–75 min", "from $28"],
+      ["Hair treatment", "60 min", "from $42"],
+      ["Makeup", "60–90 min", "from $45"],
+      ["Manicure", "75–120 min", "from $30"],
+    ],
+    teamTitle: "Artists with a point of view.",
+    team: [
+      ["Anna Lee", "Hair stylist · 8 years"],
+      ["Sofia Ray", "Colorist · 10 years"],
+      ["Mira Kim", "Makeup artist · 7 years"],
+      ["Lea Nova", "Nail artist · 6 years"],
+    ],
+    lookTitle: "A new look starts with a good conversation.",
+    lookText:
+      "During consultation we discuss your routine, desired result and how much time you want to spend on your look each day.",
+    benefits: [
+      ["4.9", "client rating"],
+      ["8,400+", "looks completed"],
+      ["72%", "of clients return"],
+      ["6 days", "open each week"],
+    ],
+    formTitle: "Let us find your time and artist.",
+    formText:
+      "Tell us the service and preferred day. The booking will appear in the public demo admin.",
+    demo: "Beauty salon website demo",
+    back: "Beauty collection",
+  },
+} as const;
 
-export default async function BeautySalonDemo({params}:{params:Promise<{locale:string}>}){const{locale:value}=await params;if(value!=="ru"&&value!=="en")notFound();const locale=value as Locale,t=copy[locale],other=locale==="ru"?"en":"ru";const images=["/images/stk-lab/beauty/demos/muse-salon-interior-v1.webp","/images/stk-lab/beauty/beauty-online-booking.webp","/images/stk-lab/beauty/beauty-services-catalogue.webp","/images/stk-lab/beauty/beauty-owner-mobile.webp","/images/stk-lab/beauty/beauty-staff-schedule.webp","/images/stk-lab/beauty/beauty-crm-dashboard.webp"];return <main className="min-h-screen bg-[#fff9f6] text-[#2b1e1b]">
-<div className="bg-[#ef476f] px-4 py-2 text-center text-xs font-bold text-white"><Link href={`/${locale}/industries/beauty`}>{t.demo} · {t.back} →</Link><span className="mx-3">·</span><Link href={`/${locale}/demo-admin`}>{locale==="ru"?"Демо-админка":"Demo admin"} →</Link></div>
-<header className="absolute left-0 right-0 z-20 border-b border-white/20 text-white"><div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 md:px-8"><Link href={`/${locale}/beauty-salon-demo`} className="text-2xl font-black tracking-[-.04em]">MUSE<span className="text-[#ff7796]">.</span></Link><nav className="hidden gap-8 text-sm md:flex">{t.nav.map((x,i)=><a key={x} href={i===0?"#services":i===1?"#team":i===2?"#looks":"#contact"}>{x}</a>)}</nav><Link href={`/${other}/beauty-salon-demo`} className="rounded-full border border-white/35 px-4 py-2 text-xs uppercase">{other}</Link></div></header>
-<section className="relative flex min-h-[780px] items-center bg-cover bg-center text-white" style={{backgroundImage:'url("/images/stk-lab/beauty/demos/muse-salon-hero-v2.webp")'}}><div className="absolute inset-0 bg-gradient-to-r from-[#3b211f]/85 via-[#3b211f]/30 to-transparent"/><div className="relative mx-auto w-full max-w-7xl px-5 pt-20 md:px-8"><p className="text-xs font-bold uppercase tracking-[.3em] text-[#ff9daf]">{t.eyebrow}</p><h1 className="mt-7 max-w-4xl text-6xl font-black leading-[.9] tracking-[-.065em] md:text-8xl lg:text-[7rem]">{t.title}</h1><p className="mt-7 max-w-xl text-lg leading-8 text-white/75">{t.text}</p><div className="mt-9 flex flex-wrap gap-3"><a href="#contact" className="rounded-full bg-[#ef476f] px-7 py-4 font-bold">{t.cta}</a><a href="#looks" className="rounded-full border border-white/35 px-7 py-4">{t.secondary}</a></div></div></section>
-<section className="bg-[#ef476f] text-white"><div className="mx-auto grid max-w-7xl grid-cols-2 md:grid-cols-4">{t.benefits.map(([n,l])=><div key={l} className="p-6 md:p-8"><div className="text-4xl font-black md:text-5xl">{n}</div><p className="mt-2 text-sm text-white/75">{l}</p></div>)}</div></section>
-<section id="services" className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"><p className="text-xs font-bold uppercase tracking-[.25em] text-[#ef476f]">MUSE MENU</p><h2 className="mt-5 text-5xl font-black tracking-[-.055em] md:text-7xl">{t.servicesTitle}</h2><div className="mt-14 grid gap-px overflow-hidden rounded-[2rem] bg-black/10 md:grid-cols-2 lg:grid-cols-3">{t.services.map(([name,time,price],i)=><article key={name} className="bg-white p-7"><span className="text-sm text-black/35">0{i+1}</span><h3 className="mt-12 text-3xl font-black">{name}</h3><p className="mt-4 text-black/45">{time}</p><p className="mt-7 text-lg font-bold text-[#ef476f]">{price}</p></article>)}</div></section>
-<section id="looks" className="bg-[#2b1e1b] text-white"><div className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"><p className="text-xs font-bold uppercase tracking-[.25em] text-[#ff7796]">RECENT LOOKS</p><div className="mt-10 grid gap-4 md:grid-cols-3">{images.slice(0,3).map((img,i)=><div key={img} className={`relative overflow-hidden rounded-[2rem] ${i===1?"aspect-[4/5]":"aspect-[4/5] md:mt-16"}`}><Image src={img} alt="Muse salon work" fill className="object-cover" sizes="(max-width:768px) 90vw, 33vw"/></div>)}</div></div></section>
-<section id="team" className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"><h2 className="max-w-4xl text-5xl font-black tracking-[-.055em] md:text-7xl">{t.teamTitle}</h2><div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{t.team.map(([name,role],i)=><article key={name}><div className="relative aspect-[4/5] overflow-hidden rounded-[2rem]"><Image src={images[i+2]} alt={name} fill className="object-cover" sizes="(max-width:1024px) 45vw, 25vw"/></div><h3 className="mt-5 text-2xl font-black">{name}</h3><p className="mt-1 text-black/45">{role}</p></article>)}</div></section>
-<section className="bg-[#f4d8d5]"><div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-24 md:grid-cols-2 md:px-8 md:py-32"><h2 className="text-5xl font-black tracking-[-.055em] md:text-7xl">{t.lookTitle}</h2><p className="text-lg leading-8 text-black/55">{t.lookText}</p></div></section>
-<section id="contact" className="bg-[#2b1e1b] px-5 py-24 text-white md:py-32"><div className="mx-auto max-w-5xl text-center"><h2 className="text-5xl font-black tracking-[-.055em] md:text-8xl">{t.formTitle}</h2><p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/55">{t.formText}</p><DemoSiteOrderForm locale={locale} siteName="Muse Hair & Beauty Salon" kind="beauty"/></div></section>
-</main>}
+export default async function BeautySalonDemo({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale: value } = await params;
+  if (value !== "ru" && value !== "en") notFound();
+  const locale = value as Locale,
+    t = copy[locale],
+    other = locale === "ru" ? "en" : "ru";
+  const images = [
+    "/images/stk-lab/beauty/demos/muse-salon-interior-v1.webp",
+    "/images/stk-lab/beauty/beauty-online-booking.webp",
+    "/images/stk-lab/beauty/beauty-services-catalogue.webp",
+    "/images/stk-lab/beauty/beauty-owner-mobile.webp",
+    "/images/stk-lab/beauty/beauty-staff-schedule.webp",
+    "/images/stk-lab/beauty/beauty-crm-dashboard.webp",
+  ];
+  return (
+    <main className="min-h-screen bg-[#fff9f6] text-[#2b1e1b]">
+      <div className="bg-[#ef476f] px-4 py-2 text-center text-xs font-bold text-white">
+        <Link href={`/${locale}/industries/beauty`}>
+          {t.demo} · {t.back} →
+        </Link>
+        <span className="mx-3">·</span>
+        <Link href={`/${locale}/demo-admin`}>
+          {locale === "ru" ? "Демо-админка" : "Demo admin"} →
+        </Link>
+      </div>
+      <header className="absolute left-0 right-0 z-20 border-b border-white/20 text-white">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 md:px-8">
+          <Link
+            href={`/${locale}/beauty-salon-demo`}
+            className="text-2xl font-black tracking-[-.04em]"
+          >
+            MUSE<span className="text-[#ff7796]">.</span>
+          </Link>
+          <nav className="hidden gap-8 text-sm md:flex">
+            {t.nav.map((x, i) => (
+              <a
+                key={x}
+                href={
+                  i === 0
+                    ? "#services"
+                    : i === 1
+                      ? "#team"
+                      : i === 2
+                        ? "#looks"
+                        : "#contact"
+                }
+              >
+                {x}
+              </a>
+            ))}
+          </nav>
+          <Link
+            href={`/${other}/beauty-salon-demo`}
+            className="rounded-full border border-white/35 px-4 py-2 text-xs uppercase"
+          >
+            {other}
+          </Link>
+        </div>
+      </header>
+      <section
+        className="relative flex min-h-[780px] items-center bg-cover bg-center text-white"
+        style={{
+          backgroundImage:
+            'url("/images/stk-lab/beauty/demos/muse-salon-hero-v2.webp")',
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-[#3b211f]/85 via-[#3b211f]/30 to-transparent" />
+        <div className="relative mx-auto w-full max-w-7xl px-5 pt-20 md:px-8">
+          <p className="text-xs font-bold uppercase tracking-[.3em] text-[#ff9daf]">
+            {t.eyebrow}
+          </p>
+          <h1 className="mt-7 max-w-4xl text-6xl font-black leading-[.9] tracking-[-.065em] md:text-8xl lg:text-[7rem]">
+            {t.title}
+          </h1>
+          <p className="mt-7 max-w-xl text-lg leading-8 text-white/75">
+            {t.text}
+          </p>
+          <div className="mt-9 flex flex-wrap gap-3">
+            <a
+              href="#contact"
+              className="rounded-full bg-[#ef476f] px-7 py-4 font-bold"
+            >
+              {t.cta}
+            </a>
+            <a
+              href="#looks"
+              className="rounded-full border border-white/35 px-7 py-4"
+            >
+              {t.secondary}
+            </a>
+          </div>
+        </div>
+      </section>
+      <section className="bg-[#ef476f] text-white">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 md:grid-cols-4">
+          {t.benefits.map(([n, l]) => (
+            <div key={l} className="p-6 md:p-8">
+              <div className="text-4xl font-black md:text-5xl">{n}</div>
+              <p className="mt-2 text-sm text-white/75">{l}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section
+        id="services"
+        className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
+      >
+        <p className="text-xs font-bold uppercase tracking-[.25em] text-[#ef476f]">
+          MUSE MENU
+        </p>
+        <h2 className="mt-5 text-5xl font-black tracking-[-.055em] md:text-7xl">
+          {t.servicesTitle}
+        </h2>
+        <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {t.services.map(([name, time, price], i) => (
+            <article
+              key={name}
+              className={`${i % 2 ? "rounded-[8rem_3rem_8rem_3rem]" : "rounded-[3rem_8rem_3rem_8rem]"} bg-[#f8e9e7] p-8 pt-14`}
+            >
+              <span className="text-sm text-black/35">0{i + 1}</span>
+              <h3 className="mt-12 text-3xl font-black">{name}</h3>
+              <p className="mt-4 text-black/45">{time}</p>
+              <p className="mt-7 text-lg font-bold text-[#ef476f]">{price}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+      <section id="looks" className="bg-[#2b1e1b] text-white">
+        <div className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
+          <p className="text-xs font-bold uppercase tracking-[.25em] text-[#ff7796]">
+            RECENT LOOKS
+          </p>
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            {images.slice(0, 3).map((img, i) => (
+              <div
+                key={img}
+                className={`relative aspect-square overflow-hidden ${i === 1 ? "rounded-[35%] md:scale-110" : "rounded-full md:mt-16"}`}
+              >
+                <Image
+                  src={img}
+                  alt="Muse salon work"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width:768px) 90vw, 33vw"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="bg-[#ef476f] px-5 py-24 text-white md:py-32">
+        <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[.65fr_1.35fr]">
+          <p className="text-xs font-bold uppercase tracking-[.25em] text-white/55">
+            {locale === "ru" ? "История клиента" : "A client story"}
+          </p>
+          <div>
+            <h2 className="text-5xl font-black tracking-[-.055em] md:text-7xl">
+              {locale === "ru"
+                ? "«Я хотела перемен, но не хотела перестать быть собой»."
+                : "“I wanted a change without becoming someone else.”"}
+            </h2>
+            <p className="mt-7 max-w-3xl text-lg leading-8 text-white/70">
+              {locale === "ru"
+                ? "Марина пришла перед первым рабочим днём после долгого перерыва. Мы сохранили её естественную текстуру, добавили свет у лица и сделали форму, которая хорошо живёт без ежедневной укладки. Именно такие перемены мы любим: заметные, но ваши."
+                : "Marina came in before her first day back at work. We kept her natural texture, brought light around her face and shaped a cut that works without daily styling. Those are the transformations we love: visible, but still yours."}
+            </p>
+          </div>
+        </div>
+      </section>
+      <section
+        id="team"
+        className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
+      >
+        <h2 className="max-w-4xl text-5xl font-black tracking-[-.055em] md:text-7xl">
+          {t.teamTitle}
+        </h2>
+        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {t.team.map(([name, role], i) => (
+            <article key={name}>
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem]">
+                <Image
+                  src={images[i + 2]}
+                  alt={name}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width:1024px) 45vw, 25vw"
+                />
+              </div>
+              <h3 className="mt-5 text-2xl font-black">{name}</h3>
+              <p className="mt-1 text-black/45">{role}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+      <section className="bg-[#f4d8d5]">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-24 md:grid-cols-2 md:px-8 md:py-32">
+          <h2 className="text-5xl font-black tracking-[-.055em] md:text-7xl">
+            {t.lookTitle}
+          </h2>
+          <p className="text-lg leading-8 text-black/55">{t.lookText}</p>
+        </div>
+      </section>
+      <BeautyInteractiveExperience locale={locale} mode="salon" />
+
+      <section
+        id="contact"
+        className="bg-[#2b1e1b] px-5 py-24 text-white md:py-32"
+      >
+        <div className="mx-auto max-w-5xl text-center">
+          <h2 className="text-5xl font-black tracking-[-.055em] md:text-8xl">
+            {t.formTitle}
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/55">
+            {t.formText}
+          </p>
+          <DemoSiteOrderForm
+            locale={locale}
+            siteName="Muse Hair & Beauty Salon"
+            kind="beauty"
+          />
+        </div>
+      </section>
+    </main>
+  );
+}

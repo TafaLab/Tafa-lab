@@ -66,11 +66,11 @@ export default function CakeTable({
   function formatPrice(
     value: number,
   ): string {
-    return `${Math.round(
-      value,
+    return `$${Math.round(
+      value / 500,
     ).toLocaleString(
       intlLocale,
-    )} ₸`;
+    )}`;
   }
 
   const filteredCakes =

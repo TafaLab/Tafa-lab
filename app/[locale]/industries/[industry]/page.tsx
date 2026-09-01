@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import BakeryIndustryPage from "@/app/components/stk-lab/BakeryIndustryPage";
 import BeautyIndustryPage from "@/app/components/stk-lab/BeautyIndustryPage";
 import BusinessPlatformsIndustryPage from "@/app/components/stk-lab/BusinessPlatformsIndustryPage";
+import EntertainmentIndustryPage from "@/app/components/stk-lab/EntertainmentIndustryPage";
 import RestaurantIndustryPage from "@/app/components/stk-lab/RestaurantIndustryPage";
 import StkStructuredData from "@/app/components/stk-lab/StkStructuredData";
 import TravelIndustryPage from "@/app/components/stk-lab/TravelIndustryPage";
@@ -61,7 +62,7 @@ export async function generateMetadata({
     openGraph: {
       type: "website",
       url: `/${locale}/industries/${industry}`,
-      siteName: "STK Lab",
+      siteName: "Tafa Lab",
       locale: isRu ? "ru_RU" : "en_US",
       alternateLocale: [isRu ? "en_US" : "ru_RU"],
       title: t.metaTitle,
@@ -147,6 +148,9 @@ export default async function IndustryPage({
           <BusinessPlatformsIndustryPage locale={locale} />
         </>
       );
+
+    case "entertainment":
+      return (<>{structuredData}<EntertainmentIndustryPage locale={locale} /></>);
 
     default:
       notFound();

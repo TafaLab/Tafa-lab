@@ -132,6 +132,9 @@ export default function CheckoutPage() {
   const [address, setAddress] =
     useState("");
 
+  const [allergyNotes, setAllergyNotes] =
+    useState("");
+
   useEffect(() => {
     const timer = window.setTimeout(() => {
       const raw =
@@ -297,8 +300,12 @@ export default function CheckoutPage() {
         inscription:
           order.inscription,
 
-        customer_comment:
-          order.comment,
+        customer_comment: [
+          order.comment.trim(),
+          allergyNotes.trim()
+            ? `${isEnglish ? "Allergies and special requests" : "Аллергии и особые пожелания"}: ${allergyNotes.trim()}`
+            : "",
+        ].filter(Boolean).join("\n\n"),
 
         price: order.price,
       });
@@ -696,8 +703,8 @@ export default function CheckoutPage() {
               <div className="mt-5 rounded-2xl border border-black/10 bg-[#fffaf7] p-4">
                 <span className="text-xs font-semibold uppercase tracking-[0.14em] text-black/40">
                   {isEnglish
-                    ? "Allergies and Special Requests"
-                    : "Аллергии и особые пожелания"}
+                    ? "Order Comment"
+                    : "Комментарий к заказу"}
                 </span>
 
                 <p className="mt-2 text-sm leading-6 text-black/65">
@@ -705,6 +712,23 @@ export default function CheckoutPage() {
                 </p>
               </div>
             )}
+
+            <label className="mt-5 block">
+              <span className="text-xs font-semibold uppercase tracking-[0.14em] text-black/50">
+                {isEnglish
+                  ? "Allergies and special requests"
+                  : "Аллергии и особые пожелания"}
+              </span>
+              <textarea
+                value={allergyNotes}
+                onChange={(event) => setAllergyNotes(event.target.value)}
+                rows={4}
+                placeholder={isEnglish
+                  ? "For example: nut allergy, no lactose, delivery notes…"
+                  : "Например: аллергия на орехи, без лактозы, пожелания по заказу…"}
+                className="mt-3 w-full resize-y rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm leading-6 outline-none transition focus:border-[#6a4433] focus:ring-4 focus:ring-[#6a4433]/10"
+              />
+            </label>
 
             <div className="mt-6 rounded-2xl bg-[#f7f3ef] p-5">
               <span className="block text-sm text-black/50">

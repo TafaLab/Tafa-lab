@@ -31,8 +31,8 @@ export default function Header({
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-2 text-center text-[11px] leading-4 sm:text-xs">
           <span className="text-white/65">
             {locale === "en"
-              ? "A demonstration project by STK Lab"
-              : "Демонстрационный проект STK Lab"}
+              ? "A demonstration project by Tafa Lab"
+              : "Демонстрационный проект Tafa Lab"}
           </span>
           <Link
             href={`/${locale}`}
@@ -86,9 +86,34 @@ export default function Header({
           <Link href={`/${locale}/contacts`}>
             {text.contacts}
           </Link>
+
+          <Link href={`/${locale}/price`}>
+            {locale === "en" ? "Price" : "Цены"}
+          </Link>
+
+          <Link href={`/${locale}/checkout`}>
+            {locale === "en" ? "Cart" : "Корзина"}
+          </Link>
         </nav>
 
         <div className="flex items-center gap-3">
+          <details className="mobile-nav-menu">
+            <summary aria-label={locale === "en" ? "Open navigation" : "Открыть меню"}>
+              <span />
+              <span />
+              <span />
+            </summary>
+            <nav aria-label={locale === "en" ? "Mobile navigation" : "Мобильная навигация"}>
+              <Link href={`/${locale}/cakes`}>{text.cakes}</Link>
+              <Link href={`/${locale}/builder`}>{text.builder}</Link>
+              <Link href={`/${locale}/food`}>{text.food}</Link>
+              <Link href={`/${locale}/gallery`}>{text.gallery}</Link>
+              <Link href={`/${locale}/contacts`}>{text.contacts}</Link>
+              <Link href={`/${locale}/price`}>{locale === "en" ? "Price" : "Цены"}</Link>
+              <Link href={`/${locale}/checkout`}>{locale === "en" ? "🛒 Cart" : "🛒 Корзина"}</Link>
+            </nav>
+          </details>
+
           <LanguageSwitcher
             locale={locale}
           />

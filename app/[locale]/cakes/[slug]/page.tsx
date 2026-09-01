@@ -29,6 +29,37 @@ import { ruMessages } from "@/messages/ru";
 
 type Locale = "ru" | "en";
 
+const categoryLabels: Record<Locale, Record<string, string>> = {
+  ru: {
+    kids: "Детские",
+    girls: "Для девочек",
+    boys: "Для мальчиков",
+    babies: "Для малышей",
+    women: "Для женщин",
+    men: "Для мужчин",
+    birthday: "На день рождения",
+    "gender-party": "Гендер-пати",
+    bento: "Бенто",
+    tiered: "Многоярусные",
+    popular: "Популярные",
+    new: "Новинки",
+  },
+  en: {
+    kids: "Kids",
+    girls: "Girls",
+    boys: "Boys",
+    babies: "Babies",
+    women: "Women",
+    men: "Men",
+    birthday: "Birthday",
+    "gender-party": "Gender Reveal",
+    bento: "Bento Cakes",
+    tiered: "Tiered Cakes",
+    popular: "Popular",
+    new: "New",
+  },
+};
+
 export default function CakeDetailsPage() {
   const router = useRouter();
   const params = useParams<{
@@ -352,7 +383,7 @@ export default function CakeDetailsPage() {
                     key={category}
                     className="rounded-full border border-black/10 bg-[#f7f3ef] px-4 py-2 text-xs font-semibold text-black/60"
                   >
-                    {category}
+                    {categoryLabels[locale][category] ?? category}
                   </span>
                 ),
               )}
@@ -450,7 +481,7 @@ export default function CakeDetailsPage() {
           </div>
 
           <button type="button" onClick={addReadyCakeToCart} disabled={!selectedVariant} className="mt-6 w-full rounded-full bg-[#6a4433] px-6 py-4 text-center font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{addedToCart ? (isEnglish ? "Added to cart ✓" : "Добавлено в корзину ✓") : (isEnglish ? "Add to cart" : "Добавить в корзину")}</button>
-          {addedToCart && <button type="button" onClick={() => router.push(`/${locale}/checkout`)} className="mt-3 w-full rounded-full border border-[#6a4433] px-6 py-4 text-center font-semibold text-[#6a4433]">{isEnglish ? "Proceed to checkout →" : "Перейти к оформлению →"}</button>}
+          {addedToCart && <button type="button" onClick={() => router.push(`/${locale}/checkout`)} className="mt-3 w-full rounded-full border border-[#6a4433] px-6 py-4 text-center font-semibold text-[#6a4433]">{isEnglish ? "Open cart and checkout →" : "Открыть корзину и оформить →"}</button>}
 
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             <Link href={`/${locale}/builder`} className="rounded-full border border-[#6a4433] px-6 py-4 text-center font-semibold text-[#6a4433] transition hover:bg-[#f7f3ef]">{isEnglish ? "Customize in Builder" : "Изменить в конструкторе"}</Link>
