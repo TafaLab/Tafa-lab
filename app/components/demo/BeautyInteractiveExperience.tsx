@@ -303,7 +303,12 @@ function Spa({ locale }: { locale: "ru" | "en" }) {
                 className="rounded-xl border p-3"
                 style={{ background: mood === x ? "#d8c2a2" : undefined }}
               >
-                {x}
+                {ru ? ({
+                  Relax: "Расслабление",
+                  Detox: "Детокс",
+                  Exhausted: "Усталость",
+                  Glow: "Сияние",
+                } as Record<string, string>)[x] : x}
               </button>
             ))}
           </div>
@@ -345,7 +350,7 @@ function Spa({ locale }: { locale: "ru" | "en" }) {
                   color: duration === x ? "#30372e" : undefined,
                 }}
               >
-                {x} min
+                {x} {ru ? "мин" : "min"}
               </button>
             ))}
           </div>
@@ -367,7 +372,12 @@ function Spa({ locale }: { locale: "ru" | "en" }) {
                     color: extras.includes(x) ? "#30372e" : undefined,
                   }}
                 >
-                  + {x}
+                  + {ru ? ({
+                    Aromatherapy: "Ароматерапия",
+                    "Hot stones": "Горячие камни",
+                    Champagne: "Шампанское",
+                    "Private room": "Приватная комната",
+                  } as Record<string, string>)[x] : x}
                 </button>
               ),
             )}
