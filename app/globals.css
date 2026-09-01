@@ -247,7 +247,15 @@ img {
 .primary-button {
   padding: 0 25px;
   background: var(--pink);
-  color: var(--white);
+  color: #ffffff !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
   box-shadow: 0 15px 35px rgba(236, 77, 132, 0.23);
 }
 

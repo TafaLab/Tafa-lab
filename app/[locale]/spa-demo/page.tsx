@@ -142,14 +142,14 @@ export default async function SpaDemo({
   const locale = value as Locale,
     t = copy[locale],
     other = locale === "ru" ? "en" : "ru";
-  const images = [
-    "/images/stk-lab/beauty/beauty-services-catalogue.webp",
-    "/images/stk-lab/beauty/beauty-online-booking.webp",
-    "/images/stk-lab/beauty/beauty-owner-mobile.webp",
-    "/images/stk-lab/beauty/demos/sora-treatment-room-v1.webp",
-    "/images/stk-lab/beauty/beauty-staff-schedule.webp",
-    "/images/stk-lab/beauty/beauty-crm-dashboard.webp",
-  ];
+ const images = [
+  "/images/stk-lab/beauty/demos/serena-stillness.png",
+  "/images/stk-lab/beauty/demos/serena-restore.png",
+  "/images/stk-lab/beauty/demos/serena-radiance.png",
+  "/images/stk-lab/beauty/demos/serena-balance.png",
+  "/images/stk-lab/beauty/demos/serena-together.png",
+  "/images/stk-lab/beauty/demos/serena-day.png",
+];
   return (
     <main className="min-h-screen bg-[#f2ede4] text-[#30372e]">
       <div className="bg-[#56634e] px-4 py-2 text-center text-[11px] uppercase tracking-[.2em] text-white/80">

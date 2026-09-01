@@ -130,7 +130,7 @@ export default function AdminSidebar() {
         </Link>
 
         <div>
-          <strong>STK Bakery</strong>
+          <strong>TAFA Bakery</strong>
           <span>Панель управления</span>
         </div>
       </div>
@@ -160,7 +160,7 @@ export default function AdminSidebar() {
           Вернуться на сайт
         </Link>
 
-        <p>STK Bakery CRM</p>
+        <p>TAFA Bakery CRM</p>
       </div>
     </aside>
   );
@@ -2222,7 +2222,7 @@ export default function ThankYouPage() {
         <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-black/65">
           РњС‹ РїРѕР»СѓС‡РёР»Рё РІР°С€Сѓ Р·Р°СЏРІРєСѓ.
           <br />
-          Р’ Р±Р»РёР¶Р°Р№С€РµРµ РІСЂРµРјСЏ РјРµРЅРµРґР¶РµСЂ STK Bakery СЃРІСЏР¶РµС‚СЃСЏ СЃ РІР°РјРё,
+          Р’ Р±Р»РёР¶Р°Р№С€РµРµ РІСЂРµРјСЏ РјРµРЅРµРґР¶РµСЂ TAFA Bakery СЃРІСЏР¶РµС‚СЃСЏ СЃ РІР°РјРё,
           РїСЂРѕРІРµСЂРёС‚ РѕС„РѕСЂРјР»РµРЅРёРµ С‚РѕСЂС‚Р°, СѓС‚РѕС‡РЅРёС‚ РґРµС‚Р°Р»Рё Рё РїРѕРґС‚РІРµСЂРґРёС‚
           РѕРєРѕРЅС‡Р°С‚РµР»СЊРЅСѓСЋ СЃС‚РѕРёРјРѕСЃС‚СЊ.
         </p>

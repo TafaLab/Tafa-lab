@@ -22,8 +22,8 @@ export default function Loading() {
 
         <p className="mt-3 text-black/55">
           {isEnglish
-            ? "Preparing STK Bakery"
-            : "Подготавливаем STK Bakery"}
+            ? "Preparing TAFA Bakery"
+            : "Подготавливаем TAFA Bakery"}
         </p>
       </div>
     </main>
