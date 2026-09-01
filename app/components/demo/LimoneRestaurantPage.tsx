@@ -283,9 +283,12 @@ export default function LimoneRestaurantPage({ locale }: { locale: Locale }) {
       <footer className="flex flex-col justify-between gap-5 px-5 py-10 text-xs uppercase tracking-[.15em] md:flex-row md:px-10">
         <span>© 2026 Limoné</span>
         <span>Amalfi Coast · Italy</span>
-        <Link href={`/${locale}/industries/restaurants`}>
-          Tafa Lab portfolio →
-        </Link>
+        <div className="flex flex-wrap gap-x-6 gap-y-2">
+          <Link href="https://tafalab.com">Tafa Lab home →</Link>
+          <Link href="https://tafalab.com/en/industries/restaurants">
+            Restaurant websites →
+          </Link>
+        </div>
       </footer>
     </main>
   );
