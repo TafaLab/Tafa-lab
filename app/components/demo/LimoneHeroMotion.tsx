@@ -41,10 +41,24 @@ export default function LimoneHeroMotion() {
           width: 82px;
           height: 34px;
           border-radius: 100% 0 100% 0;
-          background: linear-gradient(135deg, rgba(123, 157, 60, 0.78), rgba(37, 72, 31, 0.9));
-          filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.15));
+          background: linear-gradient(135deg, #6d8f3b 0%, #355b2d 55%, #18371f 100%);
+          border: 1px solid rgba(18, 39, 19, 0.72);
+          filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.28));
           transform-origin: 0 50%;
           animation: limone-leaf-sway 1.8s ease-in-out infinite alternate;
+        }
+
+        .limone-leaf::after {
+          content: "";
+          position: absolute;
+          top: 50%;
+          left: 8px;
+          width: calc(100% - 14px);
+          height: 2px;
+          border-radius: 999px;
+          background: rgba(15, 42, 20, 0.76);
+          transform: rotate(-9deg);
+          transform-origin: left center;
         }
 
         .limone-leaf-one {
