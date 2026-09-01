@@ -65,7 +65,7 @@ export default function DemoSiteOrderForm({ locale, siteName, kind }: { locale: 
     setSuccess(true);
   }
 
-  if (success) return <div className="rounded-[2rem] border border-white/15 bg-white/10 p-8 text-center"><div className="text-4xl">✓</div><h3 className="mt-4 font-serif text-3xl">{en ? "Request received" : "Заявка отправлена"}</h3><p className="mt-3 text-white/60">{en ? "It is now visible in the public demo admin." : "Она уже появилась в общей открытой демо-админке."}</p><a href={`/${locale}/demo-admin`} className="mt-6 inline-flex rounded-full bg-white px-6 py-3 font-semibold text-[#17231b]">{en ? "Open demo admin →" : "Открыть демо-админку →"}</a></div>;
+  if (success) return <div className="rounded-[2rem] border border-white/15 bg-white/10 p-8 text-center"><div className="text-4xl">✓</div><h3 className="mt-4 font-serif text-3xl">{en ? "Request received" : "Заявка отправлена"}</h3><p className="mt-3 text-white/60">{en ? "It is now visible in the public demo admin." : "Она уже появилась в общей открытой демо-админке."}</p><a href={`/${locale}/demo-admin`} className="mt-6 inline-flex rounded-full bg-white px-6 py-3 font-semibold text-[#17231b]" style={{ color: "#17231b" }}>{en ? "Open demo admin →" : "Открыть демо-админку →"}</a></div>;
 
   const input = "w-full rounded-2xl border border-white/15 bg-white/10 px-5 py-4 text-white outline-none placeholder:text-white/35 focus:border-white/40";
   const formCopy = {
