@@ -280,8 +280,17 @@ function Skin({ locale }: { locale: "ru" | "en" }) {
 }
 function Spa({ locale }: { locale: "ru" | "en" }) {
   const ru = locale === "ru";
+  const rituals = [
+    { id: "stillness", ru: "Тишина", en: "Stillness", duration: 90 },
+    { id: "restore", ru: "Восстановление", en: "Restore", duration: 75 },
+    { id: "radiance", ru: "Сияние", en: "Radiance", duration: 80 },
+    { id: "balance", ru: "Баланс", en: "Balance", duration: 120 },
+    { id: "together", ru: "Для двоих", en: "Together", duration: 120 },
+    { id: "serena-day", ru: "День Serena", en: "Serena Day", duration: 300 },
+  ];
+  const [ritual, setRitual] = useState("stillness");
   const [mood, setMood] = useState("Relax"),
-    [duration, setDuration] = useState(120),
+    [duration, setDuration] = useState(90),
     [scent, setScent] = useState("Lavender"),
     [intensity, setIntensity] = useState(50),
     [extras, setExtras] = useState<string[]>(["Aromatherapy"]);
@@ -306,6 +315,8 @@ function Spa({ locale }: { locale: "ru" | "en" }) {
     Champagne: ru ? "Шампанское" : "Champagne",
     "Private room": ru ? "Приватная комната" : "Private room",
   };
+  const selectedRitual = rituals.find((item) => item.id === ritual) ?? rituals[0];
+  const selectedRitualTitle = ru ? selectedRitual.ru : selectedRitual.en;
   const moodTitle = moodNames[mood];
   const scentTitle = scentNames[scent];
   const intensityTitle =
@@ -329,11 +340,11 @@ function Spa({ locale }: { locale: "ru" | "en" }) {
         "stk-demo-selection",
         JSON.stringify({
           subject: ru
-            ? `SPA-ритуал: ${moodTitle} · ${scentTitle}, ${duration} мин`
-            : `SPA ritual: ${moodTitle} · ${scentTitle}, ${duration} min`,
+            ? `SPA-ритуал «${selectedRitualTitle}»: ${moodTitle} · ${scentTitle}, ${duration} мин`
+            : `SPA ritual "${selectedRitualTitle}": ${moodTitle} · ${scentTitle}, ${duration} min`,
           message: ru
-            ? `${journey}. Интенсивность: ${intensityTitle}. Дополнительно: ${extras.map((item) => extraNames[item]).join(", ") || "без дополнительных услуг"}.`
-            : `${journey}. Intensity: ${intensityTitle}. Extras: ${extras.map((item) => extraNames[item]).join(", ") || "none"}.`,
+            ? `Выбранный ритуал: ${selectedRitualTitle}. ${journey}. Интенсивность: ${intensityTitle}. Дополнительно: ${extras.map((item) => extraNames[item]).join(", ") || "без дополнительных услуг"}.`
+            : `Selected ritual: ${selectedRitualTitle}. ${journey}. Intensity: ${intensityTitle}. Extras: ${extras.map((item) => extraNames[item]).join(", ") || "none"}.`,
         }),
       );
       window.dispatchEvent(new Event("stk-demo-selection"));
@@ -349,6 +360,25 @@ function Spa({ locale }: { locale: "ru" | "en" }) {
       <div className="mt-12 grid gap-5 lg:grid-cols-[.8fr_1.2fr]">
         <div className="rounded-3xl bg-white p-7">
           <p>{ru ? "Как вы себя чувствуете?" : "How do you feel today?"}</p>
+          <p className="mt-7">{ru ? "Выберите готовый ритуал" : "Choose a signature ritual"}</p>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            {rituals.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setRitual(item.id);
+                  setDuration(item.duration);
+                }}
+                className="rounded-xl border p-3 text-sm"
+                style={{
+                  background: ritual === item.id ? "#d8c2a2" : undefined,
+                  color: "#30372e",
+                }}
+              >
+                {ru ? item.ru : item.en}
+              </button>
+            ))}
+          </div>
           <div className="mt-4 grid grid-cols-2 gap-2">
             {["Relax", "Detox", "Exhausted", "Glow"].map((x) => (
               <button
