@@ -100,7 +100,7 @@ export default function LimoneRestaurantPage({ locale }: { locale: Locale }) {
       </header>
       <section className="relative flex min-h-[720px] items-end overflow-hidden text-[#f7f1e4]">
         <Image
-          src="/images/stk-lab/restaurants/demos/limone-hero-lemon-tree.jpg"
+          src="/images/stk-lab/restaurants/demos/limone-hero-lemon-tree.webp"
           alt="Limoné lemon tree terrace"
           fill
           unoptimized
