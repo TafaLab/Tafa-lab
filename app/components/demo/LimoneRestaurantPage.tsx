@@ -100,8 +100,8 @@ export default function LimoneRestaurantPage({ locale }: { locale: Locale }) {
       </header>
       <section className="relative flex min-h-[720px] items-end overflow-hidden text-[#f7f1e4]">
         <Image
-          src="https://static.tildacdn.ink/tild3432-6439-4138-b364-646664396337/photo-1710443165761-.jpg"
-          alt="Limoné terrace on the Amalfi Coast"
+          src="/images/stk-lab/restaurants/demos/limone-hero-lemon-tree.jpg"
+          alt="Limoné lemon tree terrace"
           fill
           unoptimized
           className="object-cover"
