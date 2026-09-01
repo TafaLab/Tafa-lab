@@ -424,7 +424,7 @@ function Spa({ locale }: { locale: "ru" | "en" }) {
         </div>
         <div className="rounded-3xl bg-[#56634e] p-7 text-white">
           <div className="flex flex-wrap gap-2">
-            {[60, 90, 120, 180].map((x) => (
+            {[60, 75, 80, 90, 120, 180, 300].map((x) => (
               <button
                 key={x}
                 onClick={() => setDuration(x)}
@@ -468,7 +468,7 @@ function Spa({ locale }: { locale: "ru" | "en" }) {
           </div>
           <div className="mt-8 flex items-center justify-between border-t border-white/20 pt-5">
             <strong className="text-3xl">
-              ${({ 60: 85, 90: 95, 120: 145, 180: 320 } as Record<number, number>)[duration] + extras.length * 12}
+              ${({ 60: 85, 75: 95, 80: 110, 90: 85, 120: 145, 180: 260, 300: 320 } as Record<number, number>)[duration] + extras.length * 12}
             </strong>
             <a
               href="#contact"
