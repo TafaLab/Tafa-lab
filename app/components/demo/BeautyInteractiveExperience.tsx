@@ -389,6 +389,7 @@ function Spa({ locale }: { locale: "ru" | "en" }) {
             <a
               href="#contact"
               className="rounded-full bg-white px-5 py-3 text-black"
+              style={{ color: "#000000" }}
             >
               {ru ? "Записаться" : "Book now"}
             </a>
