@@ -105,7 +105,7 @@ function Look({
                   color: cut === x ? "#251e20" : undefined,
                 }}
               >
-                {x}
+                {ru ? ({ Relax: "Расслабление", Detox: "Детокс", Exhausted: "Усталость", Glow: "Сияние" } as Record<string, string>)[x] : x}
               </button>
             ))}
           </div>
@@ -181,7 +181,7 @@ function Look({
                     color: extras.includes(x) ? "#251e20" : undefined,
                   }}
                 >
-                  + {x}
+                  + {ru ? ({ Aromatherapy: "Ароматерапия", "Hot stones": "Горячие камни", Champagne: "Шампанское", "Private room": "Приватная комната" } as Record<string, string>)[x] : x}
                 </button>
               ),
             )}
@@ -254,7 +254,7 @@ function Skin({ locale }: { locale: "ru" | "en" }) {
                 className="flex-1 rounded-xl border p-3"
                 style={{ background: duration === x ? "#d6b889" : undefined }}
               >
-                {x} min
+                {x} {ru ? "мин" : "min"}
               </button>
             ))}
           </div>
@@ -289,7 +289,7 @@ function Spa({ locale }: { locale: "ru" | "en" }) {
     setExtras((v) => (v.includes(x) ? v.filter((i) => i !== x) : [...v, x]));
   return (
     <Wrap
-      kicker="Build Your SPA Journey"
+      kicker={ru ? "Соберите свой SPA-ритуал" : "Build Your SPA Journey"}
       title={ru ? "Соберите собственный ритуал" : "Build your own ritual"}
     >
       <div className="mt-12 grid gap-5 lg:grid-cols-[.8fr_1.2fr]">
@@ -317,14 +317,14 @@ function Spa({ locale }: { locale: "ru" | "en" }) {
                   className="rounded-full border px-3 py-2 text-sm"
                   style={{ background: scent === x ? "#d8c2a2" : undefined }}
                 >
-                  {x}
+                  {ru ? ({ Eucalyptus: "Эвкалипт", Rose: "Роза", Citrus: "Цитрус", Lavender: "Лаванда", Sandalwood: "Сандал" } as Record<string, string>)[x] : x}
                 </button>
               ),
             )}
           </div>
           <p className="mt-7">
             {ru ? "Интенсивность массажа" : "Massage intensity"} ·{" "}
-            {intensity < 35 ? "Gentle" : intensity > 70 ? "Deep" : "Balanced"}
+            {intensity < 35 ? (ru ? "Мягкая" : "Gentle") : intensity > 70 ? (ru ? "Глубокая" : "Deep") : (ru ? "Сбалансированная" : "Balanced")}
           </p>
           <input
             type="range"
@@ -350,10 +350,10 @@ function Spa({ locale }: { locale: "ru" | "en" }) {
             ))}
           </div>
           <h3 className="mt-8 font-serif text-4xl">
-            {mood} · {scent} Journey
+            {ru ? ({ Relax: "Расслабление", Detox: "Детокс", Exhausted: "Усталость", Glow: "Сияние" } as Record<string, string>)[mood] : mood} · {ru ? ({ Eucalyptus: "Эвкалипт", Rose: "Роза", Citrus: "Цитрус", Lavender: "Лаванда", Sandalwood: "Сандал" } as Record<string, string>)[scent] : scent} {ru ? "путешествие" : "Journey"}
           </h3>
           <p className="mt-4 text-white/55">
-            Warm bath → Aromatherapy → Massage → Facial → Tea ceremony
+            {ru ? "Тёплая ванна → Ароматерапия → Массаж → Уход за лицом → Чайная церемония" : "Warm bath → Aromatherapy → Massage → Facial → Tea ceremony"}
           </p>
           <div className="mt-7 grid grid-cols-2 gap-2">
             {["Aromatherapy", "Hot stones", "Champagne", "Private room"].map(
