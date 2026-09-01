@@ -93,7 +93,7 @@ export default function LimoneRestaurantPage({ locale }: { locale: Locale }) {
           </Link>
           <a
             href="#reserve"
-            className="rounded-full bg-[#2f4b2f] px-4 py-2.5 text-xs uppercase text-[#f7f1e4]"
+            className="rounded-full bg-[#2f4b2f] px-4 py-2.5 text-xs uppercase !text-[#f7f1e4]" style={{ color: "#f7f1e4" }}
           >
             {t.button}
           </a>
