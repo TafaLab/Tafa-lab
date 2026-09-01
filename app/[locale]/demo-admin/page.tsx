@@ -159,7 +159,7 @@ export default function DemoAdminPage() {
               </strong>
             </div>
             <div className="flex items-center gap-2">
-              <Link href={`/${locale}`} className="hidden rounded-full bg-white px-4 py-2 text-sm text-[#211a17] sm:block">
+              <Link href={`/${locale}`} className="hidden rounded-full bg-white px-4 py-2 text-sm text-[#211a17] sm:block" style={{ color: "#211a17" }}>
                 Tafa Lab
               </Link>
               <button
