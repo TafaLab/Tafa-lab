@@ -187,10 +187,10 @@ export default function RestaurantOrderExperience({
             🍜
           </div>
           <div className="mt-7 flex gap-2">
-            <button className="flex-1 rounded-full border border-white/20 px-4 py-3">
+            <button type="button" className="flex-1 cursor-pointer rounded-full border border-white/20 px-4 py-3">
               360° {ru ? "вращать" : "rotate"}
             </button>
-            <button className="flex-1 rounded-full bg-white px-4 py-3 text-black">
+            <button type="button" className="flex-1 cursor-pointer rounded-full bg-white px-4 py-3 text-black">
               View in AR
             </button>
           </div>
@@ -211,7 +211,7 @@ export default function RestaurantOrderExperience({
                   <button
                     key={x}
                     onClick={() => setCraving(x)}
-                    className="rounded-full border border-white/20 px-4 py-2"
+                    className="cursor-pointer rounded-full border border-white/20 px-4 py-2"
                     style={{
                       background: craving === x ? "#e8b84a" : undefined,
                       color: craving === x ? "#000" : undefined,
@@ -242,7 +242,7 @@ export default function RestaurantOrderExperience({
               <button
                 onClick={() => add(recommendation.id)}
                 type="button"
-                className="mt-7 rounded-full bg-black px-5 py-3 text-white"
+                className="mt-7 cursor-pointer rounded-full bg-black px-5 py-3 text-white"
                 style={{ color: "#fff", backgroundColor: "#000" }}
               >
                 {ru ? "Добавить в заказ" : "Add to order"} · $
@@ -268,7 +268,7 @@ export default function RestaurantOrderExperience({
                 key={x}
                 onClick={() => setCategory(x)}
                 type="button"
-                className="rounded-full border px-4 py-2"
+                className="cursor-pointer rounded-full border px-4 py-2"
                 style={{
                   background: category === x ? "#191714" : undefined,
                   color: category === x ? "#fff" : undefined,
@@ -328,7 +328,7 @@ export default function RestaurantOrderExperience({
               <button
                 onClick={() => add(item.id)}
                 type="button"
-                className="mt-6 w-full rounded-full bg-black px-5 py-3 text-white"
+                className="mt-6 w-full cursor-pointer rounded-full bg-black px-5 py-3 text-white"
                 style={{ color: "#fff", backgroundColor: "#000" }}
               >
                 + {ru ? "Добавить" : "Add"} · ${item.price}
@@ -366,7 +366,7 @@ export default function RestaurantOrderExperience({
                     key={x}
                     onClick={() => setZone(x)}
                     type="button"
-                    className="rounded-xl border p-3"
+                    className="cursor-pointer rounded-xl border p-3"
                     style={{ background: zone === x ? "#e8b84a" : undefined }}
                   >
                     {x}
@@ -393,7 +393,7 @@ export default function RestaurantOrderExperience({
                     setZone(x.zone);
                   }}
                   type="button"
-                  className="aspect-square rounded-full border-2 text-white"
+                  className="cursor-pointer aspect-square rounded-full border-2 text-white"
                   style={{
                     borderColor: table === x.id ? "#e8b84a" : "#ffffff44",
                     background: table === x.id ? "#e8b84a" : "transparent",
