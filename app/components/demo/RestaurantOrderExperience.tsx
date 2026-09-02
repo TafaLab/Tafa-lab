@@ -437,8 +437,22 @@ export default function RestaurantOrderExperience({
               {ru ? "Ваш заказ" : "Your order"} · ${total}
             </h3>
             <p className="mt-3 text-white/55">
-              Table {table} · {zone} · {guests} guests\n            </p>\n            {Object.keys(cart).length > 0 && (\n              <div className="mt-5 space-y-2 rounded-2xl bg-white/10 p-4">\n                {Object.entries(cart).map(([id, quantity]) => {\n                  const item = menu.find((entry) => entry.id === id);\n                  if (!item) return null;\n                  return (\n                    <div key={id} className="flex items-center justify-between gap-3 text-sm">\n                      <span>{item.name}</span>\n                      <strong>× {quantity}</strong>\n                    </div>\n                  );\n                })}\n              </div>\n            )}
+              Table {table} · {zone} · {guests} guests
             </p>
+            {Object.keys(cart).length > 0 && (
+              <div className="mt-5 space-y-2 rounded-2xl bg-white/10 p-4">
+                {Object.entries(cart).map(([id, quantity]) => {
+                  const item = menu.find((entry) => entry.id === id);
+                  if (!item) return null;
+                  return (
+                    <div key={id} className="flex items-center justify-between gap-3 text-sm">
+                      <span>{item.name}</span>
+                      <strong>× {quantity}</strong>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
             {sent ? (
               <div className="mt-8 rounded-2xl bg-white/10 p-6">
                 <strong className="text-2xl">
