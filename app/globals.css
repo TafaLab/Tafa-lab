@@ -4497,3 +4497,16 @@ body {
     min-height: 62px;
   }
 }
+
+
+/* Mobile admin orders: open one request at a time without long scrolling. */
+.admin-order-back { display: none; }
+@media (max-width: 1279px) {
+  .admin-order-back { display: inline-flex; align-items: center; }
+}
+@media (max-width: 700px) {
+  .admin-orders-layout.admin-order-selected .admin-orders-list { display: none; }
+  .admin-order-detail { padding: 16px !important; }
+  .admin-order-detail .admin-order-back { position: sticky; top: 8px; z-index: 5; }
+  .admin-order-detail .min-w-\[220px\] { min-width: 0; width: 100%; }
+}
