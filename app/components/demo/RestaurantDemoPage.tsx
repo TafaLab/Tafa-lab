@@ -531,7 +531,7 @@ export default function RestaurantDemoPage({
       )}
       {vegan && (
         <section className="pb-28">
-          <div className="flex w-max animate-none gap-4 px-5 md:px-10">
+          <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-4 px-5 sm:grid-cols-2 md:grid-cols-4 md:px-10">
             {[
               "Local growers",
               "Whole-plant kitchen",
@@ -540,7 +540,7 @@ export default function RestaurantDemoPage({
             ].map((x, i) => (
               <div
                 key={x}
-                className={`flex h-52 w-72 items-center justify-center rounded-[50%] border text-center text-xl font-semibold ${i % 2 ? "-rotate-2" : "rotate-2"}`}
+                className={`flex h-44 min-w-0 w-full items-center justify-center rounded-[50%] border px-4 text-center text-base font-semibold sm:h-52 sm:text-xl ${i % 2 ? "md:-rotate-2" : "md:rotate-2"}`}
                 style={{
                   borderColor: `${item.ink}35`,
                   background: i % 2 ? item.soft : item.bg,
