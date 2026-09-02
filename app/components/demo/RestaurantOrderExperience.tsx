@@ -331,7 +331,7 @@ export default function RestaurantOrderExperience({
                 className="mt-6 w-full cursor-pointer rounded-full bg-black px-5 py-3 text-white"
                 style={{ color: "#fff", backgroundColor: "#000" }}
               >
-                + {ru ? "Добавить" : "Add"} · ${item.price}
+                {cart[item.id] ? `${ru ? "Добавлено" : "Added"} × ${cart[item.id]}` : `+ ${ru ? "Добавить" : "Add"}`} · ${item.price}
               </button>
             </article>
           ))}
@@ -437,7 +437,7 @@ export default function RestaurantOrderExperience({
               {ru ? "Ваш заказ" : "Your order"} · ${total}
             </h3>
             <p className="mt-3 text-white/55">
-              Table {table} · {zone} · {guests} guests
+              Table {table} · {zone} · {guests} guests\n            </p>\n            {Object.keys(cart).length > 0 && (\n              <div className="mt-5 space-y-2 rounded-2xl bg-white/10 p-4">\n                {Object.entries(cart).map(([id, quantity]) => {\n                  const item = menu.find((entry) => entry.id === id);\n                  if (!item) return null;\n                  return (\n                    <div key={id} className="flex items-center justify-between gap-3 text-sm">\n                      <span>{item.name}</span>\n                      <strong>× {quantity}</strong>\n                    </div>\n                  );\n                })}\n              </div>\n            )}
             </p>
             {sent ? (
               <div className="mt-8 rounded-2xl bg-white/10 p-6">
@@ -451,7 +451,7 @@ export default function RestaurantOrderExperience({
                 </p>
                 <Link
                   href={`/${locale}/demo-admin`}
-                  className="mt-5 inline-flex rounded-full bg-white px-5 py-3 text-black"
+                  className="mt-5 inline-flex rounded-full bg-white px-5 py-3 text-black" style={{ color: "#191714", backgroundColor: "#fff" }}
                 >
                   {ru ? "Открыть админку" : "Open admin"} →
                 </Link>
