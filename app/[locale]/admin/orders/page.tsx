@@ -526,8 +526,8 @@ export default function AdminOrdersPage() {
           </p>
         </section>
       ) : (
-        <div className="grid gap-6 xl:grid-cols-[420px_1fr]">
-          <section className="overflow-hidden rounded-3xl bg-white shadow-sm">
+        <div className={`admin-orders-layout grid gap-6 xl:grid-cols-[420px_1fr] ${selectedOrder ? "admin-order-selected" : ""}`}>
+          <section className="admin-orders-list overflow-hidden rounded-3xl bg-white shadow-sm">
             <div className="border-b border-black/5 px-6 py-5">
               <h2 className="text-xl font-semibold">
                 {text.orders.allOrders}
@@ -623,7 +623,8 @@ export default function AdminOrdersPage() {
           </section>
 
           {selectedOrder && (
-            <section className="rounded-3xl bg-white p-6 shadow-sm">
+            <section className="admin-order-detail rounded-3xl bg-white p-6 shadow-sm">
+              <button type="button" onClick={() => setSelectedOrder(null)} className="admin-order-back mb-4 rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold">← {locale === "en" ? "All orders" : "Все заявки"}</button>
               <div className="flex flex-col gap-4 border-b border-black/5 pb-6 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <span className="text-sm text-black/45">
