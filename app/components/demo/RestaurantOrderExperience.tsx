@@ -156,7 +156,7 @@ export default function RestaurantOrderExperience({
             </a>
             <a
               href="#table"
-              className="rounded-full bg-black px-4 py-2 text-sm text-white"
+              className="rounded-full bg-black px-4 py-2 text-sm text-white" style={{ color: "#fff", backgroundColor: "#000" }}
             >
               {ru ? "Выбрать стол" : "Choose table"}
             </a>
@@ -241,7 +241,9 @@ export default function RestaurantOrderExperience({
               <p className="mt-2 opacity-60">{recommendation.desc}</p>
               <button
                 onClick={() => add(recommendation.id)}
+                type="button"
                 className="mt-7 rounded-full bg-black px-5 py-3 text-white"
+                style={{ color: "#fff", backgroundColor: "#000" }}
               >
                 {ru ? "Добавить в заказ" : "Add to order"} · $
                 {recommendation.price}
@@ -265,6 +267,7 @@ export default function RestaurantOrderExperience({
               <button
                 key={x}
                 onClick={() => setCategory(x)}
+                type="button"
                 className="rounded-full border px-4 py-2"
                 style={{
                   background: category === x ? "#191714" : undefined,
@@ -324,7 +327,9 @@ export default function RestaurantOrderExperience({
               )}
               <button
                 onClick={() => add(item.id)}
+                type="button"
                 className="mt-6 w-full rounded-full bg-black px-5 py-3 text-white"
+                style={{ color: "#fff", backgroundColor: "#000" }}
               >
                 + {ru ? "Добавить" : "Add"} · ${item.price}
               </button>
@@ -360,6 +365,7 @@ export default function RestaurantOrderExperience({
                   <button
                     key={x}
                     onClick={() => setZone(x)}
+                    type="button"
                     className="rounded-xl border p-3"
                     style={{ background: zone === x ? "#e8b84a" : undefined }}
                   >
@@ -386,6 +392,7 @@ export default function RestaurantOrderExperience({
                     setTable(x.id);
                     setZone(x.zone);
                   }}
+                  type="button"
                   className="aspect-square rounded-full border-2 text-white"
                   style={{
                     borderColor: table === x.id ? "#e8b84a" : "#ffffff44",
@@ -472,7 +479,9 @@ export default function RestaurantOrderExperience({
                 {error && <p className="text-red-300">{error}</p>}
                 <button
                   disabled={saving}
+                  type="submit"
                   className="w-full rounded-full bg-[#e8b84a] px-5 py-4 font-semibold text-black"
+                  style={{ color: "#000", backgroundColor: "#e8b84a" }}
                 >
                   {saving
                     ? ru
