@@ -1,6 +1,4 @@
-import type {
-  DecorationCategory,
-} from "./assets";
+import type { DecorationCategory } from "./assets";
 
 export type Filling =
   | "snickers"
@@ -27,10 +25,7 @@ export type FillingOption = {
 /**
  * Доступные режимы просмотра торта.
  */
-export type CakeView =
-  | "front"
-  | "side"
-  | "top";
+export type CakeView = "front" | "side" | "top";
 
 /**
  * Независимое расположение украшения
@@ -76,6 +71,16 @@ export type DecorationInstance = {
   flipX: boolean;
   flipY: boolean;
 
+  /** Поверхность, на которой элемент закреплён в 3D-редакторе. */
+  surface?: "top" | "side";
+
+  /**
+   * Отдельное положение во фронтальном виде.
+   * Если его ещё нет, оно автоматически рассчитывается
+   * из расположения сверху.
+   */
+  frontView?: DecorationViewTransform;
+
   /**
    * Независимое расположение украшения
    * при просмотре торта сверху.
@@ -102,12 +107,7 @@ export type DecorationInstance = {
 };
 
 export type InscriptionFont =
-  | "marck"
-  | "caveat"
-  | "lobster"
-  | "cormorant"
-  | "playfair"
-  | "montserrat";
+  "marck" | "caveat" | "lobster" | "cormorant" | "playfair" | "montserrat";
 
 export type InscriptionSettings = {
   text: string;
@@ -151,12 +151,6 @@ export type InscriptionSettings = {
   shadowOffsetY: number;
 };
 
-export type CategoryLabels = Record<
-  DecorationCategory,
-  string
->;
+export type CategoryLabels = Record<DecorationCategory, string>;
 
-export type CategoryPrices = Record<
-  DecorationCategory,
-  number
->;
+export type CategoryPrices = Record<DecorationCategory, number>;
