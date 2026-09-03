@@ -385,6 +385,16 @@ export default function RestaurantDemoPage({
           <p className="mt-7 max-w-2xl text-xl leading-9 opacity-70">
             {t.storyText}
           </p>
+          {halal && (
+            <p
+              className="mt-6 max-w-2xl rounded-full border px-5 py-3 text-sm font-semibold"
+              style={{ borderColor: item.accent + "88" }}
+            >
+              {locale === "ru"
+                ? "Для гостей предусмотрена отдельная комната для намаза."
+                : "A dedicated prayer room is available for guests."}
+            </p>
+          )}
         </div>
         <div
           className="grid grid-cols-3 self-end border-y py-8"
