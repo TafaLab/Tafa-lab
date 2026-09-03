@@ -225,9 +225,9 @@ export default function BakeryDemoPage({
           "/images/stk-lab/bakery/levain-grandmother-starter-v1.webp",
         ]
       : [
-          "/images/stk-lab/bakery/bakery-online-store.webp",
-          "/images/stk-lab/bakery/eclair-gift-box-v1.webp",
           "/images/stk-lab/bakery/eclair-packaging-v1.webp",
+          "/images/stk-lab/bakery/eclair-gift-box-v1.webp",
+          "/images/stk-lab/bakery/bakery-online-store.webp",
           "/images/stk-lab/bakery/eclair-gift-box-v1.webp",
         ];
 
