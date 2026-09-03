@@ -632,7 +632,7 @@ export default function RestaurantDemoPage({
           <div className="mt-8 grid gap-4 md:grid-cols-[1.25fr_.75fr]">
             <div className="relative min-h-[420px] overflow-hidden rounded-[2rem]">
               <Image
-                src="/images/stk-lab/restaurants/demos/kuro-gallery-chef.png"
+                src="/images/stk-lab/restaurants/demos/kuro-gallery-chef.webp"
                 alt={locale === "ru" ? "Шеф за работой в KURO" : "Chef at work in KURO"}
                 fill
                 className="object-cover"
@@ -642,7 +642,7 @@ export default function RestaurantDemoPage({
             <div className="grid gap-4">
               <div className="relative min-h-[200px] overflow-hidden rounded-[2rem]">
                 <Image
-                  src="/images/stk-lab/restaurants/demos/kuro-gallery-counter.png"
+                  src="/images/stk-lab/restaurants/demos/kuro-gallery-counter.webp"
                   alt={locale === "ru" ? "Стойка робата в KURO" : "KURO robata counter"}
                   fill
                   className="object-cover"
@@ -651,7 +651,7 @@ export default function RestaurantDemoPage({
               </div>
               <div className="relative min-h-[200px] overflow-hidden rounded-[2rem]">
                 <Image
-                  src="/images/stk-lab/restaurants/demos/kuro-gallery-dish.png"
+                  src="/images/stk-lab/restaurants/demos/kuro-gallery-dish.webp"
                   alt={locale === "ru" ? "Блюдо с робата-гриля" : "Robata grilled dish"}
                   fill
                   className="object-cover"
