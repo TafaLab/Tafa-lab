@@ -268,7 +268,7 @@ export default function BakeryDemoPage({
             <a
               href="#order"
               className="mt-9 inline-flex rounded-full px-7 py-4 text-sm font-semibold text-white"
-              style={{ background: item.ink }}
+              style={{ background: item.ink, color: "#fff" }}
             >
               {t.cta} →
             </a>
