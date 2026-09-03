@@ -69,7 +69,7 @@ const data = {
   levain: {
     brand: "MAISON LEVAIN",
     route: "maison-levain-demo",
-    hero: "/images/stk-lab/bakery/maison-sucre.webp",
+    hero: "/images/stk-lab/bakery/levain-shelves-v1.webp",
     feature: "/images/stk-lab/bakery/levain-shelves-v1.webp",
     bg: "#efe8dc",
     ink: "#3a3025",
@@ -219,7 +219,7 @@ export default function BakeryDemoPage({
       ]
     : levain
       ? [
-          "/images/stk-lab/bakery/maison-sucre.webp",
+          "/images/stk-lab/bakery/levain-scoring-v1.webp",
           "/images/stk-lab/bakery/levain-scoring-v1.webp",
           "/images/stk-lab/bakery/levain-shelves-v1.webp",
           "/images/stk-lab/bakery/levain-grandmother-starter-v1.webp",
