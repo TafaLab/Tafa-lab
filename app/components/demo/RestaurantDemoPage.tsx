@@ -616,6 +616,52 @@ export default function RestaurantDemoPage({
           </div>
         </section>
       )}
+      {japanese && (
+        <section id="gallery" className="mx-auto max-w-7xl px-5 pb-28 md:px-10">
+          <div className="flex items-end justify-between gap-5">
+            <div>
+              <p className="text-xs uppercase tracking-[.3em] text-white/35">
+                {locale === "ru" ? "Галерея" : "Gallery"}
+              </p>
+              <h2 className="mt-4 text-4xl font-black uppercase tracking-[-.04em] md:text-6xl">
+                {locale === "ru" ? "Внутри KURO" : "Inside KURO"}
+              </h2>
+            </div>
+            <span className="text-sm text-white/35">01 — 03</span>
+          </div>
+          <div className="mt-8 grid gap-4 md:grid-cols-[1.25fr_.75fr]">
+            <div className="relative min-h-[420px] overflow-hidden rounded-[2rem]">
+              <Image
+                src={item.hero}
+                alt={locale === "ru" ? "Шеф за работой в KURO" : "Chef at work in KURO"}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 95vw, 60vw"
+              />
+            </div>
+            <div className="grid gap-4">
+              <div className="relative min-h-[200px] overflow-hidden rounded-[2rem]">
+                <Image
+                  src={item.storyImage}
+                  alt={locale === "ru" ? "Стойка робата в KURO" : "KURO robata counter"}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 95vw, 35vw"
+                />
+              </div>
+              <div className="relative min-h-[200px] overflow-hidden rounded-[2rem]">
+                <Image
+                  src="/images/stk-lab/restaurants/restaurant-pos-kitchen.webp"
+                  alt={locale === "ru" ? "Кухня ресторана" : "Restaurant kitchen"}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 95vw, 35vw"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
     {vegan && (
       <InteractiveConcept locale={locale} mode="dish" accent={item.accent} ink={item.ink} />
