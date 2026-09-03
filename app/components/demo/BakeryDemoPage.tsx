@@ -210,6 +210,26 @@ export default function BakeryDemoPage({
     : levain
       ? "rounded-none"
       : "rounded-[1.25rem]";
+  const collectionImages = veloura
+    ? [
+        "/images/stk-lab/bakery/veloura-cakes.webp",
+        "/images/stk-lab/bakery/veloura-cake-artist-v1.webp",
+        "/images/stk-lab/bakery/veloura-consultation-v1.webp",
+        "/images/stk-lab/bakery/cake-builder-devices.webp",
+      ]
+    : levain
+      ? [
+          "/images/stk-lab/bakery/maison-sucre.webp",
+          "/images/stk-lab/bakery/levain-scoring-v1.webp",
+          "/images/stk-lab/bakery/levain-shelves-v1.webp",
+          "/images/stk-lab/bakery/levain-grandmother-starter-v1.webp",
+        ]
+      : [
+          "/images/stk-lab/bakery/bakery-online-store.webp",
+          "/images/stk-lab/bakery/eclair-gift-box-v1.webp",
+          "/images/stk-lab/bakery/eclair-packaging-v1.webp",
+          "/images/stk-lab/bakery/eclair-gift-box-v1.webp",
+        ];
 
   return (
     <main
@@ -600,8 +620,11 @@ export default function BakeryDemoPage({
                 className={`${veloura ? "rounded-[8rem_8rem_1.5rem_1.5rem] bg-white/35 p-7 pt-16" : levain ? "border-b border-black/25 p-7 font-mono md:border-r" : "rounded-[1.25rem] border bg-white/45 p-7"}`}
                 style={{ borderColor: `${item.ink}25` }}
               >
+                <div className="relative mb-6 aspect-[4/3] overflow-hidden rounded-[1.25rem]">
+                  <Image src={collectionImages[i]} alt={name} fill className="object-cover" sizes="(max-width: 768px) 90vw, 25vw" />
+                </div>
                 <span className="text-xs opacity-35">0{i + 1}</span>
-                <h3 className="mt-8 text-xl font-semibold">{name}</h3>
+                <h3 className="mt-4 text-xl font-semibold">{name}</h3>
                 <p className="mt-2 text-sm opacity-55">{desc}</p>
                 <strong className="mt-8 block" style={{ color: item.accent }}>
                   {price}
