@@ -126,7 +126,7 @@ const data = {
   eclair: {
     brand: "ÉCLAIR MAISON",
     route: "eclair-maison-demo",
-    hero: "/images/stk-lab/bakery/bakery-online-store.webp",
+    hero: "/images/stk-lab/bakery/eclair-packaging-v1.webp",
     feature: "/images/stk-lab/bakery/eclair-packaging-v1.webp",
     bg: "#f7f4ed",
     ink: "#20201e",
