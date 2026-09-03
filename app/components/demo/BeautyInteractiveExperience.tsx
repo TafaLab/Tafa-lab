@@ -50,11 +50,12 @@ function Look({
   const ru = locale === "ru";
   const [cut, setCut] = useState("Long layers"),
     [color, setColor] = useState("Copper"),
-    vibe = "Korean",
+    vibe = ru ? "Корейский стиль" : "Korean",
     [time, setTime] = useState(20),
     [before, setBefore] = useState(45),
     [extras, setExtras] = useState<string[]>([]),
-    [uploaded, setUploaded] = useState(false);
+    [uploaded, setUploaded] = useState(false),
+    [uploadedSrc, setUploadedSrc] = useState<string | null>(null);
   const toggle = (x: string) =>
     setExtras((v) => (v.includes(x) ? v.filter((i) => i !== x) : [...v, x]));
   return (
@@ -90,10 +91,17 @@ function Look({
               type="file"
               accept="image/*"
               className="hidden"
-              onChange={(e) => setUploaded(Boolean(e.target.files?.length))}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                setUploaded(true);
+                const reader = new FileReader();
+                reader.onload = () => setUploadedSrc(String(reader.result));
+                reader.readAsDataURL(file);
+              }}
             />
           </label>
-          <p className="mt-7 text-sm opacity-50">Haircut</p>
+          <p className="mt-7 text-sm opacity-50">{ru ? "Стрижка" : "Haircut"}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {["Bob", "Long layers", "Pixie", "Bangs", "Curls"].map((x) => (
               <button
@@ -109,7 +117,7 @@ function Look({
               </button>
             ))}
           </div>
-          <p className="mt-7 text-sm opacity-50">Color</p>
+          <p className="mt-7 text-sm opacity-50">{ru ? "Цвет" : "Color"}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {["Blonde", "Brunette", "Copper", "Black", "Pink"].map((x) => (
               <button
@@ -127,7 +135,7 @@ function Look({
           </div>
           <p className="mt-7">
             {ru ? "Сколько времени на укладку?" : "Time spent styling?"} ·{" "}
-            {time} min
+            {time} {ru ? "мин" : "min"}
           </p>
           <input
             type="range"
@@ -148,10 +156,10 @@ function Look({
               style={{ width: `${before}%` }}
             />
             <span className="absolute left-4 top-4 rounded-full bg-white/80 px-3 py-1 text-xs text-black">
-              BEFORE
+              {ru ? "ДО" : "BEFORE"}
             </span>
             <span className="absolute right-4 top-4 rounded-full bg-black/60 px-3 py-1 text-xs text-white">
-              AFTER · {color}
+              {ru ? "ПОСЛЕ" : "AFTER"} · {color}
             </span>
             <input
               aria-label="Before after"
