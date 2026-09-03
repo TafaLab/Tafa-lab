@@ -267,31 +267,6 @@ export default async function BeautySalonDemo({
           </div>
         </div>
       </section>
-      <section
-        id="team"
-        className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
-      >
-        <h2 className="max-w-4xl text-5xl font-black tracking-[-.055em] md:text-7xl">
-          {t.teamTitle}
-        </h2>
-        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {t.team.map(([name, role], i) => (
-            <article key={name}>
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem]">
-                <Image
-                  src={images[i + 2]}
-                  alt={name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width:1024px) 45vw, 25vw"
-                />
-              </div>
-              <h3 className="mt-5 text-2xl font-black">{name}</h3>
-              <p className="mt-1 text-black/45">{role}</p>
-            </article>
-          ))}
-        </div>
-      </section>
       <section className="bg-[#f4d8d5]">
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-24 md:grid-cols-2 md:px-8 md:py-32">
           <h2 className="text-5xl font-black tracking-[-.055em] md:text-7xl">
