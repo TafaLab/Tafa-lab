@@ -108,6 +108,12 @@ export default async function BeautySalonDemo({
     "/images/stk-lab/beauty/beauty-staff-schedule.webp",
     "/images/stk-lab/beauty/beauty-crm-dashboard.webp",
   ];
+  const staffImages = [
+    "/images/stk-lab/beauty/demos/muse-staff-0.webp",
+    "/images/stk-lab/beauty/demos/muse-staff-1.webp",
+    "/images/stk-lab/beauty/demos/muse-staff-2.webp",
+    "/images/stk-lab/beauty/demos/muse-staff-3.webp",
+  ];
   return (
     <main className="min-h-screen bg-[#fff9f6] text-[#2b1e1b]">
       <div className="bg-[#ef476f] px-4 py-2 text-center text-xs font-bold text-white">
@@ -224,22 +230,20 @@ export default async function BeautySalonDemo({
       <section id="looks" className="bg-[#2b1e1b] text-white">
         <div className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
           <p className="text-xs font-bold uppercase tracking-[.25em] text-[#ff7796]">
-            RECENT LOOKS
+            {locale === "ru" ? "КОМАНДА MUSE" : "MUSE TEAM"}
           </p>
-          <div className="mt-10 grid gap-5 md:grid-cols-3">
-            {images.slice(0, 3).map((img, i) => (
-              <div
-                key={img}
-                className={`relative aspect-square overflow-hidden ${i === 1 ? "rounded-[35%] md:scale-110" : "rounded-full md:mt-16"}`}
-              >
-                <Image
-                  src={img}
-                  alt="Muse salon work"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width:768px) 90vw, 33vw"
-                />
-              </div>
+          <h2 className="mt-5 max-w-4xl text-5xl font-black tracking-[-.055em] md:text-7xl">
+            {locale === "ru" ? "Мастера с собственным почерком." : "Artists with a point of view."}
+          </h2>
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {t.team.map(([name, role], i) => (
+              <article key={name}>
+                <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem]">
+                  <Image src={staffImages[i]} alt={name} fill className="object-cover" sizes="(max-width:1024px) 45vw, 25vw" />
+                </div>
+                <h3 className="mt-5 text-2xl font-black">{name}</h3>
+                <p className="mt-1 text-white/55">{role}</p>
+              </article>
             ))}
           </div>
         </div>
