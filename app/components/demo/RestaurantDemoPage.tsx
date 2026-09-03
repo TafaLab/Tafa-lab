@@ -760,3 +760,5 @@ export default function RestaurantDemoPage({
     </main>
   );
 }
+
+// KURO gallery assets are served from the production WebP files.
