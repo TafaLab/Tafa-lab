@@ -113,7 +113,7 @@ function Look({
                   color: cut === x ? "#251e20" : undefined,
                 }}
               >
-                {ru ? ({ Relax: "Расслабление", Detox: "Детокс", Exhausted: "Усталость", Glow: "Сияние" } as Record<string, string>)[x] : x}
+                {ru ? ({ Bob: "Боб", "Long layers": "Длинные слои", Pixie: "Пикси", Bangs: "Чёлка", Curls: "Кудри" } as Record<string, string>)[x] : x}
               </button>
             ))}
           </div>
@@ -129,7 +129,7 @@ function Look({
                   color: color === x ? "#251e20" : undefined,
                 }}
               >
-                {x}
+                {ru ? ({ Blonde: "Блонд", Brunette: "Шатен", Copper: "Медный", Black: "Чёрный", Pink: "Розовый" } as Record<string, string>)[x] : x}
               </button>
             ))}
           </div>
