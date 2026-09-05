@@ -153,6 +153,21 @@ const almatyLeadSeed = [
 ["Chocoberry","+7 708 322 81 51","","@chocoberry_aliya","Десертные композиции","мкр. Тастак-1 3"]
 ].map(([name,phone,email,instagram,category,address],i)=>({id:`kaskelen-almaty-${i+1}`,created_at:"2026-09-05T00:00:00Z",name,contact:[phone&&`Телефон: ${phone}`,instagram&&`Instagram: ${instagram}`,email&&`Email: ${email}`].filter(Boolean).join(" · ")||"Контакт не найден",company:name,city:"Алматы",project_type:category,message:`${category}. Адрес: ${address}, Алматы.`,locale:"ru" as const,source_path:"Excel · konditerskie_almaty_full_leads.xlsx",status:"new" as LeadStatus,admin_notes:null}));
  
+const extraAlmatyLeadSeed:Lead[]=[
+["BENTO 24","+7 706 650 06 52","","Кондитерская","ул. Жарокова 289а"],
+["Whoopie Cakes","+7 705 225 58 33","@whoopiecakes","Кондитерская / кафе","пр. Абая 35/37 и другие филиалы"],
+["Lalu Cake","+7 707 570 77 76 · info@lalu.kz · @la_lu_cake","Кондитерская","ул. Каныша Сатпаева 30В / ул. Толе би 273а блок 5"],
+["Nel'","+7 701 555 05 59","","Кондитерская","ул. Желтоксан 96"],
+["Sweets Almaty","+7 727 237 80 35","","Кондитерская","ул. Шевченко 7/75"],
+["Можно Всё!","+7 778 792 26 10 · @mozhnovse_almaty","","Кондитерская","пр. Назарбаева 223"],
+["Milky Cake","+7 707 211 80 03","","Кондитерская","ул. Тургут Озала 152"],
+["LAKOMKA","+7 747 260 01 00","","Кондитерская","пр. Абылай хана 131"],
+["Брецель","+7 701 088 70 77","","Пекарня / кондитерская","мкр. Самал-2 33А"],
+["Тәп-Тәтті","+7 708 583 48 72 · info@taptatti.kz","Кондитерская","ул. Исаака Ньютона 1А"],
+["Dream Cakes","+7 708 602 15 62","","Кондитерская","ул. Тимирязева 73 и другие филиалы"],
+["LA TARTINE","+7 727 261 09 91","","Пекарня-кондитерская","ул. Кабанбай батыра 89"]
+].map(([name,contact,project_type,address],i)=>({id:`kaskelen-almaty-extra-${i+1}`,created_at:"2026-09-05T00:00:00Z",name,contact,company:name,city:"Алматы",project_type,message:`${project_type}. Адрес: ${address}, Алматы.`,locale:"ru",source_path:"Excel · konditerskie_almaty_12_new_only.xlsx",status:"new",admin_notes:null}));
+ 
 const statusStyles: Record<LeadStatus, string> = {
   new: "bg-[#f0ebe5] text-[#5b4a3f]",
   contacted: "bg-[#e8eef6] text-[#35465a]",
@@ -236,7 +251,7 @@ export default function StkAdminPage() {
     const deleted=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-deleted-crm")||"[]") as string[]}catch{return []}})();
     const manual=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-manual-crm")||"[]") as Lead[]}catch{return []}})();
     setCrmMeta(stored);
-    const seeded=[...kaskelenLeads,...almatyLeadSeed].filter(x=>!deleted.includes(x.id)).map(x=>({...x,status:stored[x.id]?.status||x.status,admin_notes:x.admin_notes||null}));
+    const seeded=[...kaskelenLeads,...almatyLeadSeed,...extraAlmatyLeadSeed].filter(x=>!deleted.includes(x.id)).map(x=>({...x,status:stored[x.id]?.status||x.status,admin_notes:x.admin_notes||null}));
     const manualVisible=manual.filter(x=>!deleted.includes(x.id)).map(x=>({...x,status:stored[x.id]?.status||x.status,admin_notes:x.admin_notes||null}));
     const {data,error}=await sb.from("stk_lab_leads").select("*").order("created_at",{ascending:false});
     if(error)setError(error.message);
