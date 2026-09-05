@@ -146,7 +146,7 @@ export default function StkAdminPage() {
 
   const visibleLeads=useMemo(()=>{
     const q=query.trim().toLowerCase();
-    const sourceLeads=section==="crm"?leads.filter(x=>x.status!=="new"):leads.filter(x=>x.status==="new");
+    const sourceLeads=section==="crm"?leads.filter(x=>x.id.startsWith("kaskelen-")):leads.filter(x=>!x.id.startsWith("kaskelen-"));
     let rows=filter==="all"?[...sourceLeads]:sourceLeads.filter(x=>x.status===filter);
     if(q) rows=rows.filter(x=>[
       x.name,x.contact,x.company,x.project_type,x.message,x.admin_notes,x.source_path
@@ -252,9 +252,9 @@ export default function StkAdminPage() {
       </div>
     </header>
 
-    <div className="mx-auto flex max-w-[1500px] flex-col md:flex-row"><aside className="border-b border-black/10 px-5 py-4 md:min-h-[calc(100vh-73px)] md:w-64 md:border-b-0 md:border-r md:px-4 md:py-8"><p className="px-3 text-xs uppercase tracking-[.2em] text-black/40">STK Bakery</p><nav className="mt-4 flex gap-2 overflow-x-auto md:block md:space-y-2"><button type="button" onClick={()=>{setSection("requests");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="requests"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>▤ {locale==="ru"?"Заявки":"Requests"} <span className="ml-2 opacity-60">{leads.filter(x=>x.status==="new").length}</span></button><button type="button" onClick={()=>{setSection("crm");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="crm"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>◌ CRM <span className="ml-2 opacity-60">{Math.max(0,leads.filter(x=>x.status!=="new").length)}</span></button></nav></aside><section className="min-w-0 flex-1 px-5 py-8 md:px-8 md:py-10">
+    <div className="mx-auto flex max-w-[1500px] flex-col md:flex-row"><aside className="border-b border-black/10 px-5 py-4 md:min-h-[calc(100vh-73px)] md:w-64 md:border-b-0 md:border-r md:px-4 md:py-8"><p className="px-3 text-xs uppercase tracking-[.2em] text-black/40">STK Bakery</p><nav className="mt-4 flex gap-2 overflow-x-auto md:block md:space-y-2"><button type="button" onClick={()=>{setSection("requests");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="requests"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>▤ {locale==="ru"?"Заявки":"Requests"} <span className="ml-2 opacity-60">{leads.filter(x=>!x.id.startsWith("kaskelen-")).length}</span></button><button type="button" onClick={()=>{setSection("crm");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="crm"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>◌ CRM <span className="ml-2 opacity-60">{Math.max(0,leads.filter(x=>x.status!=="new").length)}</span></button></nav></aside><section className="min-w-0 flex-1 px-5 py-8 md:px-8 md:py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div><p className="text-xs uppercase tracking-[.2em] text-black/40">STK Bakery CRM · Tafa Lab</p><h1 className="mt-2 text-4xl">{section==="crm"?(locale==="ru"?"Клиенты и CRM":"Clients & CRM"):t.leads}</h1><p className="mt-2 text-sm text-black/50">{t.total}: {section==="crm"?Math.max(0,leads.filter(x=>x.status!=="new").length):leads.filter(x=>x.status==="new").length}</p></div>
+        <div><p className="text-xs uppercase tracking-[.2em] text-black/40">STK Bakery CRM · Tafa Lab</p><h1 className="mt-2 text-4xl">{section==="crm"?(locale==="ru"?"Клиенты и CRM":"Clients & CRM"):t.leads}</h1><p className="mt-2 text-sm text-black/50">{t.total}: {section==="crm"?leads.filter(x=>x.id.startsWith("kaskelen-")).length:leads.filter(x=>!x.id.startsWith("kaskelen-")).length}</p></div>
         <button onClick={load} disabled={loading} className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm">{loading?t.refreshing:t.refresh}</button>
       </div>
 
