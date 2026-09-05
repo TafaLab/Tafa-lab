@@ -316,5 +316,6 @@ export default function StkAdminPage() {
         </aside>
       </>}
     </section>
+  </div>
   </main>;
 }
