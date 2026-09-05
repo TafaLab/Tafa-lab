@@ -5,7 +5,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import { createClient, SupabaseClient, User } from "@supabase/supabase-js";
 import { usePathname } from "next/navigation";
 
-type LeadStatus = "new" | "contacted" | "in_progress" | "won" | "lost";
+type LeadStatus = "new" | "draft" | "contacted" | "in_progress" | "won" | "lost";
 type LeadFilter = "all" | LeadStatus;
 type SortMode = "newest" | "oldest" | "name";
 
@@ -46,8 +46,8 @@ const text = {
     admin:"CRM · Заявки и клиенты", leads:"Заявки", total:"Всего", refresh:"Обновить", refreshing:"Обновляем…",
     logout:"Выйти", search:"Поиск по имени, контакту, компании, сообщению…", sort:"Сортировка",
     newest:"Сначала новые", oldest:"Сначала старые", name:"По имени",
-    filters:{all:"Все",new:"Новые",contacted:"Связались",in_progress:"В работе",won:"Успешно",lost:"Отказ"},
-    statuses:{new:"Новая",contacted:"Связались",in_progress:"В работе",won:"Успешно",lost:"Отказ"},
+    filters:{all:"Все",new:"Новые",draft:"Черновики",contacted:"Связались",in_progress:"В работе",won:"Успешно",lost:"Отказ"},
+    statuses:{new:"Новая",draft:"Черновик",contacted:"Связались",in_progress:"В работе",won:"Успешно",lost:"Отказ"},
     contact:"Контакт", company:"Компания", type:"Тип проекта", message:"Сообщение", open:"Открыть заявку",
     none:"В этом разделе заявок пока нет.", lead:"Заявка", status:"Статус", note:"Внутренняя заметка",
     notePh:"Например: написала в WhatsApp, клиент просит созвон завтра…",
@@ -64,8 +64,8 @@ const text = {
     admin:"Admin · Leads", leads:"Leads", total:"Total", refresh:"Refresh", refreshing:"Refreshing…",
     logout:"Log out", search:"Search name, contact, company or message…", sort:"Sort",
     newest:"Newest first", oldest:"Oldest first", name:"By name",
-    filters:{all:"All",new:"New",contacted:"Contacted",in_progress:"In progress",won:"Won",lost:"Lost"},
-    statuses:{new:"New",contacted:"Contacted",in_progress:"In progress",won:"Won",lost:"Lost"},
+    filters:{all:"All",new:"New",draft:"Drafts",contacted:"Contacted",in_progress:"In progress",won:"Won",lost:"Lost"},
+    statuses:{new:"New",draft:"Draft",contacted:"Contacted",in_progress:"In progress",won:"Won",lost:"Lost"},
     contact:"Contact", company:"Company", type:"Project type", message:"Message", open:"Open lead",
     none:"No leads in this section yet.", lead:"Lead", status:"Status", note:"Internal note",
     notePh:"For example: contacted via WhatsApp, client asked for a call tomorrow…",
@@ -169,6 +169,7 @@ const extraAlmatyLeadSeed:Lead[]=[
 ].map(([name,contact,project_type,address],i)=>({id:`kaskelen-almaty-extra-${i+1}`,created_at:"2026-09-05T00:00:00Z",name,contact,company:name,city:"Алматы",project_type,message:`${project_type}. Адрес: ${address}, Алматы.`,locale:"ru",source_path:"Excel · konditerskie_almaty_12_new_only.xlsx",status:"new",admin_notes:null}));
  
 const statusStyles: Record<LeadStatus, string> = {
+  draft: "bg-[#f4ead7] text-[#76552d]",
   new: "bg-[#f0ebe5] text-[#5b4a3f]",
   contacted: "bg-[#e8eef6] text-[#35465a]",
   in_progress: "bg-[#eee8f6] text-[#4e3c62]",
@@ -223,7 +224,7 @@ export default function StkAdminPage() {
 
   const counts=useMemo(()=>{
     const scoped=section==="crm"||section==="reminders"?leads.filter(x=>x.id.startsWith("kaskelen-")):leads.filter(x=>!x.id.startsWith("kaskelen-"));
-    const r:Record<LeadFilter,number>={all:scoped.length,new:0,contacted:0,in_progress:0,won:0,lost:0};
+    const r:Record<LeadFilter,number>={all:scoped.length,new:0,draft:0,contacted:0,in_progress:0,won:0,lost:0};
     scoped.forEach(x=>r[x.status]++);
     return r;
   },[leads,section]);
@@ -361,7 +362,7 @@ export default function StkAdminPage() {
   </main>;
 
   const selected=leads.find(x=>x.id===selectedId)??null;
-  const filterKeys:LeadFilter[]=["all","new","contacted","in_progress","won","lost"];
+  const filterKeys:LeadFilter[]=["all","new","draft","contacted","in_progress","won","lost"];
 
   return <main className="min-h-screen bg-[#f5f1ec] text-[#211a17]">
     <header className="sticky top-0 z-20 border-b border-black/10 bg-[#f5f1ec]/95 backdrop-blur">
@@ -416,7 +417,7 @@ export default function StkAdminPage() {
             <div className="flex items-start justify-between gap-4"><div><p className="text-xs uppercase tracking-[.18em] text-black/35">{t.lead}</p><h2 className="mt-2 text-2xl font-medium">{selected.name}</h2></div><button onClick={()=>setSelectedId(null)} className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10" aria-label={t.close}>×</button></div>
 
             <div className="mt-6 space-y-5">
-              <div><label className="text-xs uppercase tracking-[.14em] text-black/40">{t.status}</label><select value={draftStatus} onChange={e=>{setDraftStatus(e.target.value as LeadStatus);setSaved(false)}} className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5">{(["new","contacted","in_progress","won","lost"] as LeadStatus[]).map(s=><option key={s} value={s}>{t.statuses[s]}</option>)}</select></div>
+              <div><label className="text-xs uppercase tracking-[.14em] text-black/40">{t.status}</label><select value={draftStatus} onChange={e=>{setDraftStatus(e.target.value as LeadStatus);setSaved(false)}} className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5">{(["new","draft","contacted","in_progress","won","lost"] as LeadStatus[]).map(s=><option key={s} value={s}>{t.statuses[s]}</option>)}</select></div>
               <div><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Напоминание":"Reminder"}</label><input type="date" value={draftReminder} onChange={e=>setDraftReminder(e.target.value)} className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">{t.note}</label><textarea value={draftNotes} onChange={e=>{setDraftNotes(e.target.value);setSaved(false)}} rows={7} placeholder={t.notePh} className="mt-2 w-full resize-y rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5 leading-6"/></div>
               <button onClick={saveLead} disabled={saving} className="w-full rounded-full bg-[#211a17] px-5 py-3.5 text-sm font-medium text-white disabled:opacity-50">{saving?t.saving:t.save}</button>
               {saved&&<p className="text-center text-sm text-[#48614d]">{t.saved}</p>}{(crmMeta[selected.id]?.history||[]).length>0&&<div className="rounded-2xl bg-[#faf8f6] p-4"><div className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"История заметок":"Note history"}</div><div className="mt-3 space-y-3">{(crmMeta[selected.id]?.history||[]).slice().reverse().map((n,i)=><div key={i} className="border-l-2 border-[#c9a58f] pl-3"><p className="whitespace-pre-wrap text-sm">{n.text}</p><small className="text-black/40">{new Date(n.created_at).toLocaleString(locale==="ru"?"ru-RU":"en-US")}</small></div>)}</div></div>}
