@@ -9,7 +9,7 @@ type LeadFilter = "all" | LeadStatus;
 type SortMode = "newest" | "oldest" | "name";
 
 type NoteEntry = { text: string; created_at: string };
-type CrmMeta = { reminder_at: string; history: NoteEntry[] };
+type CrmMeta = { reminder_at: string; history: NoteEntry[]; status?: LeadStatus };
 type Lead = {
   id: string;
   created_at: string;
@@ -171,11 +171,14 @@ export default function StkAdminPage() {
 
   async function load(){
     setLoading(true);setError("");
+    const stored=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-crm-meta")||"{}") as Record<string,CrmMeta>}catch{return {}}})();
+    setCrmMeta(stored);
+    const seeded=kaskelenLeads.map(x=>({...x,status:stored[x.id]?.status||x.status,admin_notes:x.admin_notes||null}));
     const {data,error}=await sb.from("stk_lab_leads").select("*").order("created_at",{ascending:false});
     if(error)setError(error.message);
     else{
       const rows=(data??[]) as Lead[];
-      setLeads([...kaskelenLeads,...rows]);
+      setLeads([...seeded,...rows]);
       if(selectedId){
         const x=rows.find(r=>r.id===selectedId);
         if(x){setDraftStatus(x.status);setDraftNotes(x.admin_notes??"")}
@@ -186,7 +189,7 @@ export default function StkAdminPage() {
   }
 
   function openLead(x:Lead){
-    setSelectedId(x.id);setDraftStatus(x.status);setDraftNotes(x.admin_notes??"");setDraftReminder(crmMeta[x.id]?.reminder_at||"");
+    setSelectedId(x.id);setDraftStatus(crmMeta[x.id]?.status||x.status);setDraftNotes(x.admin_notes??"");setDraftReminder(crmMeta[x.id]?.reminder_at||"");
     setSaved(false);setNotice("");setError("");setCopied(false);
   }
 
@@ -196,7 +199,7 @@ export default function StkAdminPage() {
     const notes=draftNotes.trim()||null;
     const previous=crmMeta[selectedId]||{reminder_at:"",history:[]};
     const history=notes&&notes!==previous.history.at(-1)?.text?[...previous.history,{text:notes,created_at:new Date().toISOString()}]:previous.history;
-    const nextMeta={...crmMeta,[selectedId]:{reminder_at:draftReminder,history}};
+    const nextMeta={...crmMeta,[selectedId]:{reminder_at:draftReminder,history,status:draftStatus}};
     setCrmMeta(nextMeta);localStorage.setItem("stk-admin-crm-meta",JSON.stringify(nextMeta));
     if(selectedId.startsWith("kaskelen-")){
       setLeads(p=>p.map(x=>x.id===selectedId?{...x,status:draftStatus,admin_notes:notes}:x));
