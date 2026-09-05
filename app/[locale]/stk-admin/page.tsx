@@ -122,6 +122,7 @@ export default function StkAdminPage() {
   const [deleting,setDeleting]=useState(false);
   const [notice,setNotice]=useState("");
   const [copied,setCopied]=useState(false);
+  const [followupCopied,setFollowupCopied]=useState(false);
   const [section,setSection]=useState<"requests"|"crm"|"reminders">("requests");
   const [crmMeta,setCrmMeta]=useState<Record<string,CrmMeta>>({});
   const [draftReminder,setDraftReminder]=useState("");
@@ -228,6 +229,11 @@ export default function StkAdminPage() {
     setDeleting(false);
   }
 
+  async function copyFollowup(x:Lead){
+    const message=`Здравствуйте, ${x.name}! Возвращаюсь к нашему предложению по проекту. Готова показать варианты сайта и ответить на вопросы. Информация по заявке: ${x.message||x.project_type||"ваш запрос"}`;
+    try{await navigator.clipboard.writeText(message);setFollowupCopied(true);window.setTimeout(()=>setFollowupCopied(false),1800)}catch{}
+  }
+
   async function copyContact(contact:string){
     try{await navigator.clipboard.writeText(contact);setCopied(true);window.setTimeout(()=>setCopied(false),1500)}catch{}
   }
@@ -313,7 +319,7 @@ export default function StkAdminPage() {
               {saved&&<p className="text-center text-sm text-[#48614d]">{t.saved}</p>}{(crmMeta[selected.id]?.history||[]).length>0&&<div className="rounded-2xl bg-[#faf8f6] p-4"><div className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"История заметок":"Note history"}</div><div className="mt-3 space-y-3">{(crmMeta[selected.id]?.history||[]).slice().reverse().map((n,i)=><div key={i} className="border-l-2 border-[#c9a58f] pl-3"><p className="whitespace-pre-wrap text-sm">{n.text}</p><small className="text-black/40">{new Date(n.created_at).toLocaleString(locale==="ru"?"ru-RU":"en-US")}</small></div>)}</div></div>}
 
               <div className="border-t border-black/10 pt-5 text-sm space-y-4">
-                <div><div className="text-xs text-black/35">{t.contact.toUpperCase()}</div><div className="mt-1 break-all">{selected.contact}</div><button onClick={()=>copyContact(selected.contact)} className="mt-2 text-xs underline underline-offset-4">{copied?t.copied:t.copy}</button></div>
+                <div><div className="text-xs text-black/35">{t.contact.toUpperCase()}</div><div className="mt-1 break-all">{selected.contact}</div><button onClick={()=>copyContact(selected.contact)} className="mt-2 text-xs underline underline-offset-4">{copied?t.copied:t.copy}</button></div><button onClick={()=>copyFollowup(selected)} className="w-full rounded-full border border-black/10 bg-white px-4 py-3 text-sm">{followupCopied?(locale==="ru"?"Сообщение скопировано":"Message copied"):(locale==="ru"?"Скопировать повторное сообщение":"Copy follow-up message")}</button>
                 <div><div className="text-xs text-black/35">{t.company.toUpperCase()}</div><div className="mt-1">{selected.company||"—"}</div></div>
                 <div><div className="text-xs text-black/35">{t.source.toUpperCase()}</div><div className="mt-1 break-all">{selected.source_path||"—"}</div></div>
               </div>
