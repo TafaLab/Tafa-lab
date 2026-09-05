@@ -126,6 +126,8 @@ export default function StkAdminPage() {
   const [section,setSection]=useState<"requests"|"crm"|"reminders">("requests");
   const [crmMeta,setCrmMeta]=useState<Record<string,CrmMeta>>({});
   const [draftReminder,setDraftReminder]=useState("");
+  const [adding,setAdding]=useState(false);
+  const [newLead,setNewLead]=useState({name:"",contact:"",company:"",project_type:"",message:"",reminder_at:""});
 
   useEffect(()=>{
     try{setCrmMeta(JSON.parse(localStorage.getItem("stk-admin-crm-meta")||"{}"));}catch{}
@@ -211,6 +213,16 @@ export default function StkAdminPage() {
     setSaving(false);
   }
 
+  function createCrmLead(e:FormEvent<HTMLFormElement>){
+    e.preventDefault();
+    if(!newLead.name.trim()||!newLead.contact.trim())return;
+    const id=`kaskelen-manual-${Date.now()}`;
+    const lead:Lead={id,created_at:new Date().toISOString(),name:newLead.name.trim(),contact:newLead.contact.trim(),company:newLead.company.trim()||null,project_type:newLead.project_type.trim()||null,message:newLead.message.trim()||null,locale:"ru",source_path:"Добавлено вручную",status:"new",admin_notes:null};
+    setLeads(p=>[lead,...p]);
+    if(newLead.reminder_at){const next={...crmMeta,[id]:{reminder_at:newLead.reminder_at,history:[]}};setCrmMeta(next);localStorage.setItem("stk-admin-crm-meta",JSON.stringify(next));}
+    setNewLead({name:"",contact:"",company:"",project_type:"",message:"",reminder_at:""});setAdding(false);setSection("crm");setSelectedId(id);openLead(lead);
+  }
+
   async function deleteLead(){
     if(!selectedId||!window.confirm(t.deleteAsk))return;
     setDeleting(true);setError("");
@@ -272,8 +284,9 @@ export default function StkAdminPage() {
     <div className="mx-auto flex max-w-[1500px] flex-col md:flex-row"><aside className="border-b border-black/10 px-5 py-4 md:min-h-[calc(100vh-73px)] md:w-64 md:border-b-0 md:border-r md:px-4 md:py-8"><p className="px-3 text-xs uppercase tracking-[.2em] text-black/40">STK Bakery</p><nav className="mt-4 flex gap-2 overflow-x-auto md:block md:space-y-2"><button type="button" onClick={()=>{setSection("requests");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="requests"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>▤ {locale==="ru"?"Заявки":"Requests"} <span className="ml-2 opacity-60">{leads.filter(x=>!x.id.startsWith("kaskelen-")).length}</span></button><button type="button" onClick={()=>{setSection("crm");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="crm"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>◌ CRM <span className="ml-2 opacity-60">{leads.filter(x=>x.id.startsWith("kaskelen-")).length}</span></button><button type="button" onClick={()=>{setSection("reminders");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="reminders"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>◷ {locale==="ru"?"Напоминания":"Reminders"} <span className="ml-2 opacity-60">{leads.filter(x=>Boolean(crmMeta[x.id]?.reminder_at)&&crmMeta[x.id].reminder_at<=new Date().toISOString().slice(0,10)).length}</span></button></nav></aside><section className="min-w-0 flex-1 px-5 py-8 md:px-8 md:py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div><p className="text-xs uppercase tracking-[.2em] text-black/40">STK Bakery CRM · Tafa Lab</p><h1 className="mt-2 text-4xl">{section==="crm"?(locale==="ru"?"Клиенты и CRM":"Clients & CRM"):section==="reminders"?(locale==="ru"?"Напоминания":"Reminders"):t.leads}</h1><p className="mt-2 text-sm text-black/50">{t.total}: {section==="crm"?leads.filter(x=>x.id.startsWith("kaskelen-")).length:section==="reminders"?leads.filter(x=>Boolean(crmMeta[x.id]?.reminder_at)&&crmMeta[x.id].reminder_at<=new Date().toISOString().slice(0,10)).length:leads.filter(x=>!x.id.startsWith("kaskelen-")).length}</p></div>
-        <button onClick={load} disabled={loading} className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm">{loading?t.refreshing:t.refresh}</button>
+        <button onClick={load} disabled={loading} className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm">{loading?t.refreshing:t.refresh}</button>{section==="crm"&&<button onClick={()=>setAdding(true)} className="rounded-full bg-[#211a17] px-4 py-2 text-sm text-white">{locale==="ru"?"Добавить в CRM":"Add to CRM"}</button>}
       </div>
+      {adding&&section==="crm"&&<form onSubmit={createCrmLead} className="mt-6 rounded-[28px] border border-black/10 bg-white p-5 shadow-sm md:p-6"><div className="flex items-center justify-between"><h2 className="text-xl font-medium">{locale==="ru"?"Новая запись CRM":"New CRM record"}</h2><button type="button" onClick={()=>setAdding(false)} className="text-2xl text-black/40">×</button></div><div className="mt-5 grid gap-3 md:grid-cols-2"><input required value={newLead.name} onChange={e=>setNewLead({...newLead,name:e.target.value})} placeholder={locale==="ru"?"Имя / компания *":"Name / company *"} className="rounded-2xl border border-black/10 px-4 py-3"/><input required value={newLead.contact} onChange={e=>setNewLead({...newLead,contact:e.target.value})} placeholder={locale==="ru"?"Телефон, email или Instagram *":"Phone, email or Instagram *"} className="rounded-2xl border border-black/10 px-4 py-3"/><input value={newLead.company} onChange={e=>setNewLead({...newLead,company:e.target.value})} placeholder={locale==="ru"?"Компания":"Company"} className="rounded-2xl border border-black/10 px-4 py-3"/><input value={newLead.project_type} onChange={e=>setNewLead({...newLead,project_type:e.target.value})} placeholder={locale==="ru"?"Что предложить":"Project type"} className="rounded-2xl border border-black/10 px-4 py-3"/><label className="text-sm text-black/50">{locale==="ru"?"Дата напоминания":"Reminder date"}<input type="date" value={newLead.reminder_at} onChange={e=>setNewLead({...newLead,reminder_at:e.target.value})} className="mt-1 w-full rounded-2xl border border-black/10 px-4 py-3"/></label><textarea value={newLead.message} onChange={e=>setNewLead({...newLead,message:e.target.value})} placeholder={locale==="ru"?"Информация о компании":"Company information"} className="min-h-24 rounded-2xl border border-black/10 px-4 py-3 md:col-span-2"/></div><button className="mt-4 rounded-full bg-[#211a17] px-5 py-3 text-sm text-white">{locale==="ru"?"Сохранить запись":"Save record"}</button></form>}
 
       <div className="mt-7 flex flex-wrap gap-2">
         {filterKeys.map(k=><button key={k} onClick={()=>{setFilter(k);setSelectedId(null)}} className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm ${filter===k?"border-[#211a17] bg-[#211a17] text-white":"border-black/10 bg-white"}`}>
