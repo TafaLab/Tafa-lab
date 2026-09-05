@@ -1,4 +1,5 @@
 "use client";
+import { supabase } from "@/lib/supabase";
 import { useEffect, useMemo, useState } from "react";
 import { useLocale } from "next-intl";
 type Stage="new"|"contacted"|"proposal"|"won"|"lost";
