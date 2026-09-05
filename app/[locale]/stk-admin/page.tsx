@@ -39,7 +39,7 @@ const sb = getStkSupabase();
 
 const text = {
   ru: {
-    admin:"Admin · Заявки", leads:"Заявки", total:"Всего", refresh:"Обновить", refreshing:"Обновляем…",
+    admin:"CRM · Заявки и клиенты", leads:"Заявки", total:"Всего", refresh:"Обновить", refreshing:"Обновляем…",
     logout:"Выйти", search:"Поиск по имени, контакту, компании, сообщению…", sort:"Сортировка",
     newest:"Сначала новые", oldest:"Сначала старые", name:"По имени",
     filters:{all:"Все",new:"Новые",contacted:"Связались",in_progress:"В работе",won:"Успешно",lost:"Отказ"},
@@ -75,6 +75,21 @@ const text = {
     found:"Found",
   }
 } as const;
+
+const kaskelenLeads:Lead[]=[
+ {id:"kaskelen-dave",created_at:"2026-09-05T00:00:00Z",name:"Кондитерская Фабрика Dave",contact:"+7 700 555 50 51",company:"Кондитерская Фабрика Dave",project_type:"Сайт и CRM для производства",message:"Производитель кондитерских изделий. Адрес: ул. Кайназар батыра, 35, Каскелен. Производство уже серьёзнее домашнего кондитера; современный сайт не найден.",locale:"ru",source_path:"Каскелен · найдено ранее",status:"new",admin_notes:null},
+ {id:"kaskelen-praga",created_at:"2026-09-05T00:00:00Z",name:"Кондитерская «Прага»",contact:"Instagram: @praga_kz",company:"Кондитерская «Прага»",project_type:"Сайт и онлайн-заказ",message:"Каскелен · кондитерская и кофейня. Instagram: https://www.instagram.com/praga_kz/ · производство: @praga.qz · часы: ежедневно 07:30–21:00. Сайт, email и WhatsApp не подтверждены.",locale:"ru",source_path:"Instagram · @praga_kz",status:"new",admin_notes:null},
+ {id:"kaskelen-happy-cake",created_at:"2026-09-05T00:00:00Z",name:"Happy Cake Каскелен",contact:"+7 707 777 11 44",company:"Happy Cake",project_type:"Сайт, доставка и CRM",message:"Сайт: https://happycake.kz/qaskelen/ · 3 точки в Каскелене, доставка и самовывоз, Wolt. Бенто-торты, чизкейки, медовик, детские, свадебные и корпоративные торты.",locale:"ru",source_path:"happycake.kz/qaskelen",status:"new",admin_notes:null},
+ {id:"kaskelen-cakes",created_at:"2026-09-05T00:00:00Z",name:"Kaskelen Cakes",contact:"Instagram: @kaskelen_cakes",company:"Kaskelen Cakes",project_type:"Каталог и заказы тортов",message:"Instagram: https://www.instagram.com/kaskelen_cakes/?hl=en · адрес: ул. Жангозина, 61Б, блок 10, Каскелен · ежедневно 09:00–23:00. Торты и оформление для мероприятий.",locale:"ru",source_path:"Instagram · @kaskelen_cakes",status:"new",admin_notes:null},
+ {id:"kaskelen-kulikov",created_at:"2026-09-05T00:00:00Z",name:"Kulikov Каскелен",contact:"Контакт не найден",company:"Kulikov",project_type:"Сайт и заказы тортов",message:"Карточка: https://2gis.kz/almaty/firm/70000001065735365 · адрес: просп. Абылай Хана, 46/46Б. Торты на заказ и фототорты.",locale:"ru",source_path:"2GIS · Kulikov",status:"new",admin_notes:null},
+ {id:"kaskelen-qulpynai",created_at:"2026-09-05T00:00:00Z",name:"Qulpynai Каскелен",contact:"Контакт не найден",company:"Qulpynai",project_type:"Сайт и кондитерская",message:"Карточка: https://restoran.kz/cookery/101721-qulpynai-kaskelen · адрес: ул. Кисыкова, 42А, Каскелен. Ресторан/кондитерская, десерты и заказы.",locale:"ru",source_path:"restoran.kz · Qulpynai",status:"new",admin_notes:null},
+ {id:"kaskelen-yerkinay",created_at:"2026-09-05T00:00:00Z",name:"Yerkinay tattileri",contact:"Контакт не найден",company:"Yerkinay tattileri",project_type:"Сайт для пекарни-кондитерской",message:"Карточка: https://2gis.kz/almaty/firm/70000001090713630/tab/info · ул. Жибек Жолы, 31Б, Шамалган (рядом с Каскеленом). Ориентир цены: около 7 000 ₸/кг.",locale:"ru",source_path:"2GIS · Yerkinay tattileri",status:"new",admin_notes:null},
+ {id:"kaskelen-konditer-alemi",created_at:"2026-09-05T00:00:00Z",name:"Кондитер әлемі",contact:"Контакт не найден",company:"Кондитер әлемі",project_type:"Сайт-каталог",message:"Адрес: просп. Абылай Хана, 225/3, Каскелен. Кондитерский магазин/кондитерская.",locale:"ru",source_path:"Каскелен · найдено ранее",status:"new",admin_notes:null},
+ {id:"kaskelen-mir-sladosti",created_at:"2026-09-05T00:00:00Z",name:"Мир сладости",contact:"Контакт не найден",company:"Мир сладости",project_type:"Сайт-каталог",message:"Адрес: ул. Казыбек би, 33А, Каскелен. Магазин сладостей/кондитерская.",locale:"ru",source_path:"Каскелен · найдено ранее",status:"new",admin_notes:null},
+ {id:"kaskelen-candy-shop",created_at:"2026-09-05T00:00:00Z",name:"Candy shop",contact:"Контакт не найден",company:"Candy shop",project_type:"Сайт-каталог",message:"Адрес: просп. Абылай Хана, 30, Каскелен. Магазин сладостей.",locale:"ru",source_path:"Каскелен · найдено ранее",status:"new",admin_notes:null},
+ {id:"kaskelen-bayan",created_at:"2026-09-05T00:00:00Z",name:"Баян",contact:"Контакт не найден",company:"Баян",project_type:"Сайт для кулинарии",message:"Адрес: просп. Абылай Хана, 22Б, Каскелен. Кулинария/кондитерская.",locale:"ru",source_path:"Каскелен · найдено ранее",status:"new",admin_notes:null},
+ {id:"kaskelen-hamle",created_at:"2026-09-05T00:00:00Z",name:"Хамле / Хамле Компани ЛТД",contact:"Контакт не найден",company:"Хамле Компани ЛТД",project_type:"Сайт и CRM для пекарни",message:"Адрес: просп. Абылай Хана, 3А, Каскелен. Пекарня/кулинария, потенциальный корпоративный клиент.",locale:"ru",source_path:"Каскелен · найдено ранее",status:"new",admin_notes:null}
+];
 
 const statusStyles: Record<LeadStatus, string> = {
   new: "bg-[#f0ebe5] text-[#5b4a3f]",
@@ -148,7 +163,7 @@ export default function StkAdminPage() {
     if(error)setError(error.message);
     else{
       const rows=(data??[]) as Lead[];
-      setLeads(rows);
+      setLeads([...kaskelenLeads,...rows]);
       if(selectedId){
         const x=rows.find(r=>r.id===selectedId);
         if(x){setDraftStatus(x.status);setDraftNotes(x.admin_notes??"")}
@@ -167,6 +182,12 @@ export default function StkAdminPage() {
     if(!selectedId)return;
     setSaving(true);setSaved(false);setError("");
     const notes=draftNotes.trim()||null;
+    if(selectedId.startsWith("kaskelen-")){
+      setLeads(p=>p.map(x=>x.id===selectedId?{...x,status:draftStatus,admin_notes:notes}:x));
+      setSaved(true);window.setTimeout(()=>setSaved(false),2200);
+      setSaving(false);
+      return;
+    }
     const {error}=await sb.from("stk_lab_leads").update({status:draftStatus,admin_notes:notes}).eq("id",selectedId);
     if(error)setError(error.message);
     else{
@@ -179,6 +200,12 @@ export default function StkAdminPage() {
   async function deleteLead(){
     if(!selectedId||!window.confirm(t.deleteAsk))return;
     setDeleting(true);setError("");
+    if(selectedId.startsWith("kaskelen-")){
+      setLeads(p=>p.filter(x=>x.id!==selectedId));
+      setSelectedId(null);setNotice(t.deleted);window.setTimeout(()=>setNotice(""),2500);
+      setDeleting(false);
+      return;
+    }
     const {error}=await sb.from("stk_lab_leads").delete().eq("id",selectedId);
     if(error)setError(error.message);
     else{
@@ -225,7 +252,7 @@ export default function StkAdminPage() {
 
     <section className="mx-auto max-w-7xl px-5 py-8 md:px-6 md:py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div><p className="text-xs uppercase tracking-[.2em] text-black/40">Tafa Lab Leads</p><h1 className="mt-2 text-4xl">{t.leads}</h1><p className="mt-2 text-sm text-black/50">{t.total}: {leads.length}</p></div>
+        <div><p className="text-xs uppercase tracking-[.2em] text-black/40">STK Bakery CRM · Tafa Lab</p><h1 className="mt-2 text-4xl">{t.leads}</h1><p className="mt-2 text-sm text-black/50">{t.total}: {leads.length}</p></div>
         <button onClick={load} disabled={loading} className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm">{loading?t.refreshing:t.refresh}</button>
       </div>
 
