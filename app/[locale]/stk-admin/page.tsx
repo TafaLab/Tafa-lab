@@ -147,10 +147,11 @@ export default function StkAdminPage() {
   },[user]);
 
   const counts=useMemo(()=>{
-    const r:Record<LeadFilter,number>={all:leads.length,new:0,contacted:0,in_progress:0,won:0,lost:0};
-    leads.forEach(x=>r[x.status]++);
+    const scoped=section==="crm"||section==="reminders"?leads.filter(x=>x.id.startsWith("kaskelen-")):leads.filter(x=>!x.id.startsWith("kaskelen-"));
+    const r:Record<LeadFilter,number>={all:scoped.length,new:0,contacted:0,in_progress:0,won:0,lost:0};
+    scoped.forEach(x=>r[x.status]++);
     return r;
-  },[leads]);
+  },[leads,section]);
 
   const visibleLeads=useMemo(()=>{
     const q=query.trim().toLowerCase();
@@ -172,8 +173,9 @@ export default function StkAdminPage() {
   async function load(){
     setLoading(true);setError("");
     const stored=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-crm-meta")||"{}") as Record<string,CrmMeta>}catch{return {}}})();
+    const deleted=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-deleted-crm")||"[]") as string[]}catch{return []}})();
     setCrmMeta(stored);
-    const seeded=kaskelenLeads.map(x=>({...x,status:stored[x.id]?.status||x.status,admin_notes:x.admin_notes||null}));
+    const seeded=kaskelenLeads.filter(x=>!deleted.includes(x.id)).map(x=>({...x,status:stored[x.id]?.status||x.status,admin_notes:x.admin_notes||null}));
     const {data,error}=await sb.from("stk_lab_leads").select("*").order("created_at",{ascending:false});
     if(error)setError(error.message);
     else{
@@ -230,6 +232,8 @@ export default function StkAdminPage() {
     if(!selectedId||!window.confirm(t.deleteAsk))return;
     setDeleting(true);setError("");
     if(selectedId.startsWith("kaskelen-")){
+      const deleted=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-deleted-crm")||"[]") as string[]}catch{return []}})();
+      if(!deleted.includes(selectedId)){deleted.push(selectedId);localStorage.setItem("stk-admin-deleted-crm",JSON.stringify(deleted));}
       setLeads(p=>p.filter(x=>x.id!==selectedId));
       setSelectedId(null);setNotice(t.deleted);window.setTimeout(()=>setNotice(""),2500);
       setDeleting(false);
