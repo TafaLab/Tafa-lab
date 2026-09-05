@@ -120,6 +120,7 @@ export default function StkAdminPage() {
   const [deleting,setDeleting]=useState(false);
   const [notice,setNotice]=useState("");
   const [copied,setCopied]=useState(false);
+  const [section,setSection]=useState<"requests"|"crm">("requests");
 
   useEffect(()=>{
     sb.auth.getUser().then(({data})=>{setUser(data.user??null);setReady(true)});
@@ -145,7 +146,8 @@ export default function StkAdminPage() {
 
   const visibleLeads=useMemo(()=>{
     const q=query.trim().toLowerCase();
-    let rows=filter==="all"?[...leads]:leads.filter(x=>x.status===filter);
+    const sourceLeads=section==="crm"?leads.filter(x=>x.status!=="new"):leads;
+    let rows=filter==="all"?[...sourceLeads]:sourceLeads.filter(x=>x.status===filter);
     if(q) rows=rows.filter(x=>[
       x.name,x.contact,x.company,x.project_type,x.message,x.admin_notes,x.source_path
     ].some(v=>(v??"").toLowerCase().includes(q)));
@@ -155,7 +157,7 @@ export default function StkAdminPage() {
       return +new Date(b.created_at)-+new Date(a.created_at);
     });
     return rows;
-  },[leads,filter,query,sort,locale]);
+  },[leads,filter,query,sort,locale,section]);
 
   async function load(){
     setLoading(true);setError("");
@@ -250,9 +252,9 @@ export default function StkAdminPage() {
       </div>
     </header>
 
-    <section className="mx-auto max-w-7xl px-5 py-8 md:px-6 md:py-10">
+    <div className="mx-auto flex max-w-[1500px] flex-col md:flex-row"><aside className="border-b border-black/10 px-5 py-4 md:min-h-[calc(100vh-73px)] md:w-64 md:border-b-0 md:border-r md:px-4 md:py-8"><p className="px-3 text-xs uppercase tracking-[.2em] text-black/40">STK Bakery</p><nav className="mt-4 flex gap-2 overflow-x-auto md:block md:space-y-2"><button type="button" onClick={()=>{setSection("requests");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="requests"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>▤ {locale==="ru"?"Заявки":"Requests"} <span className="ml-2 opacity-60">{leads.length}</span></button><button type="button" onClick={()=>{setSection("crm");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="crm"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>◌ CRM <span className="ml-2 opacity-60">{Math.max(0,leads.filter(x=>x.status!=="new").length)}</span></button></nav></aside><section className="min-w-0 flex-1 px-5 py-8 md:px-8 md:py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div><p className="text-xs uppercase tracking-[.2em] text-black/40">STK Bakery CRM · Tafa Lab</p><h1 className="mt-2 text-4xl">{t.leads}</h1><p className="mt-2 text-sm text-black/50">{t.total}: {leads.length}</p></div>
+        <div><p className="text-xs uppercase tracking-[.2em] text-black/40">STK Bakery CRM · Tafa Lab</p><h1 className="mt-2 text-4xl">{section==="crm"?(locale==="ru"?"Клиенты и CRM":"Clients & CRM"):t.leads}</h1><p className="mt-2 text-sm text-black/50">{t.total}: {section==="crm"?Math.max(0,leads.filter(x=>x.status!=="new").length):leads.length}</p></div>
         <button onClick={load} disabled={loading} className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm">{loading?t.refreshing:t.refresh}</button>
       </div>
 
@@ -284,7 +286,12 @@ export default function StkAdminPage() {
           {!loading&&visibleLeads.length===0&&!error&&<div className="rounded-[28px] border border-black/10 bg-white p-8 text-black/50">{t.none}</div>}
         </div>
 
-        <aside className="lg:sticky lg:top-24 lg:self-start">
+        
+      </div>
+      {selected&&<>
+        <button type="button" aria-label={t.close} onClick={()=>setSelectedId(null)} className="fixed inset-0 z-30 bg-black/35 backdrop-blur-[2px]" />
+        <aside className="fixed inset-y-0 right-0 z-40 w-full max-w-[460px] overflow-y-auto border-l border-black/10 bg-[#f5f1ec] p-4 shadow-2xl md:p-6">
+          
           {selected?<div className="rounded-[28px] border border-black/10 bg-white p-5 shadow-sm md:p-6">
             <div className="flex items-start justify-between gap-4"><div><p className="text-xs uppercase tracking-[.18em] text-black/35">{t.lead}</p><h2 className="mt-2 text-2xl font-medium">{selected.name}</h2></div><button onClick={()=>setSelectedId(null)} className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10" aria-label={t.close}>×</button></div>
 
@@ -305,8 +312,9 @@ export default function StkAdminPage() {
               </div>
             </div>
           </div>:<div className="rounded-[28px] border border-dashed border-black/15 bg-white/55 p-8 text-sm leading-6 text-black/45">{t.select}</div>}
+        
         </aside>
-      </div>
+      </>}
     </section>
   </main>;
 }
