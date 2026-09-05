@@ -65,6 +65,11 @@ export default function AdminSidebar() {
           exact: true,
         },
         {
+          href: `/${locale}/admin/crm`,
+          label: text.crm,
+          icon: "◌",
+        },
+        {
           href: `/${locale}/admin/orders`,
           label: text.orders,
           icon: "▤",
