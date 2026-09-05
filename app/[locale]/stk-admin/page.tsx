@@ -196,6 +196,7 @@ const statusStyles: Record<LeadStatus, string> = {
   lost: "bg-[#f5e6e5] text-[#663f3c]",
 };
 
+const isCrmId=(id:string)=>id.startsWith("kaskelen-")||id.startsWith("taldykorgan-");
 export default function StkAdminPage() {
   const pathname = usePathname();
   const locale: "ru" | "en" = pathname.startsWith("/en") ? "en" : "ru";
@@ -242,7 +243,7 @@ export default function StkAdminPage() {
   },[user]);
 
   const counts=useMemo(()=>{
-    const scoped=section==="crm"||section==="reminders"?leads.filter(x=>x.id.startsWith("kaskelen-")):leads.filter(x=>!x.id.startsWith("kaskelen-"));
+    const scoped=section==="crm"||section==="reminders"?leads.filter(x=>isCrmId(x.id)):leads.filter(x=>!isCrmId(x.id));
     const r:Record<LeadFilter,number>={all:scoped.length,new:0,draft:0,contacted:0,in_progress:0,won:0,lost:0};
     scoped.forEach(x=>r[x.status]++);
     return r;
@@ -250,7 +251,7 @@ export default function StkAdminPage() {
 
   const visibleLeads=useMemo(()=>{
     const q=query.trim().toLowerCase();
-    const sourceLeads=section==="crm"||section==="reminders"?leads.filter(x=>x.id.startsWith("kaskelen-")):leads.filter(x=>!x.id.startsWith("kaskelen-"));
+    const sourceLeads=section==="crm"||section==="reminders"?leads.filter(x=>isCrmId(x.id)):leads.filter(x=>!isCrmId(x.id));
     let rows=filter==="all"?[...sourceLeads]:sourceLeads.filter(x=>x.status===filter);
     if(section==="reminders"){const today=new Date().toISOString().slice(0,10);rows=sourceLeads.filter(x=>Boolean(crmMeta[x.id]?.reminder_at)&&crmMeta[x.id].reminder_at<=today);}
     rows.sort((a,b)=>{const ar=crmMeta[a.id]?.reminder_at||"9999-12-31";const br=crmMeta[b.id]?.reminder_at||"9999-12-31";if(section==="reminders")return ar.localeCompare(br);return 0;});
@@ -300,7 +301,7 @@ export default function StkAdminPage() {
     const history=notes&&notes!==previous.history.at(-1)?.text?[...previous.history,{text:notes,created_at:new Date().toISOString()}]:previous.history;
     const nextMeta={...crmMeta,[selectedId]:{reminder_at:draftReminder,history,status:draftStatus}};
     setCrmMeta(nextMeta);localStorage.setItem("stk-admin-crm-meta",JSON.stringify(nextMeta));
-    if(selectedId.startsWith("kaskelen-")){
+    if(isCrmId(selectedId)){
       setLeads(p=>p.map(x=>x.id===selectedId?{...x,status:draftStatus,admin_notes:notes}:x));
       setSaved(true);window.setTimeout(()=>setSaved(false),2200);
       setSaving(false);
@@ -332,7 +333,7 @@ export default function StkAdminPage() {
   async function deleteLead(){
     if(!selectedId||!window.confirm(t.deleteAsk))return;
     setDeleting(true);setError("");
-    if(selectedId.startsWith("kaskelen-")){
+    if(isCrmId(selectedId)){
       const deleted=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-deleted-crm")||"[]") as string[]}catch{return []}})();
       if(!deleted.includes(selectedId)){deleted.push(selectedId);localStorage.setItem("stk-admin-deleted-crm",JSON.stringify(deleted));}
       const manual=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-manual-crm")||"[]") as Lead[]}catch{return []}})();
@@ -391,9 +392,9 @@ export default function StkAdminPage() {
       </div>
     </header>
 
-    <div className="mx-auto flex max-w-[1500px] flex-col md:flex-row"><aside className="border-b border-black/10 px-5 py-4 md:min-h-[calc(100vh-73px)] md:w-64 md:border-b-0 md:border-r md:px-4 md:py-8"><p className="px-3 text-xs uppercase tracking-[.2em] text-black/40">STK Bakery</p><nav className="mt-4 flex gap-2 overflow-x-auto md:block md:space-y-2"><button type="button" onClick={()=>{setSection("requests");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="requests"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>▤ {locale==="ru"?"Заявки":"Requests"} <span className="ml-2 opacity-60">{leads.filter(x=>!x.id.startsWith("kaskelen-")).length}</span></button><button type="button" onClick={()=>{setSection("crm");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="crm"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>◌ CRM <span className="ml-2 opacity-60">{leads.filter(x=>x.id.startsWith("kaskelen-")).length}</span></button><button type="button" onClick={()=>{setSection("reminders");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="reminders"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>◷ {locale==="ru"?"Напоминания":"Reminders"} <span className="ml-2 opacity-60">{leads.filter(x=>Boolean(crmMeta[x.id]?.reminder_at)&&crmMeta[x.id].reminder_at<=new Date().toISOString().slice(0,10)).length}</span></button></nav></aside><section className="min-w-0 flex-1 px-5 py-8 md:px-8 md:py-10">
+    <div className="mx-auto flex max-w-[1500px] flex-col md:flex-row"><aside className="border-b border-black/10 px-5 py-4 md:min-h-[calc(100vh-73px)] md:w-64 md:border-b-0 md:border-r md:px-4 md:py-8"><p className="px-3 text-xs uppercase tracking-[.2em] text-black/40">STK Bakery</p><nav className="mt-4 flex gap-2 overflow-x-auto md:block md:space-y-2"><button type="button" onClick={()=>{setSection("requests");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="requests"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>▤ {locale==="ru"?"Заявки":"Requests"} <span className="ml-2 opacity-60">{leads.filter(x=>!isCrmId(x.id)).length}</span></button><button type="button" onClick={()=>{setSection("crm");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="crm"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>◌ CRM <span className="ml-2 opacity-60">{leads.filter(x=>isCrmId(x.id)).length}</span></button><button type="button" onClick={()=>{setSection("reminders");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="reminders"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>◷ {locale==="ru"?"Напоминания":"Reminders"} <span className="ml-2 opacity-60">{leads.filter(x=>Boolean(crmMeta[x.id]?.reminder_at)&&crmMeta[x.id].reminder_at<=new Date().toISOString().slice(0,10)).length}</span></button></nav></aside><section className="min-w-0 flex-1 px-5 py-8 md:px-8 md:py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div><p className="text-xs uppercase tracking-[.2em] text-black/40">STK Bakery CRM · Tafa Lab</p><h1 className="mt-2 text-4xl">{section==="crm"?(locale==="ru"?"Клиенты и CRM":"Clients & CRM"):section==="reminders"?(locale==="ru"?"Напоминания":"Reminders"):t.leads}</h1><p className="mt-2 text-sm text-black/50">{t.total}: {section==="crm"?leads.filter(x=>x.id.startsWith("kaskelen-")).length:section==="reminders"?leads.filter(x=>Boolean(crmMeta[x.id]?.reminder_at)&&crmMeta[x.id].reminder_at<=new Date().toISOString().slice(0,10)).length:leads.filter(x=>!x.id.startsWith("kaskelen-")).length}</p></div>
+        <div><p className="text-xs uppercase tracking-[.2em] text-black/40">STK Bakery CRM · Tafa Lab</p><h1 className="mt-2 text-4xl">{section==="crm"?(locale==="ru"?"Клиенты и CRM":"Clients & CRM"):section==="reminders"?(locale==="ru"?"Напоминания":"Reminders"):t.leads}</h1><p className="mt-2 text-sm text-black/50">{t.total}: {section==="crm"?leads.filter(x=>isCrmId(x.id)).length:section==="reminders"?leads.filter(x=>Boolean(crmMeta[x.id]?.reminder_at)&&crmMeta[x.id].reminder_at<=new Date().toISOString().slice(0,10)).length:leads.filter(x=>!isCrmId(x.id)).length}</p></div>
         <button onClick={load} disabled={loading} className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm">{loading?t.refreshing:t.refresh}</button>{section==="crm"&&<button onClick={()=>setAdding(true)} className="rounded-full bg-[#211a17] px-4 py-2 text-sm text-white">{locale==="ru"?"Добавить в CRM":"Add to CRM"}</button>}
       </div>
       {adding&&section==="crm"&&<form onSubmit={createCrmLead} className="mt-6 rounded-[28px] border border-black/10 bg-white p-5 shadow-sm md:p-6"><div className="flex items-center justify-between"><h2 className="text-xl font-medium">{locale==="ru"?"Новая запись CRM":"New CRM record"}</h2><button type="button" onClick={()=>setAdding(false)} className="text-2xl text-black/40">×</button></div><div className="mt-5 grid gap-3 md:grid-cols-2"><input required value={newLead.name} onChange={e=>setNewLead({...newLead,name:e.target.value})} placeholder={locale==="ru"?"Имя / компания *":"Name / company *"} className="rounded-2xl border border-black/10 px-4 py-3"/><input value={newLead.phone} onChange={e=>setNewLead({...newLead,phone:e.target.value})} placeholder={locale==="ru"?"Телефон":"Phone"} className="rounded-2xl border border-black/10 px-4 py-3"/><input value={newLead.instagram} onChange={e=>setNewLead({...newLead,instagram:e.target.value})} placeholder="Instagram" className="rounded-2xl border border-black/10 px-4 py-3"/><input type="email" value={newLead.email} onChange={e=>setNewLead({...newLead,email:e.target.value})} placeholder={locale==="ru"?"Почта":"Email"} className="rounded-2xl border border-black/10 px-4 py-3"/><input value={newLead.company} onChange={e=>setNewLead({...newLead,company:e.target.value})} placeholder={locale==="ru"?"Компания":"Company"} className="rounded-2xl border border-black/10 px-4 py-3"/><input value={newLead.city} onChange={e=>setNewLead({...newLead,city:e.target.value})} placeholder={locale==="ru"?"Город":"City"} className="rounded-2xl border border-black/10 px-4 py-3"/><input value={newLead.project_type} onChange={e=>setNewLead({...newLead,project_type:e.target.value})} placeholder={locale==="ru"?"Что предложить":"Project type"} className="rounded-2xl border border-black/10 px-4 py-3"/><label className="text-sm text-black/50">{locale==="ru"?"Дата напоминания":"Reminder date"}<input type="date" value={newLead.reminder_at} onChange={e=>setNewLead({...newLead,reminder_at:e.target.value})} className="mt-1 w-full rounded-2xl border border-black/10 px-4 py-3"/></label><textarea value={newLead.message} onChange={e=>setNewLead({...newLead,message:e.target.value})} placeholder={locale==="ru"?"Информация о компании":"Company information"} className="min-h-24 rounded-2xl border border-black/10 px-4 py-3 md:col-span-2"/></div><button className="mt-4 rounded-full bg-[#211a17] px-5 py-3 text-sm text-white">{locale==="ru"?"Сохранить запись":"Save record"}</button></form>}
