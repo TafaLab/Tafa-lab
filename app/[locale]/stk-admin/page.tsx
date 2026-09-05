@@ -174,13 +174,15 @@ export default function StkAdminPage() {
     setLoading(true);setError("");
     const stored=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-crm-meta")||"{}") as Record<string,CrmMeta>}catch{return {}}})();
     const deleted=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-deleted-crm")||"[]") as string[]}catch{return []}})();
+    const manual=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-manual-crm")||"[]") as Lead[]}catch{return []}})();
     setCrmMeta(stored);
     const seeded=kaskelenLeads.filter(x=>!deleted.includes(x.id)).map(x=>({...x,status:stored[x.id]?.status||x.status,admin_notes:x.admin_notes||null}));
+    const manualVisible=manual.filter(x=>!deleted.includes(x.id)).map(x=>({...x,status:stored[x.id]?.status||x.status,admin_notes:x.admin_notes||null}));
     const {data,error}=await sb.from("stk_lab_leads").select("*").order("created_at",{ascending:false});
     if(error)setError(error.message);
     else{
       const rows=(data??[]) as Lead[];
-      setLeads([...seeded,...rows]);
+      setLeads([...manualVisible,...seeded,...rows]);
       if(selectedId){
         const x=rows.find(r=>r.id===selectedId);
         if(x){setDraftStatus(x.status);setDraftNotes(x.admin_notes??"")}
@@ -223,6 +225,9 @@ export default function StkAdminPage() {
     if(!newLead.name.trim()||!newLead.contact.trim())return;
     const id=`kaskelen-manual-${Date.now()}`;
     const lead:Lead={id,created_at:new Date().toISOString(),name:newLead.name.trim(),contact:newLead.contact.trim(),company:newLead.company.trim()||null,project_type:newLead.project_type.trim()||null,message:newLead.message.trim()||null,locale:"ru",source_path:"Добавлено вручную",status:"new",admin_notes:null};
+    const manual=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-manual-crm")||"[]") as Lead[]}catch{return []}})();
+    manual.unshift(lead);
+    localStorage.setItem("stk-admin-manual-crm",JSON.stringify(manual));
     setLeads(p=>[lead,...p]);
     if(newLead.reminder_at){const next={...crmMeta,[id]:{reminder_at:newLead.reminder_at,history:[]}};setCrmMeta(next);localStorage.setItem("stk-admin-crm-meta",JSON.stringify(next));}
     setNewLead({name:"",contact:"",company:"",project_type:"",message:"",reminder_at:""});setAdding(false);setSection("crm");setSelectedId(id);openLead(lead);
@@ -234,6 +239,8 @@ export default function StkAdminPage() {
     if(selectedId.startsWith("kaskelen-")){
       const deleted=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-deleted-crm")||"[]") as string[]}catch{return []}})();
       if(!deleted.includes(selectedId)){deleted.push(selectedId);localStorage.setItem("stk-admin-deleted-crm",JSON.stringify(deleted));}
+      const manual=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-manual-crm")||"[]") as Lead[]}catch{return []}})();
+      localStorage.setItem("stk-admin-manual-crm",JSON.stringify(manual.filter(x=>x.id!==selectedId)));
       setLeads(p=>p.filter(x=>x.id!==selectedId));
       setSelectedId(null);setNotice(t.deleted);window.setTimeout(()=>setNotice(""),2500);
       setDeleting(false);
