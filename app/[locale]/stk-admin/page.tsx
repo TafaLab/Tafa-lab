@@ -8,6 +8,8 @@ type LeadStatus = "new" | "contacted" | "in_progress" | "won" | "lost";
 type LeadFilter = "all" | LeadStatus;
 type SortMode = "newest" | "oldest" | "name";
 
+type NoteEntry = { text: string; created_at: string };
+type CrmMeta = { reminder_at: string; history: NoteEntry[] };
 type Lead = {
   id: string;
   created_at: string;
@@ -120,9 +122,12 @@ export default function StkAdminPage() {
   const [deleting,setDeleting]=useState(false);
   const [notice,setNotice]=useState("");
   const [copied,setCopied]=useState(false);
-  const [section,setSection]=useState<"requests"|"crm">("requests");
+  const [section,setSection]=useState<"requests"|"crm"|"reminders">("requests");
+  const [crmMeta,setCrmMeta]=useState<Record<string,CrmMeta>>({});
+  const [draftReminder,setDraftReminder]=useState("");
 
   useEffect(()=>{
+    try{setCrmMeta(JSON.parse(localStorage.getItem("stk-admin-crm-meta")||"{}"));}catch{}
     sb.auth.getUser().then(({data})=>{setUser(data.user??null);setReady(true)});
     const {data}=sb.auth.onAuthStateChange((_e,s)=>setUser(s?.user??null));
     return()=>data.subscription.unsubscribe();
@@ -146,8 +151,10 @@ export default function StkAdminPage() {
 
   const visibleLeads=useMemo(()=>{
     const q=query.trim().toLowerCase();
-    const sourceLeads=section==="crm"?leads.filter(x=>x.id.startsWith("kaskelen-")):leads.filter(x=>!x.id.startsWith("kaskelen-"));
+    const sourceLeads=section==="crm"||section==="reminders"?leads.filter(x=>x.id.startsWith("kaskelen-")):leads.filter(x=>!x.id.startsWith("kaskelen-"));
     let rows=filter==="all"?[...sourceLeads]:sourceLeads.filter(x=>x.status===filter);
+    if(section==="reminders"){const today=new Date().toISOString().slice(0,10);rows=sourceLeads.filter(x=>Boolean(crmMeta[x.id]?.reminder_at)&&crmMeta[x.id].reminder_at<=today);}
+    rows.sort((a,b)=>{const ar=crmMeta[a.id]?.reminder_at||"9999-12-31";const br=crmMeta[b.id]?.reminder_at||"9999-12-31";if(section==="reminders")return ar.localeCompare(br);return 0;});
     if(q) rows=rows.filter(x=>[
       x.name,x.contact,x.company,x.project_type,x.message,x.admin_notes,x.source_path
     ].some(v=>(v??"").toLowerCase().includes(q)));
@@ -157,7 +164,7 @@ export default function StkAdminPage() {
       return +new Date(b.created_at)-+new Date(a.created_at);
     });
     return rows;
-  },[leads,filter,query,sort,locale,section]);
+  },[leads,filter,query,sort,locale,section,crmMeta]);
 
   async function load(){
     setLoading(true);setError("");
@@ -176,7 +183,7 @@ export default function StkAdminPage() {
   }
 
   function openLead(x:Lead){
-    setSelectedId(x.id);setDraftStatus(x.status);setDraftNotes(x.admin_notes??"");
+    setSelectedId(x.id);setDraftStatus(x.status);setDraftNotes(x.admin_notes??"");setDraftReminder(crmMeta[x.id]?.reminder_at||"");
     setSaved(false);setNotice("");setError("");setCopied(false);
   }
 
@@ -184,6 +191,10 @@ export default function StkAdminPage() {
     if(!selectedId)return;
     setSaving(true);setSaved(false);setError("");
     const notes=draftNotes.trim()||null;
+    const previous=crmMeta[selectedId]||{reminder_at:"",history:[]};
+    const history=notes&&notes!==previous.history.at(-1)?.text?[...previous.history,{text:notes,created_at:new Date().toISOString()}]:previous.history;
+    const nextMeta={...crmMeta,[selectedId]:{reminder_at:draftReminder,history}};
+    setCrmMeta(nextMeta);localStorage.setItem("stk-admin-crm-meta",JSON.stringify(nextMeta));
     if(selectedId.startsWith("kaskelen-")){
       setLeads(p=>p.map(x=>x.id===selectedId?{...x,status:draftStatus,admin_notes:notes}:x));
       setSaved(true);window.setTimeout(()=>setSaved(false),2200);
@@ -252,9 +263,9 @@ export default function StkAdminPage() {
       </div>
     </header>
 
-    <div className="mx-auto flex max-w-[1500px] flex-col md:flex-row"><aside className="border-b border-black/10 px-5 py-4 md:min-h-[calc(100vh-73px)] md:w-64 md:border-b-0 md:border-r md:px-4 md:py-8"><p className="px-3 text-xs uppercase tracking-[.2em] text-black/40">STK Bakery</p><nav className="mt-4 flex gap-2 overflow-x-auto md:block md:space-y-2"><button type="button" onClick={()=>{setSection("requests");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="requests"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>▤ {locale==="ru"?"Заявки":"Requests"} <span className="ml-2 opacity-60">{leads.filter(x=>!x.id.startsWith("kaskelen-")).length}</span></button><button type="button" onClick={()=>{setSection("crm");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="crm"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>◌ CRM <span className="ml-2 opacity-60">{leads.filter(x=>x.id.startsWith("kaskelen-")).length}</span></button></nav></aside><section className="min-w-0 flex-1 px-5 py-8 md:px-8 md:py-10">
+    <div className="mx-auto flex max-w-[1500px] flex-col md:flex-row"><aside className="border-b border-black/10 px-5 py-4 md:min-h-[calc(100vh-73px)] md:w-64 md:border-b-0 md:border-r md:px-4 md:py-8"><p className="px-3 text-xs uppercase tracking-[.2em] text-black/40">STK Bakery</p><nav className="mt-4 flex gap-2 overflow-x-auto md:block md:space-y-2"><button type="button" onClick={()=>{setSection("requests");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="requests"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>▤ {locale==="ru"?"Заявки":"Requests"} <span className="ml-2 opacity-60">{leads.filter(x=>!x.id.startsWith("kaskelen-")).length}</span></button><button type="button" onClick={()=>{setSection("crm");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="crm"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>◌ CRM <span className="ml-2 opacity-60">{leads.filter(x=>x.id.startsWith("kaskelen-")).length}</span></button><button type="button" onClick={()=>{setSection("reminders");setSelectedId(null)}} className={`whitespace-nowrap rounded-2xl px-4 py-3 text-left text-sm font-medium md:block md:w-full ${section==="reminders"?"bg-[#211a17] text-white":"bg-white hover:bg-[#eee7e1]"}`}>◷ {locale==="ru"?"Напоминания":"Reminders"} <span className="ml-2 opacity-60">{leads.filter(x=>Boolean(crmMeta[x.id]?.reminder_at)&&crmMeta[x.id].reminder_at<=new Date().toISOString().slice(0,10)).length}</span></button></nav></aside><section className="min-w-0 flex-1 px-5 py-8 md:px-8 md:py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div><p className="text-xs uppercase tracking-[.2em] text-black/40">STK Bakery CRM · Tafa Lab</p><h1 className="mt-2 text-4xl">{section==="crm"?(locale==="ru"?"Клиенты и CRM":"Clients & CRM"):t.leads}</h1><p className="mt-2 text-sm text-black/50">{t.total}: {section==="crm"?leads.filter(x=>x.id.startsWith("kaskelen-")).length:leads.filter(x=>!x.id.startsWith("kaskelen-")).length}</p></div>
+        <div><p className="text-xs uppercase tracking-[.2em] text-black/40">STK Bakery CRM · Tafa Lab</p><h1 className="mt-2 text-4xl">{section==="crm"?(locale==="ru"?"Клиенты и CRM":"Clients & CRM"):section==="reminders"?(locale==="ru"?"Напоминания":"Reminders"):t.leads}</h1><p className="mt-2 text-sm text-black/50">{t.total}: {section==="crm"?leads.filter(x=>x.id.startsWith("kaskelen-")).length:section==="reminders"?leads.filter(x=>Boolean(crmMeta[x.id]?.reminder_at)&&crmMeta[x.id].reminder_at<=new Date().toISOString().slice(0,10)).length:leads.filter(x=>!x.id.startsWith("kaskelen-")).length}</p></div>
         <button onClick={load} disabled={loading} className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm">{loading?t.refreshing:t.refresh}</button>
       </div>
 
@@ -297,9 +308,9 @@ export default function StkAdminPage() {
 
             <div className="mt-6 space-y-5">
               <div><label className="text-xs uppercase tracking-[.14em] text-black/40">{t.status}</label><select value={draftStatus} onChange={e=>{setDraftStatus(e.target.value as LeadStatus);setSaved(false)}} className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5">{(["new","contacted","in_progress","won","lost"] as LeadStatus[]).map(s=><option key={s} value={s}>{t.statuses[s]}</option>)}</select></div>
-              <div><label className="text-xs uppercase tracking-[.14em] text-black/40">{t.note}</label><textarea value={draftNotes} onChange={e=>{setDraftNotes(e.target.value);setSaved(false)}} rows={7} placeholder={t.notePh} className="mt-2 w-full resize-y rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5 leading-6"/></div>
+              <div><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Напоминание":"Reminder"}</label><input type="date" value={draftReminder} onChange={e=>setDraftReminder(e.target.value)} className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">{t.note}</label><textarea value={draftNotes} onChange={e=>{setDraftNotes(e.target.value);setSaved(false)}} rows={7} placeholder={t.notePh} className="mt-2 w-full resize-y rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5 leading-6"/></div>
               <button onClick={saveLead} disabled={saving} className="w-full rounded-full bg-[#211a17] px-5 py-3.5 text-sm font-medium text-white disabled:opacity-50">{saving?t.saving:t.save}</button>
-              {saved&&<p className="text-center text-sm text-[#48614d]">{t.saved}</p>}
+              {saved&&<p className="text-center text-sm text-[#48614d]">{t.saved}</p>}{(crmMeta[selected.id]?.history||[]).length>0&&<div className="rounded-2xl bg-[#faf8f6] p-4"><div className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"История заметок":"Note history"}</div><div className="mt-3 space-y-3">{(crmMeta[selected.id]?.history||[]).slice().reverse().map((n,i)=><div key={i} className="border-l-2 border-[#c9a58f] pl-3"><p className="whitespace-pre-wrap text-sm">{n.text}</p><small className="text-black/40">{new Date(n.created_at).toLocaleString(locale==="ru"?"ru-RU":"en-US")}</small></div>)}</div></div>}
 
               <div className="border-t border-black/10 pt-5 text-sm space-y-4">
                 <div><div className="text-xs text-black/35">{t.contact.toUpperCase()}</div><div className="mt-1 break-all">{selected.contact}</div><button onClick={()=>copyContact(selected.contact)} className="mt-2 text-xs underline underline-offset-4">{copied?t.copied:t.copy}</button></div>
