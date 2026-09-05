@@ -1,4 +1,5 @@
 "use client";
+// CRM data and UI are kept independent from deployment-time font fetching.
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { createClient, SupabaseClient, User } from "@supabase/supabase-js";
