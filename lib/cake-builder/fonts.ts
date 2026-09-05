@@ -1,44 +1,9 @@
-import {
-  Caveat,
-  Cormorant_Garamond,
-  Lobster,
-  Marck_Script,
-  Montserrat,
-  Playfair_Display,
-} from "next/font/google";
+// Local font fallbacks keep production builds independent from Google Fonts availability.
+type FontDefinition = { style: { fontFamily: string } };
 
-export const marckScript = Marck_Script({
-  weight: "400",
-  subsets: ["cyrillic", "latin"],
-  display: "swap",
-});
-
-export const caveat = Caveat({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["cyrillic", "latin"],
-  display: "swap",
-});
-
-export const lobster = Lobster({
-  weight: "400",
-  subsets: ["cyrillic", "latin"],
-  display: "swap",
-});
-
-export const cormorant = Cormorant_Garamond({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["cyrillic", "latin"],
-  display: "swap",
-});
-
-export const playfair = Playfair_Display({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["cyrillic", "latin"],
-  display: "swap",
-});
-
-export const montserrat = Montserrat({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["cyrillic", "latin"],
-  display: "swap",
-});
+export const marckScript:FontDefinition={style:{fontFamily:"'Brush Script MT','Segoe Script',cursive"}};
+export const caveat:FontDefinition={style:{fontFamily:"'Comic Sans MS','Segoe Print',cursive"}};
+export const lobster:FontDefinition={style:{fontFamily:"Georgia,'Times New Roman',serif"}};
+export const cormorant:FontDefinition={style:{fontFamily:"Georgia,'Times New Roman',serif"}};
+export const playfair:FontDefinition={style:{fontFamily:"Georgia,'Times New Roman',serif"}};
+export const montserrat:FontDefinition={style:{fontFamily:"Arial,'Helvetica Neue',sans-serif"}};
