@@ -95,7 +95,7 @@ const kaskelenLeads:Lead[]=[
  {id:"kaskelen-hamle",created_at:"2026-09-05T00:00:00Z",name:"Хамле / Хамле Компани ЛТД",contact:"Контакт не найден",company:"Хамле Компани ЛТД",project_type:"Сайт и CRM для пекарни",message:"Адрес: просп. Абылай Хана, 3А, Каскелен. Пекарня/кулинария, потенциальный корпоративный клиент.",locale:"ru",source_path:"Каскелен · найдено ранее",status:"new",admin_notes:null}
 ];
 
-const almatyLeadSeed:Array<[string,string,string,string,string,string]> = [
+const almatyLeadSeed = [
 ["MUS-MUS","+7 778 870 00 67","mail@mus-mus.kz","@mus.mus.kz","Дом десертов / торты на заказ","ул. Макатаева 131 / Сокпакбаева 1"],
 ["Profiterole","+7 707 300 01 65","","","Кондитерская мастерская","ул. Брусиловского 159, блок 3"],
 ["Cake.Shop.KZ","+7 707 222 07 48","","","Домашняя кондитерская","ул. Исеналиева"],
