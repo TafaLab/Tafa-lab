@@ -94,6 +94,64 @@ const kaskelenLeads:Lead[]=[
  {id:"kaskelen-hamle",created_at:"2026-09-05T00:00:00Z",name:"Хамле / Хамле Компани ЛТД",contact:"Контакт не найден",company:"Хамле Компани ЛТД",project_type:"Сайт и CRM для пекарни",message:"Адрес: просп. Абылай Хана, 3А, Каскелен. Пекарня/кулинария, потенциальный корпоративный клиент.",locale:"ru",source_path:"Каскелен · найдено ранее",status:"new",admin_notes:null}
 ];
 
+const almatyLeadSeed:Array<[string,string,string,string,string,string]> = [
+["MUS-MUS","+7 778 870 00 67","mail@mus-mus.kz","@mus.mus.kz","Дом десертов / торты на заказ","ул. Макатаева 131 / Сокпакбаева 1"],
+["Profiterole","+7 707 300 01 65","","","Кондитерская мастерская","ул. Брусиловского 159, блок 3"],
+["Cake.Shop.KZ","+7 707 222 07 48","","","Домашняя кондитерская","ул. Исеналиева"],
+["ZakazTortov.kz","+7 702 572 44 44","","","Торты на заказ","мкр. Керемет 5к"],
+["Кондитерский цех Айнур","+7 701 744 90 56","","","Кондитерский цех","ул. Акан-Серы 11"],
+["Кондитерский цех КарамеЛь","+7 707 812 10 22","","","Магазин тортов","ул. Жибек Жолы 67"],
+["Торты Алматы","+7 701 317 84 22","","","Кондитерская","Алматы"],
+["Cheesecake Алматы","+7 701 330 11 26","","","Магазин тортов","мкр. 6, дом 6"],
+["BentoDay","+7 776 755 31 88","","@bentoday.almaty","Бенто-торты / десерты","мкр. Аксай-5, 25 к6"],
+["Tattisin","+7 776 087 56 29","","@tattisin_","Кафе-кондитерская","пр. Абая 65"],
+["Cheesy","+7 702 235 54 01","cheesyalmaty@gmail.com","@cheesy.kz","Кондитерская-кофейня","мкр. Жетысу-3, 1Б"],
+["Nazik","+7 701 872 51 33","nazik@gmail.com","@nazik_official_almaty","Кондитерские изделия","пр. Достык 31"],
+["Өте Дәмді","+7 776 262 20 24","otedem@inbox.ru","","Кондитерский цех / сеть","ул. Жангельдина 31/1"],
+["Пекатория","+7 701 936 99 33","","@pekatoria_kz","Пекарня / десерты","пр. Серкебаева 244"],
+["Кондитерская Камилла","+7 727 294 88 72","","","Кондитерский магазин","Алматы"],
+["Fika","+7 707 933 10 23","","","Пекарня","ул. Кабанбай батыра 104"],
+["Kulinarich","+7 727 397 41 87","","","Кондитерский магазин","ул. Жангельдина 31/3"],
+["Caramel","","","","Кондитерская","мкр. Аккент 34"],
+["Tatti_dan","","","","Кондитерский цех","ул. Алмерек Абыз 73/1"],
+["Выпечка Алматы","","","","Кондитерский цех","ул. Алматинская 32"],
+["Мадам Нан","","","","Кондитерский цех","ул. Каныша Сатпаева 7а/3"],
+["Cake Star","","","","Пекарня / кондитерская","ул. Казыбек би 139"],
+["Sweet sisters.kz","","","","Кондитерская","ул. Кажымукана 59"],
+["Роза","","","","Кондитерский цех","мкр. Айнабулак-3, 129"],
+["Три Эклера","","","","Кондитерская мастерская","ул. Ходжанова 77/5 к1"],
+["Al’Barakat","","","","Кондитерский дом","ул. Жамбыла"],
+["Егор | george.yak","","","@george.yak","Авторский кондитер","Алматы"],
+["Deliberry_almaty.kz","","","","Кондитерская мастерская","Алматы"],
+["Happy Cake","+7 707 777 11 44","","","Сеть кондитерских","Алматы, 34 точки"],
+["Kulikov","+7 727 364 77 77","","","Кондитерский дом","Алматы, множество филиалов"],
+["AAbakery","+7 707 239 34 39","","@aabakery_almaty","Кондитерская","ул. Байзакова 225"],
+["Aidana","+7 747 593 35 58 / +7 775 155 64 24","aidano4ka.mazhitova@mail.ru","@allazharkyzy.aidana","Кондитерский дом","ул. Талжанова 9 / пр. Жибек Жолы 64"],
+["Aisha Sweets","+7 775 888 85 05","","@_aisha_sweets","Кондитерская / пункт выдачи","ул. Масанчи 98в"],
+["Aiyms Cake Boutique","+7 707 717 84 47","","@aiyms_cake_boutique","Кондитерская","мкр. Кулагер 30"],
+["Aizada.bakery","+7 707 973 67 67","","@aizada.bakery","Кондитерский магазин","мкр. Жас Канат 1/18"],
+["Aizhankasaten_cake","+7 708 667 64 30","","@aizhankasaten_cake","Кондитерская","ул. Шекспира 66"],
+["Albina Buro","+7 777 193 00 39","","@albina_buro","Кондитерский цех","ул. Лобачевского 11"],
+["Aliyadelice","+7 702 336 88 50","","@aliyadelice.kz","Кондитерский цех","ул. Жарокова 289а"],
+["Alma Chocolates","+7 771 765 40 72","info@almachocolates.kz","@alma_chocolates","Шоколад / кондитерское производство","пр. Райымбека 2"],
+["Asaat","+7 707 808 04 44","","@asaat.kz","Кондитерская","ул. Навои 72"],
+["Ayala sweet bakery","+7 705 773 28 46 / +7 707 769 24 14","","@ayala_sweet_bakery","Кондитерская","ул. Арман 53Б / мкр. Шугыла 340/35 к7"],
+["AyAz Chocolate","+7 777 351 91 21 / +7 727 327 23 32","ayazchocolate@yahoo.com","","Шоколадное производство","ул. Герасима Колпаковского 55"],
+["Azicake","+7 707 738 48 94","","@azicake.kz","Кондитерский цех","4-й микрорайон 4/1"],
+["Baily Bakery","+7 701 540 23 25 / +7 702 948 79 08","","@baily.bakery","Пекарня-кафе","мкр. Дарабоз 51"],
+["Bento_tortiki_almaty","+7 705 769 72 67","","@bentotortiki_toibastar_almaty","Бенто-торты","мкр. Аксай-2 71"],
+["Best Berry","+7 707 311 08 04","","@bestberry.almaty","Клубника в шоколаде / десерты","ул. Каныша Сатпаева 7а"],
+["bibi.cake","+7 706 669 70 17","","@anelkin.tort","Кондитерская студия","ул. Есенберлина 155"],
+["Biday Bakery","+7 771 294 22 15 / +7 776 202 05 77","","@biday_bakery","Пекарня","ул. Байтерекова 83"],
+["Big Apple Cake","+7 775 911 81 11","zakaz@biapplecake.kz","@big_apple_cake","Кондитерский цех","пр. Достык 50"],
+["Caramel","+7 778 108 55 44","aizhankaz@gmail.com","@caramel.cakeshop","Кондитерская","мкр. Аккент 34"],
+["Caramelca.kz","+7 708 725 47 67","","@caramelca.kz","Кондитерский цех","ул. Жунисова 4/9"],
+["Caramel Shanyraq2","","","@caramel_shanyraq2","Кондитерский дом","ул. Жанкожа Батыра 119/1"],
+["Charlotte","+7 702 730 99 33","","@cafe_charlotte_almaty","Кафе-кондитерская","ул. Розыбакиева 247, блок 3"],
+["Cherry bakery","+7 747 511 11 61","","@cherry.bakery.kz","Кондитерская","ул. Коргалжын 9"],
+["Chocoberry","+7 708 322 81 51","","@chocoberry_aliya","Десертные композиции","мкр. Тастак-1 3"]
+].map(([name,phone,email,instagram,category,address],i)=>({id:`kaskelen-almaty-${i+1}`,created_at:"2026-09-05T00:00:00Z",name,contact:[phone&&`Телефон: ${phone}`,instagram&&`Instagram: ${instagram}`,email&&`Email: ${email}`].filter(Boolean).join(" · ")||"Контакт не найден",company:name,city:"Алматы",project_type:category,message:`${category}. Адрес: ${address}, Алматы.`,locale:"ru" as const,source_path:"Excel · konditerskie_almaty_full_leads.xlsx",status:"new" as LeadStatus,admin_notes:null}));
+ 
 const statusStyles: Record<LeadStatus, string> = {
   new: "bg-[#f0ebe5] text-[#5b4a3f]",
   contacted: "bg-[#e8eef6] text-[#35465a]",
@@ -177,7 +235,7 @@ export default function StkAdminPage() {
     const deleted=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-deleted-crm")||"[]") as string[]}catch{return []}})();
     const manual=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-manual-crm")||"[]") as Lead[]}catch{return []}})();
     setCrmMeta(stored);
-    const seeded=kaskelenLeads.filter(x=>!deleted.includes(x.id)).map(x=>({...x,status:stored[x.id]?.status||x.status,admin_notes:x.admin_notes||null}));
+    const seeded=[...kaskelenLeads,...almatyLeadSeed].filter(x=>!deleted.includes(x.id)).map(x=>({...x,status:stored[x.id]?.status||x.status,admin_notes:x.admin_notes||null}));
     const manualVisible=manual.filter(x=>!deleted.includes(x.id)).map(x=>({...x,status:stored[x.id]?.status||x.status,admin_notes:x.admin_notes||null}));
     const {data,error}=await sb.from("stk_lab_leads").select("*").order("created_at",{ascending:false});
     if(error)setError(error.message);
