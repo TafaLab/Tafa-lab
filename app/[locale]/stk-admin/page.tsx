@@ -11,6 +11,7 @@ type SortMode = "newest" | "oldest" | "name";
 
 type NoteEntry = { text: string; created_at: string };
 type CrmMeta = { reminder_at: string; history: NoteEntry[]; status?: LeadStatus };
+type CrmSyncState = { meta: Record<string,CrmMeta>; manual: Lead[]; deleted: string[]; synced_at?: string };
 type Lead = {
   id: string;
   created_at: string;
@@ -197,6 +198,26 @@ const statusStyles: Record<LeadStatus, string> = {
 };
 
 const isCrmId=(id:string)=>id.startsWith("kaskelen-")||id.startsWith("taldykorgan-");
+const CRM_SYNC_KEY="stk_admin_crm_state";
+function readLocalCrmState():CrmSyncState{
+  const parse=<T,>(key:string,fallback:T):T=>{try{return JSON.parse(localStorage.getItem(key)||"") as T}catch{return fallback}};
+  return {meta:parse<Record<string,CrmMeta>>("stk-admin-crm-meta",{}),manual:parse<Lead[]>("stk-admin-manual-crm",[]),deleted:parse<string[]>("stk-admin-deleted-crm",[])};
+}
+function writeLocalCrmState(state:CrmSyncState){
+  localStorage.setItem("stk-admin-crm-meta",JSON.stringify(state.meta));localStorage.setItem("stk-admin-manual-crm",JSON.stringify(state.manual));localStorage.setItem("stk-admin-deleted-crm",JSON.stringify(state.deleted));
+}
+function crmStateScore(state:CrmSyncState){
+  return state.deleted.length*10+state.manual.length*10+Object.values(state.meta).reduce((n,item)=>n+2+(item.status&&item.status!=="new"?4:0)+(item.reminder_at?3:0)+(item.history?.length||0),0);
+}
+function mergeCrmStates(local:CrmSyncState,remote:CrmSyncState):CrmSyncState{
+  const [primary,secondary]=crmStateScore(local)>=crmStateScore(remote)?[local,remote]:[remote,local];
+  const manual=new Map<string,Lead>();[...secondary.manual,...primary.manual].forEach(lead=>manual.set(lead.id,lead));
+  return {meta:{...secondary.meta,...primary.meta},manual:Array.from(manual.values()),deleted:Array.from(new Set([...secondary.deleted,...primary.deleted]))};
+}
+async function persistCrmState(state:CrmSyncState){
+  const payload={...state,synced_at:new Date().toISOString()};writeLocalCrmState(payload);
+  const {error}=await sb.auth.updateUser({data:{[CRM_SYNC_KEY]:payload}});return error?.message||"";
+}
 export default function StkAdminPage() {
   const pathname = usePathname();
   const locale: "ru" | "en" = pathname.startsWith("/en") ? "en" : "ru";
@@ -268,22 +289,20 @@ export default function StkAdminPage() {
 
   async function load(){
     setLoading(true);setError("");
-    const stored=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-crm-meta")||"{}") as Record<string,CrmMeta>}catch{return {}}})();
-    const deleted=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-deleted-crm")||"[]") as string[]}catch{return []}})();
-    const manual=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-manual-crm")||"[]") as Lead[]}catch{return []}})();
-    setCrmMeta(stored);
-    const seeded=[...kaskelenLeads,...almatyLeadSeed,...extraAlmatyLeadSeed,...taldykorganLeadSeed].filter(x=>!deleted.includes(x.id)).map(x=>({...x,status:stored[x.id]?.status||x.status,admin_notes:x.admin_notes||null}));
-    const manualVisible=manual.filter(x=>!deleted.includes(x.id)).map(x=>({...x,status:stored[x.id]?.status||x.status,admin_notes:x.admin_notes||null}));
-    const {data,error}=await sb.from("stk_lab_leads").select("*").order("created_at",{ascending:false});
-    if(error)setError(error.message);
+    const localState=readLocalCrmState();
+    const {data:authData}=await sb.auth.getUser();
+    const raw=authData.user?.user_metadata?.[CRM_SYNC_KEY] as Partial<CrmSyncState>|undefined;
+    const remoteState:CrmSyncState={meta:raw?.meta&&typeof raw.meta==="object"?raw.meta:{},manual:Array.isArray(raw?.manual)?raw.manual:[],deleted:Array.isArray(raw?.deleted)?raw.deleted:[],synced_at:raw?.synced_at};
+    const synced=mergeCrmStates(localState,remoteState);
+    const syncError=await persistCrmState(synced);if(syncError)setError(syncError);
+    setCrmMeta(synced.meta);
+    const seeded=[...kaskelenLeads,...almatyLeadSeed,...extraAlmatyLeadSeed,...taldykorganLeadSeed].filter(x=>!synced.deleted.includes(x.id)).map(x=>({...x,status:synced.meta[x.id]?.status||x.status,admin_notes:synced.meta[x.id]?.history?.at(-1)?.text||x.admin_notes||null}));
+    const manualVisible=synced.manual.filter(x=>!synced.deleted.includes(x.id)).map(x=>({...x,status:synced.meta[x.id]?.status||x.status,admin_notes:synced.meta[x.id]?.history?.at(-1)?.text||x.admin_notes||null}));
+    const {data,error:loadError}=await sb.from("stk_lab_leads").select("*").order("created_at",{ascending:false});
+    if(loadError)setError(loadError.message);
     else{
-      const rows=(data??[]) as Lead[];
-      setLeads([...manualVisible,...seeded,...rows]);
-      if(selectedId){
-        const x=rows.find(r=>r.id===selectedId);
-        if(x){setDraftStatus(x.status);setDraftNotes(x.admin_notes??"")}
-        else setSelectedId(null);
-      }
+      const rows=(data??[]) as Lead[];const all=[...manualVisible,...seeded,...rows];setLeads(all);
+      if(selectedId){const x=all.find(r=>r.id===selectedId);if(x){setDraftStatus(x.status);setDraftNotes(x.admin_notes??"");setDraftReminder(synced.meta[x.id]?.reminder_at||"")}else setSelectedId(null);}
     }
     setLoading(false);
   }
@@ -300,7 +319,7 @@ export default function StkAdminPage() {
     const previous=crmMeta[selectedId]||{reminder_at:"",history:[]};
     const history=notes&&notes!==previous.history.at(-1)?.text?[...previous.history,{text:notes,created_at:new Date().toISOString()}]:previous.history;
     const nextMeta={...crmMeta,[selectedId]:{reminder_at:draftReminder,history,status:draftStatus}};
-    setCrmMeta(nextMeta);localStorage.setItem("stk-admin-crm-meta",JSON.stringify(nextMeta));
+    setCrmMeta(nextMeta);const syncError=await persistCrmState({...readLocalCrmState(),meta:nextMeta});if(syncError)setError(syncError);
     if(isCrmId(selectedId)){
       setLeads(p=>p.map(x=>x.id===selectedId?{...x,status:draftStatus,admin_notes:notes}:x));
       setSaved(true);window.setTimeout(()=>setSaved(false),2200);
@@ -316,29 +335,20 @@ export default function StkAdminPage() {
     setSaving(false);
   }
 
-  function createCrmLead(e:FormEvent<HTMLFormElement>){
+  async function createCrmLead(e:FormEvent<HTMLFormElement>){
     e.preventDefault();
     if(!newLead.name.trim()||(!newLead.phone.trim()&&!newLead.instagram.trim()&&!newLead.email.trim()))return;
     const id=`kaskelen-manual-${Date.now()}`;
     const contact=[newLead.phone.trim()&&`Телефон: ${newLead.phone.trim()}`,newLead.instagram.trim()&&`Instagram: ${newLead.instagram.trim()}`,newLead.email.trim()&&`Email: ${newLead.email.trim()}`].filter(Boolean).join(" · ");
     const lead:Lead={id,created_at:new Date().toISOString(),name:newLead.name.trim(),contact,company:newLead.company.trim()||null,city:newLead.city.trim()||null,project_type:newLead.project_type.trim()||null,message:newLead.message.trim()||null,locale:"ru",source_path:"Добавлено вручную",status:"new",admin_notes:null};
-    const manual=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-manual-crm")||"[]") as Lead[]}catch{return []}})();
-    manual.unshift(lead);
-    localStorage.setItem("stk-admin-manual-crm",JSON.stringify(manual));
-    setLeads(p=>[lead,...p]);
-    if(newLead.reminder_at){const next={...crmMeta,[id]:{reminder_at:newLead.reminder_at,history:[]}};setCrmMeta(next);localStorage.setItem("stk-admin-crm-meta",JSON.stringify(next));}
-    setNewLead({name:"",phone:"",instagram:"",email:"",company:"",city:"",project_type:"",message:"",reminder_at:""});setAdding(false);setSection("crm");setSelectedId(id);openLead(lead);
+    const current=readLocalCrmState();const manual=[lead,...current.manual.filter(x=>x.id!==id)];const nextMeta=newLead.reminder_at?{...crmMeta,[id]:{reminder_at:newLead.reminder_at,history:[],status:"new" as LeadStatus}}:crmMeta;setCrmMeta(nextMeta);setLeads(p=>[lead,...p]);const syncError=await persistCrmState({...current,manual,meta:nextMeta});if(syncError)setError(syncError);setNewLead({name:"",phone:"",instagram:"",email:"",company:"",city:"",project_type:"",message:"",reminder_at:""});setAdding(false);setSection("crm");setSelectedId(id);setDraftStatus("new");setDraftNotes("");setDraftReminder(newLead.reminder_at);
   }
 
   async function deleteLead(){
     if(!selectedId||!window.confirm(t.deleteAsk))return;
     setDeleting(true);setError("");
     if(isCrmId(selectedId)){
-      const deleted=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-deleted-crm")||"[]") as string[]}catch{return []}})();
-      if(!deleted.includes(selectedId)){deleted.push(selectedId);localStorage.setItem("stk-admin-deleted-crm",JSON.stringify(deleted));}
-      const manual=(()=>{try{return JSON.parse(localStorage.getItem("stk-admin-manual-crm")||"[]") as Lead[]}catch{return []}})();
-      localStorage.setItem("stk-admin-manual-crm",JSON.stringify(manual.filter(x=>x.id!==selectedId)));
-      setLeads(p=>p.filter(x=>x.id!==selectedId));
+      const current=readLocalCrmState();const nextState={...current,deleted:Array.from(new Set([...current.deleted,selectedId])),manual:current.manual.filter(x=>x.id!==selectedId)};const syncError=await persistCrmState(nextState);if(syncError)setError(syncError);setLeads(p=>p.filter(x=>x.id!==selectedId));
       setSelectedId(null);setNotice(t.deleted);window.setTimeout(()=>setNotice(""),2500);
       setDeleting(false);
       return;
