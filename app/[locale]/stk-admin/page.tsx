@@ -10,7 +10,7 @@ type LeadFilter = "all" | LeadStatus;
 type SortMode = "newest" | "oldest" | "name";
 
 type NoteEntry = { text: string; created_at: string };
-type CrmMeta = { reminder_at: string; history: NoteEntry[]; status?: LeadStatus };
+type CrmMeta = { reminder_at: string; history: NoteEntry[]; status?: LeadStatus; contact?: string; city?: string | null; company?: string | null };
 type CrmSyncState = { meta: Record<string,CrmMeta>; manual: Lead[]; deleted: string[]; synced_at?: string };
 type Lead = {
   id: string;
@@ -244,6 +244,11 @@ export default function StkAdminPage() {
   const [section,setSection]=useState<"requests"|"crm"|"reminders">("requests");
   const [crmMeta,setCrmMeta]=useState<Record<string,CrmMeta>>({});
   const [draftReminder,setDraftReminder]=useState("");
+  const [draftPhone,setDraftPhone]=useState("");
+  const [draftInstagram,setDraftInstagram]=useState("");
+  const [draftEmail,setDraftEmail]=useState("");
+  const [draftCity,setDraftCity]=useState("");
+  const [draftCompany,setDraftCompany]=useState("");
   const [adding,setAdding]=useState(false);
   const [newLead,setNewLead]=useState({name:"",phone:"",instagram:"",email:"",company:"",city:"",project_type:"",message:"",reminder_at:""});
 
@@ -297,19 +302,19 @@ export default function StkAdminPage() {
     const synced=mergeCrmStates(localState,remoteState);
     if(crmStateKey(synced)!==crmStateKey(remoteState)){const syncError=await persistCrmState(synced);if(syncError)setError(syncError);}else writeLocalCrmState(synced);
     setCrmMeta(synced.meta);
-    const seeded=[...kaskelenLeads,...almatyLeadSeed,...extraAlmatyLeadSeed,...taldykorganLeadSeed].filter(x=>!synced.deleted.includes(x.id)).map(x=>({...x,status:synced.meta[x.id]?.status||x.status,admin_notes:synced.meta[x.id]?.history?.at(-1)?.text||x.admin_notes||null}));
-    const manualVisible=synced.manual.filter(x=>!synced.deleted.includes(x.id)).map(x=>({...x,status:synced.meta[x.id]?.status||x.status,admin_notes:synced.meta[x.id]?.history?.at(-1)?.text||x.admin_notes||null}));
+    const seeded=[...kaskelenLeads,...almatyLeadSeed,...extraAlmatyLeadSeed,...taldykorganLeadSeed].filter(x=>!synced.deleted.includes(x.id)).map(x=>({...x,contact:synced.meta[x.id]?.contact||x.contact,city:synced.meta[x.id]?.city??x.city,company:synced.meta[x.id]?.company??x.company,status:synced.meta[x.id]?.status||x.status,admin_notes:synced.meta[x.id]?.history?.at(-1)?.text||x.admin_notes||null}));
+    const manualVisible=synced.manual.filter(x=>!synced.deleted.includes(x.id)).map(x=>({...x,contact:synced.meta[x.id]?.contact||x.contact,city:synced.meta[x.id]?.city??x.city,company:synced.meta[x.id]?.company??x.company,status:synced.meta[x.id]?.status||x.status,admin_notes:synced.meta[x.id]?.history?.at(-1)?.text||x.admin_notes||null}));
     const {data,error:loadError}=await sb.from("stk_lab_leads").select("*").order("created_at",{ascending:false});
     if(loadError)setError(loadError.message);
     else{
       const rows=(data??[]) as Lead[];const all=[...manualVisible,...seeded,...rows];setLeads(all);
-      if(selectedId){const x=all.find(r=>r.id===selectedId);if(x){setDraftStatus(x.status);setDraftNotes(x.admin_notes??"");setDraftReminder(synced.meta[x.id]?.reminder_at||"")}else setSelectedId(null);}
+      if(selectedId){const x=all.find(r=>r.id===selectedId);if(x){const cf=contactFields(x.contact);setDraftStatus(x.status);setDraftNotes(x.admin_notes??"");setDraftReminder(synced.meta[x.id]?.reminder_at||"");setDraftPhone(cf.phone);setDraftInstagram(cf.instagram);setDraftEmail(cf.email);setDraftCity(x.city||"");setDraftCompany(x.company||"")}else setSelectedId(null);}
     }
     setLoading(false);
   }
 
   function openLead(x:Lead){
-    setSelectedId(x.id);setDraftStatus(crmMeta[x.id]?.status||x.status);setDraftNotes(x.admin_notes??"");setDraftReminder(crmMeta[x.id]?.reminder_at||"");
+    const cf=contactFields(x.contact);setSelectedId(x.id);setDraftStatus(crmMeta[x.id]?.status||x.status);setDraftNotes(x.admin_notes??"");setDraftReminder(crmMeta[x.id]?.reminder_at||"");setDraftPhone(cf.phone);setDraftInstagram(cf.instagram);setDraftEmail(cf.email);setDraftCity(x.city||"");setDraftCompany(x.company||"");
     setSaved(false);setNotice("");setError("");setCopied(false);
   }
 
@@ -319,15 +324,16 @@ export default function StkAdminPage() {
     const notes=draftNotes.trim()||null;
     const previous=crmMeta[selectedId]||{reminder_at:"",history:[]};
     const history=notes&&notes!==previous.history.at(-1)?.text?[...previous.history,{text:notes,created_at:new Date().toISOString()}]:previous.history;
-    const nextMeta={...crmMeta,[selectedId]:{reminder_at:draftReminder,history,status:draftStatus}};
+    const contact=[draftPhone.trim()&&`Телефон: ${draftPhone.trim()}`,draftInstagram.trim()&&`Instagram: ${draftInstagram.trim()}`,draftEmail.trim()&&`Email: ${draftEmail.trim()}`].filter(Boolean).join(" · ");
+    const nextMeta={...crmMeta,[selectedId]:{reminder_at:draftReminder,history,status:draftStatus,contact,city:draftCity.trim()||null,company:draftCompany.trim()||null}};
     setCrmMeta(nextMeta);const syncError=await persistCrmState({...readLocalCrmState(),meta:nextMeta});if(syncError)setError(syncError);
     if(isCrmId(selectedId)){
-      setLeads(p=>p.map(x=>x.id===selectedId?{...x,status:draftStatus,admin_notes:notes}:x));
+      setLeads(p=>p.map(x=>x.id===selectedId?{...x,status:draftStatus,admin_notes:notes,contact,city:draftCity.trim()||null,company:draftCompany.trim()||null}:x));
       setSaved(true);window.setTimeout(()=>setSaved(false),2200);
       setSaving(false);
       return;
     }
-    const {error}=await sb.from("stk_lab_leads").update({status:draftStatus,admin_notes:notes}).eq("id",selectedId);
+    const {error}=await sb.from("stk_lab_leads").update({status:draftStatus,admin_notes:notes,contact,city:draftCity.trim()||null,company:draftCompany.trim()||null}).eq("id",selectedId);
     if(error)setError(error.message);
     else{
       setLeads(p=>p.map(x=>x.id===selectedId?{...x,status:draftStatus,admin_notes:notes}:x));
@@ -449,7 +455,7 @@ export default function StkAdminPage() {
 
             <div className="mt-6 space-y-5">
               <div><label className="text-xs uppercase tracking-[.14em] text-black/40">{t.status}</label><select value={draftStatus} onChange={e=>{setDraftStatus(e.target.value as LeadStatus);setSaved(false)}} className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5">{(["new","draft","contacted","in_progress","won","lost"] as LeadStatus[]).map(s=><option key={s} value={s}>{t.statuses[s]}</option>)}</select></div>
-              <div><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Напоминание":"Reminder"}</label><input type="date" value={draftReminder} onChange={e=>setDraftReminder(e.target.value)} className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">{t.note}</label><textarea value={draftNotes} onChange={e=>{setDraftNotes(e.target.value);setSaved(false)}} rows={7} placeholder={t.notePh} className="mt-2 w-full resize-y rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5 leading-6"/></div>
+              <div><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Телефон":"Phone"}</label><input value={draftPhone} onChange={e=>{setDraftPhone(e.target.value);setSaved(false)}} placeholder="+7 700 000 00 00" className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">Instagram</label><input value={draftInstagram} onChange={e=>{setDraftInstagram(e.target.value);setSaved(false)}} placeholder="@company" className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Почта":"Email"}</label><input type="email" value={draftEmail} onChange={e=>{setDraftEmail(e.target.value);setSaved(false)}} placeholder="mail@example.com" className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Город":"City"}</label><input value={draftCity} onChange={e=>{setDraftCity(e.target.value);setSaved(false)}} placeholder={locale==="ru"?"Алматы":"City"} className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Компания":"Company"}</label><input value={draftCompany} onChange={e=>{setDraftCompany(e.target.value);setSaved(false)}} placeholder={locale==="ru"?"Название компании":"Company name"} className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Напоминание":"Reminder"}</label><input type="date" value={draftReminder} onChange={e=>setDraftReminder(e.target.value)} className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">{t.note}</label><textarea value={draftNotes} onChange={e=>{setDraftNotes(e.target.value);setSaved(false)}} rows={7} placeholder={t.notePh} className="mt-2 w-full resize-y rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5 leading-6"/></div>
               <button onClick={saveLead} disabled={saving} className="w-full rounded-full bg-[#211a17] px-5 py-3.5 text-sm font-medium text-white disabled:opacity-50">{saving?t.saving:t.save}</button>
               {saved&&<p className="text-center text-sm text-[#48614d]">{t.saved}</p>}{(crmMeta[selected.id]?.history||[]).length>0&&<div className="rounded-2xl bg-[#faf8f6] p-4"><div className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"История заметок":"Note history"}</div><div className="mt-3 space-y-3">{(crmMeta[selected.id]?.history||[]).slice().reverse().map((n,i)=><div key={i} className="border-l-2 border-[#c9a58f] pl-3"><p className="whitespace-pre-wrap text-sm">{n.text}</p><small className="text-black/40">{new Date(n.created_at).toLocaleString(locale==="ru"?"ru-RU":"en-US")}</small></div>)}</div></div>}
 
