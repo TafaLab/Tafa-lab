@@ -215,6 +215,12 @@ function mergeCrmStates(local:CrmSyncState,remote:CrmSyncState):CrmSyncState{
   return {meta:{...secondary.meta,...primary.meta},manual:Array.from(manual.values()),deleted:Array.from(new Set([...secondary.deleted,...primary.deleted]))};
 }
 function crmStateKey(state:CrmSyncState){return JSON.stringify({meta:state.meta,manual:state.manual,deleted:state.deleted})}
+function contactFields(contact:string){
+  const phone=contact.match(/(?:Телефон:\s*)?(\+?\d[\d\s()\-/]{6,})/)?.[1]?.trim()||"";
+  const instagram=contact.match(/Instagram:\s*([^·]+)/i)?.[1]?.trim()||"";
+  const email=contact.match(/(?:Email|E-mail):\s*([^·]+)/i)?.[1]?.trim()||contact.match(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/)?.[0]||"";
+  return {phone,instagram,email};
+}
 async function persistCrmState(state:CrmSyncState){
   const payload={...state,synced_at:new Date().toISOString()};writeLocalCrmState(payload);
   const {error}=await sb.auth.updateUser({data:{[CRM_SYNC_KEY]:payload}});return error?.message||"";
