@@ -313,7 +313,12 @@ export default function StkAdminPage() {
     const raw=authData.user?.user_metadata?.[CRM_SYNC_KEY] as Partial<CrmSyncState>|undefined;
     const remoteState:CrmSyncState={meta:raw?.meta&&typeof raw.meta==="object"?raw.meta:{},manual:Array.isArray(raw?.manual)?raw.manual:[],deleted:Array.isArray(raw?.deleted)?raw.deleted:[],synced_at:raw?.synced_at};
     const synced=mergeCrmStates(localState,remoteState);
-    if(crmStateKey(synced)!==crmStateKey(remoteState)){const syncError=await persistCrmState(synced);if(syncError)setError(syncError);}else writeLocalCrmState(synced);
+    // На загрузке не перезаписываем облачное состояние без реального локального изменения.
+    // Это предотвращает повторные запросы и ошибку rate limit при обновлении страницы.
+    if(crmStateScore(localState)>crmStateScore(remoteState)){
+      const syncError=await persistCrmState(synced);
+      if(syncError&&!/rate limit/i.test(syncError))setError(syncError);
+    }else writeLocalCrmState(synced);
     setCrmMeta(synced.meta);
     const seeded=[...kaskelenLeads,...almatyLeadSeed,...extraAlmatyLeadSeed,...taldykorganLeadSeed].filter(x=>!synced.deleted.includes(x.id)).map(x=>({...x,contact:synced.meta[x.id]?.contact||x.contact,city:synced.meta[x.id]?.city??x.city,company:synced.meta[x.id]?.company??x.company,status:synced.meta[x.id]?.status||x.status,admin_notes:synced.meta[x.id]?.history?.at(-1)?.text||x.admin_notes||null}));
     const manualVisible=synced.manual.filter(x=>!synced.deleted.includes(x.id)).map(x=>({...x,contact:synced.meta[x.id]?.contact||x.contact,city:synced.meta[x.id]?.city??x.city,company:synced.meta[x.id]?.company??x.company,status:synced.meta[x.id]?.status||x.status,admin_notes:synced.meta[x.id]?.history?.at(-1)?.text||x.admin_notes||null}));
