@@ -214,6 +214,7 @@ function mergeCrmStates(local:CrmSyncState,remote:CrmSyncState):CrmSyncState{
   const manual=new Map<string,Lead>();[...secondary.manual,...primary.manual].forEach(lead=>manual.set(lead.id,lead));
   return {meta:{...secondary.meta,...primary.meta},manual:Array.from(manual.values()),deleted:Array.from(new Set([...secondary.deleted,...primary.deleted]))};
 }
+function crmStateKey(state:CrmSyncState){return JSON.stringify({meta:state.meta,manual:state.manual,deleted:state.deleted})}
 async function persistCrmState(state:CrmSyncState){
   const payload={...state,synced_at:new Date().toISOString()};writeLocalCrmState(payload);
   const {error}=await sb.auth.updateUser({data:{[CRM_SYNC_KEY]:payload}});return error?.message||"";
@@ -294,7 +295,7 @@ export default function StkAdminPage() {
     const raw=authData.user?.user_metadata?.[CRM_SYNC_KEY] as Partial<CrmSyncState>|undefined;
     const remoteState:CrmSyncState={meta:raw?.meta&&typeof raw.meta==="object"?raw.meta:{},manual:Array.isArray(raw?.manual)?raw.manual:[],deleted:Array.isArray(raw?.deleted)?raw.deleted:[],synced_at:raw?.synced_at};
     const synced=mergeCrmStates(localState,remoteState);
-    const syncError=await persistCrmState(synced);if(syncError)setError(syncError);
+    if(crmStateKey(synced)!==crmStateKey(remoteState)){const syncError=await persistCrmState(synced);if(syncError)setError(syncError);}else writeLocalCrmState(synced);
     setCrmMeta(synced.meta);
     const seeded=[...kaskelenLeads,...almatyLeadSeed,...extraAlmatyLeadSeed,...taldykorganLeadSeed].filter(x=>!synced.deleted.includes(x.id)).map(x=>({...x,status:synced.meta[x.id]?.status||x.status,admin_notes:synced.meta[x.id]?.history?.at(-1)?.text||x.admin_notes||null}));
     const manualVisible=synced.manual.filter(x=>!synced.deleted.includes(x.id)).map(x=>({...x,status:synced.meta[x.id]?.status||x.status,admin_notes:synced.meta[x.id]?.history?.at(-1)?.text||x.admin_notes||null}));
