@@ -215,7 +215,8 @@ function mergeCrmStates(local:CrmSyncState,remote:CrmSyncState):CrmSyncState{
   return {meta:{...secondary.meta,...primary.meta},manual:Array.from(manual.values()),deleted:Array.from(new Set([...secondary.deleted,...primary.deleted]))};
 }
 function crmStateKey(state:CrmSyncState){return JSON.stringify({meta:state.meta,manual:state.manual,deleted:state.deleted})}
-function normalizeContact(value:string){return value.toLowerCase().replace(/[\s()\-+]/g,"");}\nfunction contactFields(contact:string){
+function normalizeContact(value:string){return value.toLowerCase().replace(/[\s()\-+]/g,"");}
+function contactFields(contact:string){
   const phone=contact.match(/(?:Телефон:\s*)?(\+?\d[\d\s()\-/]{6,})/)?.[1]?.trim()||"";
   const instagram=contact.match(/Instagram:\s*([^·]+)/i)?.[1]?.trim()||"";
   const email=contact.match(/(?:Email|E-mail):\s*([^·]+)/i)?.[1]?.trim()||contact.match(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/)?.[0]||"";
@@ -282,7 +283,13 @@ export default function StkAdminPage() {
     return r;
   },[leads,section]);
 
-  const duplicateMatches=useMemo(()=>{\n    const values=[newLead.phone,newLead.instagram,newLead.email].map(normalizeContact).filter(Boolean);\n    if(!values.length)return [] as Lead[];\n    return leads.filter(x=>{const existing=normalizeContact(x.contact);return values.some(v=>v.length>=4&&existing.includes(v));}).slice(0,3);\n  },[leads,newLead.phone,newLead.instagram,newLead.email]);\n\n  const visibleLeads=useMemo(()=>{
+  const duplicateMatches=useMemo(()=>{
+    const values=[newLead.phone,newLead.instagram,newLead.email].map(normalizeContact).filter(Boolean);
+    if(!values.length)return [] as Lead[];
+    return leads.filter(x=>{const existing=normalizeContact(x.contact);return values.some(v=>v.length>=4&&existing.includes(v));}).slice(0,3);
+  },[leads,newLead.phone,newLead.instagram,newLead.email]);
+
+  const visibleLeads=useMemo(()=>{
     const q=query.trim().toLowerCase();
     const sourceLeads=section==="crm"||section==="reminders"?leads.filter(x=>isCrmId(x.id)):leads.filter(x=>!isCrmId(x.id));
     let rows=filter==="all"?[...sourceLeads]:sourceLeads.filter(x=>x.status===filter);
