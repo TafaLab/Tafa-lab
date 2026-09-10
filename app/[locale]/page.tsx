@@ -13,8 +13,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: { absolute: title }, description,
     alternates: { canonical: `/${locale}`, languages: { ru: "/ru", en: "/en", "x-default": "/en" } },
-    openGraph: { type:"website", url:`/${locale}`, siteName:"Tafa Lab", locale:ru?"ru_RU":"en_US", alternateLocale:[ru?"en_US":"ru_RU"], title, description, images:[{url:"/og-image.jpg",width:1200,height:630,alt:"Tafa Lab"}] },
-    twitter: { card:"summary_large_image", title, description, images:["/og-image.jpg"] },
+    openGraph: { type:"website", url:`/${locale}`, siteName:"Tafa Lab", locale:ru?"ru_RU":"en_US", alternateLocale:[ru?"en_US":"ru_RU"], title, description, images:[{url:"/og-image-tafa-lab.jpg",width:1200,height:630,alt:"Tafa Lab"}] },
+    twitter: { card:"summary_large_image", title, description, images:["/og-image-tafa-lab.jpg"] },
   };
 }
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
