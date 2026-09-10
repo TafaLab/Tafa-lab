@@ -49,7 +49,7 @@ export const metadata: Metadata = {
       "Premium websites and custom digital systems for bakeries, restaurants, beauty, travel and growing businesses.",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/og-image-tafa-lab.jpg",
         width: 1200,
         height: 630,
         alt: "TAFA Lab",
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     title: "TAFA Lab — Premium Websites & Custom Web Applications",
     description:
       "Premium websites and custom digital systems for modern businesses.",
-    images: ["/og-image.jpg"],
+    images: ["/og-image-tafa-lab.jpg"],
   },
 };
 
