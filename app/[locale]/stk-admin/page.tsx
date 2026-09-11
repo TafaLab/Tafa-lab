@@ -10,7 +10,7 @@ type LeadFilter = "all" | LeadStatus;
 type SortMode = "newest" | "oldest" | "name";
 
 type NoteEntry = { text: string; created_at: string };
-type CrmMeta = { reminder_at: string; history: NoteEntry[]; status?: LeadStatus; contact?: string; city?: string | null; company?: string | null };
+type CrmMeta = { reminder_at: string; history: NoteEntry[]; status?: LeadStatus; contact?: string; city?: string | null; company?: string | null; primary_message?: string; followup_message?: string };
 type CrmSyncState = { meta: Record<string,CrmMeta>; manual: Lead[]; deleted: string[]; synced_at?: string };
 type Lead = {
   id: string;
@@ -59,7 +59,7 @@ const text = {
     deleted:"Заявка удалена.", copy:"Копировать контакт", copied:"Скопировано",
     login:"Вход в закрытую панель заявок.", password:"Пароль", signIn:"Войти", signing:"Входим…",
     loginError:"Не удалось войти. Проверь email и пароль.",
-    found:"Найдено", duplicate:"Такая запись уже есть в CRM",
+    found:"Найдено", duplicate:"Такая запись уже есть в CRM", addInstagram:"Добавить Instagram", addEmail:"Добавить почту", remove:"Удалить", primaryMessage:"Основное сообщение", followupMessage:"Повторное сообщение", openWhatsApp:"Открыть WhatsApp", openEmail:"Открыть почту",
   },
   en: {
     admin:"Admin · Leads", leads:"Leads", total:"Total", refresh:"Refresh", refreshing:"Refreshing…",
@@ -77,7 +77,7 @@ const text = {
     deleted:"Lead deleted.", copy:"Copy contact", copied:"Copied",
     login:"Sign in to the private leads dashboard.", password:"Password", signIn:"Sign in", signing:"Signing in…",
     loginError:"Could not sign in. Check your email and password.",
-    found:"Found", duplicate:"This contact is already in CRM",
+    found:"Found", duplicate:"This contact is already in CRM", addInstagram:"Add Instagram", addEmail:"Add email", remove:"Remove", primaryMessage:"Primary message", followupMessage:"Follow-up message", openWhatsApp:"Open WhatsApp", openEmail:"Open email",
   }
 } as const;
 
@@ -222,6 +222,25 @@ function contactFields(contact:string){
   const email=contact.match(/(?:Email|E-mail):\s*([^·]+)/i)?.[1]?.trim()||contact.match(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/)?.[0]||"";
   return {phone,instagram,email};
 }
+function splitStoredValues(value:string){
+  return value.split(/\s*\/\s*|\r?\n/).map(item=>item.trim()).filter(Boolean);
+}
+function contactValues(contact:string,label:string){
+  const value=contact.match(new RegExp(label+"\\s*:\\s*([^·]+)","i"))?.[1]?.trim()||"";
+  return splitStoredValues(value);
+}
+function buildFollowupMessage(x:Lead,locale:"ru"|"en"){
+  return locale==="ru"
+    ? `Здравствуйте, ${x.name}! Возвращаюсь к нашему предложению по проекту. Готова показать варианты сайта и ответить на вопросы.`
+    : `Hello, ${x.name}! I’m following up on our project proposal. I can show you the website options and answer any questions.`;
+}
+function openWhatsApp(phone:string,message:string){
+  const digits=phone.replace(/\D/g,"");
+  if(digits)window.open(`https://wa.me/${digits}?text=${encodeURIComponent(message)}`,"_blank","noopener,noreferrer");
+}
+function openEmail(email:string,message:string){
+  window.location.href=`mailto:${email}?subject=${encodeURIComponent("Tafa Lab")}&body=${encodeURIComponent(message)}`;
+}
 async function persistCrmState(state:CrmSyncState){
   const payload={...state,synced_at:new Date().toISOString()};writeLocalCrmState(payload);
   const {error}=await sb.auth.updateUser({data:{[CRM_SYNC_KEY]:payload}});return error?.message||"";
@@ -252,8 +271,10 @@ export default function StkAdminPage() {
   const [crmMeta,setCrmMeta]=useState<Record<string,CrmMeta>>({});
   const [draftReminder,setDraftReminder]=useState("");
   const [draftPhones,setDraftPhones]=useState<string[]>([""]);
-  const [draftInstagram,setDraftInstagram]=useState("");
-  const [draftEmail,setDraftEmail]=useState("");
+  const [draftInstagrams,setDraftInstagrams]=useState<string[]>([""]);
+  const [draftEmails,setDraftEmails]=useState<string[]>([""]);
+  const [draftPrimaryMessage,setDraftPrimaryMessage]=useState("");
+  const [draftFollowupMessage,setDraftFollowupMessage]=useState("");
   const [draftCity,setDraftCity]=useState("");
   const [draftCompany,setDraftCompany]=useState("");
   const [adding,setAdding]=useState(false);
@@ -326,13 +347,17 @@ export default function StkAdminPage() {
     if(loadError)setError(loadError.message);
     else{
       const rows=(data??[]) as Lead[];const all=[...manualVisible,...seeded,...rows];setLeads(all);
-      if(selectedId){const x=all.find(r=>r.id===selectedId);if(x){const cf=contactFields(x.contact);setDraftStatus(x.status);setDraftNotes(x.admin_notes??"");setDraftReminder(synced.meta[x.id]?.reminder_at||"");setDraftPhones(cf.phone.split(/\s*\/\s*|\r?\n/).filter(Boolean).length?cf.phone.split(/\s*\/\s*|\r?\n/):[""]);setDraftInstagram(cf.instagram);setDraftEmail(cf.email);setDraftCity(x.city||"");setDraftCompany(x.company||"")}else setSelectedId(null);}
+      if(selectedId){const x=all.find(r=>r.id===selectedId);if(x){const cf=contactFields(x.contact);setDraftStatus(x.status);setDraftNotes(x.admin_notes??"");setDraftReminder(synced.meta[x.id]?.reminder_at||"");setDraftPhones(cf.phone.split(/\s*\/\s*|\r?\n/).filter(Boolean).length?cf.phone.split(/\s*\/\s*|\r?\n/):[""]);setDraftInstagrams(cf.instagram?splitStoredValues(cf.instagram):[""]);setDraftEmails(cf.email?splitStoredValues(cf.email):[""]);setDraftCity(x.city||"");setDraftCompany(x.company||"")}else setSelectedId(null);}
     }
     setLoading(false);
   }
 
   function openLead(x:Lead){
-    const cf=contactFields(x.contact);setSelectedId(x.id);setDraftStatus(crmMeta[x.id]?.status||x.status);setDraftNotes(x.admin_notes??"");setDraftReminder(crmMeta[x.id]?.reminder_at||"");setDraftPhones(cf.phone.split(/\s*\/\s*|\r?\n/).filter(Boolean).length?cf.phone.split(/\s*\/\s*|\r?\n/):[""]);setDraftInstagram(cf.instagram);setDraftEmail(cf.email);setDraftCity(x.city||"");setDraftCompany(x.company||"");
+    const cf=contactFields(x.contact);const meta=crmMeta[x.id];
+    setSelectedId(x.id);setDraftStatus(meta?.status||x.status);setDraftNotes(x.admin_notes??"");setDraftReminder(meta?.reminder_at||"");setDraftPhones(cf.phone.split(/\s*\/\s*|\r?\n/).filter(Boolean).length?cf.phone.split(/\s*\/\s*|\r?\n/):[""]);
+    setDraftInstagrams(cf.instagram?splitStoredValues(cf.instagram):[""]);setDraftEmails(cf.email?splitStoredValues(cf.email):[""]);
+    setDraftPrimaryMessage(meta?.primary_message||"");setDraftFollowupMessage(meta?.followup_message||buildFollowupMessage(x,locale));
+    setDraftCity(x.city||"");setDraftCompany(x.company||"");
     setSaved(false);setNotice("");setError("");setCopied(false);
   }
 
@@ -343,8 +368,12 @@ export default function StkAdminPage() {
     const previous=crmMeta[selectedId]||{reminder_at:"",history:[]};
     const history=notes&&notes!==previous.history.at(-1)?.text?[...previous.history,{text:notes,created_at:new Date().toISOString()}]:previous.history;
     const phone=draftPhones.map(value=>value.trim()).filter(Boolean).join(" / ");
-    const contact=[phone&&`Телефон: ${phone}`,draftInstagram.trim()&&`Instagram: ${draftInstagram.trim()}`,draftEmail.trim()&&`Email: ${draftEmail.trim()}`].filter(Boolean).join(" · ");
-    const nextMeta={...crmMeta,[selectedId]:{reminder_at:draftReminder,history,status:draftStatus,contact,city:draftCity.trim()||null,company:draftCompany.trim()||null}};
+    const instagram=draftInstagrams.map(value=>value.trim()).filter(Boolean).join(" / ");
+    const email=draftEmails.map(value=>value.trim()).filter(Boolean).join(" / ");
+    const contact=[phone&&`Телефон: ${phone}`,instagram&&`Instagram: ${instagram}`,email&&`Email: ${email}`].filter(Boolean).join(" · ");
+    const selectedLead=leads.find(x=>x.id===selectedId);
+    const followup=draftFollowupMessage.trim()||(selectedLead?buildFollowupMessage(selectedLead,locale):"");
+    const nextMeta={...crmMeta,[selectedId]:{reminder_at:draftReminder,history,status:draftStatus,contact,primary_message:draftPrimaryMessage.trim(),followup_message:followup,city:draftCity.trim()||null,company:draftCompany.trim()||null}};
     setCrmMeta(nextMeta);const syncError=await persistCrmState({...readLocalCrmState(),meta:nextMeta});if(syncError)setError(syncError);
     if(isCrmId(selectedId)){
       setLeads(p=>p.map(x=>x.id===selectedId?{...x,status:draftStatus,admin_notes:notes,contact,city:draftCity.trim()||null,company:draftCompany.trim()||null}:x));
@@ -367,7 +396,7 @@ export default function StkAdminPage() {
     const id=`kaskelen-manual-${Date.now()}`;
     const contact=[newLead.phone.trim()&&`Телефон: ${newLead.phone.trim()}`,newLead.instagram.trim()&&`Instagram: ${newLead.instagram.trim()}`,newLead.email.trim()&&`Email: ${newLead.email.trim()}`].filter(Boolean).join(" · ");
     const lead:Lead={id,created_at:new Date().toISOString(),name:newLead.name.trim(),contact,company:newLead.company.trim()||null,city:newLead.city.trim()||null,project_type:newLead.project_type.trim()||null,message:newLead.message.trim()||null,locale:"ru",source_path:"Добавлено вручную",status:"new",admin_notes:null};
-    const current=readLocalCrmState();const manual=[lead,...current.manual.filter(x=>x.id!==id)];const nextMeta=newLead.reminder_at?{...crmMeta,[id]:{reminder_at:newLead.reminder_at,history:[],status:"new" as LeadStatus}}:crmMeta;setCrmMeta(nextMeta);setLeads(p=>[lead,...p]);const syncError=await persistCrmState({...current,manual,meta:nextMeta});if(syncError)setError(syncError);setNewLead({name:"",phone:"",instagram:"",email:"",company:"",city:"",project_type:"",message:"",reminder_at:""});setAdding(false);setSection("crm");setSelectedId(id);setDraftStatus("new");setDraftNotes("");setDraftReminder(newLead.reminder_at);
+    const current=readLocalCrmState();const manual=[lead,...current.manual.filter(x=>x.id!==id)];const nextMeta=newLead.reminder_at?{...crmMeta,[id]:{reminder_at:newLead.reminder_at,history:[],status:"new" as LeadStatus}}:crmMeta;setCrmMeta(nextMeta);setLeads(p=>[lead,...p]);const syncError=await persistCrmState({...current,manual,meta:nextMeta});if(syncError)setError(syncError);setNewLead({name:"",phone:"",instagram:"",email:"",company:"",city:"",project_type:"",message:"",reminder_at:""});setAdding(false);setSection("crm");setSelectedId(id);setDraftStatus("new");setDraftNotes("");setDraftReminder(newLead.reminder_at);setDraftPhones(newLead.phone?[newLead.phone]:[""]);setDraftInstagrams(newLead.instagram?[newLead.instagram]:[""]);setDraftEmails(newLead.email?[newLead.email]:[""]);setDraftPrimaryMessage("");setDraftFollowupMessage(buildFollowupMessage(lead,"ru"));
   }
 
   async function deleteLead(){
@@ -474,12 +503,31 @@ export default function StkAdminPage() {
 
             <div className="mt-6 space-y-5">
               <div><label className="text-xs uppercase tracking-[.14em] text-black/40">{t.status}</label><select value={draftStatus} onChange={e=>{setDraftStatus(e.target.value as LeadStatus);setSaved(false)}} className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5">{(["new","draft","contacted","in_progress","won","lost"] as LeadStatus[]).map(s=><option key={s} value={s}>{t.statuses[s]}</option>)}</select></div>
-              <div><div className="flex items-center justify-between gap-3"><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Телефон":"Phone"}</label><button type="button" onClick={()=>{setDraftPhones(p=>[...p,""]);setSaved(false)}} className="text-sm font-medium underline underline-offset-4">+ {locale==="ru"?"Добавить номер":"Add number"}</button></div><div className="mt-2 space-y-2">{draftPhones.map((phone,index)=><div key={index} className="flex items-center gap-2"><input type="tel" value={phone} onChange={e=>{setDraftPhones(p=>p.map((item,i)=>i===index?e.target.value:item));setSaved(false)}} placeholder="+7 700 000 00 00" className="min-w-0 flex-1 rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/>{draftPhones.length>1&&<button type="button" onClick={()=>{setDraftPhones(p=>p.filter((_,i)=>i!==index));setSaved(false)}} className="shrink-0 text-xs text-red-700 underline underline-offset-4" aria-label={locale==="ru"?"Удалить номер":"Remove number"}>×</button>}</div>)}</div></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">Instagram</label><input value={draftInstagram} onChange={e=>{setDraftInstagram(e.target.value);setSaved(false)}} placeholder="@company" className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Почта":"Email"}</label><input type="email" value={draftEmail} onChange={e=>{setDraftEmail(e.target.value);setSaved(false)}} placeholder="mail@example.com" className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Город":"City"}</label><input value={draftCity} onChange={e=>{setDraftCity(e.target.value);setSaved(false)}} placeholder={locale==="ru"?"Алматы":"City"} className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Компания":"Company"}</label><input value={draftCompany} onChange={e=>{setDraftCompany(e.target.value);setSaved(false)}} placeholder={locale==="ru"?"Название компании":"Company name"} className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Напоминание":"Reminder"}</label><input type="date" value={draftReminder} onChange={e=>setDraftReminder(e.target.value)} className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">{t.note}</label><textarea value={draftNotes} onChange={e=>{setDraftNotes(e.target.value);setSaved(false)}} rows={7} placeholder={t.notePh} className="mt-2 w-full resize-y rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5 leading-6"/></div>
+              <div><div className="flex items-center justify-between gap-3"><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Телефон":"Phone"}</label><button type="button" onClick={()=>{setDraftPhones(p=>[...p,""]);setSaved(false)}} className="text-sm font-medium underline underline-offset-4">+ {locale==="ru"?"Добавить номер":"Add number"}</button></div><div className="mt-2 space-y-2">{draftPhones.map((phone,index)=><div key={index} className="flex items-center gap-2"><input type="tel" value={phone} onChange={e=>{setDraftPhones(p=>p.map((item,i)=>i===index?e.target.value:item));setSaved(false)}} placeholder="+7 700 000 00 00" className="min-w-0 flex-1 rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/>{draftPhones.length>1&&<button type="button" onClick={()=>{setDraftPhones(p=>p.filter((_,i)=>i!==index));setSaved(false)}} className="shrink-0 text-xs text-red-700 underline underline-offset-4" aria-label={locale==="ru"?"Удалить номер":"Remove number"}>×</button>}</div>)}</div></div><div><div className="flex items-center justify-between gap-3"><label className="text-xs uppercase tracking-[.14em] text-black/40">Instagram</label><button type="button" onClick={()=>{setDraftInstagrams(p=>[...p,""]);setSaved(false)}} className="text-sm font-medium underline underline-offset-4">+ {locale==="ru"?"Добавить":"Add"}</button></div><div className="mt-2 space-y-2">{draftInstagrams.map((instagram,index)=><div key={index} className="flex items-center gap-2"><input value={instagram} onChange={e=>{setDraftInstagrams(p=>p.map((item,i)=>i===index?e.target.value:item));setSaved(false)}} placeholder="@company" className="min-w-0 flex-1 rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/>{draftInstagrams.length>1&&<button type="button" onClick={()=>{setDraftInstagrams(p=>p.filter((_,i)=>i!==index));setSaved(false)}} className="shrink-0 text-xs text-red-700 underline underline-offset-4" aria-label={locale==="ru"?"Удалить Instagram":"Remove Instagram"}>×</button>}</div>)}</div></div><div><div className="flex items-center justify-between gap-3"><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Почта":"Email"}</label><button type="button" onClick={()=>{setDraftEmails(p=>[...p,""]);setSaved(false)}} className="text-sm font-medium underline underline-offset-4">+ {locale==="ru"?"Добавить":"Add"}</button></div><div className="mt-2 space-y-2">{draftEmails.map((email,index)=><div key={index} className="flex items-center gap-2"><input type="email" value={email} onChange={e=>{setDraftEmails(p=>p.map((item,i)=>i===index?e.target.value:item));setSaved(false)}} placeholder="mail@example.com" className="min-w-0 flex-1 rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/>{draftEmails.length>1&&<button type="button" onClick={()=>{setDraftEmails(p=>p.filter((_,i)=>i!==index));setSaved(false)}} className="shrink-0 text-xs text-red-700 underline underline-offset-4" aria-label={locale==="ru"?"Удалить почту":"Remove email"}>×</button>}</div>)}</div></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Город":"City"}</label><input value={draftCity} onChange={e=>{setDraftCity(e.target.value);setSaved(false)}} placeholder={locale==="ru"?"Алматы":"City"} className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Компания":"Company"}</label><input value={draftCompany} onChange={e=>{setDraftCompany(e.target.value);setSaved(false)}} placeholder={locale==="ru"?"Название компании":"Company name"} className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"Напоминание":"Reminder"}</label><input type="date" value={draftReminder} onChange={e=>setDraftReminder(e.target.value)} className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/></div><div><label className="text-xs uppercase tracking-[.14em] text-black/40">{t.note}</label><textarea value={draftNotes} onChange={e=>{setDraftNotes(e.target.value);setSaved(false)}} rows={7} placeholder={t.notePh} className="mt-2 w-full resize-y rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5 leading-6"/></div>
               <button onClick={saveLead} disabled={saving} className="w-full rounded-full bg-[#211a17] px-5 py-3.5 text-sm font-medium text-white disabled:opacity-50">{saving?t.saving:t.save}</button>
               {saved&&<p className="text-center text-sm text-[#48614d]">{t.saved}</p>}{(crmMeta[selected.id]?.history||[]).length>0&&<div className="rounded-2xl bg-[#faf8f6] p-4"><div className="text-xs uppercase tracking-[.14em] text-black/40">{locale==="ru"?"История заметок":"Note history"}</div><div className="mt-3 space-y-3">{(crmMeta[selected.id]?.history||[]).slice().reverse().map((n,i)=><div key={i} className="border-l-2 border-[#c9a58f] pl-3"><p className="whitespace-pre-wrap text-sm">{n.text}</p><small className="text-black/40">{new Date(n.created_at).toLocaleString(locale==="ru"?"ru-RU":"en-US")}</small></div>)}</div></div>}
 
+              <div className="border-t border-black/10 pt-5">
+                <div className="text-xs uppercase tracking-[.14em] text-black/40">{t.primaryMessage}</div>
+                <textarea value={draftPrimaryMessage} onChange={e=>{setDraftPrimaryMessage(e.target.value);setSaved(false)}} rows={5} placeholder={locale==="ru"?"Напиши основное сообщение для этого клиента":"Write the primary message for this client"} className="mt-2 w-full resize-y rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5 leading-6"/>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {contactValues(selected.contact,"Телефон").map((phone,index)=><button key={`primary-wa-${index}`} type="button" onClick={()=>openWhatsApp(phone,draftPrimaryMessage)} disabled={!draftPrimaryMessage.trim()} className="rounded-full border border-black/10 bg-white px-3 py-2 text-xs disabled:opacity-40">WhatsApp {index+1}</button>)}
+                  {contactValues(selected.contact,"Email").map((email,index)=><button key={`primary-email-${index}`} type="button" onClick={()=>openEmail(email,draftPrimaryMessage)} disabled={!draftPrimaryMessage.trim()} className="rounded-full border border-black/10 bg-white px-3 py-2 text-xs disabled:opacity-40">{t.openEmail} {index+1}</button>)}
+                </div>
+              </div>
+
+              <div className="border-t border-black/10 pt-5">
+                <div className="text-xs uppercase tracking-[.14em] text-black/40">{t.followupMessage}</div>
+                <textarea value={draftFollowupMessage} onChange={e=>{setDraftFollowupMessage(e.target.value);setSaved(false)}} rows={5} className="mt-2 w-full resize-y rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5 leading-6"/>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {contactValues(selected.contact,"Телефон").map((phone,index)=><button key={`followup-wa-${index}`} type="button" onClick={()=>openWhatsApp(phone,draftFollowupMessage)} className="rounded-full border border-black/10 bg-white px-3 py-2 text-xs">{t.openWhatsApp} {index+1}</button>)}
+                  {contactValues(selected.contact,"Email").map((email,index)=><button key={`followup-email-${index}`} type="button" onClick={()=>openEmail(email,draftFollowupMessage)} className="rounded-full border border-black/10 bg-white px-3 py-2 text-xs">{t.openEmail} {index+1}</button>)}
+                </div>
+                <button onClick={()=>copyFollowup(selected)} className="mt-3 w-full rounded-full border border-black/10 bg-white px-4 py-3 text-sm">{followupCopied?(locale==="ru"?"Сообщение скопировано":"Message copied"):(locale==="ru"?"Скопировать повторное сообщение":"Copy follow-up message")}</button>
+              </div>
+
               <div className="border-t border-black/10 pt-5 text-sm space-y-4">
-                <div><div className="text-xs text-black/35">{t.contact.toUpperCase()}</div><div className="mt-1 break-all">{selected.contact}</div><button onClick={()=>copyContact(selected.contact)} className="mt-2 text-xs underline underline-offset-4">{copied?t.copied:t.copy}</button></div><button onClick={()=>copyFollowup(selected)} className="w-full rounded-full border border-black/10 bg-white px-4 py-3 text-sm">{followupCopied?(locale==="ru"?"Сообщение скопировано":"Message copied"):(locale==="ru"?"Скопировать повторное сообщение":"Copy follow-up message")}</button>
+                <div><div className="text-xs text-black/35">{t.contact.toUpperCase()}</div><div className="mt-1 break-all">{selected.contact}</div><button onClick={()=>copyContact(selected.contact)} className="mt-2 text-xs underline underline-offset-4">{copied?t.copied:t.copy}</button></div>
                 <div><div className="text-xs text-black/35">{t.company.toUpperCase()}</div><div className="mt-1">{selected.company||"—"}</div></div><div><div className="text-xs text-black/35">{locale==="ru"?"ГОРОД":"CITY"}</div><div className="mt-1">{selected.city||"—"}</div></div>
                 <div><div className="text-xs text-black/35">{t.source.toUpperCase()}</div><div className="mt-1 break-all">{selected.source_path||"—"}</div></div>
               </div>
