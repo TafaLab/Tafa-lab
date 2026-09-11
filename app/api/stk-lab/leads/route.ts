@@ -1,6 +1,28 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+
 export const runtime = "nodejs";
+
+function supabaseForToken(token:string){
+  const url=process.env.NEXT_PUBLIC_SUPABASE_URL,anon=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if(!url||!anon)return null;
+  return createClient(url,anon,{auth:{persistSession:false,autoRefreshToken:false},global:{headers:{Authorization:`Bearer ${token}`}}});
+}
+
+export async function GET(request:Request){
+  try{
+    const authorization=request.headers.get("authorization")||"",token=authorization.replace(/^Bearer\s+/i,"").trim();
+    if(!token)return NextResponse.json({error:"unauthorized"},{status:401});
+    const supabase=supabaseForToken(token);
+    if(!supabase)return NextResponse.json({error:"server_not_configured"},{status:500});
+    const {data:{user},error:authError}=await supabase.auth.getUser(token);
+    if(authError||!user)return NextResponse.json({error:"unauthorized"},{status:401});
+    const {data,error}=await supabase.from("stk_lab_leads").select("*").order("created_at",{ascending:false});
+    if(error){console.error("Tafa Lab leads load:",error.message);return NextResponse.json({error:"load_failed"},{status:500});}
+    return NextResponse.json({leads:data||[]},{headers:{"Cache-Control":"no-store"}});
+  }catch(error){console.error("Tafa Lab leads GET:",error);return NextResponse.json({error:"load_failed"},{status:500});}
+}
+
 const clean=(v:unknown,max:number)=>typeof v==="string"?v.trim().slice(0,max):"";
 const attempts=new Map<string,number[]>();
 const WINDOW_MS=10*60*1000;
@@ -12,7 +34,7 @@ export async function POST(request:Request){
       return NextResponse.json({error:"unsupported_media_type"},{status:415});
     }
     const body=await request.json();
-    if(clean(body.website,200)) return NextResponse.json({ok:true});
+    if(clean(body.website,200))return NextResponse.json({ok:true});
     const startedAt=typeof body.startedAt==="number"?body.startedAt:0;
     const now=Date.now();
     if(!startedAt||now-startedAt<1200||now-startedAt>2*60*60*1000){
@@ -21,14 +43,12 @@ export async function POST(request:Request){
     const forwarded=request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
     const clientKey=forwarded||request.headers.get("x-real-ip")||"unknown";
     const recent=(attempts.get(clientKey)??[]).filter(time=>now-time<WINDOW_MS);
-    if(recent.length>=MAX_ATTEMPTS){
-      return NextResponse.json({error:"rate_limited"},{status:429});
-    }
+    if(recent.length>=MAX_ATTEMPTS)return NextResponse.json({error:"rate_limited"},{status:429});
     attempts.set(clientKey,[...recent,now]);
     const name=clean(body.name,100),contact=clean(body.contact,180);
-    if(!name||!contact) return NextResponse.json({error:"name_and_contact_required"},{status:400});
+    if(!name||!contact)return NextResponse.json({error:"name_and_contact_required"},{status:400});
     const url=process.env.NEXT_PUBLIC_SUPABASE_URL,anon=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if(!url||!anon) return NextResponse.json({error:"server_not_configured"},{status:500});
+    if(!url||!anon)return NextResponse.json({error:"server_not_configured"},{status:500});
     const supabase=createClient(url,anon,{auth:{persistSession:false,autoRefreshToken:false}});
     const {error}=await supabase.from("stk_lab_leads").insert({
       name,contact,company:clean(body.company,160)||null,project_type:clean(body.projectType,120)||null,
@@ -37,5 +57,5 @@ export async function POST(request:Request){
     });
     if(error){console.error("Tafa Lab lead insert:",error.message);return NextResponse.json({error:"save_failed"},{status:500});}
     return NextResponse.json({ok:true},{status:201});
-  }catch(e){console.error(e);return NextResponse.json({error:"bad_request"},{status:400});}
+  }catch(error){console.error(error);return NextResponse.json({error:"bad_request"},{status:400});}
 }
