@@ -227,7 +227,12 @@ function splitStoredValues(value:string){
 }
 function contactValues(contact:string,label:string){
   const value=contact.match(new RegExp(label+"\\s*:\\s*([^·]+)","i"))?.[1]?.trim()||"";
-  return splitStoredValues(value);
+  if(value)return splitStoredValues(value);
+  if(label==="Телефон"){
+    const phone=contactFields(contact).phone;
+    return phone?splitStoredValues(phone):[];
+  }
+  return [];
 }
 function buildFollowupMessage(x:Lead,locale:"ru"|"en"){
   return locale==="ru"
