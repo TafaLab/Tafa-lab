@@ -287,7 +287,14 @@ export default function StkAdminPage(){
   const emptyNewLead={name:"",phone:"",instagram:"",email:"",company:"",city:"",project_type:"",message:"",reminder_at:"",reminder_time:"",category:"",tags:"",source:""};
   const [newLead,setNewLead]=useState(emptyNewLead);
 
-  useEffect(()=>{const local=readLocalCrmState();setCrmMeta(local.meta);setSettings(local.settings||emptySettings());sb.auth.getUser().then(({data})=>{setUser(data.user??null);setReady(true)});const {data}=sb.auth.onAuthStateChange((_event,session)=>setUser(session?.user??null));return()=>data.subscription.unsubscribe()},[]);
+  useEffect(()=>{
+    let active=true;
+    const local=readLocalCrmState();setCrmMeta(local.meta);setSettings(local.settings||emptySettings());
+    const fallback=window.setTimeout(()=>{if(active)setReady(true)},5000);
+    void sb.auth.getSession().then(({data})=>{if(active)setUser(data.session?.user??null)}).catch(()=>{}).finally(()=>{if(active){window.clearTimeout(fallback);setReady(true)}});
+    const {data}=sb.auth.onAuthStateChange((_event,session)=>{if(active){setUser(session?.user??null);setReady(true)}});
+    return()=>{active=false;window.clearTimeout(fallback);data.subscription.unsubscribe()};
+  },[]);
   useEffect(()=>{const timer=window.setTimeout(()=>{if(user)void load();else{setLeads([]);setSelectedId(null)}},0);return()=>window.clearTimeout(timer)},[user]);
 
   const crmLeads=useMemo(()=>leads.filter(x=>isCrmId(x.id)),[leads]);
@@ -312,7 +319,7 @@ export default function StkAdminPage(){
   },[crmLeads,crmMeta]);
 
   async function load(){
-    setLoading(true);setError("");const local=readLocalCrmState(),{data:authData}=await sb.auth.getUser(),raw=authData.user?.user_metadata?.[CRM_SYNC_KEY] as Partial<CrmSyncState>|undefined;
+    setLoading(true);setError("");const local=readLocalCrmState(),raw=user?.user_metadata?.[CRM_SYNC_KEY] as Partial<CrmSyncState>|undefined;
     const remote:CrmSyncState={meta:raw?.meta&&typeof raw.meta==="object"?raw.meta:{},manual:Array.isArray(raw?.manual)?raw.manual:[],deleted:Array.isArray(raw?.deleted)?raw.deleted:[],settings:raw?.settings||emptySettings(),synced_at:raw?.synced_at};
     const synced=mergeCrmStates(local,remote);if(crmStateScore(local)>crmStateScore(remote)){const syncError=await persistCrmState(synced);if(syncError&&!/rate limit/i.test(syncError))setError(syncError)}else writeLocalCrmState(synced);
     setCrmMeta(synced.meta);setSettings(synced.settings||emptySettings());
