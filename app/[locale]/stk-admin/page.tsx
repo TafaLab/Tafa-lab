@@ -325,7 +325,14 @@ export default function StkAdminPage(){
     setCrmMeta(synced.meta);setSettings(synced.settings||emptySettings());
     const hydrate=(x:Lead)=>({...x,contact:synced.meta[x.id]?.contact||x.contact,city:synced.meta[x.id]?.city??x.city,company:synced.meta[x.id]?.company??x.company,status:synced.meta[x.id]?.status||x.status,admin_notes:synced.meta[x.id]?.history?.at(-1)?.text||x.admin_notes||null});
     const seeded=[...kaskelenLeads,...almatyLeadSeed,...extraAlmatyLeadSeed,...taldykorganLeadSeed].filter(x=>!synced.deleted.includes(x.id)).map(hydrate),manual=synced.manual.filter(x=>!synced.deleted.includes(x.id)).map(hydrate);
-    const {data,error:loadError}=await sb.from("stk_lab_leads").select("*").order("created_at",{ascending:false});if(loadError)setError(loadError.message);else setLeads([...manual,...seeded,...((data||[]) as Lead[]).map(hydrate)]);setLoading(false);
+    const savedLeads=[...manual,...seeded];
+    setLeads(savedLeads);setLoading(false);
+    const controller=new AbortController(),timeout=window.setTimeout(()=>controller.abort(),8000);
+    try{
+      const {data,error:loadError}=await sb.from("stk_lab_leads").select("*").order("created_at",{ascending:false}).abortSignal(controller.signal);
+      if(loadError){if(!/abort|signal/i.test(loadError.message))setError(loadError.message)}else setLeads([...savedLeads,...((data||[]) as Lead[]).map(hydrate)]);
+    }catch{/* Сохранённая CRM уже показана; новые заявки загрузятся при следующем обновлении. */}
+    finally{window.clearTimeout(timeout);setLoading(false)}
   }
   function fillDraft(lead:Lead){
     const fields=contactFields(lead.contact),meta=crmMeta[lead.id]||{reminder_at:"",history:[]};setSelectedId(lead.id);setDraftStatus(meta.status||lead.status);setDraftNotes(lead.admin_notes||"");
