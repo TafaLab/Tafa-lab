@@ -273,7 +273,7 @@ async function persistCrmState(state:CrmSyncState){const payload={...state,synce
 export default function StkAdminPage(){
   const pathname=usePathname(),locale:"ru"|"en"=pathname.startsWith("/en")?"en":"ru",t=text[locale];
   type Section="requests"|"crm"|"reminders"|"kanban"|"analytics"|"templates";
-  const [user,setUser]=useState<User|null>(null),[ready,setReady]=useState(false),[leads,setLeads]=useState<Lead[]>([]),[loading,setLoading]=useState(false);
+  const [user,setUser]=useState<User|null>(null),[accessToken,setAccessToken]=useState(""),[ready,setReady]=useState(false),[leads,setLeads]=useState<Lead[]>([]),[loading,setLoading]=useState(false);
   const [error,setError]=useState(""),[notice,setNotice]=useState(""),[selectedId,setSelectedId]=useState<string|null>(null),[section,setSection]=useState<Section>("requests");
   const [crmMeta,setCrmMeta]=useState<Record<string,CrmMeta>>({}),[settings,setSettings]=useState<CrmSettings>(emptySettings());
   const [filter,setFilter]=useState<LeadFilter>("all"),[query,setQuery]=useState(""),[sort,setSort]=useState<SortMode>("newest");
@@ -291,11 +291,11 @@ export default function StkAdminPage(){
     let active=true;
     const local=readLocalCrmState();setCrmMeta(local.meta);setSettings(local.settings||emptySettings());
     const fallback=window.setTimeout(()=>{if(active)setReady(true)},5000);
-    void sb.auth.getSession().then(({data})=>{if(active)setUser(data.session?.user??null)}).catch(()=>{}).finally(()=>{if(active){window.clearTimeout(fallback);setReady(true)}});
-    const {data}=sb.auth.onAuthStateChange((_event,session)=>{if(active){setUser(session?.user??null);setReady(true)}});
+    void sb.auth.getSession().then(({data})=>{if(active){setUser(data.session?.user??null);setAccessToken(data.session?.access_token??"")}}).catch(()=>{}).finally(()=>{if(active){window.clearTimeout(fallback);setReady(true)}});
+    const {data}=sb.auth.onAuthStateChange((_event,session)=>{if(active){setUser(session?.user??null);setAccessToken(session?.access_token??"");setReady(true)}});
     return()=>{active=false;window.clearTimeout(fallback);data.subscription.unsubscribe()};
   },[]);
-  useEffect(()=>{const timer=window.setTimeout(()=>{if(user)void load();else{setLeads([]);setSelectedId(null)}},0);return()=>window.clearTimeout(timer)},[user]);
+  useEffect(()=>{const timer=window.setTimeout(()=>{if(user&&accessToken)void load();else if(!user){setLeads([]);setSelectedId(null)}},0);return()=>window.clearTimeout(timer)},[user,accessToken]);
 
   const crmLeads=useMemo(()=>leads.filter(x=>isCrmId(x.id)),[leads]);
   const categoryOptions=useMemo(()=>Array.from(new Set(crmLeads.map(x=>crmMeta[x.id]?.category).filter((x):x is string=>Boolean(x)))).sort(),[crmLeads,crmMeta]);
@@ -327,10 +327,12 @@ export default function StkAdminPage(){
     const seeded=[...kaskelenLeads,...almatyLeadSeed,...extraAlmatyLeadSeed,...taldykorganLeadSeed].filter(x=>!synced.deleted.includes(x.id)).map(hydrate),manual=synced.manual.filter(x=>!synced.deleted.includes(x.id)).map(hydrate);
     const savedLeads=[...manual,...seeded];
     setLeads(savedLeads);setLoading(false);
-    const controller=new AbortController(),timeout=window.setTimeout(()=>controller.abort(),8000);
+    const controller=new AbortController(),timeout=window.setTimeout(()=>controller.abort(),20000);
     try{
-      const {data,error:loadError}=await sb.from("stk_lab_leads").select("*").order("created_at",{ascending:false}).abortSignal(controller.signal);
-      if(loadError){if(!/abort|signal/i.test(loadError.message))setError(loadError.message)}else setLeads([...savedLeads,...((data||[]) as Lead[]).map(hydrate)]);
+      const response=await fetch("/api/stk-lab/leads",{headers:{Authorization:`Bearer ${accessToken}`},cache:"no-store",signal:controller.signal});
+      const result=await response.json() as {leads?:Lead[];error?:string};
+      if(!response.ok)throw new Error(result.error||"load_failed");
+      setLeads([...savedLeads,...(result.leads||[]).map(hydrate)]);
     }catch{/* Сохранённая CRM уже показана; новые заявки загрузятся при следующем обновлении. */}
     finally{window.clearTimeout(timeout);setLoading(false)}
   }
