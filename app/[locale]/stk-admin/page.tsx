@@ -223,7 +223,7 @@ function contactFields(contact:string){
   return {phone,instagram,email};
 }
 function splitStoredValues(value:string){
-  return value.split(/\s*\/\s*|\r?\n/).map(item=>item.trim()).filter(Boolean);
+  return value.split(/\s+\/\s+|\r?\n/).map(item=>item.trim()).filter(Boolean);
 }
 function contactValues(contact:string,label:string){
   const value=contact.match(new RegExp(label+"\\s*:\\s*([^·]+)","i"))?.[1]?.trim()||"";
@@ -347,7 +347,7 @@ export default function StkAdminPage() {
     if(loadError)setError(loadError.message);
     else{
       const rows=(data??[]) as Lead[];const all=[...manualVisible,...seeded,...rows];setLeads(all);
-      if(selectedId){const x=all.find(r=>r.id===selectedId);if(x){const cf=contactFields(x.contact);setDraftStatus(x.status);setDraftNotes(x.admin_notes??"");setDraftReminder(synced.meta[x.id]?.reminder_at||"");setDraftPhones(cf.phone.split(/\s*\/\s*|\r?\n/).filter(Boolean).length?cf.phone.split(/\s*\/\s*|\r?\n/):[""]);setDraftInstagrams(cf.instagram?splitStoredValues(cf.instagram):[""]);setDraftEmails(cf.email?splitStoredValues(cf.email):[""]);setDraftCity(x.city||"");setDraftCompany(x.company||"")}else setSelectedId(null);}
+      if(selectedId){const x=all.find(r=>r.id===selectedId);if(x){const cf=contactFields(x.contact);setDraftStatus(x.status);setDraftNotes(x.admin_notes??"");setDraftReminder(synced.meta[x.id]?.reminder_at||"");setDraftPhones(cf.phone.split(/\s*\/\s*|\r?\n/).filter(Boolean).length?cf.phone.split(/\s*\/\s*|\r?\n/):[""]);setDraftInstagrams(cf.instagram?splitStoredValues(cf.instagram):[""]);setDraftEmails(cf.email?splitStoredValues(cf.email):[""]);setDraftPrimaryMessage(synced.meta[x.id]?.primary_message||"");setDraftFollowupMessage(synced.meta[x.id]?.followup_message||buildFollowupMessage(x,locale));setDraftCity(x.city||"");setDraftCompany(x.company||"")}else setSelectedId(null);}
     }
     setLoading(false);
   }
@@ -418,7 +418,7 @@ export default function StkAdminPage() {
   }
 
   async function copyFollowup(x:Lead){
-    const message=`Здравствуйте, ${x.name}! Возвращаюсь к нашему предложению по проекту. Готова показать варианты сайта и ответить на вопросы. Информация по заявке: ${x.message||x.project_type||"ваш запрос"}`;
+    const message=draftFollowupMessage.trim()||buildFollowupMessage(x,locale);
     try{await navigator.clipboard.writeText(message);setFollowupCopied(true);window.setTimeout(()=>setFollowupCopied(false),1800)}catch{}
   }
 
