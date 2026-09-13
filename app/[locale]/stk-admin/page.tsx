@@ -339,7 +339,13 @@ export default function StkAdminPage(){
       const result=await response.json() as {leads?:Lead[];error?:string};
       if(!response.ok)throw new Error(result.error||"load_failed");
       setLeads([...savedLeads,...(result.leads||[]).map(hydrate)]);
-    }catch{/* Сохранённая CRM уже показана; новые заявки загрузятся при следующем обновлении. */}
+    }catch(loadError){
+      // Do not silently render an empty inbox when the production API fails.
+      // The local CRM records can still be shown, but the user must see the
+      // actual loading problem instead of mistaking it for zero requests.
+      const message=loadError instanceof Error?loadError.message:"load_failed";
+      setError(locale==="ru"?`Не удалось загрузить заявки: ${message}`:`Could not load requests: ${message}`);
+    }
     finally{window.clearTimeout(timeout);setLoading(false)}
   }
   function fillDraft(lead:Lead){
@@ -462,4 +468,3 @@ export default function StkAdminPage(){
       </section>
     </div>
   </main>;
-}
