@@ -357,23 +357,28 @@ export default function StkAdminPage(){
     const seeded=[...kaskelenLeads,...almatyLeadSeed,...extraAlmatyLeadSeed,...taldykorganLeadSeed].filter(x=>!synced.deleted.includes(x.id)).map(hydrate),manual=synced.manual.filter(x=>!synced.deleted.includes(x.id)).map(hydrate);
     const savedLeads=[...manual,...seeded];
     setLeads(savedLeads);setLoading(false);
-    const controller=new AbortController(),timeout=window.setTimeout(()=>controller.abort(),20000);
     try{
-      const response=await fetch(`/api/stk-lab/leads?t=${Date.now()}`,{headers:{Authorization:`Bearer ${accessToken}`},cache:"no-store",signal:controller.signal});
-      if(!response.ok){
-        const body=await response.text();
-        throw new Error(`API ${response.status}: ${body.slice(0,200)||response.statusText}`);
-      }
-      const result=await response.json() as {leads?:Lead[];error?:string};
-      setLeads([...savedLeads,...(result.leads||[]).map(hydrate)]);
+      // Do not send the Supabase access token through Vercel. Older CRM
+      // sessions may contain oversized user metadata, which makes the
+      // Authorization header exceed Vercel's limit (REQUEST_HEADER_TOO_LARGE).
+      // The browser client is already authenticated and can query Supabase
+      // directly under the same RLS rules.
+      const {data:leadRows,error:leadError}=await sb.from("stk_lab_leads").select("*").order("created_at",{ascending:false});
+      if(leadError)throw new Error(`Supabase ${leadError.code||"error"}: ${leadError.message}`);
+      const {data:orderRows,error:orderError}=await sb.from("orders").select("*").eq("weight","DEMO_SITE_ORDER").order("created_at",{ascending:false});
+      if(orderError)console.warn("Tafa Lab demo requests load:",orderError.message);
+      const demoLeads:Lead[]=(orderRows||[]).map((order:any)=>{
+        let payload:any={};
+        try{payload=order.customer_comment?JSON.parse(order.customer_comment):{};}catch{}
+        return {id:`order-${order.id}`,created_at:order.created_at,name:order.customer_name||"Без имени",contact:order.customer_phone||order.customer_email||"Контакт не указан",company:null,city:null,project_type:payload.subject||"Заявка с демо-сайта",message:payload.message||null,locale:payload.locale==="en"?"en":"ru",source_path:payload.siteName?`Демо · ${payload.siteName}`:"Демо-сайт",status:"new",admin_notes:null};
+      });
+      setLeads([...savedLeads,...(leadRows||[]).map((x:any)=>hydrate(x)),...demoLeads.map(hydrate)]);
     }catch(loadError){
       // Do not silently render an empty inbox when the production API fails.
-      // The local CRM records can still be shown, but the user must see the
-      // actual loading problem instead of mistaking it for zero requests.
       const message=loadError instanceof Error?loadError.message:"load_failed";
       setError(locale==="ru"?`Не удалось загрузить заявки: ${message}`:`Could not load requests: ${message}`);
     }
-    finally{window.clearTimeout(timeout);setLoading(false)}
+    finally{setLoading(false)}
   }
   function fillDraft(lead:Lead){
     const fields=contactFields(lead.contact),meta=crmMeta[lead.id]||{reminder_at:"",history:[]};setSelectedId(lead.id);setDraftStatus(meta.status||lead.status);setDraftNotes(lead.admin_notes||"");
