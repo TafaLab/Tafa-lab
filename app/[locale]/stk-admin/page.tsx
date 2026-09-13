@@ -358,14 +358,14 @@ export default function StkAdminPage(){
     const savedLeads=[...manual,...seeded];
     setLeads(savedLeads);setLoading(false);
     try{
-      // Do not send the Supabase access token through Vercel. Older CRM
-      // sessions may contain oversized user metadata, which makes the
-      // Authorization header exceed Vercel's limit (REQUEST_HEADER_TOO_LARGE).
-      // The browser client is already authenticated and can query Supabase
-      // directly under the same RLS rules.
-      const {data:leadRows,error:leadError}=await sb.from("stk_lab_leads").select("*").order("created_at",{ascending:false});
+      // Use a stateless anonymous client for the read itself. The previous
+      // session token contains oversized legacy metadata and cannot be sent
+      // reliably from this page. The table's RLS policies remain the source
+      // of truth; if they deny anonymous reads, show that exact error.
+      const publicClient=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,{auth:{persistSession:false,autoRefreshToken:false}});
+      const {data:leadRows,error:leadError}=await publicClient.from("stk_lab_leads").select("*").order("created_at",{ascending:false});
       if(leadError)throw new Error(`Supabase ${leadError.code||"error"}: ${leadError.message}`);
-      const {data:orderRows,error:orderError}=await sb.from("orders").select("*").eq("weight","DEMO_SITE_ORDER").order("created_at",{ascending:false});
+      const {data:orderRows,error:orderError}=await publicClient.from("orders").select("*").eq("weight","DEMO_SITE_ORDER").order("created_at",{ascending:false});
       if(orderError)console.warn("Tafa Lab demo requests load:",orderError.message);
       const demoLeads:Lead[]=(orderRows||[]).map((order:any)=>{
         let payload:any={};
@@ -374,7 +374,6 @@ export default function StkAdminPage(){
       });
       setLeads([...savedLeads,...(leadRows||[]).map((x:any)=>hydrate(x)),...demoLeads.map(hydrate)]);
     }catch(loadError){
-      // Do not silently render an empty inbox when the production API fails.
       const message=loadError instanceof Error?loadError.message:"load_failed";
       setError(locale==="ru"?`Не удалось загрузить заявки: ${message}`:`Could not load requests: ${message}`);
     }
