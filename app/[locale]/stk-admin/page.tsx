@@ -1,7 +1,7 @@
 "use client";
 // CRM data and UI are kept independent from deployment-time font fetching.
 
-import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { createClient, SupabaseClient, User } from "@supabase/supabase-js";
 import { usePathname } from "next/navigation";
 
@@ -273,10 +273,16 @@ function parseCsvLine(line:string,separator:string){
   cells.push(current.trim());return cells;
 }
 function downloadText(name:string,value:string){const blob=new Blob(["\ufeff",value],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),anchor=document.createElement("a");anchor.href=url;anchor.download=name;anchor.click();URL.revokeObjectURL(url)}
-async function persistCrmState(state:CrmSyncState){const payload={...state,synced_at:new Date().toISOString()};writeLocalCrmState(payload);const {error}=await sb.auth.updateUser({data:{[CRM_SYNC_KEY]:payload}});return error?.message||""}
+async function persistCrmState(state:CrmSyncState){
+  // Never put the CRM database into Supabase user metadata: it is embedded in
+  // the JWT and eventually makes the Authorization header too large for Vercel.
+  writeLocalCrmState({...state,synced_at:new Date().toISOString()});
+  return "";
+}
 
 export default function StkAdminPage(){
   const pathname=usePathname(),locale:"ru"|"en"=pathname.startsWith("/en")?"en":"ru",t=text[locale];
+  const metadataCleanupStarted=useRef(false);
   type Section="requests"|"crm"|"reminders"|"kanban"|"analytics"|"templates";
   const [user,setUser]=useState<User|null>(null),[accessToken,setAccessToken]=useState(""),[ready,setReady]=useState(false),[leads,setLeads]=useState<Lead[]>([]),[loading,setLoading]=useState(false);
   const [error,setError]=useState(""),[notice,setNotice]=useState(""),[selectedId,setSelectedId]=useState<string|null>(null),[section,setSection]=useState<Section>("requests");
@@ -296,7 +302,17 @@ export default function StkAdminPage(){
     let active=true;
     const local=readLocalCrmState();setCrmMeta(local.meta);setSettings(local.settings||emptySettings());
     const fallback=window.setTimeout(()=>{if(active)setReady(true)},5000);
-    void sb.auth.getSession().then(({data})=>{if(active){setUser(data.session?.user??null);setAccessToken(data.session?.access_token??"")}}).catch(()=>{}).finally(()=>{if(active){window.clearTimeout(fallback);setReady(true)}});
+    void sb.auth.getSession().then(async({data})=>{
+      if(active){setUser(data.session?.user??null);setAccessToken(data.session?.access_token??"")}
+      // Remove the old oversized CRM snapshot from user metadata. The data is
+      // already preserved in local CRM storage; this only makes future JWTs
+      // small enough for the Vercel request headers.
+      if(data.session?.user?.user_metadata?.[CRM_SYNC_KEY]&&!metadataCleanupStarted.current){
+        metadataCleanupStarted.current=true;
+        await sb.auth.updateUser({data:{[CRM_SYNC_KEY]:null}}).catch(()=>{});
+        await sb.auth.refreshSession().catch(()=>{});
+      }
+    }).catch(()=>{}).finally(()=>{if(active){window.clearTimeout(fallback);setReady(true)}});
     const {data}=sb.auth.onAuthStateChange((_event,session)=>{if(active){setUser(session?.user??null);setAccessToken(session?.access_token??"");setReady(true)}});
     return()=>{active=false;window.clearTimeout(fallback);data.subscription.unsubscribe()};
   },[]);
