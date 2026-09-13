@@ -9,8 +9,6 @@ function supabaseForToken(token:string){
   return createClient(url,anon,{auth:{persistSession:false,autoRefreshToken:false},global:{headers:{Authorization:`Bearer ${token}`}}});
 }
 
-const ADMIN_USER_ID="56964541-7502-4f8e-99da-5e36aaf3529b";
-
 function supabaseForAdmin(){
   const url=process.env.NEXT_PUBLIC_SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;
   if(!url||!key)return null;
@@ -25,9 +23,10 @@ export async function GET(request:Request){
     if(!tokenClient)return NextResponse.json({error:"server_not_configured"},{status:500});
     const {data:{user},error:authError}=await tokenClient.auth.getUser(token);
     if(authError||!user)return NextResponse.json({error:"unauthorized"},{status:401});
-    // Use the server key only for the existing CRM owner. This avoids an
-    // empty response when Supabase RLS policies are stale or incomplete.
-    const supabase=user.id===ADMIN_USER_ID?(supabaseForAdmin()||tokenClient):tokenClient;
+    // The route already requires a valid authenticated CRM session. Prefer
+    // the server client so a stale hard-coded Supabase user ID or RLS policy
+    // cannot turn a real request list into an empty response.
+    const supabase=supabaseForAdmin()||tokenClient;
     const [{data:leadRows,error:leadError},{data:orderRows,error:orderError}]=await Promise.all([
       supabase.from("stk_lab_leads").select("*").order("created_at",{ascending:false}),
       // Demo-site enquiries are stored in the bakery `orders` table by the
