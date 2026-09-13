@@ -17,9 +17,33 @@ export async function GET(request:Request){
     if(!supabase)return NextResponse.json({error:"server_not_configured"},{status:500});
     const {data:{user},error:authError}=await supabase.auth.getUser(token);
     if(authError||!user)return NextResponse.json({error:"unauthorized"},{status:401});
-    const {data,error}=await supabase.from("stk_lab_leads").select("*").order("created_at",{ascending:false});
-    if(error){console.error("Tafa Lab leads load:",error.message);return NextResponse.json({error:"load_failed"},{status:500});}
-    return NextResponse.json({leads:data||[]},{headers:{"Cache-Control":"no-store"}});
+    const [{data:leadRows,error:leadError},{data:orderRows,error:orderError}]=await Promise.all([
+      supabase.from("stk_lab_leads").select("*").order("created_at",{ascending:false}),
+      // Demo-site enquiries are stored in the bakery `orders` table by the
+      // demo forms. They belong in the working Tafa Lab requests inbox too.
+      supabase.from("orders").select("*").eq("weight","DEMO_SITE_ORDER").order("created_at",{ascending:false}),
+    ]);
+    if(leadError){console.error("Tafa Lab leads load:",leadError.message);return NextResponse.json({error:"load_failed"},{status:500});}
+    if(orderError){console.error("Tafa Lab demo requests load:",orderError.message);return NextResponse.json({error:"load_failed"},{status:500});}
+
+    const demoLeads=(orderRows||[]).map((order:any)=>{
+      let payload:any={};
+      try{payload=order.customer_comment?JSON.parse(order.customer_comment):{};}catch{}
+      return {
+        id:`order-${order.id}`,
+        created_at:order.created_at,
+        name:order.customer_name||"Без имени",
+        contact:order.customer_phone||order.customer_email||"Контакт не указан",
+        company:null,
+        project_type:payload.subject||"Заявка с демо-сайта",
+        message:payload.message||null,
+        locale:payload.locale==="en"?"en":"ru",
+        source_path:payload.siteName?`Демо · ${payload.siteName}`:"Демо-сайт",
+        status:"new",
+        admin_notes:null,
+      };
+    });
+    return NextResponse.json({leads:[...(leadRows||[]),...demoLeads]},{headers:{"Cache-Control":"no-store"}});
   }catch(error){console.error("Tafa Lab leads GET:",error);return NextResponse.json({error:"load_failed"},{status:500});}
 }
 
