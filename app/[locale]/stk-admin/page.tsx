@@ -300,7 +300,13 @@ export default function StkAdminPage(){
     const {data}=sb.auth.onAuthStateChange((_event,session)=>{if(active){setUser(session?.user??null);setAccessToken(session?.access_token??"");setReady(true)}});
     return()=>{active=false;window.clearTimeout(fallback);data.subscription.unsubscribe()};
   },[]);
-  useEffect(()=>{const timer=window.setTimeout(()=>{if(user&&accessToken)void load();else if(!user){setLeads([]);setSelectedId(null)}},0);return()=>window.clearTimeout(timer)},[user,accessToken]);
+  useEffect(()=>{
+    // Start loading as soon as Supabase has restored the authenticated session.
+    // A zero-delay timer could be lost during a fast auth-state transition,
+    // leaving the requests inbox empty without ever hitting the API.
+    if(user&&accessToken){void load();return}
+    if(!user){setLeads([]);setSelectedId(null)}
+  },[user,accessToken]);
 
   const crmLeads=useMemo(()=>leads.filter(x=>isCrmId(x.id)),[leads]);
   const categoryOptions=useMemo(()=>Array.from(new Set([...CRM_CATEGORY_OPTIONS,...crmLeads.flatMap(x=>leadCategories(x,crmMeta[x.id]))])).sort((a,b)=>a.localeCompare(b,"ru")),[crmLeads,crmMeta]);
@@ -335,9 +341,12 @@ export default function StkAdminPage(){
     setLeads(savedLeads);setLoading(false);
     const controller=new AbortController(),timeout=window.setTimeout(()=>controller.abort(),20000);
     try{
-      const response=await fetch("/api/stk-lab/leads",{headers:{Authorization:`Bearer ${accessToken}`},cache:"no-store",signal:controller.signal});
+      const response=await fetch(`/api/stk-lab/leads?t=${Date.now()}`,{headers:{Authorization:`Bearer ${accessToken}`},cache:"no-store",signal:controller.signal});
+      if(!response.ok){
+        const body=await response.text();
+        throw new Error(`API ${response.status}: ${body.slice(0,200)||response.statusText}`);
+      }
       const result=await response.json() as {leads?:Lead[];error?:string};
-      if(!response.ok)throw new Error(result.error||"load_failed");
       setLeads([...savedLeads,...(result.leads||[]).map(hydrate)]);
     }catch(loadError){
       // Do not silently render an empty inbox when the production API fails.
@@ -468,3 +477,4 @@ export default function StkAdminPage(){
       </section>
     </div>
   </main>;
+}
