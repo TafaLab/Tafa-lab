@@ -303,7 +303,7 @@ export default function StkAdminPage(){
     const local=readLocalCrmState();setCrmMeta(local.meta);setSettings(local.settings||emptySettings());
     const fallback=window.setTimeout(()=>{if(active)setReady(true)},5000);
     void sb.auth.getSession().then(async({data})=>{
-      if(active){setUser(data.session?.user??null);setAccessToken(data.session?.access_token??"")}
+      let session=data.session;
       // Remove the old oversized CRM snapshot from user metadata. The data is
       // already preserved in local CRM storage; this only makes future JWTs
       // small enough for the Vercel request headers.
@@ -311,7 +311,9 @@ export default function StkAdminPage(){
         metadataCleanupStarted.current=true;
         await sb.auth.updateUser({data:{[CRM_SYNC_KEY]:null}}).catch(()=>{});
         await sb.auth.refreshSession().catch(()=>{});
+        session=(await sb.auth.getSession()).data.session;
       }
+      if(active){setUser(session?.user??null);setAccessToken(session?.access_token??"")}
     }).catch(()=>{}).finally(()=>{if(active){window.clearTimeout(fallback);setReady(true)}});
     const {data}=sb.auth.onAuthStateChange((_event,session)=>{if(active){setUser(session?.user??null);setAccessToken(session?.access_token??"");setReady(true)}});
     return()=>{active=false;window.clearTimeout(fallback);data.subscription.unsubscribe()};
