@@ -24,9 +24,12 @@ export async function GET(request:Request){
       supabase.from("orders").select("*").eq("weight","DEMO_SITE_ORDER").order("created_at",{ascending:false}),
     ]);
     if(leadError){console.error("Tafa Lab leads load:",leadError.message);return NextResponse.json({error:"load_failed"},{status:500});}
-    if(orderError){console.error("Tafa Lab demo requests load:",orderError.message);return NextResponse.json({error:"load_failed"},{status:500});}
+    // The bakery `orders` table may have a stricter RLS policy in some
+    // environments. Never hide the real Tafa Lab leads because that optional
+    // source is unavailable.
+    if(orderError)console.error("Tafa Lab demo requests load:",orderError.message);
 
-    const demoLeads=(orderRows||[]).map((order:any)=>{
+    const demoLeads=(orderError?[]:(orderRows||[])).map((order:any)=>{
       let payload:any={};
       try{payload=order.customer_comment?JSON.parse(order.customer_comment):{};}catch{}
       return {
