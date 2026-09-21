@@ -349,6 +349,7 @@ const defaultTemplates:MessageTemplate[]=[
 const CRM_CATEGORY_OPTIONS=["Кофейня","Ресторан","Бар","Кондитерская","Пекарня","Кейтеринг","Салон красоты","SPA","Косметология","Барбершоп","Отель","Цветочный магазин","Магазин","Туризм","Образование","Медицина","Фитнес","Развлечения","Другое"];
 const PLANNER_EMOJIS=["","😊","💼","📞","📧","🏋️","🛒","📚","💡","✈️","🎯","❤️"];
 const isCrmId=(id:string)=>id.startsWith("kaskelen-")||id.startsWith("taldykorgan-")||id.startsWith("almaty-bar-")||id.startsWith("nyc-beauty-");
+const nycBeautyLowProfitabilityNames=new Set(["sally beauty","ulta beauty","sally beauty nails spa","drybar"]);
 const isSeededBakery=(lead:Lead)=>!lead.id.startsWith("kaskelen-manual-")&&(lead.id.startsWith("kaskelen-")||lead.id.startsWith("taldykorgan-"));
 function categoryValues(value?:string){return Array.from(new Set((value||"").split(/[,;|]/).map(item=>item.trim()).filter(Boolean)))}
 function leadCategories(lead:Lead,meta?:CrmMeta){const saved=categoryValues(meta?.category);if(saved.length)return saved;if(lead.category)return categoryValues(lead.category);if(lead.id.startsWith("almaty-bar-")){const format=(lead.project_type||"").toLowerCase(),values=["Бар"];if(/ресторан|кафе|гастробар/.test(format))values.push("Ресторан");if(/караоке/.test(format))values.push("Развлечения");if(/лаундж|smoke|кальян/.test(format))values.push("Лаундж");return values}if(!isSeededBakery(lead))return [];return lead.name.trim().toLowerCase()==="fika"?["Кондитерская","Ресторан"]:["Кондитерская"]}
@@ -513,8 +514,14 @@ export default function StkAdminPage(){
     setLoading(true);setError("");const local=readLocalCrmState();let remote:CrmSyncState={meta:{},manual:[],deleted:[],settings:emptySettings(),planner:[]};
     try{const response=await fetch("/api/stk-lab/crm-sync",{headers:{Authorization:`Bearer ${accessToken}`},cache:"no-store"});if(response.ok){const payload=await response.json();if(payload.state&&typeof payload.state==="object")remote=payload.state as CrmSyncState}}catch{}
     const synced=mergeCrmStates(local,remote);if(crmStateScore(local)>crmStateScore(remote)){const syncError=await persistCrmState(synced,accessToken);if(syncError&&!/rate limit/i.test(syncError))setError(syncError)}else writeLocalCrmState(synced);
-    setCrmMeta(synced.meta);setSettings(synced.settings||emptySettings());setPlannerTasks(synced.planner||[]);
-    const hydrate=(x:Lead)=>({...x,contact:synced.meta[x.id]?.contact||x.contact,city:synced.meta[x.id]?.city??x.city,company:synced.meta[x.id]?.company??x.company,status:synced.meta[x.id]?.status||x.status,admin_notes:synced.meta[x.id]?.history?.at(-1)?.text||x.admin_notes||null});
+    const seededMeta={...synced.meta};
+    (nycBeautyLeadSeed as unknown as Lead[]).forEach(lead=>{
+      const previous=seededMeta[lead.id];
+      if(previous?.profitability)return;
+      seededMeta[lead.id]={...(previous||{reminder_at:"",history:[]}),category:previous?.category||lead.category||"Салон красоты",tags:previous?.tags||["NYC","Beauty"],source:previous?.source||"NYC beauty salons",temperature:previous?.temperature||"cold",profitability:nycBeautyLowProfitabilityNames.has(lead.name.trim().toLowerCase())?"low":"high"};
+    });
+    setCrmMeta(seededMeta);setSettings(synced.settings||emptySettings());setPlannerTasks(synced.planner||[]);
+    const hydrate=(x:Lead)=>({...x,contact:seededMeta[x.id]?.contact||x.contact,city:seededMeta[x.id]?.city??x.city,company:seededMeta[x.id]?.company??x.company,status:seededMeta[x.id]?.status||x.status,admin_notes:seededMeta[x.id]?.history?.at(-1)?.text||x.admin_notes||null});
     const seeded:Lead[]=[...kaskelenLeads,...almatyLeadSeed,...extraAlmatyLeadSeed,...taldykorganLeadSeed,...almatyBarsLeadSeed,...(nycBeautyLeadSeed as unknown as Lead[])].filter(x=>!synced.deleted.includes(x.id)).map(hydrate);
     const manual=synced.manual.filter(x=>!synced.deleted.includes(x.id)).map(hydrate),savedLeads=[...manual,...seeded];
     setLeads(savedLeads);setLoading(false);
