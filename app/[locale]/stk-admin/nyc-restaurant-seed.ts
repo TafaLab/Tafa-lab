@@ -23,7 +23,7 @@ const allNycRestaurantLeadSeed = [...nycRestaurantLeadSeed01,...nycRestaurantLea
 // are not phone numbers and must never be presented as verified contact data.
 const cleanRestaurantLead=(lead:(typeof allNycRestaurantLeadSeed)[number])=>({
   ...lead,
-  contact:/^Телефон:\\s*Restaurants\b/i.test(lead.contact)?"Контакт не найден — требуется проверка":lead.contact,
-  message:/^Адрес:.*New York(?:\\s*\\|.*)?\\s*·\\s*Сайт: не найден$/i.test(lead.message||"")?"Контакты, адрес и официальный сайт требуют проверки перед обращением.":lead.message,
+  contact:/^Телефон:\s*Restaurants\b/i.test(lead.contact)?"Контакт не найден — требуется проверка":lead.contact,
+  message:/^Адрес:.*New York(?:\s*\|.*)?\s*·\s*Сайт: не найден$/i.test(lead.message||"")?"Контакты, адрес и официальный сайт требуют проверки перед обращением.":lead.message,
 });
 export const nycRestaurantLeadSeed = Array.from(new Map(allNycRestaurantLeadSeed.map(cleanRestaurantLead).map(lead=>[normalizeRestaurantName(lead.name),lead])).values());
