@@ -5,6 +5,7 @@ import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "re
 import { createClient, SupabaseClient, User } from "@supabase/supabase-js";
 import { usePathname } from "next/navigation";
 import { nycBeautyLeadSeed } from "./nyc-beauty-seed";
+import { nycRestaurantLeadSeed } from "./nyc-restaurant-seed";
 
 type LeadStatus = "new" | "draft" | "contacted" | "in_progress" | "won" | "lost" | "dead" | "not_profitable";
 type LeadFilter = "all" | LeadStatus;
@@ -50,6 +51,7 @@ type Lead = {
   country?: string | null;
   city?: string | null;
   category?: string;
+  seedProfitability?: LeadProfitability;
   project_type: string | null;
   message: string | null;
   locale: "ru" | "en";
@@ -520,9 +522,14 @@ export default function StkAdminPage(){
       if(previous?.profitability)return;
       seededMeta[lead.id]={...(previous||{reminder_at:"",history:[]}),category:previous?.category||lead.category||"Салон красоты",tags:previous?.tags||["NYC","Beauty"],source:previous?.source||"NYC beauty salons",temperature:previous?.temperature||"cold",profitability:nycBeautyLowProfitabilityNames.has(lead.name.trim().toLowerCase())?"low":"high"};
     });
+    (nycRestaurantLeadSeed as unknown as Lead[]).forEach(lead=>{
+      const previous=seededMeta[lead.id];
+      if(previous?.profitability)return;
+      seededMeta[lead.id]={...(previous||{reminder_at:"",history:[]}),category:previous?.category||lead.category||"Ресторан",tags:previous?.tags||["NYC","Restaurants"],source:previous?.source||"NYC restaurants",temperature:previous?.temperature||"cold",profitability:previous?.profitability||lead.seedProfitability||"high"};
+    });
     setCrmMeta(seededMeta);setSettings(synced.settings||emptySettings());setPlannerTasks(synced.planner||[]);
     const hydrate=(x:Lead)=>({...x,contact:seededMeta[x.id]?.contact||x.contact,city:seededMeta[x.id]?.city??x.city,company:seededMeta[x.id]?.company??x.company,status:seededMeta[x.id]?.status||x.status,admin_notes:seededMeta[x.id]?.history?.at(-1)?.text||x.admin_notes||null});
-    const seeded:Lead[]=[...kaskelenLeads,...almatyLeadSeed,...extraAlmatyLeadSeed,...taldykorganLeadSeed,...almatyBarsLeadSeed,...(nycBeautyLeadSeed as unknown as Lead[])].filter(x=>!synced.deleted.includes(x.id)).map(hydrate);
+    const seeded:Lead[]=[...kaskelenLeads,...almatyLeadSeed,...extraAlmatyLeadSeed,...taldykorganLeadSeed,...almatyBarsLeadSeed,...(nycBeautyLeadSeed as unknown as Lead[]),...(nycRestaurantLeadSeed as unknown as Lead[])].filter(x=>!synced.deleted.includes(x.id)).map(hydrate);
     const manual=synced.manual.filter(x=>!synced.deleted.includes(x.id)).map(hydrate),savedLeads=[...manual,...seeded];
     setLeads(savedLeads);setLoading(false);
     try{
