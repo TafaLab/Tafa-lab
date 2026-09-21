@@ -438,6 +438,7 @@ export default function StkAdminPage(){
   type Section="requests"|"crm"|"reminders"|"kanban"|"analytics"|"templates"|"planner";
   const [user,setUser]=useState<User|null>(null),[accessToken,setAccessToken]=useState(""),[ready,setReady]=useState(false),[leads,setLeads]=useState<Lead[]>([]),[loading,setLoading]=useState(false);
   const [error,setError]=useState(""),[notice,setNotice]=useState(""),[selectedId,setSelectedId]=useState<string|null>(null),[section,setSection]=useState<Section>("requests");
+  const [notificationPermission,setNotificationPermission]=useState<NotificationPermission>(()=>typeof Notification==="undefined"?"denied":Notification.permission);
   const [crmMeta,setCrmMeta]=useState<Record<string,CrmMeta>>({}),[settings,setSettings]=useState<CrmSettings>(emptySettings());
   const [filter,setFilter]=useState<LeadFilter>("all"),[query,setQuery]=useState(""),[sort,setSort]=useState<SortMode>("newest");
   const [categoryFilter,setCategoryFilter]=useState(""),[sourceFilter,setSourceFilter]=useState(""),[temperatureFilter,setTemperatureFilter]=useState(""),[profitabilityFilter,setProfitabilityFilter]=useState(""),[tagFilter,setTagFilter]=useState(""),[countryFilter,setCountryFilter]=useState(""),[cityFilter,setCityFilter]=useState("");
@@ -512,6 +513,25 @@ export default function StkAdminPage(){
   function addPlannerTask(event:FormEvent<HTMLFormElement>){event.preventDefault();const value=plannerInput.trim();if(!value)return;void savePlannerTasks([...plannerTasks,{id:`planner-${Date.now()}`,date:plannerDate,text:value,completed:false,repeat:plannerRepeat,completed_dates:[],emoji:plannerEmoji.trim()||undefined,time:plannerTime||null,reminder_time:plannerReminderTime||null,created_at:new Date().toISOString()}]);setPlannerInput("");setPlannerRepeat("none");setPlannerEmoji("");setPlannerTime("");setPlannerReminderTime("")}
   function togglePlannerTask(id:string){const occurrence=plannerTasks.find(task=>task.id===id);if(!occurrence)return;const completed=plannerTaskCompletedOn(occurrence,plannerDate);const next=plannerTasks.map(task=>{if(task.id!==id)return task;if(task.repeat&&task.repeat!=="none"){const dates=new Set(task.completed_dates||[]);if(completed)dates.delete(plannerDate);else dates.add(plannerDate);return {...task,completed_dates:Array.from(dates)}}return {...task,completed:!completed,completed_at:!completed?new Date().toISOString():null}});void savePlannerTasks(next)}
   function deletePlannerTask(id:string){void savePlannerTasks(plannerTasks.filter(task=>task.id!==id))}
+  async function enableNotifications(){
+    if(typeof Notification==="undefined"){setNotice(locale==="ru"?"Этот браузер не поддерживает системные уведомления.":"This browser does not support system notifications.");return}
+    const permission=await Notification.requestPermission();setNotificationPermission(permission);
+    if(permission==="granted"){new Notification("Tafa Lab",{body:locale==="ru"?"Уведомления CRM включены.":"CRM notifications are enabled."});setNotice(locale==="ru"?"Уведомления включены.":"Notifications enabled.")}
+    else setNotice(locale==="ru"?"Разрешение на уведомления не выдано.":"Notification permission was not granted.");
+    setTimeout(()=>setNotice(""),2500);
+  }
+  useEffect(()=>{
+    if(notificationPermission!=="granted"||typeof Notification==="undefined")return;
+    const check=()=>{
+      const now=new Date(),today=localDateKey(now),notified=new Set<string>();
+      try{JSON.parse(localStorage.getItem("stk-admin-notified")||"[]").forEach((key:string)=>notified.add(key))}catch{}
+      const mark=(key:string,title:string,body:string)=>{if(notified.has(key))return;notified.add(key);new Notification(title,{body,tag:key});};
+      crmLeads.forEach(lead=>{const meta=crmMeta[lead.id],due=reminderDate(meta);if(!due)return;const dueDate=new Date(due);if(dueDate.getTime()<=now.getTime()&&now.getTime()-dueDate.getTime()<24*60*60*1000)mark(`crm:${lead.id}:${due}`,locale==="ru"?"CRM: время связаться":"CRM: follow-up due",lead.name);});
+      plannerTasks.forEach(task=>{if(!task.reminder_time||!plannerTaskOccursOn(task,today)||plannerTaskCompletedOn(task,today))return;const due=new Date(`${today}T${task.reminder_time}:00`);if(due.getTime()<=now.getTime()&&now.getTime()-due.getTime()<24*60*60*1000)mark(`planner:${task.id}:${today}:${task.reminder_time}`,locale==="ru"?"Планер Tafa Lab":"Tafa Lab planner",`${task.emoji||"📌"} ${task.text}`);});
+      localStorage.setItem("stk-admin-notified",JSON.stringify(Array.from(notified).slice(-1000)));
+    };
+    check();const timer=window.setInterval(check,30000);return()=>window.clearInterval(timer);
+  },[notificationPermission,crmLeads,crmMeta,plannerTasks,locale]);
 
   async function load(){
     setLoading(true);setError("");const local=readLocalCrmState();let remote:CrmSyncState={meta:{},manual:[],deleted:[],settings:emptySettings(),planner:[]};
@@ -641,7 +661,7 @@ export default function StkAdminPage(){
 
   const selectedLocalTime=selected?leadTimeZone(selected,crmMeta[selected.id]):null,selectedLocalTimeText=selectedLocalTime?new Intl.DateTimeFormat("ru-RU",{timeZone:selectedLocalTime.zone,dateStyle:"short",timeStyle:"short"}).format(new Date()):"";
   return <main className="min-h-screen bg-[#f5f1ec] text-[#211a17]">
-    <header className="sticky top-0 z-20 border-b border-black/10 bg-[#f5f1ec]/95 backdrop-blur"><div className="mx-auto flex max-w-[1600px] items-center justify-between px-5 py-4"><div><b>Tafa Lab</b><div className="text-xs text-black/45">{t.admin}</div></div><button onClick={()=>sb.auth.signOut()} className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm">{t.logout}</button></div></header>
+    <header className="sticky top-0 z-20 border-b border-black/10 bg-[#f5f1ec]/95 backdrop-blur"><div className="mx-auto flex max-w-[1600px] items-center justify-between px-5 py-4"><div><b>Tafa Lab</b><div className="text-xs text-black/45">{t.admin}</div></div><div className="flex items-center gap-2"><button onClick={()=>void enableNotifications()} className={`rounded-full border px-4 py-2 text-sm ${notificationPermission==="granted"?"border-green-200 bg-green-50 text-green-800":"border-black/10 bg-white"}`}>{notificationPermission==="granted"?(locale==="ru"?"🔔 Уведомления включены":"🔔 Notifications on"):(locale==="ru"?"🔔 Включить уведомления":"🔔 Enable notifications")}</button><button onClick={()=>sb.auth.signOut()} className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm">{t.logout}</button></div></div></header>
     <div className="mx-auto flex max-w-[1600px] flex-col md:flex-row">
       <aside className="border-b border-black/10 px-4 py-4 md:min-h-[calc(100vh-73px)] md:w-64 md:border-b-0 md:border-r md:py-8"><p className="px-3 text-xs uppercase tracking-[.2em] text-black/40">Tafa Lab CRM</p><nav className="mt-4 flex gap-2 overflow-x-auto md:block md:space-y-2">{([
         ["requests","▤",locale==="ru"?"Заявки":"Requests",leads.filter(x=>!isCrmId(x.id)).length],["crm","◌","CRM",crmLeads.length],["reminders","◷",locale==="ru"?"Напоминания":"Reminders",analytics.overdue],["kanban","▦",locale==="ru"?"Воронка":"Pipeline",crmLeads.length],["planner","☑",locale==="ru"?"Планер":"Planner",plannerTasks.filter(x=>plannerTaskOccursOn(x,plannerToday)).length],["analytics","◫",locale==="ru"?"Аналитика":"Analytics",null],["templates","✉",locale==="ru"?"Шаблоны":"Templates",settings.templates.length],
