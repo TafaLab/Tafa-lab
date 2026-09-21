@@ -546,8 +546,7 @@ export default function StkAdminPage(){
     });
     (nycRestaurantLeadSeed as unknown as Lead[]).forEach(lead=>{
       const previous=seededMeta[lead.id];
-      if(previous?.profitability)return;
-      seededMeta[lead.id]={...(previous||{reminder_at:"",history:[]}),category:previous?.category||lead.category||"Ресторан",tags:previous?.tags||["NYC","Restaurants"],source:previous?.source||"NYC restaurants",temperature:previous?.temperature||"cold",profitability:previous?.profitability||lead.seedProfitability||"high"};
+      seededMeta[lead.id]={...(previous||{reminder_at:"",history:[]}),status:previous?.status||lead.status,category:previous?.category||lead.category||"Ресторан",tags:previous?.tags||["NYC","Restaurants"],source:previous?.source||"NYC restaurants",temperature:previous?.temperature||"cold",profitability:previous?.profitability||lead.seedProfitability||"medium"};
     });
     (nycBakeryCoffeeLeadSeed as unknown as Lead[]).forEach(lead=>{
       const previous=seededMeta[lead.id];
