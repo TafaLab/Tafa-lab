@@ -19,6 +19,12 @@ export const metadata: Metadata = {
 
   applicationName: "TAFA Lab",
 
+  icons: {
+    icon: "/tafa-favicon.svg",
+    shortcut: "/tafa-favicon.svg",
+    apple: "/tafa-favicon.svg",
+  },
+
   authors: [{ name: "TAFA Lab" }],
   creator: "TAFA Lab",
   publisher: "TAFA Lab",
