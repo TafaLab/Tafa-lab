@@ -481,6 +481,18 @@ export default function StkAdminPage(){
   },[user,accessToken]);
 
   const crmLeads=useMemo(()=>leads.filter(x=>isCrmId(x.id)),[leads]);
+  useEffect(()=>{
+    if(notificationPermission!=="granted"||typeof Notification==="undefined")return;
+    const check=()=>{
+      const now=new Date(),today=localDateKey(now),notified=new Set<string>();
+      try{JSON.parse(localStorage.getItem("stk-admin-notified")||"[]").forEach((key:string)=>notified.add(key))}catch{}
+      const mark=(key:string,title:string,body:string)=>{if(notified.has(key))return;notified.add(key);new Notification(title,{body,tag:key});};
+      crmLeads.forEach(lead=>{const meta=crmMeta[lead.id],due=reminderDate(meta);if(!due)return;const dueDate=new Date(due);if(dueDate.getTime()<=now.getTime()&&now.getTime()-dueDate.getTime()<24*60*60*1000)mark(`crm:${lead.id}:${due}`,locale==="ru"?"CRM: время связаться":"CRM: follow-up due",lead.name);});
+      plannerTasks.forEach(task=>{if(!task.reminder_time||!plannerTaskOccursOn(task,today)||plannerTaskCompletedOn(task,today))return;const due=new Date(`${today}T${task.reminder_time}:00`);if(due.getTime()<=now.getTime()&&now.getTime()-due.getTime()<24*60*60*1000)mark(`planner:${task.id}:${today}:${task.reminder_time}`,locale==="ru"?"Планер Tafa Lab":"Tafa Lab planner",`${task.emoji||"📌"} ${task.text}`);});
+      localStorage.setItem("stk-admin-notified",JSON.stringify(Array.from(notified).slice(-1000)));
+    };
+    check();const timer=window.setInterval(check,30000);return()=>window.clearInterval(timer);
+  },[notificationPermission,crmLeads,crmMeta,plannerTasks,locale]);
   const categoryOptions=useMemo(()=>Array.from(new Set([...CRM_CATEGORY_OPTIONS,...crmLeads.flatMap(x=>leadCategories(x,crmMeta[x.id]))])).sort((a,b)=>a.localeCompare(b,"ru")),[crmLeads,crmMeta]);
   const sourceOptions=useMemo(()=>Array.from(new Set(crmLeads.map(x=>crmMeta[x.id]?.source||x.source_path||"").filter(Boolean))).sort(),[crmLeads,crmMeta]);
   const tagOptions=useMemo(()=>Array.from(new Set(crmLeads.flatMap(x=>crmMeta[x.id]?.tags||[]))).sort(),[crmLeads,crmMeta]);
@@ -520,18 +532,7 @@ export default function StkAdminPage(){
     else setNotice(locale==="ru"?"Разрешение на уведомления не выдано.":"Notification permission was not granted.");
     setTimeout(()=>setNotice(""),2500);
   }
-  useEffect(()=>{
-    if(notificationPermission!=="granted"||typeof Notification==="undefined")return;
-    const check=()=>{
-      const now=new Date(),today=localDateKey(now),notified=new Set<string>();
-      try{JSON.parse(localStorage.getItem("stk-admin-notified")||"[]").forEach((key:string)=>notified.add(key))}catch{}
-      const mark=(key:string,title:string,body:string)=>{if(notified.has(key))return;notified.add(key);new Notification(title,{body,tag:key});};
-      crmLeads.forEach(lead=>{const meta=crmMeta[lead.id],due=reminderDate(meta);if(!due)return;const dueDate=new Date(due);if(dueDate.getTime()<=now.getTime()&&now.getTime()-dueDate.getTime()<24*60*60*1000)mark(`crm:${lead.id}:${due}`,locale==="ru"?"CRM: время связаться":"CRM: follow-up due",lead.name);});
-      plannerTasks.forEach(task=>{if(!task.reminder_time||!plannerTaskOccursOn(task,today)||plannerTaskCompletedOn(task,today))return;const due=new Date(`${today}T${task.reminder_time}:00`);if(due.getTime()<=now.getTime()&&now.getTime()-due.getTime()<24*60*60*1000)mark(`planner:${task.id}:${today}:${task.reminder_time}`,locale==="ru"?"Планер Tafa Lab":"Tafa Lab planner",`${task.emoji||"📌"} ${task.text}`);});
-      localStorage.setItem("stk-admin-notified",JSON.stringify(Array.from(notified).slice(-1000)));
-    };
-    check();const timer=window.setInterval(check,30000);return()=>window.clearInterval(timer);
-  },[notificationPermission,crmLeads,crmMeta,plannerTasks,locale]);
+
 
   async function load(){
     setLoading(true);setError("");const local=readLocalCrmState();let remote:CrmSyncState={meta:{},manual:[],deleted:[],settings:emptySettings(),planner:[]};
