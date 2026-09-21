@@ -4,6 +4,7 @@
 import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { createClient, SupabaseClient, User } from "@supabase/supabase-js";
 import { usePathname } from "next/navigation";
+import { nycBeautyLeadSeed } from "./nyc-beauty-seed";
 
 type LeadStatus = "new" | "draft" | "contacted" | "in_progress" | "won" | "lost" | "dead" | "not_profitable";
 type LeadFilter = "all" | LeadStatus;
@@ -30,9 +31,9 @@ type CrmMeta = {
   country?: string | null;
   city?: string | null;
   company?: string | null;
+  category?: string;
   primary_message?: string;
   followup_message?: string;
-  category?: string;
   tags?: string[];
   source?: string;
   temperature?: LeadTemperature;
@@ -48,6 +49,7 @@ type Lead = {
   company: string | null;
   country?: string | null;
   city?: string | null;
+  category?: string;
   project_type: string | null;
   message: string | null;
   locale: "ru" | "en";
@@ -346,10 +348,10 @@ const defaultTemplates:MessageTemplate[]=[
 ];
 const CRM_CATEGORY_OPTIONS=["Кофейня","Ресторан","Бар","Кондитерская","Пекарня","Кейтеринг","Салон красоты","SPA","Косметология","Барбершоп","Отель","Цветочный магазин","Магазин","Туризм","Образование","Медицина","Фитнес","Развлечения","Другое"];
 const PLANNER_EMOJIS=["","😊","💼","📞","📧","🏋️","🛒","📚","💡","✈️","🎯","❤️"];
-const isCrmId=(id:string)=>id.startsWith("kaskelen-")||id.startsWith("taldykorgan-")||id.startsWith("almaty-bar-");
+const isCrmId=(id:string)=>id.startsWith("kaskelen-")||id.startsWith("taldykorgan-")||id.startsWith("almaty-bar-")||id.startsWith("nyc-beauty-");
 const isSeededBakery=(lead:Lead)=>!lead.id.startsWith("kaskelen-manual-")&&(lead.id.startsWith("kaskelen-")||lead.id.startsWith("taldykorgan-"));
 function categoryValues(value?:string){return Array.from(new Set((value||"").split(/[,;|]/).map(item=>item.trim()).filter(Boolean)))}
-function leadCategories(lead:Lead,meta?:CrmMeta){const saved=categoryValues(meta?.category);if(saved.length)return saved;if(lead.id.startsWith("almaty-bar-")){const format=(lead.project_type||"").toLowerCase(),values=["Бар"];if(/ресторан|кафе|гастробар/.test(format))values.push("Ресторан");if(/караоке/.test(format))values.push("Развлечения");if(/лаундж|smoke|кальян/.test(format))values.push("Лаундж");return values}if(!isSeededBakery(lead))return [];return lead.name.trim().toLowerCase()==="fika"?["Кондитерская","Ресторан"]:["Кондитерская"]}
+function leadCategories(lead:Lead,meta?:CrmMeta){const saved=categoryValues(meta?.category);if(saved.length)return saved;if(lead.category)return categoryValues(lead.category);if(lead.id.startsWith("almaty-bar-")){const format=(lead.project_type||"").toLowerCase(),values=["Бар"];if(/ресторан|кафе|гастробар/.test(format))values.push("Ресторан");if(/караоке/.test(format))values.push("Развлечения");if(/лаундж|smoke|кальян/.test(format))values.push("Лаундж");return values}if(!isSeededBakery(lead))return [];return lead.name.trim().toLowerCase()==="fika"?["Кондитерская","Ресторан"]:["Кондитерская"]}
 function toggleCategory(value:string,category:string){const selected=categoryValues(value);return (selected.includes(category)?selected.filter(item=>item!==category):[...selected,category]).join(", ")}
 function interactionTimeline(meta?:CrmMeta){
   const interactions=meta?.interactions||[],seen=new Set(interactions.map(item=>`${item.created_at}|${item.text}`));
@@ -418,11 +420,12 @@ function parseCsvLine(line:string,separator:string){
   cells.push(current.trim());return cells;
 }
 function downloadText(name:string,value:string){const blob=new Blob(["\ufeff",value],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),anchor=document.createElement("a");anchor.href=url;anchor.download=name;anchor.click();URL.revokeObjectURL(url)}
-async function persistCrmState(state:CrmSyncState){
+async function persistCrmState(state:CrmSyncState,accessToken=""){
   // Never put the CRM database into Supabase user metadata: it is embedded in
   // the JWT and eventually makes the Authorization header too large for Vercel.
   writeLocalCrmState({...state,synced_at:new Date().toISOString()});
-  return "";
+  if(!accessToken)return "";
+  try{const response=await fetch("/api/stk-lab/crm-sync",{method:"PUT",headers:{"Content-Type":"application/json",Authorization:`Bearer ${accessToken}`},body:JSON.stringify({state}),cache:"no-store"});if(!response.ok){const payload=await response.json().catch(()=>null);return payload?.error||`sync_${response.status}`}return ""}catch{return "sync_unavailable"}
 }
 
 export default function StkAdminPage(){
@@ -501,19 +504,19 @@ export default function StkAdminPage(){
   const plannerDayTasks=useMemo(()=>plannerTasks.filter(task=>plannerTaskOccursOn(task,plannerDate)).map(task=>({...task,completed:plannerTaskCompletedOn(task,plannerDate)})).sort((a,b)=>{if(Boolean(a.time)!==Boolean(b.time))return a.time?-1:1;return (a.time||"99:99").localeCompare(b.time||"99:99")}),[plannerTasks,plannerDate]);
   const plannerToday=localDateKey();
   const plannerMonthLabel=plannerMonth.toLocaleDateString(locale==="ru"?"ru-RU":"en-US",{month:"long",year:"numeric"});
-  async function savePlannerTasks(next:PlannerTask[]){setPlannerTasks(next);const current=readLocalCrmState();await persistCrmState({...current,planner:next,settings});}
+  async function savePlannerTasks(next:PlannerTask[]){setPlannerTasks(next);const current=readLocalCrmState();await persistCrmState({...current,planner:next,settings},accessToken);}
   function addPlannerTask(event:FormEvent<HTMLFormElement>){event.preventDefault();const value=plannerInput.trim();if(!value)return;void savePlannerTasks([...plannerTasks,{id:`planner-${Date.now()}`,date:plannerDate,text:value,completed:false,repeat:plannerRepeat,completed_dates:[],emoji:plannerEmoji.trim()||undefined,time:plannerTime||null,reminder_time:plannerReminderTime||null,created_at:new Date().toISOString()}]);setPlannerInput("");setPlannerRepeat("none");setPlannerEmoji("");setPlannerTime("");setPlannerReminderTime("")}
   function togglePlannerTask(id:string){const occurrence=plannerTasks.find(task=>task.id===id);if(!occurrence)return;const completed=plannerTaskCompletedOn(occurrence,plannerDate);const next=plannerTasks.map(task=>{if(task.id!==id)return task;if(task.repeat&&task.repeat!=="none"){const dates=new Set(task.completed_dates||[]);if(completed)dates.delete(plannerDate);else dates.add(plannerDate);return {...task,completed_dates:Array.from(dates)}}return {...task,completed:!completed,completed_at:!completed?new Date().toISOString():null}});void savePlannerTasks(next)}
   function deletePlannerTask(id:string){void savePlannerTasks(plannerTasks.filter(task=>task.id!==id))}
 
   async function load(){
-    setLoading(true);setError("");const local=readLocalCrmState(),raw=user?.user_metadata?.[CRM_SYNC_KEY] as Partial<CrmSyncState>|undefined;
-    const remote:CrmSyncState={meta:raw?.meta&&typeof raw.meta==="object"?raw.meta:{},manual:Array.isArray(raw?.manual)?raw.manual:[],deleted:Array.isArray(raw?.deleted)?raw.deleted:[],settings:raw?.settings||emptySettings(),planner:Array.isArray(raw?.planner)?raw.planner:[],synced_at:raw?.synced_at};
-    const synced=mergeCrmStates(local,remote);if(crmStateScore(local)>crmStateScore(remote)){const syncError=await persistCrmState(synced);if(syncError&&!/rate limit/i.test(syncError))setError(syncError)}else writeLocalCrmState(synced);
+    setLoading(true);setError("");const local=readLocalCrmState();let remote:CrmSyncState={meta:{},manual:[],deleted:[],settings:emptySettings(),planner:[]};
+    try{const response=await fetch("/api/stk-lab/crm-sync",{headers:{Authorization:`Bearer ${accessToken}`},cache:"no-store"});if(response.ok){const payload=await response.json();if(payload.state&&typeof payload.state==="object")remote=payload.state as CrmSyncState}}catch{}
+    const synced=mergeCrmStates(local,remote);if(crmStateScore(local)>crmStateScore(remote)){const syncError=await persistCrmState(synced,accessToken);if(syncError&&!/rate limit/i.test(syncError))setError(syncError)}else writeLocalCrmState(synced);
     setCrmMeta(synced.meta);setSettings(synced.settings||emptySettings());setPlannerTasks(synced.planner||[]);
     const hydrate=(x:Lead)=>({...x,contact:synced.meta[x.id]?.contact||x.contact,city:synced.meta[x.id]?.city??x.city,company:synced.meta[x.id]?.company??x.company,status:synced.meta[x.id]?.status||x.status,admin_notes:synced.meta[x.id]?.history?.at(-1)?.text||x.admin_notes||null});
-    const seeded=[...kaskelenLeads,...almatyLeadSeed,...extraAlmatyLeadSeed,...taldykorganLeadSeed,...almatyBarsLeadSeed].filter(x=>!synced.deleted.includes(x.id)).map(hydrate),manual=synced.manual.filter(x=>!synced.deleted.includes(x.id)).map(hydrate);
-    const savedLeads=[...manual,...seeded];
+    const seeded:Lead[]=[...kaskelenLeads,...almatyLeadSeed,...extraAlmatyLeadSeed,...taldykorganLeadSeed,...almatyBarsLeadSeed,...(nycBeautyLeadSeed as unknown as Lead[])].filter(x=>!synced.deleted.includes(x.id)).map(hydrate);
+    const manual=synced.manual.filter(x=>!synced.deleted.includes(x.id)).map(hydrate),savedLeads=[...manual,...seeded];
     setLeads(savedLeads);setLoading(false);
     try{
       // Use a stateless anonymous client for the read itself. The previous
@@ -544,7 +547,7 @@ export default function StkAdminPage(){
     setDraftCategory(leadCategories(lead,meta).join(", "));setDraftTags((meta.tags||[]).join(", "));setDraftSource(meta.source||lead.source_path||"");setDraftTemperature(meta.temperature||"cold");setDraftProfitability(meta.profitability||"");setSaved(false);setError("");setCopied(false);
   }
   async function saveMeta(nextMeta:Record<string,CrmMeta>,nextSettings:CrmSettings=settings){
-    setCrmMeta(nextMeta);setSettings(nextSettings);const current=readLocalCrmState(),syncError=await persistCrmState({...current,meta:nextMeta,settings:nextSettings});if(syncError&&!/rate limit/i.test(syncError))setError(syncError);
+    setCrmMeta(nextMeta);setSettings(nextSettings);const current=readLocalCrmState(),syncError=await persistCrmState({...current,meta:nextMeta,settings:nextSettings},accessToken);if(syncError&&!/rate limit/i.test(syncError))setError(syncError);
   }
   async function saveLead(){
     if(!selectedId)return;setSaving(true);setError("");const lead=leads.find(x=>x.id===selectedId);if(!lead){setSaving(false);return}
@@ -575,11 +578,11 @@ export default function StkAdminPage(){
     const contact=[newLead.phone.trim()&&`Телефон: ${newLead.phone.trim()}`,newLead.instagram.trim()&&`Instagram: ${newLead.instagram.trim()}`,newLead.email.trim()&&`Email: ${newLead.email.trim()}`].filter(Boolean).join(" · ");
     const lead:Lead={id,created_at:new Date().toISOString(),name:newLead.name.trim(),contact,company:newLead.company.trim()||null,country:newLead.country.trim()||null,city:newLead.city.trim()||null,project_type:newLead.project_type.trim()||null,message:newLead.message.trim()||null,locale:"ru",source_path:newLead.source.trim()||"Добавлено вручную",status:"new",admin_notes:null};
     const meta:CrmMeta={reminder_at:newLead.reminder_at,reminder_time:newLead.reminder_time,history:[],status:"new",country:newLead.country.trim()||null,category:newLead.category.trim(),tags:newLead.tags.split(",").map(v=>v.trim()).filter(Boolean),source:newLead.source.trim()||"Добавлено вручную",temperature:"cold",profitability:null,followup_message:buildFollowupMessage(lead,"ru")};
-    const current=readLocalCrmState(),manual=[lead,...current.manual.filter(x=>x.id!==id)],nextMeta={...crmMeta,[id]:meta};setLeads(rows=>[lead,...rows]);await persistCrmState({...current,manual,meta:nextMeta,settings});setCrmMeta(nextMeta);setNewLead(emptyNewLead);setAdding(false);setSection("crm");setSelectedId(null);setNotice(locale==="ru"?"Запись добавлена в CRM.":"Record added to CRM.");setTimeout(()=>setNotice(""),2200);
+    const current=readLocalCrmState(),manual=[lead,...current.manual.filter(x=>x.id!==id)],nextMeta={...crmMeta,[id]:meta};setLeads(rows=>[lead,...rows]);await persistCrmState({...current,manual,meta:nextMeta,settings},accessToken);setCrmMeta(nextMeta);setNewLead(emptyNewLead);setAdding(false);setSection("crm");setSelectedId(null);setNotice(locale==="ru"?"Запись добавлена в CRM.":"Record added to CRM.");setTimeout(()=>setNotice(""),2200);
   }
   async function deleteLead(){
     if(!selectedId||!window.confirm(t.deleteAsk))return;setDeleting(true);const current=readLocalCrmState(),next={...current,deleted:Array.from(new Set([...current.deleted,selectedId])),manual:current.manual.filter(x=>x.id!==selectedId)};
-    if(isCrmId(selectedId))await persistCrmState(next);else await sb.from("stk_lab_leads").delete().eq("id",selectedId);setLeads(rows=>rows.filter(x=>x.id!==selectedId));setSelectedId(null);setNotice(t.deleted);setTimeout(()=>setNotice(""),2500);setDeleting(false);
+    if(isCrmId(selectedId))await persistCrmState(next,accessToken);else await sb.from("stk_lab_leads").delete().eq("id",selectedId);setLeads(rows=>rows.filter(x=>x.id!==selectedId));setSelectedId(null);setNotice(t.deleted);setTimeout(()=>setNotice(""),2500);setDeleting(false);
   }
   async function handleAttachment(event:ChangeEvent<HTMLInputElement>){
     const file=event.target.files?.[0];if(!file||!selectedId)return;if(file.size>2_000_000){setError(locale==="ru"?"Файл должен быть меньше 2 МБ.":"File must be under 2 MB.");event.target.value="";return}
@@ -603,7 +606,7 @@ export default function StkAdminPage(){
     lines.slice(1).forEach((line,rowIndex)=>{const cells=parseCsvLine(line,separator),get=(key:string)=>{const i=index(key);return i>=0?(cells[i]||"").trim():""},name=get("name");if(!name)return;const id=`kaskelen-import-${Date.now()}-${rowIndex}`,contact=[get("phone")&&`Телефон: ${get("phone")}`,get("instagram")&&`Instagram: ${get("instagram")}`,get("email")&&`Email: ${get("email")}`].filter(Boolean).join(" · ");
       const lead:Lead={id,created_at:new Date().toISOString(),name,contact,company:get("company")||null,city:get("city")||null,project_type:get("project")||null,message:get("message")||null,locale:"ru",source_path:get("source")||"Импорт Excel",status:"new",admin_notes:null};created.push(lead);const importedProfitability=normalizeProfitability(get("profitability"));importedMeta[id]={reminder_at:"",history:[],status:"new",category:get("category"),tags:get("tags").split(",").map(x=>x.trim()).filter(Boolean),source:get("source")||"Импорт Excel",temperature:"cold",profitability:importedProfitability,followup_message:buildFollowupMessage(lead,"ru")};
     });
-    const current=readLocalCrmState(),manual=[...created,...current.manual],nextMeta={...crmMeta,...importedMeta};await persistCrmState({...current,manual,meta:nextMeta,settings});setCrmMeta(nextMeta);setLeads(rows=>[...created,...rows]);setNotice(locale==="ru"?`Импортировано: ${created.length}`:`Imported: ${created.length}`);event.target.value="";
+    const current=readLocalCrmState(),manual=[...created,...current.manual],nextMeta={...crmMeta,...importedMeta};await persistCrmState({...current,manual,meta:nextMeta,settings},accessToken);setCrmMeta(nextMeta);setLeads(rows=>[...created,...rows]);setNotice(locale==="ru"?`Импортировано: ${created.length}`:`Imported: ${created.length}`);event.target.value="";
   }
   async function copyText(value:string){try{await navigator.clipboard.writeText(value);setCopied(true);setTimeout(()=>setCopied(false),1500)}catch{}}
   async function login(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=new FormData(event.currentTarget);setLoading(true);setError("");const {error:loginError}=await sb.auth.signInWithPassword({email:String(form.get("email")||"").trim(),password:String(form.get("password")||"")});if(loginError)setError(t.loginError);setLoading(false)}
