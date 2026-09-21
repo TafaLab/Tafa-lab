@@ -6,6 +6,7 @@ import { createClient, SupabaseClient, User } from "@supabase/supabase-js";
 import { usePathname } from "next/navigation";
 import { nycBeautyLeadSeed } from "./nyc-beauty-seed";
 import { nycRestaurantLeadSeed } from "./nyc-restaurant-seed";
+import { nycBakeryCoffeeLeadSeed } from "./nyc-bakery-coffee-seed";
 
 type LeadStatus = "new" | "draft" | "contacted" | "in_progress" | "won" | "lost" | "dead" | "not_profitable";
 type LeadFilter = "all" | LeadStatus;
@@ -527,9 +528,14 @@ export default function StkAdminPage(){
       if(previous?.profitability)return;
       seededMeta[lead.id]={...(previous||{reminder_at:"",history:[]}),category:previous?.category||lead.category||"Ресторан",tags:previous?.tags||["NYC","Restaurants"],source:previous?.source||"NYC restaurants",temperature:previous?.temperature||"cold",profitability:previous?.profitability||lead.seedProfitability||"high"};
     });
+    (nycBakeryCoffeeLeadSeed as unknown as Lead[]).forEach(lead=>{
+      const previous=seededMeta[lead.id];
+      if(previous?.profitability)return;
+      seededMeta[lead.id]={...(previous||{reminder_at:"",history:[]}),category:previous?.category||lead.category||"Пекарни и кофейни",tags:previous?.tags||["NYC","Bakery","Coffee"],source:previous?.source||"NYC bakeries & coffee shops",temperature:previous?.temperature||"cold",profitability:previous?.profitability||lead.seedProfitability||"high"};
+    });
     setCrmMeta(seededMeta);setSettings(synced.settings||emptySettings());setPlannerTasks(synced.planner||[]);
     const hydrate=(x:Lead)=>({...x,contact:seededMeta[x.id]?.contact||x.contact,city:seededMeta[x.id]?.city??x.city,company:seededMeta[x.id]?.company??x.company,status:seededMeta[x.id]?.status||x.status,admin_notes:seededMeta[x.id]?.history?.at(-1)?.text||x.admin_notes||null});
-    const seeded:Lead[]=[...kaskelenLeads,...almatyLeadSeed,...extraAlmatyLeadSeed,...taldykorganLeadSeed,...almatyBarsLeadSeed,...(nycBeautyLeadSeed as unknown as Lead[]),...(nycRestaurantLeadSeed as unknown as Lead[])].filter(x=>!synced.deleted.includes(x.id)).map(hydrate);
+    const seeded:Lead[]=[...kaskelenLeads,...almatyLeadSeed,...extraAlmatyLeadSeed,...taldykorganLeadSeed,...almatyBarsLeadSeed,...(nycBeautyLeadSeed as unknown as Lead[]),...(nycRestaurantLeadSeed as unknown as Lead[]),...(nycBakeryCoffeeLeadSeed as unknown as Lead[])].filter(x=>!synced.deleted.includes(x.id)).map(hydrate);
     const manual=synced.manual.filter(x=>!synced.deleted.includes(x.id)).map(hydrate),savedLeads=[...manual,...seeded];
     setLeads(savedLeads);setLoading(false);
     try{
