@@ -351,7 +351,7 @@ const defaultTemplates:MessageTemplate[]=[
 ];
 const CRM_CATEGORY_OPTIONS=["Кофейня","Ресторан","Бар","Кондитерская","Пекарня","Кейтеринг","Салон красоты","SPA","Косметология","Барбершоп","Отель","Цветочный магазин","Магазин","Туризм","Образование","Медицина","Фитнес","Развлечения","Другое"];
 const PLANNER_EMOJIS=["","😊","💼","📞","📧","🏋️","🛒","📚","💡","✈️","🎯","❤️"];
-const isCrmId=(id:string)=>id.startsWith("kaskelen-")||id.startsWith("taldykorgan-")||id.startsWith("almaty-bar-")||id.startsWith("nyc-beauty-");
+const isCrmId=(id:string)=>id.startsWith("kaskelen-")||id.startsWith("taldykorgan-")||id.startsWith("almaty-bar-")||id.startsWith("nyc-beauty-")||id.startsWith("nyc-restaurant-")||id.startsWith("nyc-bakery-coffee-");
 const nycBeautyLowProfitabilityNames=new Set(["sally beauty","ulta beauty","sally beauty nails spa","drybar"]);
 const isSeededBakery=(lead:Lead)=>!lead.id.startsWith("kaskelen-manual-")&&(lead.id.startsWith("kaskelen-")||lead.id.startsWith("taldykorgan-"));
 function categoryValues(value?:string){return Array.from(new Set((value||"").split(/[,;|]/).map(item=>item.trim()).filter(Boolean)))}
