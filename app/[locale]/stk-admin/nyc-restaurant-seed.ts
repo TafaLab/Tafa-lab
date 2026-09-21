@@ -21,9 +21,5 @@ const normalizeRestaurantName=(value:string)=>value.toLowerCase().replace(/&amp;
 const allNycRestaurantLeadSeed = [...nycRestaurantLeadSeed01,...nycRestaurantLeadSeed02,...nycRestaurantLeadSeed03,...nycRestaurantLeadSeed04,...nycRestaurantLeadSeed05,...nycRestaurantLeadSeed06,...nycRestaurantLeadSeed07,...nycRestaurantLeadSeed08,...nycRestaurantLeadSeed09,...nycRestaurantLeadSeed10,...nycRestaurantLeadSeed11,...nycRestaurantLeadSeed12,...nycRestaurantLeadSeed13,...nycRestaurantLeadSeed14,...nycRestaurantLeadSeed15,...nycRestaurantLeadSeed16,...nycRestaurantLeadSeed17];
 // The raw restaurant export used search phrases in the contact column. Those
 // are not phone numbers and must never be presented as verified contact data.
-const cleanRestaurantLead=(lead:(typeof allNycRestaurantLeadSeed)[number])=>({
-  ...lead,
-  contact:/^Телефон:\s*Restaurants\b/i.test(lead.contact)?"Контакт не найден — требуется проверка":lead.contact,
-  message:/^Адрес:.*New York(?:\s*\|.*)?\s*·\s*Сайт: не найден$/i.test(lead.message||"")?"Контакты, адрес и официальный сайт требуют проверки перед обращением.":lead.message,
-});
+const cleanRestaurantLead=(lead:(typeof allNycRestaurantLeadSeed)[number])=>{const unverified=/^Телефон:\s*Restaurants\b/i.test(lead.contact);return {...lead,contact:unverified?"Контакт не найден — требуется проверка":lead.contact,message:unverified?"Контакты, адрес и официальный сайт требуют проверки перед обращением.":lead.message,seedProfitability:unverified?"medium":lead.seedProfitability,status:unverified?"draft":lead.status} as typeof lead};
 export const nycRestaurantLeadSeed = Array.from(new Map(allNycRestaurantLeadSeed.map(cleanRestaurantLead).map(lead=>[normalizeRestaurantName(lead.name),lead])).values());
