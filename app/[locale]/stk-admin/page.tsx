@@ -24,6 +24,7 @@ type CrmMeta = {
   interactions?: InteractionEntry[];
   status?: LeadStatus;
   contact?: string;
+  country?: string | null;
   city?: string | null;
   company?: string | null;
   primary_message?: string;
@@ -41,6 +42,7 @@ type Lead = {
   name: string;
   contact: string;
   company: string | null;
+  country?: string | null;
   city?: string | null;
   project_type: string | null;
   message: string | null;
@@ -394,6 +396,10 @@ function reminderTone(meta?:CrmMeta){
   const value=reminderDate(meta);if(!value)return "";const now=new Date(),due=new Date(value),today=now.toISOString().slice(0,10);
   if(due.getTime()<now.getTime())return "border-red-300 bg-red-50";if(meta?.reminder_at===today)return "border-amber-300 bg-amber-50";return "";
 }
+const KNOWN_KAZAKHSTAN_CITIES = ["Алматы", "Каскелен", "Талдыкорган"];
+function leadCountry(lead:Lead, meta?:CrmMeta){
+  return meta?.country?.trim() || lead.country?.trim() || (lead.city && KNOWN_KAZAKHSTAN_CITIES.includes(lead.city.trim()) ? "Казахстан" : "");
+}
 function csvValue(value:unknown){return `"${String(value??"").replace(/"/g,'""')}"`}
 function parseCsvLine(line:string,separator:string){
   const cells:string[]=[];let current="",quoted=false;
@@ -416,14 +422,14 @@ export default function StkAdminPage(){
   const [error,setError]=useState(""),[notice,setNotice]=useState(""),[selectedId,setSelectedId]=useState<string|null>(null),[section,setSection]=useState<Section>("requests");
   const [crmMeta,setCrmMeta]=useState<Record<string,CrmMeta>>({}),[settings,setSettings]=useState<CrmSettings>(emptySettings());
   const [filter,setFilter]=useState<LeadFilter>("all"),[query,setQuery]=useState(""),[sort,setSort]=useState<SortMode>("newest");
-  const [categoryFilter,setCategoryFilter]=useState(""),[sourceFilter,setSourceFilter]=useState(""),[temperatureFilter,setTemperatureFilter]=useState(""),[tagFilter,setTagFilter]=useState("");
+  const [categoryFilter,setCategoryFilter]=useState(""),[sourceFilter,setSourceFilter]=useState(""),[temperatureFilter,setTemperatureFilter]=useState(""),[tagFilter,setTagFilter]=useState(""),[countryFilter,setCountryFilter]=useState(""),[cityFilter,setCityFilter]=useState("");
   const [adding,setAdding]=useState(false),[saving,setSaving]=useState(false),[saved,setSaved]=useState(false),[deleting,setDeleting]=useState(false),[copied,setCopied]=useState(false);
   const [draftStatus,setDraftStatus]=useState<LeadStatus>("new"),[draftNotes,setDraftNotes]=useState(""),[draftReminder,setDraftReminder]=useState(""),[draftReminderTime,setDraftReminderTime]=useState("");
   const [draftPhones,setDraftPhones]=useState<string[]>([""]),[draftInstagrams,setDraftInstagrams]=useState<string[]>([""]),[draftEmails,setDraftEmails]=useState<string[]>([""]),[draftWebsites,setDraftWebsites]=useState<string[]>([""]);
-  const [draftPrimaryMessage,setDraftPrimaryMessage]=useState(""),[draftFollowupMessage,setDraftFollowupMessage]=useState(""),[draftCity,setDraftCity]=useState(""),[draftCompany,setDraftCompany]=useState("");
+  const [draftPrimaryMessage,setDraftPrimaryMessage]=useState(""),[draftFollowupMessage,setDraftFollowupMessage]=useState(""),[draftCountry,setDraftCountry]=useState(""),[draftCity,setDraftCity]=useState(""),[draftCompany,setDraftCompany]=useState("");
   const [draftCategory,setDraftCategory]=useState(""),[draftTags,setDraftTags]=useState(""),[draftSource,setDraftSource]=useState(""),[draftTemperature,setDraftTemperature]=useState<LeadTemperature>("cold");
   const [newTemplate,setNewTemplate]=useState({name:"",text:""});
-  const emptyNewLead={name:"",phone:"",instagram:"",email:"",company:"",city:"",project_type:"",message:"",reminder_at:"",reminder_time:"",category:"",tags:"",source:""};
+  const emptyNewLead={name:"",phone:"",instagram:"",email:"",company:"",country:"",city:"",project_type:"",message:"",reminder_at:"",reminder_time:"",category:"",tags:"",source:""};
   const [newLead,setNewLead]=useState(emptyNewLead);
 
   useEffect(()=>{
@@ -458,15 +464,19 @@ export default function StkAdminPage(){
   const categoryOptions=useMemo(()=>Array.from(new Set([...CRM_CATEGORY_OPTIONS,...crmLeads.flatMap(x=>leadCategories(x,crmMeta[x.id]))])).sort((a,b)=>a.localeCompare(b,"ru")),[crmLeads,crmMeta]);
   const sourceOptions=useMemo(()=>Array.from(new Set(crmLeads.map(x=>crmMeta[x.id]?.source||x.source_path||"").filter(Boolean))).sort(),[crmLeads,crmMeta]);
   const tagOptions=useMemo(()=>Array.from(new Set(crmLeads.flatMap(x=>crmMeta[x.id]?.tags||[]))).sort(),[crmLeads,crmMeta]);
+  const countryOptions=useMemo(()=>Array.from(new Set(leads.map(x=>leadCountry(x,crmMeta[x.id])).filter(Boolean))).sort((a,b)=>a.localeCompare(b,locale)),[leads,crmMeta,locale]);
+  const cityOptions=useMemo(()=>Array.from(new Set(leads.filter(x=>!countryFilter||leadCountry(x,crmMeta[x.id])===countryFilter).map(x=>x.city?.trim()||"").filter(Boolean))).sort((a,b)=>a.localeCompare(b,locale)),[leads,crmMeta,countryFilter,locale]);
   const duplicateMatches=useMemo(()=>{const values=[newLead.phone,newLead.instagram,newLead.email].map(normalizeContact).filter(Boolean);return values.length?leads.filter(x=>{const existing=normalizeContact(x.contact);return values.some(v=>v.length>=4&&existing.includes(v))}).slice(0,3):[]},[leads,newLead.phone,newLead.instagram,newLead.email]);
   const visibleLeads=useMemo(()=>{
     const q=query.trim().toLowerCase(),sourceLeads=section==="requests"?leads.filter(x=>!isCrmId(x.id)):crmLeads;let rows=filter==="all"?[...sourceLeads]:sourceLeads.filter(x=>x.status===filter);
     if(section==="reminders")rows=rows.filter(x=>Boolean(crmMeta[x.id]?.reminder_at));if(categoryFilter)rows=rows.filter(x=>leadCategories(x,crmMeta[x.id]).includes(categoryFilter));
     if(sourceFilter)rows=rows.filter(x=>(crmMeta[x.id]?.source||x.source_path||"")===sourceFilter);if(temperatureFilter)rows=rows.filter(x=>(crmMeta[x.id]?.temperature||"cold")===temperatureFilter);
     if(tagFilter)rows=rows.filter(x=>(crmMeta[x.id]?.tags||[]).includes(tagFilter));
+    if(countryFilter)rows=rows.filter(x=>leadCountry(x,crmMeta[x.id])===countryFilter);
+    if(cityFilter)rows=rows.filter(x=>(x.city||"").trim()===cityFilter);
     if(q)rows=rows.filter(x=>{const meta=crmMeta[x.id];return [x.name,x.contact,x.company,x.city,x.project_type,x.message,x.admin_notes,x.source_path,leadCategories(x,meta).join(" "),meta?.source,(meta?.tags||[]).join(" "),(meta?.interactions||[]).map(i=>i.text).join(" ")].some(v=>(v||"").toLowerCase().includes(q))});
     rows.sort((a,b)=>section==="reminders"?reminderDate(crmMeta[a.id]).localeCompare(reminderDate(crmMeta[b.id])):sort==="oldest"?+new Date(a.created_at)-+new Date(b.created_at):sort==="name"?a.name.localeCompare(b.name,locale):+new Date(b.created_at)-+new Date(a.created_at));return rows;
-  },[leads,crmLeads,filter,query,sort,locale,section,crmMeta,categoryFilter,sourceFilter,temperatureFilter,tagFilter]);
+  },[leads,crmLeads,filter,query,sort,locale,section,crmMeta,categoryFilter,sourceFilter,temperatureFilter,tagFilter,countryFilter,cityFilter]);
   const counts=useMemo(()=>{const scoped=section==="requests"?leads.filter(x=>!isCrmId(x.id)):crmLeads,result:Record<LeadFilter,number>={all:scoped.length,new:0,draft:0,contacted:0,in_progress:0,won:0,lost:0,dead:0,not_profitable:0};scoped.forEach(x=>result[x.status]++);return result},[leads,crmLeads,section]);
   const analytics=useMemo(()=>{
     const total=crmLeads.length,contacted=crmLeads.filter(x=>["contacted","in_progress","won","lost"].includes(x.status)).length,won=crmLeads.filter(x=>x.status==="won").length;
@@ -510,7 +520,7 @@ export default function StkAdminPage(){
   function fillDraft(lead:Lead){
     const fields=contactFields(lead.contact),meta=crmMeta[lead.id]||{reminder_at:"",history:[]};setSelectedId(lead.id);setDraftStatus(meta.status||lead.status);setDraftNotes(lead.admin_notes||"");
     setDraftReminder(meta.reminder_at||"");setDraftReminderTime(meta.reminder_time||"");setDraftPhones(fields.phone?splitStoredValues(fields.phone):[""]);setDraftInstagrams(fields.instagram?splitStoredValues(fields.instagram):[""]);setDraftEmails(fields.email?splitStoredValues(fields.email):[""]);setDraftWebsites(fields.website?splitStoredValues(fields.website):[""]);
-    setDraftPrimaryMessage(meta.primary_message||"");setDraftFollowupMessage(meta.followup_message||buildFollowupMessage(lead,locale));setDraftCity(meta.city??lead.city??"");setDraftCompany(meta.company??lead.company??"");
+    setDraftPrimaryMessage(meta.primary_message||"");setDraftFollowupMessage(meta.followup_message||buildFollowupMessage(lead,locale));setDraftCountry(meta.country??lead.country??leadCountry(lead,meta));setDraftCity(meta.city??lead.city??"");setDraftCompany(meta.company??lead.company??"");
     setDraftCategory(leadCategories(lead,meta).join(", "));setDraftTags((meta.tags||[]).join(", "));setDraftSource(meta.source||lead.source_path||"");setDraftTemperature(meta.temperature||"cold");setSaved(false);setError("");setCopied(false);
   }
   async function saveMeta(nextMeta:Record<string,CrmMeta>,nextSettings:CrmSettings=settings){
@@ -522,8 +532,8 @@ export default function StkAdminPage(){
     const history=noteChanged?[...previous.history,{text:notes,created_at:new Date().toISOString()}]:previous.history,interactions=noteChanged?[...(previous.interactions||[]),{id:`note-${Date.now()}`,channel:"note" as const,text:notes,created_at:new Date().toISOString()}]:previous.interactions||[];
     const phone=draftPhones.map(v=>v.trim()).filter(Boolean).join(" / "),instagram=draftInstagrams.map(v=>v.trim()).filter(Boolean).join(" / "),email=draftEmails.map(v=>v.trim()).filter(Boolean).join(" / "),website=draftWebsites.map(v=>v.trim()).filter(Boolean).join(" / ");
     const contact=[phone&&`Телефон: ${phone}`,instagram&&`Instagram: ${instagram}`,email&&`Email: ${email}`,website&&`Сайт: ${website}`].filter(Boolean).join(" · ");
-    const meta:CrmMeta={...previous,reminder_at:draftReminder,reminder_time:draftReminderTime,history,interactions,status:draftStatus,contact,primary_message:draftPrimaryMessage.trim(),followup_message:draftFollowupMessage.trim()||buildFollowupMessage(lead,locale),city:draftCity.trim()||null,company:draftCompany.trim()||null,category:draftCategory.trim(),tags:draftTags.split(",").map(v=>v.trim()).filter(Boolean),source:draftSource.trim(),temperature:draftTemperature};
-    await saveMeta({...crmMeta,[selectedId]:meta});setLeads(rows=>rows.map(x=>x.id===selectedId?{...x,status:draftStatus,admin_notes:notes||null,contact,city:meta.city??null,company:meta.company??null}:x));
+    const meta:CrmMeta={...previous,reminder_at:draftReminder,reminder_time:draftReminderTime,history,interactions,status:draftStatus,contact,primary_message:draftPrimaryMessage.trim(),followup_message:draftFollowupMessage.trim()||buildFollowupMessage(lead,locale),country:draftCountry.trim()||null,city:draftCity.trim()||null,company:draftCompany.trim()||null,category:draftCategory.trim(),tags:draftTags.split(",").map(v=>v.trim()).filter(Boolean),source:draftSource.trim(),temperature:draftTemperature};
+    await saveMeta({...crmMeta,[selectedId]:meta});setLeads(rows=>rows.map(x=>x.id===selectedId?{...x,status:draftStatus,admin_notes:notes||null,contact,country:meta.country??null,city:meta.city??null,company:meta.company??null}:x));
     if(!isCrmId(selectedId))await sb.from("stk_lab_leads").update({status:draftStatus,admin_notes:notes||null,contact,city:meta.city??null,company:meta.company??null}).eq("id",selectedId);
     setSaved(true);setTimeout(()=>setSaved(false),2200);setSaving(false);
   }
@@ -543,8 +553,8 @@ export default function StkAdminPage(){
   async function createCrmLead(event:FormEvent<HTMLFormElement>){
     event.preventDefault();if(!newLead.name.trim()||(!newLead.phone.trim()&&!newLead.instagram.trim()&&!newLead.email.trim()))return;const id=`kaskelen-manual-${Date.now()}`;
     const contact=[newLead.phone.trim()&&`Телефон: ${newLead.phone.trim()}`,newLead.instagram.trim()&&`Instagram: ${newLead.instagram.trim()}`,newLead.email.trim()&&`Email: ${newLead.email.trim()}`].filter(Boolean).join(" · ");
-    const lead:Lead={id,created_at:new Date().toISOString(),name:newLead.name.trim(),contact,company:newLead.company.trim()||null,city:newLead.city.trim()||null,project_type:newLead.project_type.trim()||null,message:newLead.message.trim()||null,locale:"ru",source_path:newLead.source.trim()||"Добавлено вручную",status:"new",admin_notes:null};
-    const meta:CrmMeta={reminder_at:newLead.reminder_at,reminder_time:newLead.reminder_time,history:[],status:"new",category:newLead.category.trim(),tags:newLead.tags.split(",").map(v=>v.trim()).filter(Boolean),source:newLead.source.trim()||"Добавлено вручную",temperature:"cold",followup_message:buildFollowupMessage(lead,"ru")};
+    const lead:Lead={id,created_at:new Date().toISOString(),name:newLead.name.trim(),contact,company:newLead.company.trim()||null,country:newLead.country.trim()||null,city:newLead.city.trim()||null,project_type:newLead.project_type.trim()||null,message:newLead.message.trim()||null,locale:"ru",source_path:newLead.source.trim()||"Добавлено вручную",status:"new",admin_notes:null};
+    const meta:CrmMeta={reminder_at:newLead.reminder_at,reminder_time:newLead.reminder_time,history:[],status:"new",country:newLead.country.trim()||null,category:newLead.category.trim(),tags:newLead.tags.split(",").map(v=>v.trim()).filter(Boolean),source:newLead.source.trim()||"Добавлено вручную",temperature:"cold",followup_message:buildFollowupMessage(lead,"ru")};
     const current=readLocalCrmState(),manual=[lead,...current.manual.filter(x=>x.id!==id)],nextMeta={...crmMeta,[id]:meta};setLeads(rows=>[lead,...rows]);await persistCrmState({...current,manual,meta:nextMeta,settings});setCrmMeta(nextMeta);setNewLead(emptyNewLead);setAdding(false);setSection("crm");setSelectedId(null);setNotice(locale==="ru"?"Запись добавлена в CRM.":"Record added to CRM.");setTimeout(()=>setNotice(""),2200);
   }
   async function deleteLead(){
@@ -587,6 +597,7 @@ export default function StkAdminPage(){
   const contactEditor=(label:string,values:string[],setValues:(value:string[]|((rows:string[])=>string[]))=>void,placeholder:string,type="text")=><div><div className="flex items-center justify-between"><label className="text-xs uppercase tracking-[.14em] text-black/40">{label}</label><button type="button" onClick={()=>setValues(rows=>[...rows,""])} className="text-sm underline">+ {locale==="ru"?"Добавить":"Add"}</button></div><div className="mt-2 space-y-2">{values.map((value,index)=><div key={index} className="flex gap-2"><div className="min-w-0 flex-1"><input type={type} value={value} onChange={event=>setValues(rows=>rows.map((item,i)=>i===index?event.target.value:item))} placeholder={placeholder} className="w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3.5"/>{(label==="Телефон"||label==="Phone")&&duplicatePhoneCompanies(value).map(name=><div key={`${name}-${index}`} className="mt-1 text-[11px] leading-4 text-red-600">По данному номеру телефона имеется дубликат: {name}</div>)}</div>{values.length>1&&<button type="button" onClick={()=>setValues(rows=>rows.filter((_,i)=>i!==index))} className="text-red-700">×</button>}</div>)}</div></div>;
 
   return <main className="min-h-screen bg-[#f5f1ec] text-[#211a17]">
+    {!['analytics','templates','kanban'].includes(section)&&<div className="mx-auto max-w-[1600px] px-5 pt-4 md:px-8"><div className="flex flex-wrap gap-3 rounded-2xl border border-black/10 bg-white p-3"><select value={countryFilter} onChange={e=>{setCountryFilter(e.target.value);setCityFilter("")}} className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm"><option value="">{locale==="ru"?"Все страны":"All countries"}</option>{countryOptions.map(x=><option key={x}>{x}</option>)}</select><select value={cityFilter} onChange={e=>setCityFilter(e.target.value)} className="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm"><option value="">{locale==="ru"?"Все города":"All cities"}</option>{cityOptions.map(x=><option key={x}>{x}</option>)}</select>{(countryFilter||cityFilter)&&<button type="button" onClick={()=>{setCountryFilter("");setCityFilter("")}} className="rounded-xl border border-black/10 px-3 py-2 text-sm">{locale==="ru"?"Сбросить":"Reset"}</button>}</div></div>}
     <header className="sticky top-0 z-20 border-b border-black/10 bg-[#f5f1ec]/95 backdrop-blur"><div className="mx-auto flex max-w-[1600px] items-center justify-between px-5 py-4"><div><b>Tafa Lab</b><div className="text-xs text-black/45">{t.admin}</div></div><button onClick={()=>sb.auth.signOut()} className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm">{t.logout}</button></div></header>
     <div className="mx-auto flex max-w-[1600px] flex-col md:flex-row">
       <aside className="border-b border-black/10 px-4 py-4 md:min-h-[calc(100vh-73px)] md:w-64 md:border-b-0 md:border-r md:py-8"><p className="px-3 text-xs uppercase tracking-[.2em] text-black/40">Tafa Lab CRM</p><nav className="mt-4 flex gap-2 overflow-x-auto md:block md:space-y-2">{([
