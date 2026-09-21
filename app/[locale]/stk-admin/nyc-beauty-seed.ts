@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 267513)
-... 21473 bytes omitted ...
-
 export const nycBeautyLeadSeed = [
   {"id":"nyc-beauty-1","created_at":"2026-09-21T00:00:00Z","name":"Spa Thirsty","contact":"Контакт не найден","company":"Spa Thirsty","country":"США","city":"New York, USA","project_type":"Website / CRM","category":"Салон красоты","message":"Richmond Road New York New York 10306 · Сайт: не найден · Локальный beauty-бизнес без подтверждённого сайта в открытом источнике; потенциально высокий lead на сайт, запись и CRM. · Источник: https://www.openstreetmap.org/n/13825892244","locale":"ru","source_path":"NYC beauty salons","status":"new","admin_notes":null},
   {"id":"nyc-beauty-2","created_at":"2026-09-21T00:00:00Z","name":"Spa Formula","contact":"Контакт не найден","company":"Spa Formula","country":"США","city":"New York, USA","project_type":"Website / CRM","category":"Салон красоты","message":"2235 Clove Road New York New York 10305 · Сайт: не найден · Локальный beauty-бизнес без подтверждённого сайта в открытом источнике; потенциально высокий lead на сайт, запись и CRM. · Источник: https://www.openstreetmap.org/n/13186742823","locale":"ru","source_path":"NYC beauty salons","status":"new","admin_notes":null},
