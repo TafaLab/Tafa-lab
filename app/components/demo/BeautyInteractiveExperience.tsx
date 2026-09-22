@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useState } from "react";
 type Mode = "salon" | "color" | "skin" | "spa" | "barber";
 export default function BeautyInteractiveExperience({
@@ -56,6 +57,12 @@ function Look({
     [extras, setExtras] = useState<string[]>([]),
     [uploaded, setUploaded] = useState(false),
     [uploadedSrc, setUploadedSrc] = useState<string | null>(null);
+  const lookExtraNames: Record<string, string> = {
+    "Soft Brows": ru ? "Мягкие брови" : "Soft Brows",
+    "Natural Lashes": ru ? "Естественные ресницы" : "Natural Lashes",
+    "Nude Nails": ru ? "Нюдовый маникюр" : "Nude Nails",
+    "Glow Makeup": ru ? "Сияющий макияж" : "Glow Makeup",
+  };
   const toggle = (x: string) =>
     setExtras((v) => (v.includes(x) ? v.filter((i) => i !== x) : [...v, x]));
   return (
@@ -94,9 +101,11 @@ function Look({
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (!file) return;
-                setUploaded(true);
                 const reader = new FileReader();
-                reader.onload = () => setUploadedSrc(String(reader.result));
+                reader.onload = () => {
+                  setUploadedSrc(String(reader.result));
+                  setUploaded(true);
+                };
                 reader.readAsDataURL(file);
               }}
             />
@@ -151,6 +160,16 @@ function Look({
           className={`rounded-3xl p-7 ${colorOnly ? "bg-[#e8ff5a] text-black" : "bg-[#30242a] text-white"}`}
         >
           <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-[#d8b09f] via-[#8c4f36] to-[#2b1814]">
+            {uploadedSrc && (
+              <Image
+                src={uploadedSrc}
+                alt={ru ? "Загруженное селфи" : "Uploaded selfie"}
+                fill
+                unoptimized
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
+            )}
             <div
               className="absolute inset-y-0 left-0 bg-black/35"
               style={{ width: `${before}%` }}
@@ -189,7 +208,7 @@ function Look({
                     color: extras.includes(x) ? "#251e20" : undefined,
                   }}
                 >
-                  + {ru ? ({ Aromatherapy: "Ароматерапия", "Hot stones": "Горячие камни", Champagne: "Шампанское", "Private room": "Приватная комната" } as Record<string, string>)[x] : x}
+                  + {lookExtraNames[x]}
                 </button>
               ),
             )}
@@ -198,7 +217,8 @@ function Look({
             <strong className="text-3xl">${65 + extras.length * 20}</strong>
             <a
               href="#contact"
-              className="rounded-full bg-white px-5 py-3 text-black"
+              className="rounded-full bg-white px-5 py-3 font-semibold text-black"
+              style={{ color: "#251e20" }}
             >
               {ru ? "Записаться на образ" : "Book this look"}
             </a>
