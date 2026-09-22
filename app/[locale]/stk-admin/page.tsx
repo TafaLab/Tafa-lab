@@ -186,7 +186,7 @@ const almatyLeadSeed = [
 ["Charlotte","+7 702 730 99 33","","@cafe_charlotte_almaty","Кафе-кондитерская","ул. Розыбакиева 247, блок 3"],
 ["Cherry bakery","+7 747 511 11 61","","@cherry.bakery.kz","Кондитерская","ул. Коргалжын 9"],
 ["Chocoberry","+7 708 322 81 51","","@chocoberry_aliya","Десертные композиции","мкр. Тастак-1 3"]
-].map(([name,phone,email,instagram,category,address],i)=>({id:`kaskelen-almaty-${i+1}`,created_at:"2026-09-05T00:00:00Z",name,contact:[phone&&`Телефон: ${phone}`,instagram&&`Instagram: ${instagram}`,facebook&&`Facebook: ${facebook}`,email&&`Email: ${email}`].filter(Boolean).join(" · ")||"Контакт не найден",company:name,city:"Алматы",project_type:category,message:`${category}. Адрес: ${address}, Алматы.`,locale:"ru" as const,source_path:"Excel · konditerskie_almaty_full_leads.xlsx",status:"new" as LeadStatus,admin_notes:null}));
+].map(([name,phone,email,instagram,category,address],i)=>({id:`kaskelen-almaty-${i+1}`,created_at:"2026-09-05T00:00:00Z",name,contact:[phone&&`Телефон: ${phone}`,instagram&&`Instagram: ${instagram}`,email&&`Email: ${email}`].filter(Boolean).join(" · ")||"Контакт не найден",company:name,city:"Алматы",project_type:category,message:`${category}. Адрес: ${address}, Алматы.`,locale:"ru" as const,source_path:"Excel · konditerskie_almaty_full_leads.xlsx",status:"new" as LeadStatus,admin_notes:null}));
  
 const extraAlmatyLeadSeed:Lead[]=[
 ["BENTO 24","+7 706 650 06 52","","Кондитерская","ул. Жарокова 289а"],
