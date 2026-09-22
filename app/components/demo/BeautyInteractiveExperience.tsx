@@ -65,6 +65,13 @@ function Look({
   };
   const toggle = (x: string) =>
     setExtras((v) => (v.includes(x) ? v.filter((i) => i !== x) : [...v, x]));
+  const colorFilters: Record<string, string> = {
+    Blonde: "sepia(.55) saturate(1.15) brightness(1.12) contrast(.92)",
+    Brunette: "sepia(.7) saturate(.8) brightness(.72) contrast(1.05)",
+    Copper: "sepia(1) saturate(2.2) hue-rotate(330deg) brightness(.92)",
+    Black: "grayscale(.45) contrast(1.18) brightness(.58)",
+    Pink: "sepia(.35) saturate(2.6) hue-rotate(285deg) brightness(1.05)",
+  };
   return (
     <Wrap
       dark={colorOnly}
@@ -159,29 +166,47 @@ function Look({
         <div
           className={`rounded-3xl p-7 ${colorOnly ? "bg-[#e8ff5a] text-black" : "bg-[#30242a] text-white"}`}
         >
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gradient-to-br from-[#d8b09f] via-[#8c4f36] to-[#2b1814]">
-            {uploadedSrc && (
-              <Image
-                src={uploadedSrc}
-                alt={ru ? "Загруженное селфи" : "Uploaded selfie"}
-                fill
-                unoptimized
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-[#171315]">
+            {uploadedSrc ? (
+              <>
+                <Image
+                  src={uploadedSrc}
+                  alt={ru ? "Фото до" : "Before photo"}
+                  fill
+                  unoptimized
+                  className="object-contain"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+                <div
+                  className="absolute inset-0 overflow-hidden"
+                  style={{ clipPath: `inset(0 0 0 ${before}%)` }}
+                >
+                  <Image
+                    src={uploadedSrc}
+                    alt={ru ? "Предпросмотр выбранного цвета" : "Selected color preview"}
+                    fill
+                    unoptimized
+                    className="object-contain transition-[filter] duration-500"
+                    style={{ filter: colorFilters[color] }}
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                </div>
+                <div
+                  className="pointer-events-none absolute inset-y-0 w-px bg-white/90 shadow-[0_0_0_1px_rgba(0,0,0,.2)]"
+                  style={{ left: `${before}%` }}
+                />
+              </>
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-[#d8b09f] via-[#8c4f36] to-[#2b1814]" />
             )}
-            <div
-              className="absolute inset-y-0 left-0 bg-black/35"
-              style={{ width: `${before}%` }}
-            />
-            <span className="absolute left-4 top-4 rounded-full bg-white/80 px-3 py-1 text-xs text-black">
+            <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs text-black">
               {ru ? "ДО" : "BEFORE"}
             </span>
-            <span className="absolute right-4 top-4 rounded-full bg-black/60 px-3 py-1 text-xs text-white">
+            <span className="absolute right-4 top-4 rounded-full bg-black/70 px-3 py-1 text-xs text-white">
               {ru ? "ПОСЛЕ" : "AFTER"} · {color}
             </span>
             <input
-              aria-label="Before after"
+              aria-label={ru ? "Сравнить до и после" : "Compare before and after"}
               type="range"
               min="5"
               max="95"
