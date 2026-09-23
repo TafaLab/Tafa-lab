@@ -235,6 +235,7 @@ export default async function CosmetologyDemo({
             <a
               href="#contact"
               className="rounded-full bg-[#173f42] px-7 py-4 text-white"
+              style={{ color: "#ffffff" }}
             >
               {t.cta}
             </a>
