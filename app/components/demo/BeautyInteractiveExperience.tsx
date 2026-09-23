@@ -271,6 +271,7 @@ function Skin({ locale }: { locale: "ru" | "en" }) {
           <a
             href="#contact"
             className="mt-8 inline-flex rounded-full bg-white px-5 py-3 text-black"
+            style={{ color: "#111111" }}
           >
             {ru ? "Записаться" : "Book treatment"}
           </a>
