@@ -49,197 +49,124 @@ function Look({
   colorOnly: boolean;
 }) {
   const ru = locale === "ru";
-  const [cut, setCut] = useState("Long layers"),
-    [color, setColor] = useState("Copper"),
-    vibe = ru ? "Корейский стиль" : "Korean",
-    [time, setTime] = useState(20),
-    [before, setBefore] = useState(45),
-    [extras, setExtras] = useState<string[]>([]),
-    [uploaded, setUploaded] = useState(false),
-    [uploadedSrc, setUploadedSrc] = useState<string | null>(null);
-  const lookExtraNames: Record<string, string> = {
-    "Soft Brows": ru ? "Мягкие брови" : "Soft Brows",
-    "Natural Lashes": ru ? "Естественные ресницы" : "Natural Lashes",
-    "Nude Nails": ru ? "Нюдовый маникюр" : "Nude Nails",
-    "Glow Makeup": ru ? "Сияющий макияж" : "Glow Makeup",
+  const cuts = ["Bob", "Long layers", "Pixie", "Bangs", "Curls"];
+  const colors = ["Blonde", "Brunette", "Copper", "Black", "Pink"];
+  const cutNames: Record<string, string> = {
+    Bob: "Боб",
+    "Long layers": "Длинные слои",
+    Pixie: "Пикси",
+    Bangs: "Чёлка",
+    Curls: "Кудри",
   };
-  const toggle = (x: string) =>
-    setExtras((v) => (v.includes(x) ? v.filter((i) => i !== x) : [...v, x]));
-  const colorFilters: Record<string, string> = {
-    Blonde: "sepia(.55) saturate(1.15) brightness(1.12) contrast(.92)",
-    Brunette: "sepia(.7) saturate(.8) brightness(.72) contrast(1.05)",
-    Copper: "sepia(1) saturate(2.2) hue-rotate(330deg) brightness(.92)",
-    Black: "grayscale(.45) contrast(1.18) brightness(.58)",
-    Pink: "sepia(.35) saturate(2.6) hue-rotate(285deg) brightness(1.05)",
+  const colorNames: Record<string, string> = {
+    Blonde: "Блонд",
+    Brunette: "Шатен",
+    Copper: "Медный",
+    Black: "Чёрный",
+    Pink: "Розовый",
   };
   return (
     <Wrap
       dark={colorOnly}
-      kicker="AI Look Try-On · Beauty Quiz"
+      kicker={ru ? "AI Hair Try-On · Демонстрация" : "AI Hair Try-On · Demo"}
       title={
         colorOnly
           ? ru
-            ? "Примерьте новый цвет до визита"
-            : "Try a new colour before your visit"
+            ? "Пример виртуального подбора цвета"
+            : "Virtual hair colour preview"
           : ru
-            ? "Соберите образ и запишитесь на него"
-            : "Build your look, then book it"
+            ? "Пример виртуальной примерки причёски"
+            : "Virtual hairstyle preview"
       }
     >
       <div className="mt-12 grid gap-5 lg:grid-cols-2">
         <div
           className={`rounded-3xl p-7 ${colorOnly ? "bg-white/10" : "bg-white"}`}
         >
-          <label className="flex cursor-pointer items-center justify-between rounded-2xl border border-current/15 p-5">
-            <span>
-              {uploaded
-                ? ru
-                  ? "✓ Селфи загружено"
-                  : "✓ Selfie uploaded"
-                : ru
-                  ? "Загрузить селфи"
-                  : "Upload a selfie"}
+          <div className="flex items-center justify-between rounded-2xl border border-current/15 p-5 opacity-70">
+            <span>{ru ? "Загрузить селфи" : "Upload a selfie"}</span>
+            <span className="rounded-full border border-current/20 px-3 py-1 text-xs uppercase tracking-[.14em]">
+              {ru ? "Демо" : "Demo"}
             </span>
-            <span>＋</span>
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = () => {
-                  setUploadedSrc(String(reader.result));
-                  setUploaded(true);
-                };
-                reader.readAsDataURL(file);
-              }}
-            />
-          </label>
+          </div>
           <p className="mt-7 text-sm opacity-50">{ru ? "Стрижка" : "Haircut"}</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            {["Bob", "Long layers", "Pixie", "Bangs", "Curls"].map((x) => (
+            {cuts.map((x) => (
               <button
                 key={x}
-                onClick={() => setCut(x)}
-                className="rounded-full border border-current/20 px-4 py-2"
+                type="button"
+                disabled
+                className="cursor-default rounded-full border border-current/20 px-4 py-2 disabled:opacity-100"
                 style={{
-                  background: cut === x ? "#efb8c8" : undefined,
-                  color: cut === x ? "#251e20" : undefined,
+                  background: x === "Bob" ? "#efb8c8" : undefined,
+                  color: x === "Bob" ? "#251e20" : undefined,
                 }}
               >
-                {ru ? ({ Bob: "Боб", "Long layers": "Длинные слои", Pixie: "Пикси", Bangs: "Чёлка", Curls: "Кудри" } as Record<string, string>)[x] : x}
+                {ru ? cutNames[x] : x}
               </button>
             ))}
           </div>
           <p className="mt-7 text-sm opacity-50">{ru ? "Цвет" : "Color"}</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            {["Blonde", "Brunette", "Copper", "Black", "Pink"].map((x) => (
+            {colors.map((x) => (
               <button
                 key={x}
-                onClick={() => setColor(x)}
-                className="rounded-full border border-current/20 px-4 py-2"
+                type="button"
+                disabled
+                className="cursor-default rounded-full border border-current/20 px-4 py-2 disabled:opacity-100"
                 style={{
-                  background: color === x ? "#efb8c8" : undefined,
-                  color: color === x ? "#251e20" : undefined,
+                  background: x === "Brunette" ? "#efb8c8" : undefined,
+                  color: x === "Brunette" ? "#251e20" : undefined,
                 }}
               >
-                {ru ? ({ Blonde: "Блонд", Brunette: "Шатен", Copper: "Медный", Black: "Чёрный", Pink: "Розовый" } as Record<string, string>)[x] : x}
+                {ru ? colorNames[x] : x}
               </button>
             ))}
           </div>
           <p className="mt-7">
-            {ru ? "Сколько времени на укладку?" : "Time spent styling?"} ·{" "}
-            {time} {ru ? "мин" : "min"}
+            {ru ? "Сколько времени на укладку?" : "Time spent styling?"} · 20{" "}
+            {ru ? "мин" : "min"}
           </p>
           <input
+            aria-label={ru ? "Время на укладку — демо" : "Styling time — demo"}
             type="range"
             min="5"
             max="60"
             step="5"
-            value={time}
-            onChange={(e) => setTime(Number(e.target.value))}
-            className="mt-3 w-full"
+            value="20"
+            disabled
+            readOnly
+            className="mt-3 w-full cursor-default"
           />
         </div>
         <div
           className={`rounded-3xl p-7 ${colorOnly ? "bg-[#e8ff5a] text-black" : "bg-[#30242a] text-white"}`}
         >
           <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-[#171315]">
-            {uploadedSrc ? (
-              <>
-                <Image
-                  src={uploadedSrc}
-                  alt={ru ? "Фото до" : "Before photo"}
-                  fill
-                  unoptimized
-                  className="object-contain"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-                <div
-                  className="absolute inset-0 overflow-hidden"
-                  style={{ clipPath: `inset(0 0 0 ${before}%)` }}
-                >
-                  <Image
-                    src={uploadedSrc}
-                    alt={ru ? "Предпросмотр выбранного цвета" : "Selected color preview"}
-                    fill
-                    unoptimized
-                    className="object-contain transition-[filter] duration-500"
-                    style={{ filter: colorFilters[color] }}
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                  />
-                </div>
-                <div
-                  className="pointer-events-none absolute inset-y-0 w-px bg-white/90 shadow-[0_0_0_1px_rgba(0,0,0,.2)]"
-                  style={{ left: `${before}%` }}
-                />
-              </>
-            ) : (
-              <div className="absolute inset-0 bg-gradient-to-br from-[#d8b09f] via-[#8c4f36] to-[#2b1814]" />
-            )}
-            <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs text-black">
-              {ru ? "ДО" : "BEFORE"}
+            <Image
+              src="/images/stk-lab/beauty/demos/ai-hair-bob-demo-v1.webp"
+              alt={ru ? "Пример виртуальной примерки каре" : "Virtual bob hairstyle preview"}
+              fill
+              className="object-cover object-[center_32%]"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
+            <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs uppercase tracking-[.12em] text-black">
+              {ru ? "Пример" : "Preview"}
             </span>
             <span className="absolute right-4 top-4 rounded-full bg-black/70 px-3 py-1 text-xs text-white">
-              {ru ? "ПОСЛЕ" : "AFTER"} · {color}
+              {ru ? "КАРЕ · ШАТЕН" : "BOB · BRUNETTE"}
             </span>
-            <input
-              aria-label={ru ? "Сравнить до и после" : "Compare before and after"}
-              type="range"
-              min="5"
-              max="95"
-              value={before}
-              onChange={(e) => setBefore(Number(e.target.value))}
-              className="absolute bottom-5 left-[10%] w-[80%]"
-            />
           </div>
           <p className="mt-7 text-xs uppercase tracking-[.2em] opacity-50">
-            {ru ? "Ваш образ" : "Your match"}
+            {ru ? "Демонстрационный образ" : "Demonstration look"}
           </p>
-          <h3 className="mt-3 text-4xl">
-            {vibe} · {color} {cut}
-          </h3>
-          <div className="mt-5 flex flex-wrap gap-2">
-            {["Soft Brows", "Natural Lashes", "Nude Nails", "Glow Makeup"].map(
-              (x) => (
-                <button
-                  key={x}
-                  onClick={() => toggle(x)}
-                  className="rounded-full border border-current/20 px-3 py-2 text-sm"
-                  style={{
-                    background: extras.includes(x) ? "#efb8c8" : undefined,
-                    color: extras.includes(x) ? "#251e20" : undefined,
-                  }}
-                >
-                  + {lookExtraNames[x]}
-                </button>
-              ),
-            )}
-          </div>
-          <div className="mt-7 flex items-center justify-between border-t border-current/20 pt-5">
-            <strong className="text-3xl">${65 + extras.length * 20}</strong>
+          <h3 className="mt-3 text-4xl">{ru ? "Каре · Шатен" : "Bob · Brunette"}</h3>
+          <p className="mt-4 max-w-xl text-sm leading-6 opacity-65">
+            {ru
+              ? "Статичный пример того, как может выглядеть виртуальная примерка причёски на сайте салона."
+              : "A static example of how a virtual hairstyle try-on can look on a salon website."}
+          </p>
+          <div className="mt-7 flex justify-end border-t border-current/20 pt-5">
             <a
               href="#contact"
               className="rounded-full bg-white px-5 py-3 font-semibold text-black"
@@ -249,6 +176,27 @@ function Look({
             </a>
           </div>
         </div>
+      </div>
+      <div
+        className={`mt-5 rounded-3xl border p-7 md:p-8 ${
+          colorOnly
+            ? "border-white/15 bg-white/5"
+            : "border-[#251e20]/10 bg-white/70"
+        }`}
+      >
+        <p className="text-xs uppercase tracking-[.2em] opacity-50">
+          {ru ? "Дополнительная возможность" : "Optional feature"}
+        </p>
+        <h3 className="mt-3 text-2xl md:text-3xl">
+          {ru
+            ? "На сайт можно установить настоящий AI Hair Try-On"
+            : "A real AI Hair Try-On can be added to the website"}
+        </h3>
+        <p className="mt-3 max-w-4xl leading-7 opacity-65">
+          {ru
+            ? "Клиент загружает фотографию, выбирает стрижку, длину, текстуру и цвет волос, а система создаёт отдельный результат для каждого варианта, сохраняя лицо и фон. Подключается отдельно через AI API."
+            : "A client uploads a photo and chooses a haircut, length, texture and hair colour. The system generates a separate result for each option while preserving the face and background. This feature is connected separately through an AI API."}
+        </p>
       </div>
     </Wrap>
   );
