@@ -5,7 +5,6 @@ import StkReveal from "./design/StkReveal";
 import StkLeadForm from "./StkLeadForm";
 import TafaLabLogo from "./TafaLabLogo";
 import RestaurantIdeasSection from "./RestaurantIdeasSection";
-import FullPriceLink from "./FullPriceLink";
 
 type Locale = "ru" | "en";
 
@@ -35,17 +34,17 @@ const copy = {
     services: [
       [
         "Restaurant Website",
-        "from $800",
+        "",
         "Premium responsive website with menu, story, locations, contacts and reservation calls to action.",
       ],
       [
         "Digital Menu & Online Ordering",
-        "from $450",
+        "",
         "Mobile-first menu with categories, modifiers, cart and direct online ordering.",
       ],
       [
         "Table Reservations",
-        "from $350",
+        "",
         "Integrated booking flow for date, time, party size and seating preferences.",
       ],
       [
@@ -141,17 +140,17 @@ const copy = {
     packages: [
       [
         "Restaurant Presence",
-        "from $800",
+        "",
         "Brand website, menu, location, contact and reservation CTA.",
       ],
       [
         "Ordering Experience",
-        "from $2,000",
+        "",
         "Website plus digital menu, ordering flow and conversion-focused guest journey.",
       ],
       [
         "Restaurant Platform",
-        "from $4,000",
+        "",
         "Custom operations platform, dashboards, branches, staff and business workflows.",
       ],
     ],
@@ -204,17 +203,17 @@ const copy = {
     services: [
       [
         "Сайт ресторана",
-        "от $800",
+        "",
         "Премиальный адаптивный сайт с меню, историей, локациями, контактами и бронированием.",
       ],
       [
         "Цифровое меню и онлайн-заказ",
-        "от $450",
+        "",
         "Mobile-first меню с категориями, модификаторами, корзиной и прямым оформлением заказа.",
       ],
       [
         "Бронирование столиков",
-        "от $350",
+        "",
         "Встроенный сценарий выбора даты, времени, количества гостей и зоны посадки.",
       ],
       [
@@ -314,17 +313,17 @@ const copy = {
     packages: [
       [
         "Restaurant Presence",
-        "от $800",
+        "",
         "Брендовый сайт, меню, локация, контакты и переход к бронированию.",
       ],
       [
         "Ordering Experience",
-        "от $2,000",
+        "",
         "Сайт + цифровое меню, онлайн-заказ и продуманный путь гостя.",
       ],
       [
         "Restaurant Platform",
-        "от $4,000",
+        "",
         "Операционная система, дашборды, филиалы, сотрудники и бизнес-процессы.",
       ],
     ],
@@ -374,8 +373,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
             <a href="#services">{t.navServices}</a>
             <a href="#portfolio">{t.navPortfolio}</a>
             <a href="#process">{t.navProcess}</a>
-            <Link href={`/${locale}/price`}>{locale === "ru" ? "Цены" : "Price"}</Link>
-            <a href="#contact">{t.navContact}</a>
+<a href="#contact">{t.navContact}</a>
           </nav>
           <Link
             href={`/${other}/industries/restaurants`}
@@ -457,7 +455,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
           </p>
         </div>
         <div className="mt-14 grid border-l border-t border-[color:var(--stk-border)] sm:grid-cols-2 lg:grid-cols-3">
-          {t.services.map(([name, price, text], i) => (
+          {t.services.map(([name, _price, text], i) => (
             <div
               key={name}
               className="min-h-[300px] border-b border-r border-[color:var(--stk-border)] p-7 md:p-9"
@@ -466,7 +464,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
                 <span className="text-xs text-[color:var(--stk-faint)]">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="text-sm font-medium">{price}</span>
+                
               </div>
               <h3 className="mt-16 text-2xl tracking-[-.035em]">{name}</h3>
               <p className="mt-4 leading-7 text-[color:var(--stk-muted)]">
@@ -599,7 +597,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
           </p>
         </div>
         <div className="mt-14 grid gap-5 lg:grid-cols-3">
-          {t.packages.map(([name, price, text], i) => (
+          {t.packages.map(([name, _price, text], i) => (
             <div
               key={name}
               className={`rounded-[var(--stk-radius-card)] border p-8 ${i === 2 ? "border-[#25221e] bg-[var(--stk-dark)] text-white" : "border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)]"}`}
@@ -610,7 +608,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
                 Tafa Lab
               </p>
               <h3 className="mt-10 text-3xl tracking-[-.04em]">{name}</h3>
-              <div className="mt-5 text-5xl tracking-[-.05em]">{price}</div>
+              
               <p
                 className={`mt-6 leading-7 ${i === 2 ? "text-white/60" : "text-[color:var(--stk-muted)]"}`}
               >
@@ -628,8 +626,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
             </div>
           ))}
         </div>
-        <FullPriceLink locale={locale} />
-      </section>
+</section>
 
       <section className="border-y border-[color:var(--stk-border)] bg-[var(--stk-surface-strong)] py-24 md:py-32">
         <div className="mx-auto grid max-w-7xl gap-12 px-5 md:grid-cols-[.75fr_1.25fr] md:px-8">
@@ -759,6 +756,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
             >
               Instagram ↗
             </a>
+            <a href="https://www.facebook.com/share/1Evo6nTq8P/?mibextid=wwXIfr" target="_blank" rel="noreferrer" className="rounded-full border border-white/20 px-5 py-2.5 text-sm" style={{ color: "#ffffff" }}>Facebook ↗</a>
             <a
               href="mailto:hello@tafalab.com"
               className="rounded-full border border-white/20 px-5 py-2.5 text-sm"
