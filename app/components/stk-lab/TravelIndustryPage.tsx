@@ -5,7 +5,6 @@ import StkReveal from "./design/StkReveal";
 import StkLeadForm from "./StkLeadForm";
 import TafaLabLogo from "./TafaLabLogo";
 import TravelIdeasSection from "./TravelIdeasSection";
-import FullPriceLink from "./FullPriceLink";
 
 type Locale = "ru" | "en";
 const whatsapp = "https://wa.me/77471818493";
@@ -26,17 +25,17 @@ const copy = {
     services: [
       [
         "Travel Website",
-        "from $800",
+        "",
         "Premium responsive website with destinations, experiences, hotels, private tours and enquiry flows.",
       ],
       [
         "Custom Trip Builder",
-        "from $650",
+        "",
         "Interactive journey builder for dates, travelers, hotels, experiences, transfers and special requests.",
       ],
       [
         "Digital Itinerary",
-        "from $450",
+        "",
         "Beautiful day-by-day itinerary with reservations, locations, transfers and trip information.",
       ],
       [
@@ -142,17 +141,17 @@ const copy = {
     packages: [
       [
         "Travel Presence",
-        "from $800",
+        "",
         "Brand website, destinations, experiences, enquiry and contact flow.",
       ],
       [
         "Journey Experience",
-        "from $2,000",
+        "",
         "Website plus trip builder and digital itinerary experience.",
       ],
       [
         "Travel Platform",
-        "from $4,000",
+        "",
         "CRM, bookings, operations, payments, analytics and traveler tools.",
       ],
     ],
@@ -201,17 +200,17 @@ const copy = {
     services: [
       [
         "Travel-сайт",
-        "от $800",
+        "",
         "Премиальный адаптивный сайт с направлениями, впечатлениями, отелями, частными турами и заявками.",
       ],
       [
         "Конструктор путешествия",
-        "от $650",
+        "",
         "Интерактивный выбор дат, путешественников, отеля, активностей, трансферов и пожеланий.",
       ],
       [
         "Цифровой маршрут",
-        "от $450",
+        "",
         "Красивый маршрут по дням с бронированиями, локациями, трансферами и информацией о поездке.",
       ],
       [
@@ -318,17 +317,17 @@ const copy = {
     packages: [
       [
         "Travel Presence",
-        "от $800",
+        "",
         "Брендовый сайт, направления, впечатления, заявки и контакты.",
       ],
       [
         "Journey Experience",
-        "от $2,000",
+        "",
         "Сайт + конструктор путешествия + цифровой маршрут.",
       ],
       [
         "Travel Platform",
-        "от $4,000",
+        "",
         "CRM, бронирования, операции, оплаты, аналитика и инструменты путешественника.",
       ],
     ],
@@ -383,8 +382,7 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
             <a href="#services">{locale === "ru" ? "Решения" : "Solutions"}</a>
             <a href="#portfolio">{locale === "ru" ? "Работы" : "Portfolio"}</a>
             <a href="#process">{locale === "ru" ? "Процесс" : "Process"}</a>
-            <Link href={`/${locale}/price`}>{locale === "ru" ? "Цены" : "Price"}</Link>
-            <a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
+<a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
           </nav>
           <Link
             href={`/${other}/industries/travel`}
@@ -460,7 +458,7 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
           {t.servicesTitle}
         </h2>
         <div className="mt-14 grid border-l border-t border-[color:var(--stk-border)] sm:grid-cols-2 lg:grid-cols-3">
-          {t.services.map(([name, price, text], i) => (
+          {t.services.map(([name, _price, text], i) => (
             <div
               key={name}
               className="min-h-[300px] border-b border-r border-[color:var(--stk-border)] p-7 md:p-9"
@@ -469,7 +467,7 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
                 <span className="text-xs text-[color:var(--stk-faint)]">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="text-sm font-medium">{price}</span>
+                
               </div>
               <h3 className="mt-16 text-2xl tracking-[-.035em]">{name}</h3>
               <p className="mt-4 leading-7 text-[color:var(--stk-muted)]">
@@ -633,7 +631,7 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
           {t.packagesTitle}
         </h2>
         <div className="mt-14 grid gap-5 lg:grid-cols-3">
-          {t.packages.map(([name, price, text], i) => (
+          {t.packages.map(([name, _price, text], i) => (
             <div
               key={name}
               className={`rounded-[var(--stk-radius-card)] border p-8 ${i === 2 ? "border-[var(--stk-dark)] bg-[var(--stk-dark)] text-white" : "border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)]"}`}
@@ -647,7 +645,7 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
               <div
                 className={`mt-5 max-w-full break-words tracking-[-.05em] leading-[1.02] ${i === 2 ? "text-3xl sm:text-4xl" : "text-4xl sm:text-5xl"}`}
               >
-                {price}
+                
               </div>
               <p
                 className={`mt-6 leading-7 ${i === 2 ? "text-white/60" : "text-[color:var(--stk-muted)]"}`}
@@ -666,8 +664,7 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
             </div>
           ))}
         </div>
-        <FullPriceLink locale={locale} />
-      </section>
+</section>
 
       <section className="border-y border-[color:var(--stk-border)] bg-[var(--stk-surface-strong)] py-24 md:py-32">
         <div className="mx-auto grid max-w-7xl gap-12 px-5 md:grid-cols-[.75fr_1.25fr] md:px-8">
@@ -795,6 +792,7 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
             >
               Instagram ↗
             </a>
+            <a href="https://www.facebook.com/share/1Evo6nTq8P/?mibextid=wwXIfr" target="_blank" rel="noreferrer" className="rounded-full border border-white/20 px-5 py-2.5 text-sm" style={{ color: "#ffffff" }}>Facebook ↗</a>
             <a
               href="mailto:hello@tafalab.com"
               className="rounded-full border border-white/20 px-5 py-2.5 text-sm"
