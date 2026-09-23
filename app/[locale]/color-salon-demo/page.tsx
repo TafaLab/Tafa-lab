@@ -148,8 +148,8 @@ export default async function ColorSalonDemo({
     other = locale === "ru" ? "en" : "ru";
   const images = [
     "/images/stk-lab/beauty/demos/volt-colorist-v1.webp",
-    "/images/stk-lab/beauty/beauty-owner-mobile.webp",
-    "/images/stk-lab/beauty/beauty-services-catalogue.webp",
+    "/images/stk-lab/beauty/demos/volt-colorist-nori-v2.webp",
+    "/images/stk-lab/beauty/demos/volt-colorist-zed-v2.webp",
   ];
   return (
     <main className="min-h-screen bg-[#ccff00] text-[#080c8c]">
