@@ -5,7 +5,6 @@ import StkSiteShell from "./design/StkSiteShell";
 import StkLeadForm from "./StkLeadForm";
 import TafaLabLogo from "./TafaLabLogo";
 import BakeryIdeasSection from "./BakeryIdeasSection";
-import FullPriceLink from "./FullPriceLink";
 
 const whatsapp = "https://wa.me/77471818493";
 
@@ -35,32 +34,32 @@ const copy = {
     services: [
       [
         "Landing Page",
-        "$300",
+        "",
         "A focused one-page website that presents your bakery, products, advantages and ordering process.",
       ],
       [
         "Multi-page Website",
-        "$800",
+        "",
         "A complete website with separate pages for products, services, delivery, custom orders, gallery and contact information.",
       ],
       [
         "Online Catalogue",
-        "$500",
+        "",
         "A structured product catalogue with categories, photographs, descriptions, flavours, sizes and prices.",
       ],
       [
         "Online Store",
-        "$2,000",
+        "",
         "A complete online ordering experience with a product catalogue, shopping cart, checkout, payment and delivery options.",
       ],
       [
         "Custom Order Form",
-        "$300",
+        "",
         "A detailed enquiry form where customers can specify date, size, flavour, colour, theme, inscription and other requirements.",
       ],
       [
         "Cake Builder",
-        "$2,000",
+        "",
         "An interactive configurator that lets customers design their cake, preview every change and see the price update in real time.",
       ],
     ],
@@ -169,17 +168,17 @@ const copy = {
     packages: [
       [
         "Bakery Essentials",
-        "$300",
+        "",
         "A professional one-page website for your bakery, products and contact information.",
       ],
       [
         "Bakery Commerce",
-        "$2,000",
+        "",
         "A complete online store with catalogue, cart, online ordering, payment integration and delivery options.",
       ],
       [
         "Bakery Premium",
-        "$4,000",
+        "",
         "A customized solution with an interactive Cake Builder, custom-order management and tailored functionality.",
       ],
     ],
@@ -237,32 +236,32 @@ const copy = {
     services: [
       [
         "Landing страница",
-        "$300",
+        "",
         "Лаконичный одностраничный сайт, который знакомит клиентов с вашей пекарней, продукцией, преимуществами и процессом оформления заказов.",
       ],
       [
         "Многостраничный сайт",
-        "$800",
+        "",
         "Полноценный сайт с отдельными страницами продукции, услуг, доставки, индивидуальных заказов, галереи и контактов.",
       ],
       [
         "Онлайн-каталог",
-        "$500",
+        "",
         "Структурированный каталог продукции с категориями, фотографиями, описаниями, вкусами, размерами и ценами.",
       ],
       [
         "Онлайн-магазин",
-        "$2,000",
+        "",
         "Полноценный интернет-магазин с каталогом, корзиной, оформлением заказа, онлайн-оплатой и вариантами доставки.",
       ],
       [
         "Форма индивидуального заказа",
-        "$300",
+        "",
         "Подробная форма, где клиент может указать дату, размер, вкус, цвет, тематику, надпись и другие пожелания.",
       ],
       [
         "Конструктор тортов",
-        "$2,000",
+        "",
         "Интерактивный конфигуратор, где клиент собирает свой торт, сразу видит изменения и наблюдает обновление стоимости в реальном времени.",
       ],
     ],
@@ -371,17 +370,17 @@ const copy = {
     packages: [
       [
         "Основы для пекарни",
-        "$300",
+        "",
         "Профессиональный одностраничный сайт для презентации вашей пекарни, продукции и контактов.",
       ],
       [
         "Онлайн-продажи для пекарни",
-        "$2,000",
+        "",
         "Полноценный интернет-магазин с каталогом, корзиной, онлайн-заказами, оплатой и вариантами доставки.",
       ],
       [
         "Премиум-решение",
-        "$4,000",
+        "",
         "Индивидуальное решение с интерактивным конструктором тортов, управлением заказами и уникальным функционалом.",
       ],
     ],
@@ -440,10 +439,7 @@ export default function BakeryIndustryPage({
             <Link href={`/${locale}`}>{t.nav.home}</Link>
             <a href="#services">{t.nav.services}</a>
             <a href="#portfolio">{t.nav.portfolio}</a>
-            <Link href={`/${locale}/price`}>
-              {locale === "ru" ? "Цены" : "Price"}
-            </Link>
-            <a href="#contact">{t.nav.contact}</a>
+<a href="#contact">{t.nav.contact}</a>
           </nav>
           <Link
             href={`/${other}/industries/bakeries`}
@@ -521,7 +517,7 @@ export default function BakeryIndustryPage({
           </p>
         </div>
         <div className="mt-14 grid border-l border-t border-[color:var(--stk-border)] sm:grid-cols-2 lg:grid-cols-3">
-          {t.services.map(([name, price, text], i) => (
+          {t.services.map(([name, _price, text], i) => (
             <div
               key={name}
               className="min-h-[300px] border-b border-r border-[color:var(--stk-border)] p-7 md:p-9"
@@ -530,7 +526,7 @@ export default function BakeryIndustryPage({
                 <span className="text-xs text-[color:var(--stk-faint)]">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="text-sm font-medium">{price}</span>
+                
               </div>
               <h3 className="mt-16 text-2xl tracking-[-.035em]">{name}</h3>
               <p className="mt-4 leading-7 text-[color:var(--stk-muted)]">
@@ -730,7 +726,7 @@ export default function BakeryIndustryPage({
           </p>
         </div>
         <div className="mt-14 grid gap-5 lg:grid-cols-3">
-          {t.packages.map(([name, price, text], i) => (
+          {t.packages.map(([name, _price, text], i) => (
             <div
               key={name}
               className={`rounded-[var(--stk-radius-card)] border p-8 ${i === 2 ? "border-[#2a211d] bg-[#2a211d] text-white" : "border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)]"}`}
@@ -745,7 +741,7 @@ export default function BakeryIndustryPage({
                   : "Tafa Lab"}
               </p>
               <h3 className="mt-10 text-3xl tracking-[-.04em]">{name}</h3>
-              <div className="mt-5 text-5xl tracking-[-.05em]">{price}</div>
+              
               <p
                 className={`mt-6 leading-7 ${i === 2 ? "text-white/60" : "text-[color:var(--stk-muted)]"}`}
               >
@@ -763,8 +759,7 @@ export default function BakeryIndustryPage({
             </div>
           ))}
         </div>
-        <FullPriceLink locale={locale} />
-      </section>
+</section>
 
       <section className="border-y border-[color:var(--stk-border)] bg-[var(--stk-surface-strong)] py-24 md:py-32">
         <div className="mx-auto grid max-w-7xl gap-12 px-5 md:grid-cols-[.75fr_1.25fr] md:px-8">
@@ -890,6 +885,7 @@ export default function BakeryIndustryPage({
             >
               Instagram ↗
             </a>
+            <a href="https://www.facebook.com/share/1Evo6nTq8P/?mibextid=wwXIfr" target="_blank" rel="noreferrer" className="rounded-full border border-white/20 px-5 py-2.5 text-sm" style={{ color: "#ffffff" }}>Facebook ↗</a>
             <a
               href="mailto:hello@tafalab.com"
               className="rounded-full border border-white/20 px-5 py-2.5 text-sm"
