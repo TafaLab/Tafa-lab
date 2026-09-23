@@ -5,7 +5,6 @@ import StkReveal from "./design/StkReveal";
 import StkLeadForm from "./StkLeadForm";
 import TafaLabLogo from "./TafaLabLogo";
 import BusinessIdeasSection from "./BusinessIdeasSection";
-import FullPriceLink from "./FullPriceLink";
 
 type Locale = "ru" | "en";
 const whatsapp = "https://wa.me/77471818493";
@@ -132,7 +131,7 @@ const copy = {
     packages: [
       [
         "Operations Core",
-        "from $4,000",
+        "",
         "Core dashboard plus the highest-priority operational modules for your business.",
       ],
       [
@@ -294,7 +293,7 @@ const copy = {
     packages: [
       [
         "Operations Core",
-        "от $4,000",
+        "",
         "Основной dashboard и самые приоритетные операционные модули.",
       ],
       [
@@ -358,8 +357,7 @@ export default function BusinessPlatformsIndustryPage({
             <a href="#services">{locale === "ru" ? "Решения" : "Solutions"}</a>
             <a href="#portfolio">{locale === "ru" ? "Проекты" : "Projects"}</a>
             <a href="#process">{locale === "ru" ? "Процесс" : "Process"}</a>
-            <Link href={`/${locale}/price`}>{locale === "ru" ? "Цены" : "Price"}</Link>
-            <a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
+<a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
           </nav>
           <Link
             href={`/${other}/industries/business-platforms`}
@@ -435,7 +433,7 @@ export default function BusinessPlatformsIndustryPage({
           {t.servicesTitle}
         </h2>
         <div className="mt-14 grid border-l border-t border-[color:var(--stk-border)] sm:grid-cols-2 lg:grid-cols-3">
-          {t.services.map(([name, price, text], i) => (
+          {t.services.map(([name, _price, text], i) => (
             <div
               key={name}
               className="min-h-[300px] border-b border-r border-[color:var(--stk-border)] p-7 md:p-9"
@@ -445,7 +443,7 @@ export default function BusinessPlatformsIndustryPage({
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <span className="max-w-[55%] break-words text-right text-sm font-medium">
-                  {price}
+                  
                 </span>
               </div>
               <h3 className="mt-16 text-2xl tracking-[-.035em]">{name}</h3>
@@ -620,7 +618,7 @@ export default function BusinessPlatformsIndustryPage({
           {t.packagesTitle}
         </h2>
         <div className="mt-14 grid gap-5 lg:grid-cols-3">
-          {t.packages.map(([name, price, text], i) => (
+          {t.packages.map(([name, _price, text], i) => (
             <div
               key={name}
               className={`rounded-[var(--stk-radius-card)] border p-8 ${i === 2 ? "border-[var(--stk-dark)] bg-[var(--stk-dark)] text-white" : "border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)]"}`}
@@ -634,7 +632,7 @@ export default function BusinessPlatformsIndustryPage({
               <div
                 className={`mt-5 max-w-full break-words tracking-[-.05em] leading-[1.02] ${i === 2 ? "text-3xl sm:text-4xl" : "text-3xl sm:text-4xl"}`}
               >
-                {price}
+                
               </div>
               <p
                 className={`mt-6 leading-7 ${i === 2 ? "text-white/60" : "text-[color:var(--stk-muted)]"}`}
@@ -653,8 +651,7 @@ export default function BusinessPlatformsIndustryPage({
             </div>
           ))}
         </div>
-        <FullPriceLink locale={locale} />
-      </section>
+</section>
 
       <section className="border-y border-[color:var(--stk-border)] bg-[var(--stk-surface-strong)] py-24 md:py-32">
         <div className="mx-auto grid max-w-7xl gap-12 px-5 md:grid-cols-[.75fr_1.25fr] md:px-8">
@@ -780,6 +777,7 @@ export default function BusinessPlatformsIndustryPage({
             >
               Instagram ↗
             </a>
+            <a href="https://www.facebook.com/share/1Evo6nTq8P/?mibextid=wwXIfr" target="_blank" rel="noreferrer" className="rounded-full border border-white/20 px-5 py-2.5 text-sm" style={{ color: "#ffffff" }}>Facebook ↗</a>
             <a
               href="mailto:hello@tafalab.com"
               className="rounded-full border border-white/20 px-5 py-2.5 text-sm"
