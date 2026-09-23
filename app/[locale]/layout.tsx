@@ -10,7 +10,6 @@ import {
 
 import { notFound } from "next/navigation";
 import Script from "next/script";
-import FloatingPriceLink from "@/app/components/layout/FloatingPriceLink";
 import SiteMotion from "@/app/components/layout/SiteMotion";
 
 import { routing } from "@/i18n/routing";
@@ -78,7 +77,6 @@ export default async function LocaleLayout({
         {children}
       </NextIntlClientProvider>
       <SiteMotion />
-      <FloatingPriceLink locale={locale} />
     </>
   );
 }

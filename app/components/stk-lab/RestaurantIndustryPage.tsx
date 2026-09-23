@@ -748,7 +748,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
               {t.contactCta}
             </a>
             <a
-              href="https://www.instagram.com/tafalab_com/"
+              href={locale === "ru" ? "https://www.instagram.com/tafalab_com/" : "https://www.instagram.com/tafa_lab/"}
               target="_blank"
               rel="noreferrer"
               className="rounded-full border border-white/20 px-5 py-2.5 text-sm"

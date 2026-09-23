@@ -87,10 +87,6 @@ export default function Header({
             {text.contacts}
           </Link>
 
-          <Link href={`/${locale}/price`}>
-            {locale === "en" ? "Price" : "Цены"}
-          </Link>
-
           <Link href={`/${locale}/checkout`}>
             {locale === "en" ? "Cart" : "Корзина"}
           </Link>
@@ -109,7 +105,6 @@ export default function Header({
               <Link href={`/${locale}/food`}>{text.food}</Link>
               <Link href={`/${locale}/gallery`}>{text.gallery}</Link>
               <Link href={`/${locale}/contacts`}>{text.contacts}</Link>
-              <Link href={`/${locale}/price`}>{locale === "en" ? "Price" : "Цены"}</Link>
               <Link href={`/${locale}/checkout`}>{locale === "en" ? "🛒 Cart" : "🛒 Корзина"}</Link>
             </nav>
           </details>

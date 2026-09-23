@@ -25,7 +25,12 @@ export default function StkStructuredData({
       { "@type": "ContactPoint", contactType: "sales", email: "sales@tafalab.com" },
       { "@type": "ContactPoint", contactType: "customer support", email: "support@tafalab.com" },
     ],
-    sameAs: ["https://www.instagram.com/tafalab_com/", "https://www.facebook.com/share/1Evo6nTq8P/?mibextid=wwXIfr"],
+    sameAs: [
+      locale === "ru"
+        ? "https://www.instagram.com/tafalab_com/"
+        : "https://www.instagram.com/tafa_lab/",
+      "https://www.facebook.com/share/1Evo6nTq8P/?mibextid=wwXIfr",
+    ],
   };
 
   const website = {
