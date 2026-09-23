@@ -4,7 +4,6 @@ import StkLeadForm from "./StkLeadForm";
 import TafaLabLogo from "./TafaLabLogo";
 import StkSiteShell from "./design/StkSiteShell";
 import EventIdeasSection from "./EventIdeasSection";
-import FullPriceLink from "./FullPriceLink";
 
 type Locale = "ru" | "en";
 const copy = {
@@ -15,10 +14,10 @@ const copy = {
     text: "Websites and booking journeys for event studios, performers, children's entertainment and family venues.",
     projects: "Three worlds. Three completely different reasons to celebrate.",
     services: [
-      ["Event & wedding website", "from $800"],
-      ["Programs & packages", "from $300"],
-      ["Booking journey", "from $350"],
-      ["Custom event platform", "from $4,000"],
+      ["Event & wedding website", ""],
+      ["Programs & packages", ""],
+      ["Booking journey", ""],
+      ["Custom event platform", ""],
     ],
     cards: [
       [
@@ -49,10 +48,10 @@ const copy = {
     text: "Сайты и сценарии бронирования для event-студий, артистов, детских программ и семейных игровых пространств.",
     projects: "Три мира. Три совершенно разных повода праздновать.",
     services: [
-      ["Сайт событий и свадеб", "от $800"],
-      ["Программы и пакеты", "от $300"],
-      ["Сценарий бронирования", "от $350"],
-      ["Event-платформа", "от $4,000"],
+      ["Сайт событий и свадеб", ""],
+      ["Программы и пакеты", ""],
+      ["Сценарий бронирования", ""],
+      ["Event-платформа", ""],
     ],
     cards: [
       [
@@ -94,8 +93,7 @@ export default function EntertainmentIndustryPage({
           <nav className="hidden gap-8 text-sm md:flex">
             <a href="#projects">{locale === "ru" ? "Проекты" : "Projects"}</a>
             <a href="#services">{locale === "ru" ? "Решения" : "Solutions"}</a>
-            <Link href={`/${locale}/price`}>{locale === "ru" ? "Цены" : "Price"}</Link>
-            <a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
+<a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
           </nav>
           <Link
             href={`/${other}/industries/entertainment`}
@@ -169,16 +167,15 @@ export default function EntertainmentIndustryPage({
             : "From first impression to final booking."}
         </h2>
         <div className="mt-14 grid border-l border-t md:grid-cols-4">
-          {t.services.map(([name, price], i) => (
+          {t.services.map(([name, _price], i) => (
             <div key={name} className="min-h-64 border-b border-r p-7">
               <span className="text-xs opacity-35">0{i + 1}</span>
               <h3 className="mt-20 text-2xl">{name}</h3>
-              <p className="mt-4 font-semibold text-[#9a5b76]">{price}</p>
+              
             </div>
           ))}
         </div>
-        <FullPriceLink locale={locale} />
-      </section>
+</section>
       <EventIdeasSection locale={locale} />
       <section id="contact" className="px-5 pb-10 md:px-8">
         <div className="mx-auto max-w-7xl rounded-[3rem] bg-[#171115] px-6 py-16 text-white md:px-12 md:py-24">
