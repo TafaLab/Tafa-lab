@@ -787,16 +787,16 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
               {t.contactCta}
             </a>
             <a
-              href="https://t.me/STK_Lab"
+              href="https://www.instagram.com/tafalab_com/"
               target="_blank"
               rel="noreferrer"
               className="rounded-full border border-white/20 px-5 py-2.5 text-sm"
               style={{ color: "#ffffff" }}
             >
-              Telegram ↗
+              Instagram ↗
             </a>
             <a
-              href="mailto:suyunova.talifa@gmail.com"
+              href="mailto:hello@tafalab.com"
               className="rounded-full border border-white/20 px-5 py-2.5 text-sm"
               style={{ color: "#ffffff" }}
             >

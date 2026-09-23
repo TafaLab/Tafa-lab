@@ -20,8 +20,12 @@ export default function StkStructuredData({
     "@type": "Organization",
     name: "Tafa Lab",
     url: `${base}/${locale}`,
-    email: "suyunova.talifa@gmail.com",
-    sameAs: ["https://t.me/STK_Lab"],
+    email: "hello@tafalab.com",
+    contactPoint: [
+      { "@type": "ContactPoint", contactType: "sales", email: "sales@tafalab.com" },
+      { "@type": "ContactPoint", contactType: "customer support", email: "support@tafalab.com" },
+    ],
+    sameAs: ["https://www.instagram.com/tafalab_com/"],
   };
 
   const website = {
