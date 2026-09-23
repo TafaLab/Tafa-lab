@@ -10,19 +10,19 @@ export const metadata: Metadata = {
 };
 
 const base = [
-  ["01", "Landing page", "1 page", "$300", "Strategy, custom design, responsive development, enquiry form and basic SEO."],
-  ["02", "Signature website", "up to 5 pages", "$800", "Site structure, custom visual system, responsive pages, forms, SEO and analytics foundations."],
-  ["03", "Commerce or booking", "up to 12 pages", "$2,000", "Website plus catalogue, cart or booking flow, CMS/admin panel and integrations."],
-  ["04", "Custom platform", "individual scope", "$4,000", "Custom application, dashboards, roles, permissions, configurators, automation and APIs."],
+  ["01", "Landing page", "1 page", "", "Strategy, custom design, responsive development, enquiry form and basic SEO."],
+  ["02", "Signature website", "up to 5 pages", "", "Site structure, custom visual system, responsive pages, forms, SEO and analytics foundations."],
+  ["03", "Commerce or booking", "up to 12 pages", "", "Website plus catalogue, cart or booking flow, CMS/admin panel and integrations."],
+  ["04", "Custom platform", "individual scope", "", "Custom application, dashboards, roles, permissions, configurators, automation and APIs."],
 ] as const;
 
 const industries = [
-  ["Bakeries & cake studios", "bakeries", [["Product catalogue", "$500"], ["Custom-order form", "$300"], ["Cake builder", "$2,000"], ["3D product or cake experience", "Custom"]]],
-  ["Restaurants & cafés", "restaurants", [["Digital menu", "$450"], ["Table reservation module", "$350"], ["QR Smart Table ordering", "$650"], ["Restaurant operations platform", "from $4,000"]]],
-  ["Beauty & wellness", "beauty", [["Services catalogue", "$300"], ["Online appointment module", "$350"], ["Beauty quiz or specialist finder", "$450"], ["Virtual try-on / advanced AI", "Custom"]]],
-  ["Travel & hospitality", "travel", [["Digital itinerary", "$450"], ["Trip builder", "$650"], ["Booking or enquiry journey", "$350"], ["Travel operations platform", "from $4,000"]]],
-  ["Events & entertainment", "entertainment", [["Programs and packages", "$300"], ["Booking journey", "$350"], ["Interactive event builder", "$650"], ["Event management platform", "from $4,000"]]],
-  ["Business platforms", "business-platforms", [["Operations core", "from $4,000"], ["Multi-branch system", "Custom"], ["CRM / HR / inventory modules", "Custom"], ["Full internal platform", "Custom"]]],
+  ["Bakeries & cake studios", "bakeries", [["Product catalogue", ""], ["Custom-order form", ""], ["Cake builder", ""], ["3D product or cake experience", "Custom"]]],
+  ["Restaurants & cafés", "restaurants", [["Digital menu", ""], ["Table reservation module", ""], ["QR Smart Table ordering", ""], ["Restaurant operations platform", ""]]],
+  ["Beauty & wellness", "beauty", [["Services catalogue", ""], ["Online appointment module", ""], ["Beauty quiz or specialist finder", ""], ["Virtual try-on / advanced AI", "Custom"]]],
+  ["Travel & hospitality", "travel", [["Digital itinerary", ""], ["Trip builder", ""], ["Booking or enquiry journey", ""], ["Travel operations platform", ""]]],
+  ["Events & entertainment", "entertainment", [["Programs and packages", ""], ["Booking journey", ""], ["Interactive event builder", ""], ["Event management platform", ""]]],
+  ["Business platforms", "business-platforms", [["Operations core", ""], ["Multi-branch system", "Custom"], ["CRM / HR / inventory modules", "Custom"], ["Full internal platform", "Custom"]]],
 ] as const;
 
 const ruBaseDescriptions = [
@@ -33,12 +33,12 @@ const ruBaseDescriptions = [
 ] as const;
 
 const ruIndustries = [
-  ["Пекарни и кондитерские", [["Каталог продукции", "$500"], ["Форма индивидуального заказа", "$300"], ["Конструктор торта", "$2,000"], ["3D-модель продукта или торта", "Индивидуально"]]],
-  ["Рестораны и кафе", [["Цифровое меню", "$450"], ["Бронирование столиков", "$350"], ["QR-заказ за столом", "$650"], ["Платформа управления рестораном", "от $4,000"]]],
-  ["Красота и wellness", [["Каталог услуг", "$300"], ["Онлайн-запись", "$350"], ["Beauty-тест или подбор специалиста", "$450"], ["Виртуальная примерка / AI", "Индивидуально"]]],
-  ["Туризм и гостеприимство", [["Цифровой маршрут", "$450"], ["Конструктор поездки", "$650"], ["Бронирование или заявка", "$350"], ["Туристическая бизнес-платформа", "от $4,000"]]],
-  ["События и развлечения", [["Программы и пакеты", "$300"], ["Сценарий бронирования", "$350"], ["Интерактивный конструктор события", "$650"], ["Платформа управления событиями", "от $4,000"]]],
-  ["Бизнес-платформы", [["Операционная система", "от $4,000"], ["Система для нескольких филиалов", "Индивидуально"], ["Модули CRM / HR / склад", "Индивидуально"], ["Полная внутренняя платформа", "Индивидуально"]]],
+  ["Пекарни и кондитерские", [["Каталог продукции", ""], ["Форма индивидуального заказа", ""], ["Конструктор торта", ""], ["3D-модель продукта или торта", "Индивидуально"]]],
+  ["Рестораны и кафе", [["Цифровое меню", ""], ["Бронирование столиков", ""], ["QR-заказ за столом", ""], ["Платформа управления рестораном", ""]]],
+  ["Красота и wellness", [["Каталог услуг", ""], ["Онлайн-запись", ""], ["Beauty-тест или подбор специалиста", ""], ["Виртуальная примерка / AI", "Индивидуально"]]],
+  ["Туризм и гостеприимство", [["Цифровой маршрут", ""], ["Конструктор поездки", ""], ["Бронирование или заявка", ""], ["Туристическая бизнес-платформа", ""]]],
+  ["События и развлечения", [["Программы и пакеты", ""], ["Сценарий бронирования", ""], ["Интерактивный конструктор события", ""], ["Платформа управления событиями", ""]]],
+  ["Бизнес-платформы", [["Операционная система", ""], ["Система для нескольких филиалов", "Индивидуально"], ["Модули CRM / HR / склад", "Индивидуально"], ["Полная внутренняя платформа", "Индивидуально"]]],
 ] as const;
 
 export default async function PricePage({ params }: { params: Promise<{ locale: Locale }> }) {
@@ -62,7 +62,7 @@ export default async function PricePage({ params }: { params: Promise<{ locale: 
 
       <section className="mx-auto grid max-w-7xl gap-12 px-5 pb-24 pt-16 md:grid-cols-[1.3fr_.7fr] md:items-end md:gap-16 md:px-8 md:pb-32 md:pt-24">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[.25em] text-[#806d59]">Tafa Lab · Price</p>
+          <p className="text-xs font-semibold uppercase tracking-[.25em] text-[#806d59]">Tafa Lab</p>
           <h1 className="mt-6 max-w-4xl text-[3.4rem] font-medium leading-[.98] tracking-[-.055em] sm:text-6xl md:text-[5.25rem] lg:text-[6.25rem]">
             {ru ? (
               <>
@@ -81,7 +81,7 @@ export default async function PricePage({ params }: { params: Promise<{ locale: 
         </div>
         <div className="self-end rounded-[2rem] bg-[#211d19] p-8 text-white shadow-[0_24px_70px_rgba(33,29,25,.16)] md:p-10">
           <p className="text-lg leading-8 text-white/65">
-            {ru ? "Все суммы указаны в долларах США. Базовый пакет определяет тип проекта, а отраслевые модули добавляются только при необходимости." : "All prices are in US dollars. The core package defines the project type; industry modules are added only when needed."}
+            {ru ? "Состав проекта и стоимость рассчитываются индивидуально после обсуждения задачи." : "Project scope and cost are prepared individually after discussing your goals."}
           </p>
           <a href="#base" className="mt-8 inline-flex items-center rounded-full bg-white px-6 py-3 text-sm font-semibold" style={{ color: "#211d19" }}>{ru ? "Посмотреть прайс" : "View pricing"} ↓</a>
         </div>
@@ -97,7 +97,7 @@ export default async function PricePage({ params }: { params: Promise<{ locale: 
                 <span className="text-sm text-black/35">{number}</span>
                 <div><h3 className="text-3xl">{ru ? ["Лендинг", "Фирменный сайт", "Магазин или бронирование", "Индивидуальная платформа"][index] : name}</h3><p className="mt-3 max-w-2xl leading-7 text-black/55">{ru ? ruBaseDescriptions[index] : text}</p></div>
                 <span className="text-sm uppercase tracking-[.16em] text-black/45">{ru ? ["1 страница", "до 5 страниц", "до 12 страниц", "индивидуальный объём"][index] : scope}</span>
-                <strong className="text-4xl tracking-[-.04em]">{ru ? "от " : "from "}{price}</strong>
+                <strong className="text-4xl tracking-[-.04em]">{ru ? "от " : "from "}</strong>
               </article>
             ))}
           </div>
@@ -107,7 +107,7 @@ export default async function PricePage({ params }: { params: Promise<{ locale: 
       <section id="industries" className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
         <p className="text-xs uppercase tracking-[.24em] text-black/45">{ru ? "Дополнительные модули" : "Optional modules"}</p>
         <h2 className="mt-5 max-w-4xl text-5xl tracking-[-.05em] md:text-7xl">{ru ? "Функции для конкретного бизнеса." : "Capabilities shaped for each business."}</h2>
-        <p className="mt-7 max-w-3xl text-lg leading-8 text-black/55">{ru ? "Цены ниже — это стоимость отдельного модуля, добавляемого к подходящему базовому пакету. Они не заменяют стоимость самого сайта." : "Prices below are for individual modules added to an appropriate core package. They do not replace the website price."}</p>
+        <p className="mt-7 max-w-3xl text-lg leading-8 text-black/55">{ru ? "Для каждого проекта мы готовим индивидуальное предложение." : "We prepare a tailored proposal for each project."}</p>
         <div className="mt-14 grid gap-5 md:grid-cols-2">
           {industries.map(([title, route, items], block) => {
             const localizedTitle = ru ? ruIndustries[block][0] : title;
@@ -116,7 +116,7 @@ export default async function PricePage({ params }: { params: Promise<{ locale: 
             <article key={route} className={`rounded-[2rem] border border-black/10 p-7 md:p-9 ${block === 5 ? "bg-[#211d19] text-white" : "bg-white"}`}>
               <div className="flex items-start justify-between gap-4"><h3 className="text-3xl">{localizedTitle}</h3><Link href={`/${locale}/industries/${route}`} className="rounded-full border border-current/20 px-3 py-2 text-xs">{ru ? "Раздел" : "Explore"} →</Link></div>
               <div className="mt-8 divide-y divide-current/10 border-y border-current/10">
-                {localizedItems.map(([name, price]) => <div key={name} className="flex items-center justify-between gap-5 py-4"><span className="opacity-65">{name}</span><strong className="whitespace-nowrap">{price}</strong></div>)}
+                {localizedItems.map(([name, price]) => <div key={name} className="flex items-center justify-between gap-5 py-4"><span className="opacity-65">{name}</span><strong className="whitespace-nowrap"></strong></div>)}
               </div>
             </article>
             );
