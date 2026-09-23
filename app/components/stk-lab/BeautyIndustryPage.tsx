@@ -5,7 +5,6 @@ import StkReveal from "./design/StkReveal";
 import StkLeadForm from "./StkLeadForm";
 import TafaLabLogo from "./TafaLabLogo";
 import BeautyIdeasSection from "./BeautyIdeasSection";
-import FullPriceLink from "./FullPriceLink";
 
 type Locale = "ru" | "en";
 const whatsapp = "https://wa.me/77471818493";
@@ -25,17 +24,17 @@ const copy = {
     services: [
       [
         "Beauty Website",
-        "from $800",
+        "",
         "Premium responsive website with services, specialists, pricing, gallery, contacts and booking calls to action.",
       ],
       [
         "Online Booking",
-        "from $350",
+        "",
         "Service, specialist, date and time selection in a clean branded booking flow.",
       ],
       [
         "Services Catalogue",
-        "from $300",
+        "",
         "Elegant mobile-first catalogue with categories, duration, prices and direct booking.",
       ],
       [
@@ -138,17 +137,17 @@ const copy = {
     packages: [
       [
         "Beauty Presence",
-        "from $800",
+        "",
         "Brand website, services, pricing, specialists and booking CTA.",
       ],
       [
         "Booking Experience",
-        "from $2,000",
+        "",
         "Website plus services catalogue and branded appointment flow.",
       ],
       [
         "Beauty Platform",
-        "from $4,000",
+        "",
         "CRM, schedules, client management, analytics and owner tools.",
       ],
     ],
@@ -192,17 +191,17 @@ const copy = {
     services: [
       [
         "Сайт салона",
-        "от $800",
+        "",
         "Премиальный адаптивный сайт с услугами, мастерами, ценами, галереей, контактами и записью.",
       ],
       [
         "Онлайн-запись",
-        "от $350",
+        "",
         "Выбор услуги, мастера, даты и времени в аккуратном branded booking flow.",
       ],
       [
         "Каталог услуг",
-        "от $300",
+        "",
         "Красивый mobile-first каталог с категориями, длительностью, ценами и переходом к записи.",
       ],
       [
@@ -305,17 +304,17 @@ const copy = {
     packages: [
       [
         "Beauty Presence",
-        "от $800",
+        "",
         "Брендовый сайт, услуги, цены, мастера и переход к записи.",
       ],
       [
         "Booking Experience",
-        "от $2,000",
+        "",
         "Сайт + каталог услуг + фирменный сценарий онлайн-записи.",
       ],
       [
         "Beauty Platform",
-        "от $4,000",
+        "",
         "CRM, расписание, клиенты, аналитика и инструменты владельца.",
       ],
     ],
@@ -365,8 +364,7 @@ export default function BeautyIndustryPage({ locale }: { locale: Locale }) {
             <a href="#services">{locale === "ru" ? "Решения" : "Solutions"}</a>
             <a href="#portfolio">{locale === "ru" ? "Работы" : "Portfolio"}</a>
             <a href="#process">{locale === "ru" ? "Процесс" : "Process"}</a>
-            <Link href={`/${locale}/price`}>{locale === "ru" ? "Цены" : "Price"}</Link>
-            <a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
+<a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
           </nav>
           <Link
             href={`/${other}/industries/beauty`}
@@ -442,7 +440,7 @@ export default function BeautyIndustryPage({ locale }: { locale: Locale }) {
           {t.servicesTitle}
         </h2>
         <div className="mt-14 grid border-l border-t border-[color:var(--stk-border)] sm:grid-cols-2 lg:grid-cols-3">
-          {t.services.map(([name, price, text], i) => (
+          {t.services.map(([name, _price, text], i) => (
             <div
               key={name}
               className="min-h-[300px] border-b border-r border-[color:var(--stk-border)] p-7 md:p-9"
@@ -451,7 +449,7 @@ export default function BeautyIndustryPage({ locale }: { locale: Locale }) {
                 <span className="text-xs text-[color:var(--stk-faint)]">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="text-sm font-medium">{price}</span>
+                
               </div>
               <h3 className="mt-16 text-2xl tracking-[-.035em]">{name}</h3>
               <p className="mt-4 leading-7 text-[color:var(--stk-muted)]">
@@ -566,7 +564,7 @@ export default function BeautyIndustryPage({ locale }: { locale: Locale }) {
           {t.packagesTitle}
         </h2>
         <div className="mt-14 grid gap-5 lg:grid-cols-3">
-          {t.packages.map(([name, price, text], i) => (
+          {t.packages.map(([name, _price, text], i) => (
             <div
               key={name}
               className={`rounded-[var(--stk-radius-card)] border p-8 ${i === 2 ? "border-[var(--stk-dark)] bg-[var(--stk-dark)] text-white" : "border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)]"}`}
@@ -580,7 +578,7 @@ export default function BeautyIndustryPage({ locale }: { locale: Locale }) {
               <div
                 className={`mt-5 max-w-full break-words tracking-[-.05em] leading-[1.02] ${i === 2 ? "text-3xl sm:text-4xl" : "text-4xl sm:text-5xl"}`}
               >
-                {price}
+                
               </div>
               <p
                 className={`mt-6 leading-7 ${i === 2 ? "text-white/60" : "text-[color:var(--stk-muted)]"}`}
@@ -599,8 +597,7 @@ export default function BeautyIndustryPage({ locale }: { locale: Locale }) {
             </div>
           ))}
         </div>
-        <FullPriceLink locale={locale} />
-      </section>
+</section>
 
       <section className="border-y border-[color:var(--stk-border)] bg-[var(--stk-surface-strong)] py-24 md:py-32">
         <div className="mx-auto grid max-w-7xl gap-12 px-5 md:grid-cols-[.75fr_1.25fr] md:px-8">
@@ -726,6 +723,7 @@ export default function BeautyIndustryPage({ locale }: { locale: Locale }) {
             >
               Instagram ↗
             </a>
+            <a href="https://www.facebook.com/share/1Evo6nTq8P/?mibextid=wwXIfr" target="_blank" rel="noreferrer" className="rounded-full border border-white/20 px-5 py-2.5 text-sm" style={{ color: "#ffffff" }}>Facebook ↗</a>
             <a
               href="mailto:hello@tafalab.com"
               className="rounded-full border border-white/20 px-5 py-2.5 text-sm"
