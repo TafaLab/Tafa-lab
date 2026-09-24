@@ -3586,6 +3586,7 @@ function mergeCrmStates(
       primary.customCities,
     ),
     activity: mergeCrmActivity(secondary.activity, primary.activity),
+    synced_at: primary.synced_at || secondary.synced_at,
   };
 }
 function normalizeContact(value: string) {
@@ -4328,6 +4329,23 @@ export default function StkAdminPage() {
     }),
     [reportActivity],
   );
+  const reportStatusCounts = useMemo(() => {
+    const result = {
+      new: 0,
+      draft: 0,
+      contacted: 0,
+      in_progress: 0,
+      won: 0,
+      lost: 0,
+      dead: 0,
+      not_profitable: 0,
+    } satisfies Record<LeadStatus, number>;
+    reportActivity.forEach((item) => {
+      if (item.type === "status_changed" && item.to_status)
+        result[item.to_status] += 1;
+    });
+    return result;
+  }, [reportActivity]);
   const activityTitle = (item: CrmActivity) => {
     const labels: Record<CrmActivityType, [string, string]> = {
       lead_created: ["Добавлена запись", "Record added"],
@@ -4545,55 +4563,103 @@ export default function StkAdminPage() {
       if (response.ok) {
         const payload = await response.json();
         if (payload.state && typeof payload.state === "object")
-          remote = payload.state as CrmSyncState;
+          remote = {
+            ...(payload.state as CrmSyncState),
+            synced_at:
+              payload.updated_at || (payload.state as CrmSyncState).synced_at,
+          };
       }
     } catch {}
     let synced = mergeCrmStates(local, remote);
     const activityBackfilled = !(synced.activity || []).length;
+    const knownLeads: Lead[] = [
+        ...synced.manual,
+        ...kaskelenLeads,
+        ...almatyLeadSeed,
+        ...extraAlmatyLeadSeed,
+        ...taldykorganLeadSeed,
+        ...almatyBarsLeadSeed,
+        ...(nycBeautyLeadSeed as unknown as Lead[]),
+        ...(nycRestaurantLeadSeed as unknown as Lead[]),
+        ...(nycBakeryCoffeeLeadSeed as unknown as Lead[]),
+      ],
+      leadNames = new Map(knownLeads.map((lead) => [lead.id, lead.name]));
     if (activityBackfilled) {
-      const knownLeads: Lead[] = [
-          ...synced.manual,
-          ...kaskelenLeads,
-          ...almatyLeadSeed,
-          ...extraAlmatyLeadSeed,
-          ...taldykorganLeadSeed,
-          ...almatyBarsLeadSeed,
-          ...(nycBeautyLeadSeed as unknown as Lead[]),
-          ...(nycRestaurantLeadSeed as unknown as Lead[]),
-          ...(nycBakeryCoffeeLeadSeed as unknown as Lead[]),
-        ],
-        leadNames = new Map(knownLeads.map((lead) => [lead.id, lead.name])),
-        legacyActivity: CrmActivity[] = [
-          ...synced.manual.map((lead) => ({
-            id: `legacy-created-${lead.id}`,
-            type: "lead_created" as const,
-            created_at: lead.created_at,
-            lead_id: lead.id,
-            lead_name: lead.name,
+      const legacyActivity: CrmActivity[] = [
+        ...synced.manual.map((lead) => ({
+          id: `legacy-created-${lead.id}`,
+          type: "lead_created" as const,
+          created_at: lead.created_at,
+          lead_id: lead.id,
+          lead_name: lead.name,
+        })),
+        ...Object.entries(synced.meta).flatMap(([leadId, meta]) =>
+          (meta.interactions || []).map((entry) => ({
+            id: `legacy-interaction-${leadId}-${entry.id}`,
+            type:
+              entry.channel === "status"
+                ? ("status_changed" as const)
+                : ("interaction" as const),
+            created_at: entry.created_at,
+            lead_id: leadId,
+            lead_name: leadNames.get(leadId),
+            details:
+              entry.channel === "status"
+                ? entry.text
+                : interactionLabel(entry.channel, locale),
           })),
-          ...Object.entries(synced.meta).flatMap(([leadId, meta]) =>
-            (meta.interactions || []).map((entry) => ({
-              id: `legacy-interaction-${leadId}-${entry.id}`,
-              type:
-                entry.channel === "status"
-                  ? ("status_changed" as const)
-                  : ("interaction" as const),
-              created_at: entry.created_at,
-              lead_id: leadId,
-              lead_name: leadNames.get(leadId),
-              details:
-                entry.channel === "status"
-                  ? entry.text
-                  : interactionLabel(entry.channel, locale),
-            })),
-          ),
-        ];
+        ),
+      ];
       synced = {
         ...synced,
         activity: mergeCrmActivity(legacyActivity),
       };
     }
-    if (activityBackfilled || crmStateScore(local) > crmStateScore(remote)) {
+    const existingActivity = synced.activity || [],
+      statusSnapshots = Object.entries(synced.meta).flatMap(
+        ([leadId, meta]): CrmActivity[] => {
+          const status = meta.status;
+          if (!status || status === "new") return [];
+          const alreadyTracked = existingActivity.some(
+            (item) =>
+              item.type === "status_changed" &&
+              item.lead_id === leadId &&
+              item.to_status === status,
+          );
+          if (alreadyTracked) return [];
+          const latestStatusEntry = [...(meta.interactions || [])]
+            .reverse()
+            .find((entry) => entry.channel === "status");
+          return [
+            {
+              id: `status-snapshot-${leadId}-${status}`,
+              type: "status_changed",
+              created_at:
+                latestStatusEntry?.created_at ||
+                synced.synced_at ||
+                new Date().toISOString(),
+              lead_id: leadId,
+              lead_name: leadNames.get(leadId),
+              details:
+                latestStatusEntry?.text ||
+                (locale === "ru"
+                  ? "Статус сохранён в CRM"
+                  : "Status saved in CRM"),
+              to_status: status,
+            },
+          ];
+        },
+      );
+    if (statusSnapshots.length)
+      synced = {
+        ...synced,
+        activity: mergeCrmActivity(existingActivity, statusSnapshots),
+      };
+    if (
+      activityBackfilled ||
+      statusSnapshots.length ||
+      crmStateScore(local) > crmStateScore(remote)
+    ) {
       const syncError = await persistCrmState(synced, accessToken);
       if (syncError && !/rate limit/i.test(syncError)) setError(syncError);
     } else writeLocalCrmState(synced);
@@ -6338,6 +6404,41 @@ export default function StkAdminPage() {
                     <div className="mt-2 text-3xl">{value}</div>
                   </div>
                 ))}
+              </div>
+
+              <div className="mt-5 rounded-[28px] border border-black/10 bg-white p-5">
+                <h2 className="text-xl">
+                  {locale === "ru"
+                    ? "Изменения по статусам"
+                    : "Changes by status"}
+                </h2>
+                <p className="mt-1 text-sm text-black/45">
+                  {locale === "ru"
+                    ? "Сколько записей за выбранный период переведено в каждый статус."
+                    : "How many records moved to each status during the selected period."}
+                </p>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  {(
+                    [
+                      "new",
+                      "draft",
+                      "contacted",
+                      "in_progress",
+                      "won",
+                      "lost",
+                      "dead",
+                      "not_profitable",
+                    ] as LeadStatus[]
+                  ).map((status) => (
+                    <div
+                      key={status}
+                      className="flex items-center justify-between rounded-2xl bg-[#f7f3ef] px-4 py-3"
+                    >
+                      <span className="text-sm">{t.filters[status]}</span>
+                      <b className="text-xl">{reportStatusCounts[status]}</b>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="mt-5 overflow-hidden rounded-[28px] border border-black/10 bg-white">
