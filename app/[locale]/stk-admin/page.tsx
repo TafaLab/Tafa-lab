@@ -29,7 +29,7 @@ type SortMode = "newest" | "oldest" | "name";
 
 type NoteEntry = { text: string; created_at: string };
 type InteractionChannel =
-  "whatsapp" | "email" | "instagram" | "note" | "status";
+  "whatsapp" | "email" | "instagram" | "facebook" | "note" | "status";
 type InteractionEntry = {
   id: string;
   channel: InteractionChannel;
@@ -92,7 +92,8 @@ type CrmActivityType =
   | "attachment_added"
   | "attachment_removed"
   | "city_added"
-  | "template_updated";
+  | "template_updated"
+  | "planner_updated";
 type CrmActivity = {
   id: string;
   type: CrmActivityType;
@@ -3393,6 +3394,7 @@ function interactionLabel(channel: InteractionChannel, locale: "ru" | "en") {
           whatsapp: "WhatsApp",
           email: "Email",
           instagram: "Instagram",
+          facebook: "Facebook",
           note: "Заметка",
           status: "Изменение статуса",
         }
@@ -3400,6 +3402,7 @@ function interactionLabel(channel: InteractionChannel, locale: "ru" | "en") {
           whatsapp: "WhatsApp",
           email: "Email",
           instagram: "Instagram",
+          facebook: "Facebook",
           note: "Note",
           status: "Status change",
         };
@@ -4317,6 +4320,7 @@ export default function StkAdminPage() {
           "attachment_removed",
           "city_added",
           "template_updated",
+          "planner_updated",
         ].includes(item.type),
       ).length,
       deleted: reportActivity.filter((item) => item.type === "lead_deleted")
@@ -4336,6 +4340,7 @@ export default function StkAdminPage() {
       attachment_removed: ["Удалён файл", "File removed"],
       city_added: ["Добавлен город", "City added"],
       template_updated: ["Изменены шаблоны", "Templates updated"],
+      planner_updated: ["Изменён планер", "Planner updated"],
     };
     return labels[item.type][locale === "ru" ? 0 : 1];
   };
@@ -4372,30 +4377,40 @@ export default function StkAdminPage() {
     locale === "ru" ? "ru-RU" : "en-US",
     { month: "long", year: "numeric" },
   );
-  async function savePlannerTasks(next: PlannerTask[]) {
+  async function savePlannerTasks(next: PlannerTask[], details: string) {
     setPlannerTasks(next);
-    const current = readLocalCrmState();
-    await persistCrmState({ ...current, planner: next, settings }, accessToken);
+    const current = readLocalCrmState(),
+      nextActivity = mergeCrmActivity(current.activity, activity, [
+        createCrmActivity("planner_updated", null, details),
+      ]);
+    setActivity(nextActivity);
+    await persistCrmState(
+      { ...current, planner: next, settings, activity: nextActivity },
+      accessToken,
+    );
   }
   function addPlannerTask(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const value = plannerInput.trim();
     if (!value) return;
-    void savePlannerTasks([
-      ...plannerTasks,
-      {
-        id: `planner-${Date.now()}`,
-        date: plannerDate,
-        text: value,
-        completed: false,
-        repeat: plannerRepeat,
-        completed_dates: [],
-        emoji: plannerEmoji.trim() || undefined,
-        time: plannerTime || null,
-        reminder_time: plannerReminderTime || null,
-        created_at: new Date().toISOString(),
-      },
-    ]);
+    void savePlannerTasks(
+      [
+        ...plannerTasks,
+        {
+          id: `planner-${Date.now()}`,
+          date: plannerDate,
+          text: value,
+          completed: false,
+          repeat: plannerRepeat,
+          completed_dates: [],
+          emoji: plannerEmoji.trim() || undefined,
+          time: plannerTime || null,
+          reminder_time: plannerReminderTime || null,
+          created_at: new Date().toISOString(),
+        },
+      ],
+      `${locale === "ru" ? "Добавлена задача" : "Task added"}: ${value}`,
+    );
     setPlannerInput("");
     setPlannerRepeat("none");
     setPlannerEmoji("");
@@ -4420,10 +4435,17 @@ export default function StkAdminPage() {
         completed_at: !completed ? new Date().toISOString() : null,
       };
     });
-    void savePlannerTasks(next);
+    void savePlannerTasks(
+      next,
+      `${completed ? (locale === "ru" ? "Задача возвращена" : "Task reopened") : locale === "ru" ? "Задача выполнена" : "Task completed"}: ${occurrence.text}`,
+    );
   }
   function deletePlannerTask(id: string) {
-    void savePlannerTasks(plannerTasks.filter((task) => task.id !== id));
+    const task = plannerTasks.find((item) => item.id === id);
+    void savePlannerTasks(
+      plannerTasks.filter((item) => item.id !== id),
+      `${locale === "ru" ? "Удалена задача" : "Task deleted"}: ${task?.text || "—"}`,
+    );
   }
   async function enableNotifications() {
     if (typeof Notification === "undefined") {
@@ -5017,6 +5039,17 @@ export default function StkAdminPage() {
       lead,
       "instagram",
       locale === "ru" ? "Открыт профиль Instagram" : "Instagram profile opened",
+    );
+  }
+  function openFacebook(lead: Lead, value: string) {
+    const url = /^https?:\/\//i.test(value)
+      ? value
+      : `https://facebook.com/${value.replace(/^@/, "")}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+    void recordInteraction(
+      lead,
+      "facebook",
+      locale === "ru" ? "Открыт профиль Facebook" : "Facebook profile opened",
     );
   }
   function openWebsite(lead: Lead, value: string) {
@@ -7219,15 +7252,7 @@ export default function StkAdminPage() {
                           (facebook, index) => (
                             <button
                               key={facebook + index}
-                              onClick={() =>
-                                window.open(
-                                  /^https?:\/\//i.test(facebook)
-                                    ? facebook
-                                    : `https://facebook.com/${facebook.replace(/^@/, "")}`,
-                                  "_blank",
-                                  "noopener,noreferrer",
-                                )
-                              }
+                              onClick={() => openFacebook(selected, facebook)}
                               className="rounded-full border border-blue-200 bg-blue-50 px-3 py-2 text-xs text-blue-800"
                             >
                               Facebook {index + 1}
