@@ -82,6 +82,28 @@ type CrmMeta = {
   attachments?: AttachmentEntry[];
 };
 type CustomCities = Record<string, string[]>;
+type CrmActivityType =
+  | "lead_created"
+  | "lead_imported"
+  | "lead_updated"
+  | "status_changed"
+  | "lead_deleted"
+  | "interaction"
+  | "attachment_added"
+  | "attachment_removed"
+  | "city_added"
+  | "template_updated";
+type CrmActivity = {
+  id: string;
+  type: CrmActivityType;
+  created_at: string;
+  lead_id?: string;
+  lead_name?: string;
+  details?: string;
+  from_status?: LeadStatus;
+  to_status?: LeadStatus;
+};
+type ReportPeriod = "day" | "week" | "month" | "half_year" | "year";
 type CrmSyncState = {
   meta: Record<string, CrmMeta>;
   manual: Lead[];
@@ -89,6 +111,7 @@ type CrmSyncState = {
   settings?: CrmSettings;
   planner?: PlannerTask[];
   customCities?: CustomCities;
+  activity?: CrmActivity[];
   synced_at?: string;
 };
 type Lead = {
@@ -3422,6 +3445,7 @@ function readLocalCrmState(): CrmSyncState {
     settings: parse("stk-admin-crm-settings", emptySettings()),
     planner: parse("stk-admin-planner", [] as PlannerTask[]),
     customCities: parse("stk-admin-custom-cities", {} as CustomCities),
+    activity: parse("stk-admin-crm-activity", [] as CrmActivity[]),
   };
 }
 function writeLocalCrmState(state: CrmSyncState) {
@@ -3439,6 +3463,10 @@ function writeLocalCrmState(state: CrmSyncState) {
   localStorage.setItem(
     "stk-admin-custom-cities",
     JSON.stringify(state.customCities || {}),
+  );
+  localStorage.setItem(
+    "stk-admin-crm-activity",
+    JSON.stringify(state.activity || []),
   );
 }
 function readAttachments(): Record<string, StoredAttachment[]> {
@@ -3471,8 +3499,48 @@ function crmStateScore(state: CrmSyncState) {
     Object.values(state.customCities || {}).reduce(
       (n, cities) => n + cities.length,
       0,
-    )
+    ) +
+    (state.activity?.length || 0)
   );
+}
+function mergeCrmActivity(...lists: (CrmActivity[] | undefined)[]) {
+  const merged = new Map<string, CrmActivity>();
+  lists
+    .flatMap((items) => items || [])
+    .forEach((item) => merged.set(item.id, item));
+  return Array.from(merged.values())
+    .sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at))
+    .slice(0, 10000);
+}
+function createCrmActivity(
+  type: CrmActivityType,
+  lead?: Pick<Lead, "id" | "name"> | null,
+  details?: string,
+  statuses?: { from_status?: LeadStatus; to_status?: LeadStatus },
+): CrmActivity {
+  const created_at = new Date().toISOString();
+  return {
+    id: `activity-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    type,
+    created_at,
+    lead_id: lead?.id,
+    lead_name: lead?.name,
+    details,
+    ...statuses,
+  };
+}
+function reportPeriodStart(period: ReportPeriod) {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  if (period === "week")
+    start.setDate(start.getDate() - ((start.getDay() + 6) % 7));
+  if (period === "month") start.setDate(1);
+  if (period === "half_year") start.setMonth(start.getMonth() - 6);
+  if (period === "year") {
+    start.setMonth(0);
+    start.setDate(1);
+  }
+  return start;
 }
 function mergeCustomCities(...directories: (CustomCities | undefined)[]) {
   const merged: CustomCities = {};
@@ -3514,6 +3582,7 @@ function mergeCrmStates(
       secondary.customCities,
       primary.customCities,
     ),
+    activity: mergeCrmActivity(secondary.activity, primary.activity),
   };
 }
 function normalizeContact(value: string) {
@@ -3803,6 +3872,7 @@ export default function StkAdminPage() {
     | "reminders"
     | "kanban"
     | "analytics"
+    | "reports"
     | "templates"
     | "planner";
   const [user, setUser] = useState<User | null>(null),
@@ -3820,7 +3890,9 @@ export default function StkAdminPage() {
     );
   const [crmMeta, setCrmMeta] = useState<Record<string, CrmMeta>>({}),
     [settings, setSettings] = useState<CrmSettings>(emptySettings()),
-    [customCities, setCustomCities] = useState<CustomCities>({});
+    [customCities, setCustomCities] = useState<CustomCities>({}),
+    [activity, setActivity] = useState<CrmActivity[]>([]),
+    [reportPeriod, setReportPeriod] = useState<ReportPeriod>("day");
   const [filter, setFilter] = useState<LeadFilter>("all"),
     [query, setQuery] = useState(""),
     [sort, setSort] = useState<SortMode>("newest");
@@ -3893,6 +3965,7 @@ export default function StkAdminPage() {
     setSettings(local.settings || emptySettings());
     setPlannerTasks(local.planner || []);
     setCustomCities(local.customCities || {});
+    setActivity(local.activity || []);
     const fallback = window.setTimeout(() => {
       if (active) setReady(true);
     }, 5000);
@@ -4223,6 +4296,49 @@ export default function StkAdminPage() {
       categories: categoryCounts,
     };
   }, [crmLeads, crmMeta]);
+  const reportActivity = useMemo(() => {
+    const start = reportPeriodStart(reportPeriod).getTime();
+    return activity.filter((item) => +new Date(item.created_at) >= start);
+  }, [activity, reportPeriod]);
+  const reportCounts = useMemo(
+    () => ({
+      total: reportActivity.length,
+      created: reportActivity.filter((item) =>
+        ["lead_created", "lead_imported"].includes(item.type),
+      ).length,
+      statuses: reportActivity.filter((item) => item.type === "status_changed")
+        .length,
+      contacts: reportActivity.filter((item) => item.type === "interaction")
+        .length,
+      updates: reportActivity.filter((item) =>
+        [
+          "lead_updated",
+          "attachment_added",
+          "attachment_removed",
+          "city_added",
+          "template_updated",
+        ].includes(item.type),
+      ).length,
+      deleted: reportActivity.filter((item) => item.type === "lead_deleted")
+        .length,
+    }),
+    [reportActivity],
+  );
+  const activityTitle = (item: CrmActivity) => {
+    const labels: Record<CrmActivityType, [string, string]> = {
+      lead_created: ["Добавлена запись", "Record added"],
+      lead_imported: ["Импортированы записи", "Records imported"],
+      lead_updated: ["Изменена карточка", "Record updated"],
+      status_changed: ["Изменён статус", "Status changed"],
+      lead_deleted: ["Удалена запись", "Record deleted"],
+      interaction: ["Связались с клиентом", "Client contacted"],
+      attachment_added: ["Добавлен файл", "File added"],
+      attachment_removed: ["Удалён файл", "File removed"],
+      city_added: ["Добавлен город", "City added"],
+      template_updated: ["Изменены шаблоны", "Templates updated"],
+    };
+    return labels[item.type][locale === "ru" ? 0 : 1];
+  };
   const plannerDays = useMemo(() => {
     const first = new Date(
         plannerMonth.getFullYear(),
@@ -4361,10 +4477,20 @@ export default function StkAdminPage() {
     };
     setCustomCities(next);
     const current = readLocalCrmState(),
+      nextActivity = existing
+        ? mergeCrmActivity(current.activity, activity)
+        : mergeCrmActivity(current.activity, activity, [
+            createCrmActivity(
+              "city_added",
+              null,
+              `${countryLabel(normalizedCountry, locale)} · ${savedCity}`,
+            ),
+          ]),
       syncError = await persistCrmState(
-        { ...current, customCities: next, settings },
+        { ...current, customCities: next, settings, activity: nextActivity },
         accessToken,
       );
+    setActivity(nextActivity);
     if (syncError && !/rate limit/i.test(syncError)) setError(syncError);
     else {
       setNotice(
@@ -4387,6 +4513,7 @@ export default function StkAdminPage() {
       settings: emptySettings(),
       planner: [],
       customCities: {},
+      activity: [],
     };
     try {
       const response = await fetch("/api/stk-lab/crm-sync", {
@@ -4399,11 +4526,56 @@ export default function StkAdminPage() {
           remote = payload.state as CrmSyncState;
       }
     } catch {}
-    const synced = mergeCrmStates(local, remote);
-    if (crmStateScore(local) > crmStateScore(remote)) {
+    let synced = mergeCrmStates(local, remote);
+    const activityBackfilled = !(synced.activity || []).length;
+    if (activityBackfilled) {
+      const knownLeads: Lead[] = [
+          ...synced.manual,
+          ...kaskelenLeads,
+          ...almatyLeadSeed,
+          ...extraAlmatyLeadSeed,
+          ...taldykorganLeadSeed,
+          ...almatyBarsLeadSeed,
+          ...(nycBeautyLeadSeed as unknown as Lead[]),
+          ...(nycRestaurantLeadSeed as unknown as Lead[]),
+          ...(nycBakeryCoffeeLeadSeed as unknown as Lead[]),
+        ],
+        leadNames = new Map(knownLeads.map((lead) => [lead.id, lead.name])),
+        legacyActivity: CrmActivity[] = [
+          ...synced.manual.map((lead) => ({
+            id: `legacy-created-${lead.id}`,
+            type: "lead_created" as const,
+            created_at: lead.created_at,
+            lead_id: lead.id,
+            lead_name: lead.name,
+          })),
+          ...Object.entries(synced.meta).flatMap(([leadId, meta]) =>
+            (meta.interactions || []).map((entry) => ({
+              id: `legacy-interaction-${leadId}-${entry.id}`,
+              type:
+                entry.channel === "status"
+                  ? ("status_changed" as const)
+                  : ("interaction" as const),
+              created_at: entry.created_at,
+              lead_id: leadId,
+              lead_name: leadNames.get(leadId),
+              details:
+                entry.channel === "status"
+                  ? entry.text
+                  : interactionLabel(entry.channel, locale),
+            })),
+          ),
+        ];
+      synced = {
+        ...synced,
+        activity: mergeCrmActivity(legacyActivity),
+      };
+    }
+    if (activityBackfilled || crmStateScore(local) > crmStateScore(remote)) {
       const syncError = await persistCrmState(synced, accessToken);
       if (syncError && !/rate limit/i.test(syncError)) setError(syncError);
     } else writeLocalCrmState(synced);
+    setActivity(synced.activity || []);
     const seededMeta = { ...synced.meta };
     (nycBeautyLeadSeed as unknown as Lead[]).forEach((lead) => {
       const previous = seededMeta[lead.id];
@@ -4583,14 +4755,22 @@ export default function StkAdminPage() {
   async function saveMeta(
     nextMeta: Record<string, CrmMeta>,
     nextSettings: CrmSettings = settings,
+    newActivity: CrmActivity[] = [],
   ) {
     setCrmMeta(nextMeta);
     setSettings(nextSettings);
     const current = readLocalCrmState(),
+      nextActivity = mergeCrmActivity(current.activity, activity, newActivity),
       syncError = await persistCrmState(
-        { ...current, meta: nextMeta, settings: nextSettings },
+        {
+          ...current,
+          meta: nextMeta,
+          settings: nextSettings,
+          activity: nextActivity,
+        },
         accessToken,
       );
+    setActivity(nextActivity);
     if (syncError && !/rate limit/i.test(syncError)) setError(syncError);
   }
   async function saveLead() {
@@ -4674,7 +4854,62 @@ export default function StkAdminPage() {
       temperature: draftTemperature,
       profitability: draftProfitability || null,
     };
-    await saveMeta({ ...crmMeta, [selectedId]: meta });
+    const previousStatus = previous.status || lead.status,
+      trackedBefore = {
+        reminder_at: previous.reminder_at || "",
+        reminder_time: previous.reminder_time || "",
+        contact: previous.contact || lead.contact || "",
+        country: previous.country ?? lead.country ?? "",
+        city: previous.city ?? lead.city ?? "",
+        company: previous.company ?? lead.company ?? "",
+        category: previous.category || "",
+        tags: previous.tags || [],
+        source: previous.source || lead.source_path || "",
+        temperature: previous.temperature || "cold",
+        profitability: previous.profitability || "",
+        primary_message: previous.primary_message || "",
+        followup_message: previous.followup_message || "",
+        notes: lead.admin_notes || "",
+      },
+      trackedAfter = {
+        reminder_at: meta.reminder_at || "",
+        reminder_time: meta.reminder_time || "",
+        contact: meta.contact || "",
+        country: meta.country || "",
+        city: meta.city || "",
+        company: meta.company || "",
+        category: meta.category || "",
+        tags: meta.tags || [],
+        source: meta.source || "",
+        temperature: meta.temperature || "cold",
+        profitability: meta.profitability || "",
+        primary_message: meta.primary_message || "",
+        followup_message: meta.followup_message || "",
+        notes,
+      },
+      savedActivity: CrmActivity[] = [];
+    if (previousStatus !== draftStatus)
+      savedActivity.push(
+        createCrmActivity("status_changed", lead, undefined, {
+          from_status: previousStatus,
+          to_status: draftStatus,
+        }),
+      );
+    if (JSON.stringify(trackedBefore) !== JSON.stringify(trackedAfter))
+      savedActivity.push(
+        createCrmActivity(
+          "lead_updated",
+          lead,
+          noteChanged
+            ? locale === "ru"
+              ? "Карточка и заметка обновлены"
+              : "Record and note updated"
+            : locale === "ru"
+              ? "Карточка обновлена"
+              : "Record updated",
+        ),
+      );
+    await saveMeta({ ...crmMeta, [selectedId]: meta }, settings, savedActivity);
     setLeads((rows) =>
       rows.map((x) =>
         x.id === selectedId
@@ -4728,8 +4963,22 @@ export default function StkAdminPage() {
           status,
           interactions: [...(previous.interactions || []), entry],
         },
-      };
-    await saveMeta(nextMeta);
+      },
+      logged: CrmActivity[] = [
+        createCrmActivity(
+          "interaction",
+          lead,
+          interactionLabel(channel, locale),
+        ),
+      ];
+    if (status !== lead.status)
+      logged.push(
+        createCrmActivity("status_changed", lead, undefined, {
+          from_status: lead.status,
+          to_status: status,
+        }),
+      );
+    await saveMeta(nextMeta, settings, logged);
     setLeads((rows) =>
       rows.map((x) => (x.id === lead.id ? { ...x, status } : x)),
     );
@@ -4789,14 +5038,23 @@ export default function StkAdminPage() {
         text: `${t.statuses[lead.status]} → ${t.statuses[status]}`,
         created_at: new Date().toISOString(),
       };
-    await saveMeta({
-      ...crmMeta,
-      [id]: {
-        ...previous,
-        status,
-        interactions: [...(previous.interactions || []), entry],
+    await saveMeta(
+      {
+        ...crmMeta,
+        [id]: {
+          ...previous,
+          status,
+          interactions: [...(previous.interactions || []), entry],
+        },
       },
-    });
+      settings,
+      [
+        createCrmActivity("status_changed", lead, undefined, {
+          from_status: lead.status,
+          to_status: status,
+        }),
+      ],
+    );
     setLeads((rows) => rows.map((x) => (x.id === id ? { ...x, status } : x)));
     if (!isCrmId(id))
       void sb.from("stk_lab_leads").update({ status }).eq("id", id);
@@ -4854,13 +5112,17 @@ export default function StkAdminPage() {
     };
     const current = readLocalCrmState(),
       manual = [lead, ...current.manual.filter((x) => x.id !== id)],
-      nextMeta = { ...crmMeta, [id]: meta };
+      nextMeta = { ...crmMeta, [id]: meta },
+      nextActivity = mergeCrmActivity(current.activity, activity, [
+        createCrmActivity("lead_created", lead),
+      ]);
     setLeads((rows) => [lead, ...rows]);
     await persistCrmState(
-      { ...current, manual, meta: nextMeta, settings },
+      { ...current, manual, meta: nextMeta, settings, activity: nextActivity },
       accessToken,
     );
     setCrmMeta(nextMeta);
+    setActivity(nextActivity);
     setNewLead(emptyNewLead);
     setAdding(false);
     setSection("crm");
@@ -4873,14 +5135,21 @@ export default function StkAdminPage() {
   async function deleteLead() {
     if (!selectedId || !window.confirm(t.deleteAsk)) return;
     setDeleting(true);
-    const current = readLocalCrmState(),
+    const deletedLead = leads.find((lead) => lead.id === selectedId),
+      current = readLocalCrmState(),
+      nextActivity = mergeCrmActivity(current.activity, activity, [
+        createCrmActivity("lead_deleted", deletedLead),
+      ]),
       next = {
         ...current,
         deleted: Array.from(new Set([...current.deleted, selectedId])),
         manual: current.manual.filter((x) => x.id !== selectedId),
+        activity: nextActivity,
       };
-    if (isCrmId(selectedId)) await persistCrmState(next, accessToken);
-    else await sb.from("stk_lab_leads").delete().eq("id", selectedId);
+    if (!isCrmId(selectedId))
+      await sb.from("stk_lab_leads").delete().eq("id", selectedId);
+    await persistCrmState(next, accessToken);
+    setActivity(nextActivity);
     setLeads((rows) => rows.filter((x) => x.id !== selectedId));
     setSelectedId(null);
     setNotice(t.deleted);
@@ -4922,13 +5191,23 @@ export default function StkAdminPage() {
           size: stored.size,
           created_at: stored.created_at,
         };
-      await saveMeta({
-        ...crmMeta,
-        [selectedId]: {
-          ...previous,
-          attachments: [...(previous.attachments || []), attachment],
+      await saveMeta(
+        {
+          ...crmMeta,
+          [selectedId]: {
+            ...previous,
+            attachments: [...(previous.attachments || []), attachment],
+          },
         },
-      });
+        settings,
+        [
+          createCrmActivity(
+            "attachment_added",
+            leads.find((lead) => lead.id === selectedId),
+            file.name,
+          ),
+        ],
+      );
     };
     reader.readAsDataURL(file);
     event.target.value = "";
@@ -4944,22 +5223,43 @@ export default function StkAdminPage() {
   }
   async function removeAttachment(id: string) {
     if (!selectedId) return;
+    const removed = crmMeta[selectedId]?.attachments?.find(
+      (item) => item.id === id,
+    );
     const all = readAttachments();
     writeAttachments({
       ...all,
       [selectedId]: (all[selectedId] || []).filter((x) => x.id !== id),
     });
     const previous = crmMeta[selectedId] || { reminder_at: "", history: [] };
-    await saveMeta({
-      ...crmMeta,
-      [selectedId]: {
-        ...previous,
-        attachments: (previous.attachments || []).filter((x) => x.id !== id),
+    await saveMeta(
+      {
+        ...crmMeta,
+        [selectedId]: {
+          ...previous,
+          attachments: (previous.attachments || []).filter((x) => x.id !== id),
+        },
       },
-    });
+      settings,
+      [
+        createCrmActivity(
+          "attachment_removed",
+          leads.find((lead) => lead.id === selectedId),
+          removed?.name,
+        ),
+      ],
+    );
   }
   async function saveTemplates(templates: MessageTemplate[]) {
-    await saveMeta(crmMeta, { templates });
+    await saveMeta(crmMeta, { templates }, [
+      createCrmActivity(
+        "template_updated",
+        null,
+        locale === "ru"
+          ? "Шаблоны сообщений обновлены"
+          : "Message templates updated",
+      ),
+    ]);
   }
   async function addTemplate(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -5106,12 +5406,20 @@ export default function StkAdminPage() {
     });
     const current = readLocalCrmState(),
       manual = [...created, ...current.manual],
-      nextMeta = { ...crmMeta, ...importedMeta };
+      nextMeta = { ...crmMeta, ...importedMeta },
+      nextActivity = mergeCrmActivity(current.activity, activity, [
+        createCrmActivity(
+          "lead_imported",
+          null,
+          `${file.name}: ${created.length}`,
+        ),
+      ]);
     await persistCrmState(
-      { ...current, manual, meta: nextMeta, settings },
+      { ...current, manual, meta: nextMeta, settings, activity: nextActivity },
       accessToken,
     );
     setCrmMeta(nextMeta);
+    setActivity(nextActivity);
     setLeads((rows) => [...created, ...rows]);
     setNotice(
       locale === "ru"
@@ -5213,15 +5521,19 @@ export default function StkAdminPage() {
             ? locale === "ru"
               ? "Аналитика CRM"
               : "CRM analytics"
-            : section === "templates"
+            : section === "reports"
               ? locale === "ru"
-                ? "Шаблоны сообщений"
-                : "Message templates"
-              : section === "planner"
+                ? "Отчёты по действиям"
+                : "Activity reports"
+              : section === "templates"
                 ? locale === "ru"
-                  ? "Планер"
-                  : "Planner"
-                : t.leads;
+                  ? "Шаблоны сообщений"
+                  : "Message templates"
+                : section === "planner"
+                  ? locale === "ru"
+                    ? "Планер"
+                    : "Planner"
+                  : t.leads;
   const duplicatePhoneCompanies = (value: string) => {
     const normalized = normalizeContact(value);
     if (!normalized) return [];
@@ -5378,6 +5690,16 @@ export default function StkAdminPage() {
                   "◫",
                   locale === "ru" ? "Аналитика" : "Analytics",
                   null,
+                ],
+                [
+                  "reports",
+                  "≡",
+                  locale === "ru" ? "Отчёты" : "Reports",
+                  activity.filter(
+                    (item) =>
+                      +new Date(item.created_at) >=
+                      reportPeriodStart("day").getTime(),
+                  ).length,
                 ],
                 [
                   "templates",
@@ -5923,6 +6245,130 @@ export default function StkAdminPage() {
             </form>
           )}
 
+          {section === "reports" && (
+            <div className="mt-8">
+              <div className="flex flex-wrap gap-2">
+                {(
+                  [
+                    ["day", locale === "ru" ? "Сегодня" : "Today"],
+                    ["week", locale === "ru" ? "Неделя" : "Week"],
+                    ["month", locale === "ru" ? "Месяц" : "Month"],
+                    ["half_year", locale === "ru" ? "Полгода" : "Half-year"],
+                    ["year", locale === "ru" ? "Год" : "Year"],
+                  ] as [ReportPeriod, string][]
+                ).map(([period, label]) => (
+                  <button
+                    key={period}
+                    type="button"
+                    onClick={() => setReportPeriod(period)}
+                    className={`rounded-full border px-4 py-2 text-sm ${reportPeriod === period ? "border-[#211a17] bg-[#211a17] text-white" : "border-black/10 bg-white"}`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+                {[
+                  [
+                    locale === "ru" ? "Все действия" : "All actions",
+                    reportCounts.total,
+                  ],
+                  [
+                    locale === "ru" ? "Добавлено" : "Added",
+                    reportCounts.created,
+                  ],
+                  [
+                    locale === "ru" ? "Статусы" : "Statuses",
+                    reportCounts.statuses,
+                  ],
+                  [
+                    locale === "ru" ? "Связались" : "Contacts",
+                    reportCounts.contacts,
+                  ],
+                  [
+                    locale === "ru" ? "Изменения" : "Updates",
+                    reportCounts.updates,
+                  ],
+                  [
+                    locale === "ru" ? "Удалено" : "Deleted",
+                    reportCounts.deleted,
+                  ],
+                ].map(([label, value]) => (
+                  <div
+                    key={String(label)}
+                    className="rounded-[22px] border border-black/10 bg-white p-4"
+                  >
+                    <div className="text-xs uppercase tracking-[.08em] text-black/40">
+                      {label}
+                    </div>
+                    <div className="mt-2 text-3xl">{value}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-5 overflow-hidden rounded-[28px] border border-black/10 bg-white">
+                <div className="border-b border-black/10 px-5 py-4">
+                  <h2 className="text-xl">
+                    {locale === "ru" ? "История действий" : "Activity history"}
+                  </h2>
+                  <p className="mt-1 text-sm text-black/45">
+                    {locale === "ru"
+                      ? "Здесь сохраняются добавления, изменения, контакты, статусы и удаления."
+                      : "Adds, updates, contacts, status changes and deletions are saved here."}
+                  </p>
+                </div>
+                {reportActivity.length ? (
+                  <div className="divide-y divide-black/5">
+                    {reportActivity.map((item) => (
+                      <div
+                        key={item.id}
+                        className="grid gap-2 px-5 py-4 sm:grid-cols-[150px_1fr_auto] sm:items-center"
+                      >
+                        <time className="text-xs text-black/45">
+                          {new Date(item.created_at).toLocaleString(
+                            locale === "ru" ? "ru-RU" : "en-US",
+                            {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            },
+                          )}
+                        </time>
+                        <div>
+                          <div className="font-medium">
+                            {activityTitle(item)}
+                          </div>
+                          {(item.lead_name || item.details) && (
+                            <div className="mt-1 text-sm text-black/55">
+                              {[item.lead_name, item.details]
+                                .filter(Boolean)
+                                .join(" · ")}
+                            </div>
+                          )}
+                        </div>
+                        {item.from_status && item.to_status && (
+                          <div className="rounded-full bg-[#f2ece7] px-3 py-1 text-xs">
+                            {t.statuses[item.from_status]} →{" "}
+                            {t.statuses[item.to_status]}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="px-5 py-12 text-center text-sm text-black/45">
+                    {locale === "ru"
+                      ? "За выбранный период действий пока нет."
+                      : "No activity for the selected period yet."}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {section === "analytics" && (
             <div className="mt-8">
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -6142,7 +6588,7 @@ export default function StkAdminPage() {
             </div>
           )}
 
-          {!["analytics", "templates", "kanban", "planner"].includes(
+          {!["analytics", "reports", "templates", "kanban", "planner"].includes(
             section,
           ) && (
             <>
