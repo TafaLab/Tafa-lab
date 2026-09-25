@@ -69,6 +69,7 @@ type CrmMeta = {
   interactions?: InteractionEntry[];
   status?: LeadStatus;
   status_changed_at?: string;
+  lead_name?: string;
   contact?: string;
   country?: string | null;
   city?: string | null;
@@ -4743,6 +4744,68 @@ export default function StkAdminPage() {
         ...synced,
         activity: mergeCrmActivity(legacyActivity),
       };
+    const recentDeletedManualLeads = synced.deleted.flatMap((leadId) => {
+      const match = leadId.match(/^kaskelen-manual-(\d+)$/),
+        createdAt = match ? Number(match[1]) : 0;
+      if (!createdAt || createdAt < Date.now() - 24 * 60 * 60 * 1000)
+        return [];
+      return [{ leadId, createdAt, meta: synced.meta[leadId] }];
+    });
+    const recoveredCreatedActivity: CrmActivity[] =
+      recentDeletedManualLeads.flatMap(({ leadId, createdAt, meta }) => {
+        if (
+          (synced.activity || []).some(
+            (item) => item.type === "lead_created" && item.lead_id === leadId,
+          )
+        )
+          return [];
+        return [
+          {
+            id: `recovered-created-${leadId}`,
+            type: "lead_created" as const,
+            created_at: new Date(createdAt).toISOString(),
+            lead_id: leadId,
+            lead_name: meta?.lead_name || meta?.company || "Запись CRM",
+            details:
+              locale === "ru"
+                ? "Восстановлено после удаления записи"
+                : "Recovered after record deletion",
+          },
+        ];
+      });
+    if (recoveredCreatedActivity.length)
+      synced = {
+        ...synced,
+        activity: mergeCrmActivity(recoveredCreatedActivity),
+      };
+    const recoveredDeletedActivity: CrmActivity[] =
+      recentDeletedManualLeads.flatMap(({ leadId, createdAt, meta }) => {
+        if (
+          (synced.activity || []).some(
+            (item) => item.type === "lead_deleted" && item.lead_id === leadId,
+          )
+        )
+          return [];
+        return [
+          {
+            id: `recovered-deleted-${leadId}`,
+            type: "lead_deleted" as const,
+            created_at:
+              synced.synced_at || new Date(createdAt + 1).toISOString(),
+            lead_id: leadId,
+            lead_name: meta?.lead_name || meta?.company || "Запись CRM",
+            details:
+              locale === "ru"
+                ? "Восстановлено из списка удалённых"
+                : "Recovered from the deleted records list",
+          },
+        ];
+      });
+    if (recoveredDeletedActivity.length)
+      synced = {
+        ...synced,
+        activity: mergeCrmActivity(recoveredDeletedActivity),
+      };
     const recoveredStatusActivity: CrmActivity[] = Object.entries(
       synced.meta,
     ).flatMap(([leadId, meta]) => {
@@ -4789,6 +4852,8 @@ export default function StkAdminPage() {
     if (
       legacyActivityAdded ||
       recoveredStatusActivity.length > 0 ||
+      recoveredCreatedActivity.length > 0 ||
+      recoveredDeletedActivity.length > 0 ||
       syntheticActivityRemoved ||
       statusActivityUpgraded ||
       crmStateScore(local) > crmStateScore(remote)
@@ -4798,7 +4863,7 @@ export default function StkAdminPage() {
         if (syncError && !/rate limit/i.test(syncError)) setError(syncError);
       });
     } else writeLocalCrmState(synced);
-    setActivity(synced.activity || []);    setActivity(synced.activity || []);
+    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);
     const seededMeta = { ...synced.meta };
     (nycBeautyLeadSeed as unknown as Lead[]).forEach((lead) => {
       const previous = seededMeta[lead.id];
@@ -5362,6 +5427,7 @@ export default function StkAdminPage() {
       reminder_time: newLead.reminder_time,
       history: [],
       status: "new",
+      lead_name: lead.name,
       country: newLead.country.trim() || null,
       city: newLead.city.trim() || null,
       category: newLead.category.trim(),
@@ -5408,6 +5474,18 @@ export default function StkAdminPage() {
         ...current,
         deleted: Array.from(new Set([...current.deleted, selectedId])),
         manual: current.manual.filter((x) => x.id !== selectedId),
+        meta: deletedLead
+          ? {
+              ...current.meta,
+              [selectedId]: {
+                ...(current.meta[selectedId] || {
+                  reminder_at: "",
+                  history: [],
+                }),
+                lead_name: deletedLead.name,
+              },
+            }
+          : current.meta,
         activity: nextActivity,
       };
     if (!isCrmId(selectedId))
