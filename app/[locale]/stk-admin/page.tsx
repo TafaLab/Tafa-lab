@@ -4778,29 +4778,42 @@ export default function StkAdminPage() {
         ...synced,
         activity: mergeCrmActivity(recoveredCreatedActivity),
       };
-    const recoveredDeletedActivity: CrmActivity[] =
-      recentDeletedManualLeads.flatMap(({ leadId, createdAt, meta }) => {
+    const recoveredDeletedActivity: CrmActivity[] = synced.deleted.flatMap(
+      (leadId) => {
         if (
           (synced.activity || []).some(
             (item) => item.type === "lead_deleted" && item.lead_id === leadId,
           )
         )
           return [];
+        const meta = synced.meta[leadId],
+          originalLead = leadById.get(leadId),
+          manualCreatedAt = Number(
+            leadId.match(/^kaskelen-manual-(\d+)$/)?.[1] || 0,
+          );
         return [
           {
             id: `recovered-deleted-${leadId}`,
             type: "lead_deleted" as const,
             created_at:
-              synced.synced_at || new Date(createdAt + 1).toISOString(),
+              synced.synced_at ||
+              (manualCreatedAt
+                ? new Date(manualCreatedAt + 1).toISOString()
+                : new Date().toISOString()),
             lead_id: leadId,
-            lead_name: meta?.lead_name || meta?.company || "Запись CRM",
+            lead_name:
+              meta?.lead_name ||
+              originalLead?.name ||
+              meta?.company ||
+              "Запись CRM",
             details:
               locale === "ru"
                 ? "Восстановлено из списка удалённых"
                 : "Recovered from the deleted records list",
           },
         ];
-      });
+      },
+    );
     if (recoveredDeletedActivity.length)
       synced = {
         ...synced,
@@ -4863,7 +4876,7 @@ export default function StkAdminPage() {
         if (syncError && !/rate limit/i.test(syncError)) setError(syncError);
       });
     } else writeLocalCrmState(synced);
-    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);
+    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);
     const seededMeta = { ...synced.meta };
     (nycBeautyLeadSeed as unknown as Lead[]).forEach((lead) => {
       const previous = seededMeta[lead.id];
