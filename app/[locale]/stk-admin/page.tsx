@@ -4787,19 +4787,12 @@ export default function StkAdminPage() {
         )
           return [];
         const meta = synced.meta[leadId],
-          originalLead = leadById.get(leadId),
-          manualCreatedAt = Number(
-            leadId.match(/^kaskelen-manual-(\d+)$/)?.[1] || 0,
-          );
+          originalLead = leadById.get(leadId);
         return [
           {
             id: `recovered-deleted-${leadId}`,
             type: "lead_deleted" as const,
-            created_at:
-              synced.synced_at ||
-              (manualCreatedAt
-                ? new Date(manualCreatedAt + 1).toISOString()
-                : new Date().toISOString()),
+            created_at: new Date().toISOString(),
             lead_id: leadId,
             lead_name:
               meta?.lead_name ||
@@ -4876,7 +4869,7 @@ export default function StkAdminPage() {
         if (syncError && !/rate limit/i.test(syncError)) setError(syncError);
       });
     } else writeLocalCrmState(synced);
-    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);
+    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);
     const seededMeta = { ...synced.meta };
     (nycBeautyLeadSeed as unknown as Lead[]).forEach((lead) => {
       const previous = seededMeta[lead.id];
