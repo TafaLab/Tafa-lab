@@ -3552,6 +3552,10 @@ function createCrmActivity(
 }
 function reportPeriodStart(period: ReportPeriod) {
   const start = new Date();
+  if (period === "day") {
+    start.setTime(start.getTime() - 24 * 60 * 60 * 1000);
+    return start;
+  }
   start.setHours(0, 0, 0, 0);
   if (period === "week")
     start.setDate(start.getDate() - ((start.getDay() + 6) % 7));
@@ -6432,7 +6436,10 @@ export default function StkAdminPage() {
               <div className="flex flex-wrap gap-2">
                 {(
                   [
-                    ["day", locale === "ru" ? "Сегодня" : "Today"],
+                    [
+                      "day",
+                      locale === "ru" ? "Последние 24 часа" : "Last 24 hours",
+                    ],
                     ["week", locale === "ru" ? "Неделя" : "Week"],
                     ["month", locale === "ru" ? "Месяц" : "Month"],
                     ["half_year", locale === "ru" ? "Полгода" : "Half-year"],
