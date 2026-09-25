@@ -68,6 +68,7 @@ type CrmMeta = {
   history: NoteEntry[];
   interactions?: InteractionEntry[];
   status?: LeadStatus;
+  status_changed_at?: string;
   contact?: string;
   country?: string | null;
   city?: string | null;
@@ -4679,7 +4680,6 @@ export default function StkAdminPage() {
             : item,
         ),
       };
-    const activityBackfilled = !(synced.activity || []).length;
     const knownLeads: Lead[] = [
         ...synced.manual,
         ...kaskelenLeads,
@@ -4691,9 +4691,9 @@ export default function StkAdminPage() {
         ...(nycRestaurantLeadSeed as unknown as Lead[]),
         ...(nycBakeryCoffeeLeadSeed as unknown as Lead[]),
       ],
-      leadNames = new Map(knownLeads.map((lead) => [lead.id, lead.name]));
-    if (activityBackfilled) {
-      const legacyActivity: CrmActivity[] = [
+      leadNames = new Map(knownLeads.map((lead) => [lead.id, lead.name])),
+      leadById = new Map(knownLeads.map((lead) => [lead.id, lead]));
+    const legacyActivity: CrmActivity[] = [
         ...synced.manual.map((lead) => ({
           id: `legacy-created-${lead.id}`,
           type: "lead_created" as const,
@@ -4720,14 +4720,75 @@ export default function StkAdminPage() {
               : {}),
           })),
         ),
-      ];
+      ].filter(
+        (candidate) =>
+          !(synced.activity || []).some(
+            (existing) =>
+              existing.type === candidate.type &&
+              existing.lead_id === candidate.lead_id &&
+              Math.abs(
+                new Date(existing.created_at).getTime() -
+                  new Date(candidate.created_at).getTime(),
+              ) < 10_000,
+          ),
+      ),
+      previousActivityIds = new Set(
+        (synced.activity || []).map((item) => item.id),
+      ),
+      legacyActivityAdded = legacyActivity.some(
+        (item) => !previousActivityIds.has(item.id),
+      );
+    if (legacyActivityAdded)
       synced = {
         ...synced,
         activity: mergeCrmActivity(legacyActivity),
       };
-    }
+    const recoveredStatusActivity: CrmActivity[] = Object.entries(
+      synced.meta,
+    ).flatMap(([leadId, meta]) => {
+      const originalLead = leadById.get(leadId),
+        originalStatus = originalLead?.status,
+        currentStatus = meta.status;
+      if (!originalLead || !originalStatus || !currentStatus) return [];
+      if (originalStatus === currentStatus) return [];
+      const alreadyLogged = (synced.activity || []).some(
+        (item) =>
+          item.type === "status_changed" &&
+          item.lead_id === leadId &&
+          item.to_status === currentStatus,
+      );
+      if (alreadyLogged) return [];
+      const latestInteraction = [...(meta.interactions || [])]
+        .reverse()
+        .find((entry) => Boolean(entry.created_at));
+      return [
+        {
+          id: `recovered-status-${leadId}-${currentStatus}`,
+          type: "status_changed" as const,
+          created_at:
+            meta.status_changed_at ||
+            latestInteraction?.created_at ||
+            synced.synced_at ||
+            new Date().toISOString(),
+          lead_id: leadId,
+          lead_name: originalLead.name,
+          details:
+            locale === "ru"
+              ? "Восстановлено из сохранённого статуса"
+              : "Recovered from the saved status",
+          from_status: originalStatus,
+          to_status: currentStatus,
+        },
+      ];
+    });
+    if (recoveredStatusActivity.length)
+      synced = {
+        ...synced,
+        activity: mergeCrmActivity(recoveredStatusActivity),
+      };
     if (
-      activityBackfilled ||
+      legacyActivityAdded ||
+      recoveredStatusActivity.length > 0 ||
       syntheticActivityRemoved ||
       statusActivityUpgraded ||
       crmStateScore(local) > crmStateScore(remote)
@@ -4737,7 +4798,7 @@ export default function StkAdminPage() {
         if (syncError && !/rate limit/i.test(syncError)) setError(syncError);
       });
     } else writeLocalCrmState(synced);
-    setActivity(synced.activity || []);
+    setActivity(synced.activity || []);    setActivity(synced.activity || []);
     const seededMeta = { ...synced.meta };
     (nycBeautyLeadSeed as unknown as Lead[]).forEach((lead) => {
       const previous = seededMeta[lead.id];
@@ -4945,6 +5006,9 @@ export default function StkAdminPage() {
       return;
     }
     const previous = crmMeta[selectedId] || { reminder_at: "", history: [] },
+      previousStatus = previous.status || lead.status,
+      statusChangedAt =
+        previousStatus !== draftStatus ? new Date().toISOString() : undefined,
       notes = draftNotes.trim(),
       noteChanged = Boolean(notes && notes !== previous.history.at(-1)?.text);
     const history = noteChanged
@@ -4953,7 +5017,7 @@ export default function StkAdminPage() {
             { text: notes, created_at: new Date().toISOString() },
           ]
         : previous.history,
-      interactions = noteChanged
+      noteInteractions = noteChanged
         ? [
             ...(previous.interactions || []),
             {
@@ -4963,7 +5027,18 @@ export default function StkAdminPage() {
               created_at: new Date().toISOString(),
             },
           ]
-        : previous.interactions || [];
+        : previous.interactions || [],
+      interactions = statusChangedAt
+        ? [
+            ...noteInteractions,
+            {
+              id: `status-${Date.now()}`,
+              channel: "status" as const,
+              text: `${t.statuses[previousStatus]} → ${t.statuses[draftStatus]}`,
+              created_at: statusChangedAt,
+            },
+          ]
+        : noteInteractions;
     const phone = draftPhones
         .map((v) => v.trim())
         .filter(Boolean)
@@ -5000,6 +5075,7 @@ export default function StkAdminPage() {
       history,
       interactions,
       status: draftStatus,
+      status_changed_at: statusChangedAt || previous.status_changed_at,
       contact,
       primary_message: draftPrimaryMessage.trim(),
       followup_message:
@@ -5016,8 +5092,7 @@ export default function StkAdminPage() {
       temperature: draftTemperature,
       profitability: draftProfitability || null,
     };
-    const previousStatus = previous.status || lead.status,
-      trackedBefore = {
+    const trackedBefore = {
         reminder_at: previous.reminder_at || "",
         reminder_time: previous.reminder_time || "",
         contact: previous.contact || lead.contact || "",
@@ -5118,12 +5193,27 @@ export default function StkAdminPage() {
         text: message,
         created_at: new Date().toISOString(),
       },
+      statusEntry: InteractionEntry | null =
+        status !== lead.status
+          ? {
+              id: `status-${Date.now()}`,
+              channel: "status",
+              text: `${t.statuses[lead.status]} → ${t.statuses[status]}`,
+              created_at: entry.created_at,
+            }
+          : null,
       nextMeta = {
         ...crmMeta,
         [lead.id]: {
           ...previous,
           status,
-          interactions: [...(previous.interactions || []), entry],
+          status_changed_at:
+            statusEntry?.created_at || previous.status_changed_at,
+          interactions: [
+            ...(previous.interactions || []),
+            entry,
+            ...(statusEntry ? [statusEntry] : []),
+          ],
         },
       },
       logged: CrmActivity[] = [
@@ -5217,6 +5307,7 @@ export default function StkAdminPage() {
         [id]: {
           ...previous,
           status,
+          status_changed_at: entry.created_at,
           interactions: [...(previous.interactions || []), entry],
         },
       },
