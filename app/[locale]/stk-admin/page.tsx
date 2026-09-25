@@ -3408,6 +3408,23 @@ function interactionLabel(channel: InteractionChannel, locale: "ru" | "en") {
         };
   return labels[channel];
 }
+function statusTransitionFromText(value: string) {
+  const [fromLabel, toLabel] = value.split("→").map((part) => part.trim());
+  const findStatus = (label?: string) => {
+    if (!label) return undefined;
+    for (const locale of ["ru", "en"] as const) {
+      const match = (
+        Object.entries(text[locale].statuses) as [LeadStatus, string][]
+      ).find(([, storedLabel]) => storedLabel === label);
+      if (match) return match[0];
+    }
+    return undefined;
+  };
+  return {
+    from_status: findStatus(fromLabel),
+    to_status: findStatus(toLabel),
+  };
+}
 const CRM_SYNC_KEY = "stk_admin_crm_state",
   ATTACHMENTS_KEY = "stk-admin-attachments";
 const emptySettings = (): CrmSettings => ({ templates: defaultTemplates });
@@ -4640,6 +4657,24 @@ export default function StkAdminPage() {
       ...(remote.activity || []),
     ].some((item) => item.id.startsWith("status-snapshot-"));
     let synced = mergeCrmStates(local, remote);
+    const statusActivityUpgraded = (synced.activity || []).some(
+      (item) =>
+        item.type === "status_changed" &&
+        !item.to_status &&
+        Boolean(statusTransitionFromText(item.details || "").to_status),
+    );
+    if (statusActivityUpgraded)
+      synced = {
+        ...synced,
+        activity: (synced.activity || []).map((item) =>
+          item.type === "status_changed" && !item.to_status
+            ? {
+                ...item,
+                ...statusTransitionFromText(item.details || ""),
+              }
+            : item,
+        ),
+      };
     const activityBackfilled = !(synced.activity || []).length;
     const knownLeads: Lead[] = [
         ...synced.manual,
@@ -4676,6 +4711,9 @@ export default function StkAdminPage() {
               entry.channel === "status"
                 ? entry.text
                 : interactionLabel(entry.channel, locale),
+            ...(entry.channel === "status"
+              ? statusTransitionFromText(entry.text)
+              : {}),
           })),
         ),
       ];
@@ -4687,6 +4725,7 @@ export default function StkAdminPage() {
     if (
       activityBackfilled ||
       syntheticActivityRemoved ||
+      statusActivityUpgraded ||
       crmStateScore(local) > crmStateScore(remote)
     ) {
       writeLocalCrmState(synced);
