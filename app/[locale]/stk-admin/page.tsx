@@ -3452,25 +3452,22 @@ function readLocalCrmState(): CrmSyncState {
   };
 }
 function writeLocalCrmState(state: CrmSyncState) {
-  localStorage.setItem("stk-admin-crm-meta", JSON.stringify(state.meta));
-  localStorage.setItem("stk-admin-manual-crm", JSON.stringify(state.manual));
-  localStorage.setItem("stk-admin-deleted-crm", JSON.stringify(state.deleted));
-  localStorage.setItem(
-    "stk-admin-crm-settings",
-    JSON.stringify(state.settings || emptySettings()),
-  );
-  localStorage.setItem(
-    "stk-admin-planner",
-    JSON.stringify(state.planner || []),
-  );
-  localStorage.setItem(
-    "stk-admin-custom-cities",
-    JSON.stringify(state.customCities || {}),
-  );
-  localStorage.setItem(
-    "stk-admin-crm-activity",
-    JSON.stringify(state.activity || []),
-  );
+  const safeSet = (key: string, value: unknown) => {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch {
+      // The cloud copy remains the source of truth when browser storage is full.
+    }
+  };
+  // Replace the potentially large audit log first so an older oversized value
+  // cannot prevent the essential CRM records from being refreshed.
+  safeSet("stk-admin-crm-activity", (state.activity || []).slice(0, 2000));
+  safeSet("stk-admin-crm-meta", state.meta);
+  safeSet("stk-admin-manual-crm", state.manual);
+  safeSet("stk-admin-deleted-crm", state.deleted);
+  safeSet("stk-admin-crm-settings", state.settings || emptySettings());
+  safeSet("stk-admin-planner", state.planner || []);
+  safeSet("stk-admin-custom-cities", state.customCities || {});
 }
 function readAttachments(): Record<string, StoredAttachment[]> {
   try {
@@ -3513,7 +3510,7 @@ function mergeCrmActivity(...lists: (CrmActivity[] | undefined)[]) {
     .forEach((item) => merged.set(item.id, item));
   return Array.from(merged.values())
     .sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at))
-    .slice(0, 10000);
+    .slice(0, 2000);
 }
 function createCrmActivity(
   type: CrmActivityType,
@@ -3759,6 +3756,7 @@ async function persistCrmState(state: CrmSyncState, accessToken = "") {
       },
       body: JSON.stringify({ state }),
       cache: "no-store",
+      signal: AbortSignal.timeout(10000),
     });
     if (!response.ok) {
       const payload = await response.json().catch(() => null);
@@ -4021,7 +4019,15 @@ export default function StkAdminPage() {
     // A zero-delay timer could be lost during a fast auth-state transition,
     // leaving the requests inbox empty without ever hitting the API.
     if (user && accessToken) {
-      void load();
+      void load().catch((loadError) => {
+        console.error("[stk-admin] CRM load failed", loadError);
+        setError(
+          locale === "ru"
+            ? "Не удалось полностью загрузить CRM. Нажмите «Обновить»."
+            : "CRM could not be fully loaded. Press “Refresh”.",
+        );
+        setLoading(false);
+      });
       return;
     }
     if (!user) {
@@ -4559,6 +4565,7 @@ export default function StkAdminPage() {
       const response = await fetch("/api/stk-lab/crm-sync", {
         headers: { Authorization: `Bearer ${accessToken}` },
         cache: "no-store",
+        signal: AbortSignal.timeout(10000),
       });
       if (response.ok) {
         const payload = await response.json();
@@ -4616,17 +4623,19 @@ export default function StkAdminPage() {
       };
     }
     const existingActivity = synced.activity || [],
+      trackedStatuses = new Set(
+        existingActivity
+          .filter(
+            (item) =>
+              item.type === "status_changed" && item.lead_id && item.to_status,
+          )
+          .map((item) => `${item.lead_id}:${item.to_status}`),
+      ),
       statusSnapshots = Object.entries(synced.meta).flatMap(
         ([leadId, meta]): CrmActivity[] => {
           const status = meta.status;
           if (!status || status === "new") return [];
-          const alreadyTracked = existingActivity.some(
-            (item) =>
-              item.type === "status_changed" &&
-              item.lead_id === leadId &&
-              item.to_status === status,
-          );
-          if (alreadyTracked) return [];
+          if (trackedStatuses.has(`${leadId}:${status}`)) return [];
           const latestStatusEntry = [...(meta.interactions || [])]
             .reverse()
             .find((entry) => entry.channel === "status");
@@ -4660,8 +4669,10 @@ export default function StkAdminPage() {
       statusSnapshots.length ||
       crmStateScore(local) > crmStateScore(remote)
     ) {
-      const syncError = await persistCrmState(synced, accessToken);
-      if (syncError && !/rate limit/i.test(syncError)) setError(syncError);
+      writeLocalCrmState(synced);
+      void persistCrmState(synced, accessToken).then((syncError) => {
+        if (syncError && !/rate limit/i.test(syncError)) setError(syncError);
+      });
     } else writeLocalCrmState(synced);
     setActivity(synced.activity || []);
     const seededMeta = { ...synced.meta };
@@ -6080,7 +6091,20 @@ export default function StkAdminPage() {
             </div>
             <div className="flex flex-wrap gap-2">
               <button
-                onClick={load}
+                onClick={() =>
+                  void load().catch((loadError) => {
+                    console.error(
+                      "[stk-admin] manual refresh failed",
+                      loadError,
+                    );
+                    setError(
+                      locale === "ru"
+                        ? "Обновление не завершилось. Попробуйте ещё раз."
+                        : "Refresh did not finish. Please try again.",
+                    );
+                    setLoading(false);
+                  })
+                }
                 disabled={loading}
                 className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm"
               >
