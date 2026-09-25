@@ -3507,6 +3507,10 @@ function mergeCrmActivity(...lists: (CrmActivity[] | undefined)[]) {
   const merged = new Map<string, CrmActivity>();
   lists
     .flatMap((items) => items || [])
+    // Older versions created a synthetic entry for every record's current
+    // status. Those entries were not user actions and made today's report look
+    // as if thousands of records had just changed status.
+    .filter((item) => !item.id.startsWith("status-snapshot-"))
     .forEach((item) => merged.set(item.id, item));
   return Array.from(merged.values())
     .sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at))
@@ -4631,6 +4635,10 @@ export default function StkAdminPage() {
           };
       }
     } catch {}
+    const syntheticActivityRemoved = [
+      ...(local.activity || []),
+      ...(remote.activity || []),
+    ].some((item) => item.id.startsWith("status-snapshot-"));
     let synced = mergeCrmStates(local, remote);
     const activityBackfilled = !(synced.activity || []).length;
     const knownLeads: Lead[] = [
@@ -4676,51 +4684,9 @@ export default function StkAdminPage() {
         activity: mergeCrmActivity(legacyActivity),
       };
     }
-    const existingActivity = synced.activity || [],
-      trackedStatuses = new Set(
-        existingActivity
-          .filter(
-            (item) =>
-              item.type === "status_changed" && item.lead_id && item.to_status,
-          )
-          .map((item) => `${item.lead_id}:${item.to_status}`),
-      ),
-      statusSnapshots = Object.entries(synced.meta).flatMap(
-        ([leadId, meta]): CrmActivity[] => {
-          const status = meta.status;
-          if (!status || status === "new") return [];
-          if (trackedStatuses.has(`${leadId}:${status}`)) return [];
-          const latestStatusEntry = [...(meta.interactions || [])]
-            .reverse()
-            .find((entry) => entry.channel === "status");
-          return [
-            {
-              id: `status-snapshot-${leadId}-${status}`,
-              type: "status_changed",
-              created_at:
-                latestStatusEntry?.created_at ||
-                synced.synced_at ||
-                new Date().toISOString(),
-              lead_id: leadId,
-              lead_name: leadNames.get(leadId),
-              details:
-                latestStatusEntry?.text ||
-                (locale === "ru"
-                  ? "Статус сохранён в CRM"
-                  : "Status saved in CRM"),
-              to_status: status,
-            },
-          ];
-        },
-      );
-    if (statusSnapshots.length)
-      synced = {
-        ...synced,
-        activity: mergeCrmActivity(existingActivity, statusSnapshots),
-      };
     if (
       activityBackfilled ||
-      statusSnapshots.length ||
+      syntheticActivityRemoved ||
       crmStateScore(local) > crmStateScore(remote)
     ) {
       writeLocalCrmState(synced);
