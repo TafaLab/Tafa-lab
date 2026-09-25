@@ -3897,7 +3897,8 @@ export default function StkAdminPage() {
     [reportPeriod, setReportPeriod] = useState<ReportPeriod>("day");
   const [filter, setFilter] = useState<LeadFilter>("all"),
     [query, setQuery] = useState(""),
-    [sort, setSort] = useState<SortMode>("newest");
+    [sort, setSort] = useState<SortMode>("newest"),
+    [visibleLeadCount, setVisibleLeadCount] = useState(20);
   const [categoryFilter, setCategoryFilter] = useState(""),
     [sourceFilter, setSourceFilter] = useState(""),
     [temperatureFilter, setTemperatureFilter] = useState(""),
@@ -4247,6 +4248,25 @@ export default function StkAdminPage() {
     countryFilter,
     cityFilter,
   ]);
+  useEffect(() => {
+    setVisibleLeadCount(20);
+  }, [
+    section,
+    filter,
+    query,
+    sort,
+    categoryFilter,
+    sourceFilter,
+    temperatureFilter,
+    profitabilityFilter,
+    tagFilter,
+    countryFilter,
+    cityFilter,
+  ]);
+  const displayedLeads = useMemo(
+    () => visibleLeads.slice(0, visibleLeadCount),
+    [visibleLeads, visibleLeadCount],
+  );
   const counts = useMemo(() => {
     const scoped =
         section === "requests" ? leads.filter((x) => !isCrmId(x.id)) : crmLeads,
@@ -6886,6 +6906,12 @@ export default function StkAdminPage() {
               <div className="mt-3 flex justify-between text-xs text-black/40">
                 <span>
                   {t.found}: {visibleLeads.length}
+                  {visibleLeads.length > 0 && (
+                    <>
+                      {" "}· {locale === "ru" ? "показано" : "shown"}:{" "}
+                      {displayedLeads.length}
+                    </>
+                  )}
                 </span>
                 <select
                   value={sort}
@@ -6908,7 +6934,7 @@ export default function StkAdminPage() {
                 </div>
               )}
               <div className="mt-7 grid gap-4">
-                {visibleLeads.map((lead) => (
+                {displayedLeads.map((lead) => (
                   <button
                     type="button"
                     key={lead.id}
@@ -6998,6 +7024,15 @@ export default function StkAdminPage() {
                   <div className="rounded-[28px] border border-black/10 bg-white p-8 text-black/50">
                     {t.none}
                   </div>
+                )}
+                {displayedLeads.length < visibleLeads.length && (
+                  <button
+                    type="button"
+                    onClick={() => setVisibleLeadCount((count) => count + 20)}
+                    className="mx-auto mt-2 rounded-full border border-[#211a17] bg-[#211a17] px-7 py-3 text-sm font-medium text-white transition hover:opacity-85"
+                  >
+                    {locale === "ru" ? "Показать ещё 20" : "Show 20 more"}
+                  </button>
                 )}
               </div>
             </>
