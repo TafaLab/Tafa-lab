@@ -4552,6 +4552,40 @@ export default function StkAdminPage() {
     setLoading(true);
     setError("");
     const local = readLocalCrmState();
+    const hydrateLocal = (lead: Lead) => ({
+        ...lead,
+        contact: local.meta[lead.id]?.contact || lead.contact,
+        country: local.meta[lead.id]?.country ?? lead.country,
+        city: local.meta[lead.id]?.city ?? lead.city,
+        company: local.meta[lead.id]?.company ?? lead.company,
+        status: local.meta[lead.id]?.status || lead.status,
+        admin_notes:
+          local.meta[lead.id]?.history?.at(-1)?.text ||
+          lead.admin_notes ||
+          null,
+      }),
+      localSeeded = [
+        ...kaskelenLeads,
+        ...almatyLeadSeed,
+        ...extraAlmatyLeadSeed,
+        ...taldykorganLeadSeed,
+        ...almatyBarsLeadSeed,
+        ...(nycBeautyLeadSeed as unknown as Lead[]),
+        ...(nycRestaurantLeadSeed as unknown as Lead[]),
+        ...(nycBakeryCoffeeLeadSeed as unknown as Lead[]),
+      ]
+        .filter((lead) => !local.deleted.includes(lead.id))
+        .map(hydrateLocal),
+      localManual = local.manual
+        .filter((lead) => !local.deleted.includes(lead.id))
+        .map(hydrateLocal);
+    // Never leave the dashboard at zero while the cloud copy is loading.
+    setCrmMeta(local.meta);
+    setSettings(local.settings || emptySettings());
+    setPlannerTasks(local.planner || []);
+    setCustomCities(local.customCities || {});
+    setActivity(local.activity || []);
+    setLeads([...localManual, ...localSeeded]);
     let remote: CrmSyncState = {
       meta: {},
       manual: [],
