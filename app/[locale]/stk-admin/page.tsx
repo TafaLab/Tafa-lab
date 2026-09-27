@@ -3905,6 +3905,7 @@ export default function StkAdminPage() {
     | "planner";
   const [user, setUser] = useState<User | null>(null),
     [accessToken, setAccessToken] = useState(""),
+    [refreshToken, setRefreshToken] = useState(""),
     [ready, setReady] = useState(false),
     [leads, setLeads] = useState<Lead[]>([]),
     [loading, setLoading] = useState(false);
@@ -4019,6 +4020,7 @@ export default function StkAdminPage() {
         if (active) {
           setUser(session?.user ?? null);
           setAccessToken(session?.access_token ?? "");
+          setRefreshToken(session?.refresh_token ?? "");
         }
       })
       .catch(() => {})
@@ -4032,6 +4034,7 @@ export default function StkAdminPage() {
       if (active) {
         setUser(session?.user ?? null);
         setAccessToken(session?.access_token ?? "");
+        setRefreshToken(session?.refresh_token ?? "");
         setReady(true);
       }
     });
@@ -4645,12 +4648,17 @@ export default function StkAdminPage() {
       const response = await fetch("/api/stk-lab/crm-sync", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ accessToken }),
+        body: JSON.stringify({ accessToken, refreshToken }),
         cache: "no-store",
         signal: AbortSignal.timeout(10000),
       });
       if (response.ok) {
         const payload = await response.json();
+        if (payload.session?.access_token && payload.session?.refresh_token)
+          await sb.auth.setSession({
+            access_token: payload.session.access_token,
+            refresh_token: payload.session.refresh_token,
+          });
         if (payload.state && typeof payload.state === "object")
           remote = {
             ...(payload.state as CrmSyncState),
@@ -4695,6 +4703,43 @@ export default function StkAdminPage() {
       ],
       leadNames = new Map(knownLeads.map((lead) => [lead.id, lead.name])),
       leadById = new Map(knownLeads.map((lead) => [lead.id, lead]));
+    const recoveryFallbackDate = new Date(
+        Date.now() - 25 * 60 * 60 * 1000,
+      ).toISOString(),
+      correctedRecoveryActivity = (synced.activity || []).map((item) => {
+        if (!item.lead_id) return item;
+        if (item.id.startsWith("recovered-deleted-")) {
+          const manualCreatedAt = Number(
+            item.lead_id.match(/^kaskelen-manual-(\d+)$/)?.[1] || 0,
+          );
+          return {
+            ...item,
+            created_at: manualCreatedAt
+              ? new Date(manualCreatedAt + 1).toISOString()
+              : recoveryFallbackDate,
+          };
+        }
+        if (item.id.startsWith("recovered-status-")) {
+          const meta = synced.meta[item.lead_id],
+            latestInteraction = [...(meta?.interactions || [])]
+              .reverse()
+              .find((entry) => Boolean(entry.created_at));
+          return {
+            ...item,
+            created_at:
+              meta?.status_changed_at ||
+              latestInteraction?.created_at ||
+              recoveryFallbackDate,
+          };
+        }
+        return item;
+      }),
+      recoveryDatesCorrected = correctedRecoveryActivity.some(
+        (item, index) =>
+          item.created_at !== (synced.activity || [])[index]?.created_at,
+      );
+    if (recoveryDatesCorrected)
+      synced = { ...synced, activity: correctedRecoveryActivity };
     const legacyActivity: CrmActivity[] = [
         ...synced.manual.map((lead) => ({
           id: `legacy-created-${lead.id}`,
@@ -4788,12 +4833,18 @@ export default function StkAdminPage() {
         )
           return [];
         const meta = synced.meta[leadId],
-          originalLead = leadById.get(leadId);
+          originalLead = leadById.get(leadId),
+          manualCreatedAt = Number(
+            leadId.match(/^kaskelen-manual-(\d+)$/)?.[1] || 0,
+          );
         return [
           {
             id: `recovered-deleted-${leadId}`,
             type: "lead_deleted" as const,
-            created_at: new Date().toISOString(),
+            created_at:
+              manualCreatedAt
+                ? new Date(manualCreatedAt + 1).toISOString()
+                : recoveryFallbackDate,
             lead_id: leadId,
             lead_name:
               meta?.lead_name ||
@@ -4838,8 +4889,7 @@ export default function StkAdminPage() {
           created_at:
             meta.status_changed_at ||
             latestInteraction?.created_at ||
-            synced.synced_at ||
-            new Date().toISOString(),
+            recoveryFallbackDate,
           lead_id: leadId,
           lead_name: originalLead.name,
           details:
@@ -4861,6 +4911,7 @@ export default function StkAdminPage() {
       recoveredStatusActivity.length > 0 ||
       recoveredCreatedActivity.length > 0 ||
       recoveredDeletedActivity.length > 0 ||
+      recoveryDatesCorrected ||
       syntheticActivityRemoved ||
       statusActivityUpgraded ||
       crmStateScore(local) > crmStateScore(remote)
@@ -4870,7 +4921,7 @@ export default function StkAdminPage() {
         if (syncError && !/rate limit/i.test(syncError)) setError(syncError);
       });
     } else writeLocalCrmState(synced);
-    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);
+    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);
     const seededMeta = { ...synced.meta };
     (nycBeautyLeadSeed as unknown as Lead[]).forEach((lead) => {
       const previous = seededMeta[lead.id];
