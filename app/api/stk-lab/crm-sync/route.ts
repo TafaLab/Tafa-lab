@@ -9,6 +9,15 @@ function clientForToken(token: string) {
   if (!url || !anon) return null;
   return createClient(url, anon, { auth: { persistSession: false, autoRefreshToken: false }, global: { headers: { Authorization: `Bearer ${token}` } } });
 }
+function authClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  return url && anon
+    ? createClient(url, anon, {
+        auth: { persistSession: false, autoRefreshToken: false },
+      })
+    : null;
+}
 function adminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL, key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   return url && key ? createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } }) : null;
@@ -50,10 +59,38 @@ export async function GET(request: Request) {
   return NextResponse.json({ state: data?.state || null, updated_at: data?.updated_at || null }, { headers: { "Cache-Control": "no-store" } });
 }
 export async function POST(request: Request) {
-  const body = await request.json().catch(() => null),
-    user = await authenticatedUser(request, body?.accessToken || "");
+  const body = await request.json().catch(() => null);
+  let user = await authenticatedUser(request, body?.accessToken || ""),
+    refreshedSession: {
+      access_token: string;
+      refresh_token: string;
+    } | null = null;
+  if (!user && body?.refreshToken) {
+    const client = authClient(),
+      refreshed = client
+        ? await client.auth.refreshSession({
+            refresh_token: body.refreshToken,
+          })
+        : null;
+    if (refreshed?.data.session && refreshed.data.user) {
+      user = refreshed.data.user;
+      refreshedSession = {
+        access_token: refreshed.data.session.access_token,
+        refresh_token: refreshed.data.session.refresh_token,
+      };
+      console.info("[crm-sync] POST session_refreshed", {
+        accessTokenLength: refreshedSession.access_token.length,
+      });
+    } else
+      console.warn("[crm-sync] POST refresh_failed", {
+        code: refreshed?.error?.code || "unavailable",
+      });
+  }
   if (!user) {
-    console.warn("[crm-sync] POST unauthorized");
+    console.warn("[crm-sync] POST unauthorized", {
+      accessTokenLength: String(body?.accessToken || "").length,
+      hasRefreshToken: Boolean(body?.refreshToken),
+    });
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
   const client = adminClient();
@@ -81,7 +118,11 @@ export async function POST(request: Request) {
     updatedAt: data?.updated_at || null,
   });
   return NextResponse.json(
-    { state: data?.state || null, updated_at: data?.updated_at || null },
+    {
+      state: data?.state || null,
+      updated_at: data?.updated_at || null,
+      session: refreshedSession,
+    },
     { headers: { "Cache-Control": "no-store" } },
   );
 }
