@@ -4788,7 +4788,7 @@ export default function StkAdminPage() {
     if (legacyActivityAdded)
       synced = {
         ...synced,
-        activity: mergeCrmActivity(legacyActivity),
+        activity: mergeCrmActivity(synced.activity, legacyActivity),
       };
     const recentDeletedManualLeads = synced.deleted.flatMap((leadId) => {
       const match = leadId.match(/^kaskelen-manual-(\d+)$/),
@@ -4822,7 +4822,7 @@ export default function StkAdminPage() {
     if (recoveredCreatedActivity.length)
       synced = {
         ...synced,
-        activity: mergeCrmActivity(recoveredCreatedActivity),
+        activity: mergeCrmActivity(synced.activity, recoveredCreatedActivity),
       };
     const recoveredDeletedActivity: CrmActivity[] = synced.deleted.flatMap(
       (leadId) => {
@@ -4862,7 +4862,7 @@ export default function StkAdminPage() {
     if (recoveredDeletedActivity.length)
       synced = {
         ...synced,
-        activity: mergeCrmActivity(recoveredDeletedActivity),
+        activity: mergeCrmActivity(synced.activity, recoveredDeletedActivity),
       };
     const recoveredStatusActivity: CrmActivity[] = Object.entries(
       synced.meta,
@@ -4904,7 +4904,7 @@ export default function StkAdminPage() {
     if (recoveredStatusActivity.length)
       synced = {
         ...synced,
-        activity: mergeCrmActivity(recoveredStatusActivity),
+        activity: mergeCrmActivity(synced.activity, recoveredStatusActivity),
       };
     if (
       legacyActivityAdded ||
@@ -4921,7 +4921,7 @@ export default function StkAdminPage() {
         if (syncError && !/rate limit/i.test(syncError)) setError(syncError);
       });
     } else writeLocalCrmState(synced);
-    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);    setActivity(synced.activity || []);
+    setActivity(synced.activity || []);
     const seededMeta = { ...synced.meta };
     (nycBeautyLeadSeed as unknown as Lead[]).forEach((lead) => {
       const previous = seededMeta[lead.id];
