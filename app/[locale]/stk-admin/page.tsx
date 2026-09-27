@@ -3779,9 +3779,8 @@ async function persistCrmState(state: CrmSyncState, accessToken = "") {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
       },
-      body: JSON.stringify({ state }),
+      body: JSON.stringify({ state, accessToken }),
       cache: "no-store",
       signal: AbortSignal.timeout(10000),
     });
@@ -4644,7 +4643,9 @@ export default function StkAdminPage() {
     };
     try {
       const response = await fetch("/api/stk-lab/crm-sync", {
-        headers: { Authorization: `Bearer ${accessToken}` },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ accessToken }),
         cache: "no-store",
         signal: AbortSignal.timeout(10000),
       });
