@@ -8,6 +8,21 @@ Updated: 2026-10-26. Repository: `TafaLab/Tafa-lab`. This is the studio website 
 - Keep RU/EN content and test both locales; deploy only after validation.
 - Keep bakery demos/review branches and local copies until differences are reviewed.
 
+## AI agents and commercial offers — requested in this conversation
+- [x] Add a general **AI Agents & Automation** section on the Tafa Lab homepage, describing Telegram, WhatsApp Business, embedded website chat, standalone agents, voice AI and workflow automation. Code committed; **build, visual QA and production verification pending**.
+- [x] Add tailored AI solution blocks to existing industry pages: **bakeries, restaurants, beauty, travel (within Tafa Lab), business platforms and entertainment/events**. Code committed; **visual and functional QA pending**.
+- [ ] Review section placement, typography, mobile responsiveness and calls to action on every industry page; ensure new blocks fit existing design and do not displace screenshot-verified content.
+- [ ] Expand the offer from short AI feature cards into **industry-specific commercial proposal blocks/packages** with concrete deliverables, benefits and a working **Discuss Your Project** lead flow; do not invent fixed prices or promise integrations without scoping.
+- [ ] Bakery packages: AI Order Assistant; Smart Cake Builder + AI; Bakery Operations AI; complete website + ordering + CRM + AI solution.
+- [ ] Restaurant packages: AI host/reservations, menu/allergen assistant, takeaway/customer-service workflow, POS/CRM integration where available.
+- [ ] Travel & hospitality packages **inside Tafa Lab**: AI trip advisor, itinerary builder, booking enquiry handoff, guest concierge and travel CRM; keep separate from the TafaLab Travel product repository.
+- [ ] Beauty & wellness packages: AI receptionist, appointments/reminders, client retention and service consultation with human handoff.
+- [ ] Business platform packages: internal knowledge agent, document/workflow automation, lead qualification, reporting/analytics and role-based access.
+- [ ] Entertainment/events packages: booking enquiries, ticket/event FAQ, guest concierge, upsells and CRM routing.
+- [ ] Flowers & Florists packages: AI florist, bouquet configurator, order/delivery assistant and florist CRM; add to the new Flowers page and main AI offering.
+- [ ] Document channel capabilities and requirements: Telegram bots, official WhatsApp Business API, website widget, independent web app/agent, voice AI where supported, CRM/calendar/orders/inventory integrations; include consent, privacy, permissions, monitoring and human escalation.
+- [ ] Check that all RU/EN descriptions are accurate and distinguish **custom development services** from already deployed AI products.
+
 ## Prioritized tasks
 - [ ] **Flowers & Florists — new industry category.** Add a standalone category to homepage industry navigation, industry landing page, services/portfolio and RU/EN metadata. Keep the visual language consistent with other industry pages.
   - [ ] Florist website and bouquet catalog: occasions, flower types, arrangements, sizes, delivery windows and care instructions.
