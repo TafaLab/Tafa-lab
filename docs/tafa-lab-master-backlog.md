@@ -27,9 +27,9 @@ Updated: 2026-10-26. Repository: `TafaLab/Tafa-lab`. This is the studio website 
 ## P0 — Industry AI agents, bots and editorial content (2026-10-26)
 - [x] Existing industry-specific AI offer cards: bakeries, restaurants, beauty, travel, business platforms, entertainment, learning platforms, conferences. Flowers is pending its industry page.
 - [ ] Upgrade **every industry** to a substantial **AI Agents & Bots for Your Industry** sales section: concrete business outcomes, three sector-specific agent/bot packages, customer conversation examples, supported channels (Telegram, official WhatsApp Business, website chat, optional voice), CRM/booking/payment integration boundaries, human handoff, and a contact CTA.
-- [ ] Add industry-specific **blog/article previews** distinct from sales blocks. Each article needs RU/EN copy, unique slug, author/editorial review, metadata, and links to relevant services. Do not present article ideas as published articles.
-- [ ] Build reusable bilingual **AI industry showcase** component to avoid duplicated UI and inconsistent service promises.
-- [ ] Provide **working interactive bot demos** as a separate implementation milestone; label scripted examples as demonstrations, not deployed agents. Never claim active API integrations before verified.
+- [x] Add bilingual **planned blog/article preview cards** for eight industries (not published articles); actual article writing and publication remain pending.\n- [ ] Add industry-specific **blog/article previews** distinct from sales blocks. Each article needs RU/EN copy, unique slug, author/editorial review, metadata, and links to relevant services. Do not present article ideas as published articles.
+- [x] Build reusable bilingual **AI industry showcase** component to avoid duplicated UI and inconsistent service promises.
+- [x] Add clearly labeled static example conversations on eight industry pages (not connected bots).\n- [ ] Provide **working interactive bot demos** as a separate implementation milestone; label scripted examples as demonstrations, not deployed agents. Never claim active API integrations before verified.
 - [ ] Include Flowers after the new sector is implemented; maintain all eight existing industry AI blocks.
 - [ ] Test links, mobile layout, keyboard access, RU/EN, SEO, TypeScript/build and lead capture. No deployment before approval.
 
