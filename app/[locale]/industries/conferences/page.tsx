@@ -1,5 +1,6 @@
 import Link from "next/link";
 import AiSolutionsSection from "@/app/components/stk-lab/AiSolutionsSection";
+import IndustryAiShowcase from "@/app/components/stk-lab/IndustryAiShowcase";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 const content = {
@@ -29,5 +30,6 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       <Link href={`/${locale}#contact`} className="mt-8 inline-flex rounded-full bg-[#211a17] px-7 py-3 text-white">{locale === "ru" ? "Обсудить проект" : "Discuss a project"}</Link>
     </div>
     <AiSolutionsSection locale={locale} sector="conferences" />
+    <IndustryAiShowcase locale={locale} sector="conferences" />
   </main>;
 }
