@@ -188,6 +188,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
 
       <PriorityIndustriesSection locale={locale} />
       <AiSolutionsSection locale={locale} />
+      <div className="mx-auto max-w-7xl px-5 pb-16 md:px-8"><Link href={`/${locale}/ai-agents`} className="inline-flex rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm font-medium">{locale === "ru" ? "Все услуги AI-агентов и автоматизации" : "Explore AI agents and automation services"} →</Link></div>
 
       <section id="faq" className="mx-auto max-w-5xl px-5 py-24 md:px-8 md:py-32">
         <SectionHead {...t.faq}/>
