@@ -1,5 +1,5 @@
 import createMiddleware from "next-intl/middleware";
-import type { NextRequest } from "next/server";
+import { NextRequest } from "next/server";
 
 import { routing } from "./i18n/routing";
 
@@ -47,7 +47,7 @@ export default function proxy(request: NextRequest) {
   // or overriding a user-selected locale cookie.
   const headers = new Headers(request.headers);
   headers.set("accept-language", "ru");
-  const localizedRequest = new Request(request, { headers }) as NextRequest;
+  const localizedRequest = new NextRequest(request, { headers });
   return intlMiddleware(localizedRequest);
 }
 
