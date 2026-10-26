@@ -8,6 +8,22 @@ Updated: 2026-10-26. Repository: `TafaLab/Tafa-lab`. This is the studio website 
 - Keep RU/EN content and test both locales; deploy only after validation.
 - Keep bakery demos/review branches and local copies until differences are reviewed.
 
+## New top priorities (2026-10-26)
+1. **P0 — AI Agents & Automation**: strengthen the existing AI section, create a dedicated RU/EN service page with channels, business outcomes, human handoff, security/privacy, integrations, industry offers and lead CTA. Do not imply live agents where only services are proposed. Next: design and implement working demos, scoped by channel.
+2. **P0 — Learning Platforms / EdTech**: separate Tafa Lab industry vertical (not a Git branch). RU/EN industry landing, course catalogs, lessons, student accounts, progress, quizzes, assignments, certificates, payments/subscriptions, educator/admin dashboards, cohort management, integrations and AI tutor (grounded in course materials). Build an interactive demo in phases; do not mislabel mock functionality as production.
+3. **P0 — Conferences & Professional Events**: separate vertical from general entertainment/events. RU/EN industry landing, event website, agenda and speaker profiles, ticketing/registration, QR check-in, online/hybrid sessions, attendee networking, sponsors/exhibitors, lead capture, organizer dashboard and AI event concierge. Build interactive demo in phases.
+4. **P1 — Flowers & Florists**: existing scope below; category, bouquet builder, ordering/delivery, CRM, AI florist.
+5. **P1 — Commercial service taxonomy**: Web Development, App Development, AI Agents, Automation & Integrations, Business Systems (CRM/ERP/analytics), Interactive & 3D; secondary services: e-commerce, booking, UI/UX and brand identity, SEO/performance/CRO, cloud/API integrations, maintenance and support, white-label industry platforms.
+6. **P1 — Reusable industry solutions**: CRM/ERP, booking, commerce, BI dashboards, API/payment/messaging integration, 3D configurators, white-label licensing and maintenance plans. Describe availability accurately and scope implementation individually.
+7. **P1 — QA / operations**: production build and responsive RU/EN review; validate Supabase/Vercel mapping and language fallback, then deploy only after approval.
+
+## Acceptance criteria for P0 verticals
+- Visible from homepage industries/navigation and accessible at distinct RU/EN URLs.
+- Dedicated, differentiated industry landing page with features, demo status, related AI services and functional contact CTA.
+- Correct metadata, canonical/hreflang, responsive/mobile and keyboard accessibility.
+- Preserve all existing sectors, demos and CRM functionality.
+- TypeScript/build and visual QA before any production release.
+
 ## AI agents and commercial offers — requested in this conversation
 - [x] Add a general **AI Agents & Automation** section on the Tafa Lab homepage, describing Telegram, WhatsApp Business, embedded website chat, standalone agents, voice AI and workflow automation. Code committed; **build, visual QA and production verification pending**.
 - [x] Add tailored AI solution blocks to existing industry pages: **bakeries, restaurants, beauty, travel (within Tafa Lab), business platforms and entertainment/events**. Code committed; **visual and functional QA pending**.
