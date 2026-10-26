@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import AiSolutionsSection from "@/app/components/stk-lab/AiSolutionsSection";
+import IndustryAiShowcase from "@/app/components/stk-lab/IndustryAiShowcase";
 import BakeryIndustryPage from "@/app/components/stk-lab/BakeryIndustryPage";
 import BeautyIndustryPage from "@/app/components/stk-lab/BeautyIndustryPage";
 import BusinessPlatformsIndustryPage from "@/app/components/stk-lab/BusinessPlatformsIndustryPage";
@@ -116,6 +117,7 @@ export default async function IndustryPage({
           {structuredData}
           <BakeryIndustryPage locale={locale} />
           <AiSolutionsSection locale={locale} sector={industry} />
+          <IndustryAiShowcase locale={locale} sector={industry} />
         </>
       );
 
@@ -125,6 +127,7 @@ export default async function IndustryPage({
           {structuredData}
           <RestaurantIndustryPage locale={locale} />
           <AiSolutionsSection locale={locale} sector={industry} />
+          <IndustryAiShowcase locale={locale} sector={industry} />
         </>
       );
 
@@ -134,6 +137,7 @@ export default async function IndustryPage({
           {structuredData}
           <BeautyIndustryPage locale={locale} />
           <AiSolutionsSection locale={locale} sector={industry} />
+          <IndustryAiShowcase locale={locale} sector={industry} />
         </>
       );
 
@@ -143,6 +147,7 @@ export default async function IndustryPage({
           {structuredData}
           <TravelIndustryPage locale={locale} />
           <AiSolutionsSection locale={locale} sector={industry} />
+          <IndustryAiShowcase locale={locale} sector={industry} />
         </>
       );
 
@@ -152,12 +157,14 @@ export default async function IndustryPage({
           {structuredData}
           <BusinessPlatformsIndustryPage locale={locale} />
           <AiSolutionsSection locale={locale} sector={industry} />
+          <IndustryAiShowcase locale={locale} sector={industry} />
         </>
       );
 
     case "entertainment":
       return (<>{structuredData}<EntertainmentIndustryPage locale={locale} />
-          <AiSolutionsSection locale={locale} sector={industry} /></>);
+          <AiSolutionsSection locale={locale} sector={industry} />
+          <IndustryAiShowcase locale={locale} sector={industry} /></>);
 
     default:
       notFound();
