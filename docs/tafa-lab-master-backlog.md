@@ -18,7 +18,7 @@ Updated: 2026-10-26. Repository: `TafaLab/Tafa-lab`. This is the studio website 
   - [ ] Build an interactive florist demo and include it in the portfolio; don't label unbuilt features as live.
   - [ ] Check accessibility, mobile, SEO, TypeScript/build, RU/EN and demo-to-CRM request flow.
 - [x] **Browser-language entry routing**: `next-intl` detects visitor locale at the unprefixed site root; support RU/EN, fallback EN, keep explicit `/ru` and `/en` URLs and user locale choice. Code committed; **production verification pending**.
-- [ ] Test language negotiation on first visit with RU, EN and unsupported-language browser settings; check language cookie and language switcher. Verify production after approved deployment.
+- [ ] **Regional language fallback:** if the browser does not express RU or EN and there is no explicit locale/cookie, prefer RU for KZ, KG, UZ, TJ, TM, RU, BY using hosting country header; otherwise EN. Browser and manual choices take priority. Code committed; production QA pending.\n- [ ] Test first visits with RU, EN, unsupported browser languages and geo country headers; check locale cookie, language switcher, direct /ru and /en routes, and hosting header availability. Verify production after approved deployment.
 - [ ] Confirm `stkbakery` Vercel production environment references restored Supabase project `eplsyzzqgrxmgtsuimz`; never expose service-role keys.
 - [ ] Rename Supabase display name `Milky Cake` to `Tafa Lab` in dashboard (do not change project ref or API keys).
 - [ ] Review remaining legacy `stk-bakery` naming and unify public-facing Tafa Lab branding without renaming identifiers that existing integrations depend on.
