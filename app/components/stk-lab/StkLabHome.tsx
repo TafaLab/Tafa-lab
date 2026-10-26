@@ -6,6 +6,7 @@ import StkReveal from "./design/StkReveal";
 import StkLeadForm from "./StkLeadForm";
 import TafaLabLogo from "./TafaLabLogo";
 import AiSolutionsSection from "./AiSolutionsSection";
+import PriorityIndustriesSection from "./PriorityIndustriesSection";
 
 const whatsapp =
   "https://wa.me/77471818493?text=Hello%2C%20I%27d%20like%20to%20start%20a%20conversation%20about%20a%20new%20project.";
@@ -185,6 +186,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
         </div>
       </section>
 
+      <PriorityIndustriesSection locale={locale} />
       <AiSolutionsSection locale={locale} />
 
       <section id="faq" className="mx-auto max-w-5xl px-5 py-24 md:px-8 md:py-32">
