@@ -3990,12 +3990,17 @@ export default function StkAdminPage() {
 
   useEffect(() => {
     let active = true;
-    const local = readLocalCrmState();
-    setCrmMeta(local.meta);
-    setSettings(local.settings || emptySettings());
-    setPlannerTasks(local.planner || []);
-    setCustomCities(local.customCities || {});
-    setActivity(local.activity || []);
+    // Restore browser-backed CRM data asynchronously after mount to avoid
+    // synchronous state updates during the effect setup phase.
+    queueMicrotask(() => {
+      if (!active) return;
+      const local = readLocalCrmState();
+      setCrmMeta(local.meta);
+      setSettings(local.settings || emptySettings());
+      setPlannerTasks(local.planner || []);
+      setCustomCities(local.customCities || {});
+      setActivity(local.activity || []);
+    });
     const fallback = window.setTimeout(() => {
       if (active) setReady(true);
     }, 5000);
