@@ -5532,10 +5532,23 @@ export default function StkAdminPage() {
         createCrmActivity("lead_created", lead),
       ]);
     setLeads((rows) => [lead, ...rows]);
-    await persistCrmState(
+    const saveError = await persistCrmState(
       { ...current, manual, meta: nextMeta, settings, activity: nextActivity },
       accessToken,
     );
+    if (saveError || !accessToken) {
+      setError(saveError || "sync_unauthorized");
+      setNotice(locale === "ru" ? "Контакт сохранён только в этом браузере. Синхронизация не подтверждена." : "Contact saved only in this browser. Cloud sync not confirmed.");
+      setTimeout(() => setNotice(""), 6500);
+      setCrmMeta(nextMeta);
+      setActivity(nextActivity);
+      setNewLead(emptyNewLead);
+      setAdding(false);
+      setSection("crm");
+      setSelectedId(null);
+      return;
+    }
+    setError("");
     setCrmMeta(nextMeta);
     setActivity(nextActivity);
     setNewLead(emptyNewLead);
