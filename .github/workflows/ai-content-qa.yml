@@ -1,0 +1,25 @@
+name: AI content QA
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "scripts/check-ai-content.cjs"
+      - "package.json"
+      - ".github/workflows/ai-content-qa.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify-ai-content:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify AI content references
+        run: npm run qa:ai-content
