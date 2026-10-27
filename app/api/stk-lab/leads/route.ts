@@ -39,19 +39,22 @@ export async function GET(request:Request){
     // source is unavailable.
     if(orderError)console.error("Tafa Lab demo requests load:",orderError.message);
 
-    const demoLeads=(orderError?[]:(orderRows||[])).map((order:any)=>{
-      let payload:any={};
-      try{payload=order.customer_comment?JSON.parse(order.customer_comment):{};}catch{}
+    const demoLeads=(orderError?[]:(orderRows||[])).map((order)=>{
+      let payload:Record<string,unknown>={};
+      try{
+        const parsed:unknown=order.customer_comment?JSON.parse(order.customer_comment):{};
+        if(parsed&&typeof parsed==="object"&&!Array.isArray(parsed))payload=parsed as Record<string,unknown>;
+      }catch{}
       return {
         id:`order-${order.id}`,
         created_at:order.created_at,
         name:order.customer_name||"Без имени",
         contact:order.customer_phone||order.customer_email||"Контакт не указан",
         company:null,
-        project_type:payload.subject||"Заявка с демо-сайта",
-        message:payload.message||null,
+        project_type:clean(payload.subject,120)||"Заявка с демо-сайта",
+        message:clean(payload.message,3000)||null,
         locale:payload.locale==="en"?"en":"ru",
-        source_path:payload.siteName?`Демо · ${payload.siteName}`:"Демо-сайт",
+        source_path:clean(payload.siteName,160)?`Демо · ${clean(payload.siteName,160)}`:"Демо-сайт",
         status:"new",
         admin_notes:null,
       };
