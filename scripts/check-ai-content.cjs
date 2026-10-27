@@ -1,5 +1,7 @@
 // Static pre-release checks; no network calls, Vercel API, or deployment.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const fs = require("node:fs");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require("node:path");
 
 const root = path.resolve(__dirname, "..");
