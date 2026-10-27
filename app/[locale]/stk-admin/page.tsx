@@ -4689,11 +4689,9 @@ export default function StkAdminPage() {
       ...(remote.activity || []),
     ].some((item) => item.id.startsWith("status-snapshot-"));
     let synced = mergeCrmStates(local, remote);
-    // The one-time reset must also discard legacy cloud contacts, not merge
-    // them back into the browser after the local store has been cleared.
-    if (didResetLegacyContacts) {
-      synced = { ...synced, manual: [], meta: {}, deleted: [], activity: [] };
-    }
+    // Cloud contacts created after the reset must survive a first visit from
+    // another browser. The browser legacy data was already cleared above;
+    // the cloud state is authoritative for any new records.
     const statusActivityUpgraded = (synced.activity || []).some(
       (item) =>
         item.type === "status_changed" &&
