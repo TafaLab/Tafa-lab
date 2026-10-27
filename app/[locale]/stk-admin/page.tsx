@@ -3773,7 +3773,7 @@ async function persistCrmState(state: CrmSyncState, accessToken = "") {
   // Never put the CRM database into Supabase user metadata: it is embedded in
   // the JWT and eventually makes the Authorization header too large for Vercel.
   writeLocalCrmState({ ...state, synced_at: new Date().toISOString() });
-  if (!accessToken) return "";
+  if (!accessToken) return "sync_unauthorized";
   try {
     const response = await fetch("/api/stk-lab/crm-sync", {
       method: "PUT",
@@ -5588,7 +5588,13 @@ export default function StkAdminPage() {
       };
     if (!isCrmId(selectedId))
       await sb.from("stk_lab_leads").delete().eq("id", selectedId);
-    await persistCrmState(next, accessToken);
+    const syncError = await persistCrmState(next, accessToken);
+    if (syncError) {
+      setError(syncError);
+      setDeleting(false);
+      return;
+    }
+    setError("");
     setActivity(nextActivity);
     setLeads((rows) => rows.filter((x) => x.id !== selectedId));
     setSelectedId(null);
