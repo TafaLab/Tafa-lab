@@ -1,3 +1,4 @@
+import ArticleStructuredData from "@/app/components/stk-lab/ArticleStructuredData";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -38,7 +39,7 @@ export async function generateMetadata({params}:{params:Promise<{locale:string}>
 }
 export default async function Page({params}:{params:Promise<{locale:string}>}){
  const {locale}=await params;if(locale!=="ru"&&locale!=="en")notFound();const t=article[locale];
- return <main className="min-h-screen bg-[var(--stk-bg)] text-[var(--stk-text)]"><article className="mx-auto max-w-3xl px-5 py-16 md:py-24">
+ return <main className="min-h-screen bg-[var(--stk-bg)] text-[var(--stk-text)]"><ArticleStructuredData locale={locale} slug="ai-business-knowledge-agent" headline={t.title} description={t.description} /><article className="mx-auto max-w-3xl px-5 py-16 md:py-24">
  <Link href={`/${locale}/industries/business-platforms`} className="text-sm underline underline-offset-4">← {t.back}</Link>
  <p className="mt-16 text-xs font-semibold uppercase tracking-[.2em] text-[color:var(--stk-muted)]">{t.tag} · Tafa Lab</p>
  <h1 className="mt-5 text-4xl font-medium tracking-tight md:text-6xl">{t.title}</h1>
