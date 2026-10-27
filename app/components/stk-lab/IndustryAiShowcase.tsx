@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { StkLabLocale } from "./content";
+import IndustryBotDemo from "./IndustryBotDemo";
 
 export type AiIndustry = "bakeries" | "restaurants" | "beauty" | "travel" | "business-platforms" | "entertainment" | "learning-platforms" | "conferences";
 type Copy = { title: string; bot: string; example: string; answer: string; article: string; summary: string };
@@ -26,6 +27,7 @@ export default function IndustryAiShowcase({locale,sector}:{locale:StkLabLocale;
      <p className="ml-auto max-w-[85%] rounded-2xl bg-[var(--stk-dark)] p-4 text-sm text-white" style={{color:"#ffffff"}}>{t.example}</p>
      <p className="max-w-[90%] rounded-2xl border border-[color:var(--stk-border)] p-4 text-sm">{t.answer}</p>
     </div>
+    <IndustryBotDemo locale={locale} sector={sector} />
    </article>
    <article className="rounded-[var(--stk-radius-panel)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)] p-7">
     <p className="text-xs uppercase tracking-[.2em] text-[color:var(--stk-muted-strong)]">{ru?"Тема будущей статьи":"Planned article"}</p>
