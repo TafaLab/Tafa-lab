@@ -4603,6 +4603,9 @@ export default function StkAdminPage() {
     }
   }
 
+  // Legacy prospect imports are retained in source history but no longer loaded into CRM.
+  const legacyCrmSeeds: Lead[] = [];
+
   async function load() {
     setLoading(true);
     setError("");
@@ -4620,14 +4623,14 @@ export default function StkAdminPage() {
           null,
       }),
       localSeeded = [
-        ...kaskelenLeads,
-        ...almatyLeadSeed,
-        ...extraAlmatyLeadSeed,
-        ...taldykorganLeadSeed,
-        ...almatyBarsLeadSeed,
-        ...(nycBeautyLeadSeed as unknown as Lead[]),
-        ...(nycRestaurantLeadSeed as unknown as Lead[]),
-        ...(nycBakeryCoffeeLeadSeed as unknown as Lead[]),
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
       ]
         .filter((lead) => !local.deleted.includes(lead.id))
         .map(hydrateLocal),
@@ -4698,14 +4701,14 @@ export default function StkAdminPage() {
       };
     const knownLeads: Lead[] = [
         ...synced.manual,
-        ...kaskelenLeads,
-        ...almatyLeadSeed,
-        ...extraAlmatyLeadSeed,
-        ...taldykorganLeadSeed,
-        ...almatyBarsLeadSeed,
-        ...(nycBeautyLeadSeed as unknown as Lead[]),
-        ...(nycRestaurantLeadSeed as unknown as Lead[]),
-        ...(nycBakeryCoffeeLeadSeed as unknown as Lead[]),
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
       ],
       leadNames = new Map(knownLeads.map((lead) => [lead.id, lead.name])),
       leadById = new Map(knownLeads.map((lead) => [lead.id, lead]));
@@ -4929,7 +4932,7 @@ export default function StkAdminPage() {
     } else writeLocalCrmState(synced);
     setActivity(synced.activity || []);
     const seededMeta = { ...synced.meta };
-    (nycBeautyLeadSeed as unknown as Lead[]).forEach((lead) => {
+    legacyCrmSeeds.forEach((lead) => {
       const previous = seededMeta[lead.id];
       if (previous?.profitability) return;
       seededMeta[lead.id] = {
@@ -4945,7 +4948,7 @@ export default function StkAdminPage() {
           : "high",
       };
     });
-    (nycRestaurantLeadSeed as unknown as Lead[]).forEach((lead) => {
+    legacyCrmSeeds.forEach((lead) => {
       const previous = seededMeta[lead.id];
       seededMeta[lead.id] = {
         ...(previous || { reminder_at: "", history: [] }),
@@ -4958,7 +4961,7 @@ export default function StkAdminPage() {
           previous?.profitability || lead.seedProfitability || "medium",
       };
     });
-    (nycBakeryCoffeeLeadSeed as unknown as Lead[]).forEach((lead) => {
+    legacyCrmSeeds.forEach((lead) => {
       const previous = seededMeta[lead.id];
       if (previous?.profitability) return;
       seededMeta[lead.id] = {
@@ -4985,14 +4988,14 @@ export default function StkAdminPage() {
         seededMeta[x.id]?.history?.at(-1)?.text || x.admin_notes || null,
     });
     const seeded: Lead[] = [
-      ...kaskelenLeads,
-      ...almatyLeadSeed,
-      ...extraAlmatyLeadSeed,
-      ...taldykorganLeadSeed,
-      ...almatyBarsLeadSeed,
-      ...(nycBeautyLeadSeed as unknown as Lead[]),
-      ...(nycRestaurantLeadSeed as unknown as Lead[]),
-      ...(nycBakeryCoffeeLeadSeed as unknown as Lead[]),
+      ...legacyCrmSeeds,
+      ...legacyCrmSeeds,
+      ...legacyCrmSeeds,
+      ...legacyCrmSeeds,
+      ...legacyCrmSeeds,
+      ...legacyCrmSeeds,
+      ...legacyCrmSeeds,
+      ...legacyCrmSeeds,
     ]
       .filter((x) => !synced.deleted.includes(x.id))
       .map(hydrate);
