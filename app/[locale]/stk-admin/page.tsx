@@ -4035,8 +4035,12 @@ export default function StkAdminPage() {
           setReady(true);
         }
       });
-    const { data } = sb.auth.onAuthStateChange((_event, session) => {
+    const { data } = sb.auth.onAuthStateChange((event, session) => {
       if (active) {
+        if (event === "SIGNED_OUT") {
+          setLeads([]);
+          setSelectedId(null);
+        }
         setUser(session?.user ?? null);
         setAccessToken(session?.access_token ?? "");
         setRefreshToken(session?.refresh_token ?? "");
@@ -4064,10 +4068,6 @@ export default function StkAdminPage() {
         setLoading(false);
       });
       return;
-    }
-    if (!user) {
-      setLeads([]);
-      setSelectedId(null);
     }
   }, [user, accessToken]);
 
