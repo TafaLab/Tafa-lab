@@ -5590,6 +5590,9 @@ export default function StkAdminPage() {
       await sb.from("stk_lab_leads").delete().eq("id", selectedId);
     const syncError = await persistCrmState(next, accessToken);
     if (syncError) {
+      // persistCrmState writes optimistically to localStorage. Roll back the
+      // local deletion when the server has not confirmed the update.
+      writeLocalCrmState(current);
       setError(syncError);
       setDeleting(false);
       return;
