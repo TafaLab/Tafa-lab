@@ -27,6 +27,8 @@ export async function GET(request:Request){
     // may read the combined CRM requests inbox.
     if(user.id!=="56964541-7502-4f8e-99da-5e36aaf3529b")
       return NextResponse.json({error:"forbidden"},{status:403});
+    // Never fall back to a service-role read for an arbitrary authenticated
+    // account. This check must stay aligned with the admin-only RLS policy.
     const supabase=supabaseForAdmin()||tokenClient;
     const [{data:leadRows,error:leadError},{data:orderRows,error:orderError}]=await Promise.all([
       supabase.from("stk_lab_leads").select("*").order("created_at",{ascending:false}),
