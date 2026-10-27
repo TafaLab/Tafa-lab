@@ -15,7 +15,7 @@ const articles=[
 
 export async function generateMetadata({params}:{params:Promise<{locale:string}>}):Promise<Metadata>{
  const {locale}=await params;if(locale!=="ru"&&locale!=="en")return {};
- return {title:locale==="ru"?"Статьи об AI-решениях | Tafa Lab":"AI Solutions Insights | Tafa Lab",
+ return {title:locale==="ru"?"Статьи об AI-решениях":"AI Solutions Insights",
  description:locale==="ru"?"Практические статьи о применении AI-ассистентов в восьми отраслях.":"Practical articles about AI assistants across eight industries.",
  alternates:{canonical:`/${locale}/blog`,languages:{ru:"/ru/blog",en:"/en/blog","x-default":"/en/blog"}}};
 }
