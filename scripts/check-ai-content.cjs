@@ -41,6 +41,7 @@ for (const [slug, sector] of slugs) {
   check(source.includes("generateMetadata"), `Missing metadata: ${slug}`);
   check(source.includes('"x-default"'), `Missing x-default hreflang: ${slug}`);
   check(source.includes("ArticleStructuredData"), `Missing Article JSON-LD: ${slug}`);
+  check(/<ArticleStructuredData[\s\S]*?description=\{t\.description\}/.test(source) || /<ArticleStructuredData[\s\S]*?description=\{article\.description\}/.test(source), `Article JSON-LD description needs review: ${slug}`);
   check(source.includes('/blog'), `Missing blog navigation: ${slug}`);
   check(index.includes(`slug:"${slug}"`), `Missing blog index entry: ${slug}`);
   check(index.includes(`sector:"${sector}"`), `Missing sector link: ${sector}`);
