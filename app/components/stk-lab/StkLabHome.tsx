@@ -210,6 +210,17 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
         </div>
       </section>
 
+      <section aria-label={locale==="ru"?"Статьи об AI":"AI insights"} className="mx-auto max-w-7xl px-5 py-12 md:px-8">
+        <div className="flex flex-col gap-5 rounded-[var(--stk-radius-panel)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)] p-7 md:flex-row md:items-center md:justify-between md:p-10">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[.2em] text-[color:var(--stk-muted-strong)]">Tafa Lab · Insights</p>
+            <h2 className="mt-3 text-2xl font-medium md:text-3xl">{locale==="ru"?"AI-решения для восьми отраслей":"AI solutions across eight industries"}</h2>
+            <p className="mt-3 max-w-xl text-sm leading-7 text-[color:var(--stk-muted)]">{locale==="ru"?"Практические статьи о сценариях, интеграциях и ограничениях AI-ассистентов.":"Practical guides to AI assistant workflows, integrations and safeguards."}</p>
+          </div>
+          <Link href={`/${locale}/blog`} className="shrink-0 rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm font-medium">{locale==="ru"?"Смотреть статьи":"Explore articles"} →</Link>
+        </div>
+      </section>
+
       <footer className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-10 text-sm text-[color:var(--stk-muted-strong)] md:flex-row md:items-center md:justify-between md:px-8">
         <span className="font-medium text-[var(--stk-text)]">Tafa Lab</span>
         <span>{t.footer}</span>
