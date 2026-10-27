@@ -52,6 +52,7 @@ export default function IndustryAiShowcase({locale,sector}:{locale:StkLabLocale;
    <div className="mt-5 grid gap-3 md:grid-cols-3">{packages[sector][locale].map((name,i)=><div key={name} className="rounded-[var(--stk-radius-panel)] border border-[color:var(--stk-border)] p-5"><span className="text-xs text-[color:var(--stk-muted)]">0{i+1}</span><h4 className="mt-3 text-lg font-medium">{name}</h4><p className="mt-2 text-sm text-[color:var(--stk-muted)]">{i===0?(ru?"Один приоритетный клиентский сценарий.":"One focused customer workflow."):i===1?(ru?"Несколько сценариев и передача обращений команде.":"Multiple workflows with human handoff."):(ru?"Комплексное решение с интеграциями после оценки.":"End-to-end solution with scoped integrations.")}</p></div>)}</div>
   </div>
   <div className="mt-8 flex flex-wrap gap-4">
+   <Link href={`/${locale}/blog`} className="rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm">{ru?"Все статьи":"All articles"}</Link>
    <Link href={`/${locale}/ai-agents`} className="rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm">{ru?"Все AI-услуги":"Explore AI services"}</Link>
    <Link href={`/${locale}#contact`} className="rounded-full bg-[var(--stk-dark)] px-6 py-3 text-sm text-white" style={{color:"#ffffff"}}>{ru?"Заказать AI-агента":"Discuss an AI agent"}</Link>
   </div>
