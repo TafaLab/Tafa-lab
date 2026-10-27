@@ -43,7 +43,7 @@ export default function IndustryAiShowcase({locale,sector}:{locale:StkLabLocale;
     <p className="text-xs uppercase tracking-[.2em] text-[color:var(--stk-muted-strong)]">{ru?"Тема будущей статьи":"Planned article"}</p>
     <h3 className="mt-5 text-2xl font-medium">{t.article}</h3>
     <p className="mt-4 leading-7 text-[color:var(--stk-muted)]">{t.summary}</p>
-    {(sector==="bakeries"||sector==="restaurants"||sector==="beauty"||sector==="travel")?<Link href={`/${locale}/blog/${sector==="bakeries"?"ai-bakery-order-assistant":sector==="restaurants"?"ai-restaurant-host":sector==="beauty"?"ai-beauty-receptionist":"ai-travel-advisor"}`} className="mt-5 inline-block text-sm font-medium underline underline-offset-4">{ru?"Читать статью":"Read article"} →</Link>:<p className="mt-5 text-sm text-[color:var(--stk-muted)]">{ru?"Материал готовится — статья пока не опубликована.":"Editorial content planned — article not yet published."}</p>}
+    {(sector==="bakeries"||sector==="restaurants"||sector==="beauty"||sector==="travel"||sector==="business-platforms")?<Link href={`/${locale}/blog/${sector==="bakeries"?"ai-bakery-order-assistant":sector==="restaurants"?"ai-restaurant-host":sector==="beauty"?"ai-beauty-receptionist":sector==="travel"?"ai-travel-advisor":"ai-business-knowledge-agent"}`} className="mt-5 inline-block text-sm font-medium underline underline-offset-4">{ru?"Читать статью":"Read article"} →</Link>:<p className="mt-5 text-sm text-[color:var(--stk-muted)]">{ru?"Материал готовится — статья пока не опубликована.":"Editorial content planned — article not yet published."}</p>}
    </article>
   </div>
   <div className="mt-9">
