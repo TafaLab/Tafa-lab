@@ -28,6 +28,10 @@ check(index.includes('"@type":"ItemList"'), "Missing ItemList JSON-LD");
 check(index.includes('"x-default"'), "Blog index missing x-default hreflang");
 check(homepage.includes('/blog'), "Homepage missing blog entry");
 check(jsonLd.includes('"@type": "Article"'), "Missing Article JSON-LD component");
+check(sitemap.includes('"x-default"'), "Sitemap missing x-default alternates");
+check(!sitemap.includes("lastModified: new Date()"), "Sitemap uses misleading current-date lastModified");
+const rootLayout = read("app/layout.tsx");
+check(rootLayout.includes('const siteUrl = "https://tafalab.com"'), "Canonical metadataBase must use production host");
 
 for (const [slug, sector] of slugs) {
   const file = `app/[locale]/blog/${slug}/page.tsx`;
