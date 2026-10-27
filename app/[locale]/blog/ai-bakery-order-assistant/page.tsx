@@ -34,7 +34,7 @@ const articles = {
 } as const;
 export async function generateMetadata({params}:{params:Promise<{locale:string}>}):Promise<Metadata>{
  const {locale}=await params;if(locale!=="ru"&&locale!=="en")return {};
- const t=articles[locale];return {title:`${t.title} | Tafa Lab`,description:t.description,alternates:{canonical:`/${locale}/blog/ai-bakery-order-assistant`,languages:{ru:"/ru/blog/ai-bakery-order-assistant",en:"/en/blog/ai-bakery-order-assistant","x-default":"/en/blog/ai-bakery-order-assistant"}}};
+ const t=articles[locale];return {title:t.title,description:t.description,alternates:{canonical:`/${locale}/blog/ai-bakery-order-assistant`,languages:{ru:"/ru/blog/ai-bakery-order-assistant",en:"/en/blog/ai-bakery-order-assistant","x-default":"/en/blog/ai-bakery-order-assistant"}}};
 }
 export default async function Page({params}:{params:Promise<{locale:string}>}){
  const {locale}=await params;if(locale!=="ru"&&locale!=="en")notFound();const t=articles[locale];
