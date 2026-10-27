@@ -4283,7 +4283,8 @@ export default function StkAdminPage() {
     cityFilter,
   ]);
   useEffect(() => {
-    setVisibleLeadCount(20);
+    const reset = window.setTimeout(() => setVisibleLeadCount(20), 0);
+    return () => window.clearTimeout(reset);
   }, [
     section,
     filter,
