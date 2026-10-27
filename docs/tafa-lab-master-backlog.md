@@ -70,3 +70,13 @@ Bakeries, restaurants, beauty/wellness, travel/hospitality **within Tafa Lab**, 
 - [x] Published RU/EN AI guides for Entertainment, Learning Platforms and Conferences; all eight industry showcases now link to full articles. Production deployment/build verification pending.
 
 - [x] DEV only: added bilingual `/[locale]/blog` index for all eight AI guides and linked it from industry showcases. Pending build, QA and consolidated release.
+
+## Предрелизная проверка AI-раздела (dev, без Vercel)
+
+- [x] RU/EN каталог восьми статей, ссылки из главной и отраслевых страниц.
+- [x] Sitemap, hreflang и Article/CollectionPage JSON-LD добавлены в исходный код.
+- [ ] Выполнить локально `npm ci`, `npx tsc --noEmit`, `npm run lint` и `npm run build` (пока не подтверждено).
+- [ ] Проверить JSON-LD и canonical/hreflang в сгенерированных RU/EN HTML.
+- [ ] Проверить навигацию всех восьми статей, адаптивность и доступность с клавиатуры.
+- [ ] Проверить настройку Vercel: автоматические Git-деплои на push в dev/main могут запускаться независимо от ручного вызова; до общего релиза отключить или контролировать их.
+- [ ] Только после QA согласовать объединение dev → main и единый production-деплой.
