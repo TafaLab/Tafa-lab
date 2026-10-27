@@ -68,3 +68,5 @@ Updated: 2026-10-26. Repository: `TafaLab/Tafa-lab`. This is the studio website 
 Bakeries, restaurants, beauty/wellness, travel/hospitality **within Tafa Lab**, business platforms, entertainment/events. Flowers & Florists is the next category. The separate `Tafalab-travel` repository remains independent.
 
 - [x] Published RU/EN AI guides for Entertainment, Learning Platforms and Conferences; all eight industry showcases now link to full articles. Production deployment/build verification pending.
+
+- [x] DEV only: added bilingual `/[locale]/blog` index for all eight AI guides and linked it from industry showcases. Pending build, QA and consolidated release.
