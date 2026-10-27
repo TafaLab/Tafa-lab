@@ -67,13 +67,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return locales.flatMap((locale) =>
     corePages.map((page) => ({
       url: `${siteUrl}/${locale}${page.path}`,
-      lastModified: new Date(),
       changeFrequency: page.changeFrequency,
       priority: page.priority,
       alternates: {
         languages: {
           ru: `${siteUrl}/ru${page.path}`,
           en: `${siteUrl}/en${page.path}`,
+          "x-default": `${siteUrl}/en${page.path}`,
         },
       },
     })),
