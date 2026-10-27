@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "qa:ai-content": "node scripts/check-ai-content.cjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.111.0",
