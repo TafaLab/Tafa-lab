@@ -4607,16 +4607,17 @@ export default function StkAdminPage() {
   const legacyCrmSeeds: Lead[] = [];
   const CRM_RESET_KEY = "stk-admin-crm-contacts-reset-v1";
   const resetLegacyContacts = () => {
-    if (localStorage.getItem(CRM_RESET_KEY) === "done") return;
+    if (localStorage.getItem(CRM_RESET_KEY) === "done") return false;
     const current = readLocalCrmState();
     writeLocalCrmState({ ...current, manual: [], meta: {}, deleted: [], activity: [] });
     localStorage.setItem(CRM_RESET_KEY, "done");
+    return true;
   };
 
   async function load() {
     setLoading(true);
     setError("");
-    resetLegacyContacts();
+    const didResetLegacyContacts = resetLegacyContacts();
     const local = readLocalCrmState();
     const hydrateLocal = (lead: Lead) => ({
         ...lead,
@@ -4691,7 +4692,9 @@ export default function StkAdminPage() {
     let synced = mergeCrmStates(local, remote);
     // The one-time reset must also discard legacy cloud contacts, not merge
     // them back into the browser after the local store has been cleared.
-    synced = { ...synced, manual: [], meta: {}, deleted: [], activity: [] };
+    if (didResetLegacyContacts) {
+      synced = { ...synced, manual: [], meta: {}, deleted: [], activity: [] };
+    }
     const statusActivityUpgraded = (synced.activity || []).some(
       (item) =>
         item.type === "status_changed" &&
