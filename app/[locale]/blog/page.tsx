@@ -22,7 +22,23 @@ export async function generateMetadata({params}:{params:Promise<{locale:string}>
 export default async function BlogIndex({params}:{params:Promise<{locale:string}>}){
  const {locale}=await params;if(locale!=="ru"&&locale!=="en")notFound();
  const ru=locale==="ru";
- return <main className="min-h-screen bg-[var(--stk-bg)] text-[var(--stk-text)]"><div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
+ const structuredData={
+  "@context":"https://schema.org",
+  "@type":"CollectionPage",
+  name:ru?"AI-решения для бизнеса":"AI Solutions for Business",
+  inLanguage:locale,
+  url:`https://tafalab.com/${locale}/blog`,
+  mainEntity:{
+   "@type":"ItemList",
+   itemListElement:articles.map((article,index)=>({
+    "@type":"ListItem",
+    position:index+1,
+    name:ru?article.ru:article.en,
+    url:`https://tafalab.com/${locale}/blog/${article.slug}`
+   }))
+  }
+ };
+ return <main className="min-h-screen bg-[var(--stk-bg)] text-[var(--stk-text)]"><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(structuredData).replace(/</g,"\\u003c")}}/><div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
  <Link href={`/${locale}`} className="text-sm underline underline-offset-4">← {ru?"На главную":"Home"}</Link>
  <p className="mt-14 text-xs font-semibold uppercase tracking-[.2em] text-[color:var(--stk-muted)]">Tafa Lab · Insights</p>
  <h1 className="mt-5 text-4xl font-medium tracking-tight md:text-6xl">{ru?"AI-решения для бизнеса":"AI Solutions for Business"}</h1>
