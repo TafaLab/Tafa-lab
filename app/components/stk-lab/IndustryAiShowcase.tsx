@@ -40,10 +40,10 @@ export default function IndustryAiShowcase({locale,sector}:{locale:StkLabLocale;
     <IndustryBotDemo locale={locale} sector={sector} />
    </article>
    <article className="rounded-[var(--stk-radius-panel)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)] p-7">
-    <p className="text-xs uppercase tracking-[.2em] text-[color:var(--stk-muted-strong)]">{ru?"Тема будущей статьи":"Planned article"}</p>
+    <p className="text-xs uppercase tracking-[.2em] text-[color:var(--stk-muted-strong)]">{ru?"Статья по теме":"Industry article"}</p>
     <h3 className="mt-5 text-2xl font-medium">{t.article}</h3>
     <p className="mt-4 leading-7 text-[color:var(--stk-muted)]">{t.summary}</p>
-    {(sector==="bakeries"||sector==="restaurants"||sector==="beauty"||sector==="travel"||sector==="business-platforms")?<Link href={`/${locale}/blog/${sector==="bakeries"?"ai-bakery-order-assistant":sector==="restaurants"?"ai-restaurant-host":sector==="beauty"?"ai-beauty-receptionist":sector==="travel"?"ai-travel-advisor":"ai-business-knowledge-agent"}`} className="mt-5 inline-block text-sm font-medium underline underline-offset-4">{ru?"Читать статью":"Read article"} →</Link>:<p className="mt-5 text-sm text-[color:var(--stk-muted)]">{ru?"Материал готовится — статья пока не опубликована.":"Editorial content planned — article not yet published."}</p>}
+    <Link href={`/${locale}/blog/${({bakeries:"ai-bakery-order-assistant",restaurants:"ai-restaurant-host",beauty:"ai-beauty-receptionist",travel:"ai-travel-advisor","business-platforms":"ai-business-knowledge-agent",entertainment:"ai-event-assistant","learning-platforms":"ai-learning-assistant",conferences:"ai-conference-concierge"} as Record<AiIndustry,string>)[sector]}`} className="mt-5 inline-block text-sm font-medium underline underline-offset-4">{ru?"Читать статью":"Read article"} →</Link>
    </article>
   </div>
   <div className="mt-9">
