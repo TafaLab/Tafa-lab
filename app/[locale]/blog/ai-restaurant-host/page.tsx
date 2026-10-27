@@ -36,7 +36,7 @@ export async function generateMetadata({params}:{params:Promise<{locale:string}>
  const {locale}=await params;
  if(locale!=="ru"&&locale!=="en")return {};
  const t=articles[locale];
- return {title:`${t.title} | Tafa Lab`,description:t.description,alternates:{canonical:`/${locale}/blog/ai-restaurant-host`,languages:{ru:"/ru/blog/ai-restaurant-host",en:"/en/blog/ai-restaurant-host","x-default":"/en/blog/ai-restaurant-host"}}};
+ return {title:t.title,description:t.description,alternates:{canonical:`/${locale}/blog/ai-restaurant-host`,languages:{ru:"/ru/blog/ai-restaurant-host",en:"/en/blog/ai-restaurant-host","x-default":"/en/blog/ai-restaurant-host"}}};
 }
 export default async function Page({params}:{params:Promise<{locale:string}>}){
  const {locale}=await params;
