@@ -5021,12 +5021,15 @@ export default function StkAdminPage() {
         .order("created_at", { ascending: false });
       if (orderError)
         console.warn("Tafa Lab demo requests load:", orderError.message);
-      const demoLeads: Lead[] = (orderRows || []).map((order: any) => {
-        let payload: any = {};
+      const demoLeads: Lead[] = (orderRows || []).map((order) => {
+        let payload: Record<string, unknown> = {};
         try {
-          payload = order.customer_comment
+          const parsed: unknown = order.customer_comment
             ? JSON.parse(order.customer_comment)
             : {};
+          if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+            payload = parsed as Record<string, unknown>;
+          }
         } catch {}
         return {
           id: `order-${order.id}`,
@@ -5036,10 +5039,10 @@ export default function StkAdminPage() {
             order.customer_phone || order.customer_email || "Контакт не указан",
           company: null,
           city: null,
-          project_type: payload.subject || "Заявка с демо-сайта",
-          message: payload.message || null,
+          project_type: typeof payload.subject === "string" ? payload.subject : "Заявка с демо-сайта",
+          message: typeof payload.message === "string" ? payload.message : null,
           locale: payload.locale === "en" ? "en" : "ru",
-          source_path: payload.siteName
+          source_path: typeof payload.siteName === "string" && payload.siteName
             ? `Демо · ${payload.siteName}`
             : "Демо-сайт",
           status: "new",
@@ -5048,7 +5051,7 @@ export default function StkAdminPage() {
       });
       setLeads([
         ...savedLeads,
-        ...(leadRows || []).map((x: any) => hydrate(x)),
+        ...(leadRows || []).map((x) => hydrate(x)),
         ...demoLeads.map(hydrate),
       ]);
     } catch (loadError) {
