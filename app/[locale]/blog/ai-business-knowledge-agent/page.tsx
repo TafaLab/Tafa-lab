@@ -34,7 +34,7 @@ const article = {
 } as const;
 export async function generateMetadata({params}:{params:Promise<{locale:string}>}):Promise<Metadata>{
  const {locale}=await params;if(locale!=="ru"&&locale!=="en")return {};
- const t=article[locale];return {title:`${t.title} | Tafa Lab`,description:t.description,alternates:{canonical:`/${locale}/blog/ai-business-knowledge-agent`,languages:{ru:"/ru/blog/ai-business-knowledge-agent",en:"/en/blog/ai-business-knowledge-agent","x-default":"/en/blog/ai-business-knowledge-agent"}}};
+ const t=article[locale];return {title:t.title,description:t.description,alternates:{canonical:`/${locale}/blog/ai-business-knowledge-agent`,languages:{ru:"/ru/blog/ai-business-knowledge-agent",en:"/en/blog/ai-business-knowledge-agent","x-default":"/en/blog/ai-business-knowledge-agent"}}};
 }
 export default async function Page({params}:{params:Promise<{locale:string}>}){
  const {locale}=await params;if(locale!=="ru"&&locale!=="en")notFound();const t=article[locale];
