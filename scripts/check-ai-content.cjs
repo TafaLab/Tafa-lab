@@ -53,6 +53,19 @@ for (const [slug, sector] of slugs) {
 for (const route of ["/blog", "/ai-agents", "/industries/learning-platforms", "/industries/conferences"]) {
   check(sitemap.includes(`path: "${route}"`), `Missing sitemap route: ${route}`);
 }
+// Release guardrails for CRM and incoming requests; these are static checks,
+// not substitutes for authenticated Preview integration tests.
+const leadsApi = read("app/api/stk-lab/leads/route.ts");
+const crmPage = read("app/[locale]/stk-admin/page.tsx");
+const crmSyncApi = read("app/api/stk-lab/crm-sync/route.ts");
+check(leadsApi.includes('return NextResponse.json({error:"forbidden"},{status:403})'), "Leads API missing non-admin rejection");
+check(leadsApi.includes('if(user.id!=='), "Leads API missing explicit administrator check");
+check(leadsApi.includes('auth.getUser(token)'), "Leads API missing authenticated user verification");
+check(crmSyncApi.includes('authenticatedUser(request'), "CRM sync API missing authenticated user verification");
+check(crmPage.includes('const legacyCrmSeeds: Lead[] = []'), "Legacy CRM imports must remain disabled");
+check(crmPage.includes('const saveError = await persistCrmState('), "CRM create must inspect cloud sync result");
+check(crmPage.includes('if (saveError || !accessToken)'), "CRM create must not report success without cloud confirmation");
+
 if (errors.length) {
   console.error("AI content QA failed:\n" + errors.map((e) => "- " + e).join("\n"));
   process.exitCode = 1;
