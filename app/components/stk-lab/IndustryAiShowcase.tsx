@@ -14,6 +14,16 @@ const content: Record<AiIndustry, { ru: Copy; en: Copy }> = {
   "learning-platforms":{ru:{title:"AI для онлайн-обучения",bot:"AI-репетитор",example:"Объясни тему из третьего урока.",answer:"Найду объяснение в утверждённых материалах курса и предложу тренировочный вопрос.",article:"AI-репетитор на образовательной платформе",summary:"Помощь студентам на основе проверенных учебных материалов."},en:{title:"AI for learning platforms",bot:"AI learning tutor",example:"Can you explain lesson three?",answer:"I can use approved course materials and suggest a practice question.",article:"AI tutors in online learning platforms",summary:"Grounded course support, practice and student guidance."}},
   conferences:{ru:{title:"AI для конференций",bot:"AI-консьерж",example:"Когда выступление по маркетингу?",answer:"Найду сессию в актуальной программе и подскажу зал и время.",article:"AI-консьерж для конференций",summary:"Программа, регистрация, навигация и вопросы участников."},en:{title:"AI for conferences",bot:"AI event concierge",example:"When is the marketing session?",answer:"I can check the published agenda and provide the time and room.",article:"AI concierges for professional conferences",summary:"Agenda questions, attendee registration and event support."}},
 };
+const packages: Record<AiIndustry, {ru: string[]; en: string[]}> = {
+ bakeries:{ru:["AI-приём заказов","Консультант по тортам","Заказы + CRM + AI"],en:["AI Order Assistant","Cake Selection Assistant","Orders + CRM + AI"]},
+ restaurants:{ru:["AI-хостес","AI-помощник по меню","Бронирования + CRM + AI"],en:["AI Host","Menu Assistant","Reservations + CRM + AI"]},
+ beauty:{ru:["AI-администратор","Запись и напоминания","Клиентский сервис + CRM + AI"],en:["AI Receptionist","Booking & Reminders","Client Care + CRM + AI"]},
+ travel:{ru:["AI-тревел-консультант","AI-помощник бронирования","Гостевой сервис + CRM + AI"],en:["AI Travel Advisor","Booking Enquiry Assistant","Guest Care + CRM + AI"]},
+ "business-platforms":{ru:["AI-база знаний","AI-обработка заявок","Автоматизация + аналитика"],en:["AI Knowledge Agent","AI Lead Processing","Automation + Analytics"]},
+ entertainment:{ru:["AI-подбор мероприятий","AI-помощник по билетам","Заявки + CRM + AI"],en:["AI Event Advisor","Ticket Enquiry Assistant","Enquiries + CRM + AI"]},
+ "learning-platforms":{ru:["AI-репетитор","AI-помощник ученика","Обучение + кабинет + AI"],en:["AI Tutor","Student Support Assistant","Learning Portal + AI"]},
+ conferences:{ru:["AI-консьерж","AI-помощник регистрации","Конференция + CRM + AI"],en:["AI Event Concierge","Registration Assistant","Conference + CRM + AI"]},
+};
 export default function IndustryAiShowcase({locale,sector}:{locale:StkLabLocale;sector:AiIndustry}){
  const t=content[sector][locale],ru=locale==="ru";
  return <section className="mx-auto max-w-7xl px-5 py-20 md:px-8" aria-label={t.title}>
@@ -35,6 +45,11 @@ export default function IndustryAiShowcase({locale,sector}:{locale:StkLabLocale;
     <p className="mt-4 leading-7 text-[color:var(--stk-muted)]">{t.summary}</p>
     <p className="mt-5 text-sm text-[color:var(--stk-muted)]">{ru?"Материал готовится — статья пока не опубликована.":"Editorial content planned — article not yet published."}</p>
    </article>
+  </div>
+  <div className="mt-9">
+   <h3 className="text-2xl font-medium">{ru?"Варианты разработки":"Development packages"}</h3>
+   <p className="mt-2 text-sm text-[color:var(--stk-muted)]">{ru?"Состав, интеграции и стоимость согласовываются индивидуально.":"Scope, integrations and pricing are agreed individually."}</p>
+   <div className="mt-5 grid gap-3 md:grid-cols-3">{packages[sector][locale].map((name,i)=><div key={name} className="rounded-[var(--stk-radius-panel)] border border-[color:var(--stk-border)] p-5"><span className="text-xs text-[color:var(--stk-muted)]">0{i+1}</span><h4 className="mt-3 text-lg font-medium">{name}</h4><p className="mt-2 text-sm text-[color:var(--stk-muted)]">{i===0?(ru?"Один приоритетный клиентский сценарий.":"One focused customer workflow."):i===1?(ru?"Несколько сценариев и передача обращений команде.":"Multiple workflows with human handoff."):(ru?"Комплексное решение с интеграциями после оценки.":"End-to-end solution with scoped integrations.")}</p></div>)}</div>
   </div>
   <div className="mt-8 flex flex-wrap gap-4">
    <Link href={`/${locale}/ai-agents`} className="rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm">{ru?"Все AI-услуги":"Explore AI services"}</Link>
