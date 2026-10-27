@@ -45,6 +45,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
     },
 
+    { path: "/industries/learning-platforms", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/industries/conferences", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/ai-agents", priority: 0.85, changeFrequency: "monthly" as const },
+    { path: "/blog", priority: 0.85, changeFrequency: "monthly" as const },
+    { path: "/blog/ai-bakery-order-assistant", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/blog/ai-restaurant-host", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/blog/ai-beauty-receptionist", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/blog/ai-travel-advisor", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/blog/ai-business-knowledge-agent", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/blog/ai-event-assistant", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/blog/ai-learning-assistant", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/blog/ai-conference-concierge", priority: 0.7, changeFrequency: "monthly" as const },
+
     // Live STK Bakery demo. Kept public as a portfolio project.
     {
       path: "/bakery",
