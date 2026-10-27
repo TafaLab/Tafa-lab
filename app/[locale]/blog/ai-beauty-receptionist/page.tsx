@@ -34,7 +34,7 @@ const article = {
 } as const;
 export async function generateMetadata({params}:{params:Promise<{locale:string}>}):Promise<Metadata>{
  const {locale}=await params;if(locale!=="ru"&&locale!=="en")return {};
- const t=article[locale];return {title:`${t.title} | Tafa Lab`,description:t.description,alternates:{canonical:`/${locale}/blog/ai-beauty-receptionist`,languages:{ru:"/ru/blog/ai-beauty-receptionist",en:"/en/blog/ai-beauty-receptionist","x-default":"/en/blog/ai-beauty-receptionist"}}};
+ const t=article[locale];return {title:t.title,description:t.description,alternates:{canonical:`/${locale}/blog/ai-beauty-receptionist`,languages:{ru:"/ru/blog/ai-beauty-receptionist",en:"/en/blog/ai-beauty-receptionist","x-default":"/en/blog/ai-beauty-receptionist"}}};
 }
 export default async function Page({params}:{params:Promise<{locale:string}>}){
  const {locale}=await params;if(locale!=="ru"&&locale!=="en")notFound();const t=article[locale];
