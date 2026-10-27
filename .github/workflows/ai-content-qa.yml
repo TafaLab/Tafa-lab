@@ -2,6 +2,13 @@ name: AI content QA
 
 on:
   workflow_dispatch:
+  push:
+    branches: [dev]
+    paths:
+      - "app/**"
+      - "scripts/check-ai-content.cjs"
+      - "package.json"
+      - ".github/workflows/ai-content-qa.yml"
   pull_request:
     branches: [main]
     paths:
