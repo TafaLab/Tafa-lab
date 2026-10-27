@@ -4610,7 +4610,6 @@ export default function StkAdminPage() {
     if (localStorage.getItem(CRM_RESET_KEY) === "done") return false;
     const current = readLocalCrmState();
     writeLocalCrmState({ ...current, manual: [], meta: {}, deleted: [], activity: [] });
-    localStorage.setItem(CRM_RESET_KEY, "done");
     return true;
   };
 
@@ -4937,10 +4936,14 @@ export default function StkAdminPage() {
       recoveryDatesCorrected ||
       syntheticActivityRemoved ||
       statusActivityUpgraded ||
+      didResetLegacyContacts ||
       crmStateScore(local) > crmStateScore(remote)
     ) {
       writeLocalCrmState(synced);
       void persistCrmState(synced, accessToken).then((syncError) => {
+        if (didResetLegacyContacts && !syncError && accessToken) {
+          localStorage.setItem(CRM_RESET_KEY, "done");
+        }
         if (syncError && !/rate limit/i.test(syncError)) setError(syncError);
       });
     } else writeLocalCrmState(synced);
