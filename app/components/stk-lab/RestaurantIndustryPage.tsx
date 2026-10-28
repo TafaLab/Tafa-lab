@@ -371,7 +371,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
           <Link href={`/${locale}`} aria-label="Tafa Lab">
             <TafaLabLogo priority />
           </Link>
-          <nav className="hidden items-center gap-7 text-sm md:flex">
+          <nav aria-label={locale === "ru" ? "Навигация по странице" : "Page sections"} className="hidden items-center gap-7 text-sm md:flex">
             <a href="#services">{t.navServices}</a>
             <a href="#portfolio">{t.navPortfolio}</a>
             <a href="#process">{t.navProcess}</a>
@@ -383,7 +383,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
               aria-label={locale === "ru" ? "Switch to English" : "Переключить на русский"}
               href={`/${other}/industries/restaurants`}
               className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase"
-              >
+            >
               {other.toUpperCase()}
             </Link>
           </div>
