@@ -129,7 +129,7 @@ export default function EntertainmentIndustryPage({
       </section>
       <section
         id="projects"
-        className="bg-[#171115] px-5 py-24 text-white md:px-8 md:py-32"
+        className="scroll-mt-24 bg-[#171115] px-5 py-24 text-white md:px-8 md:py-32"
       >
         <div className="mx-auto max-w-7xl">
           <h2 className="max-w-4xl text-5xl tracking-[-.05em] md:text-7xl">
@@ -165,7 +165,7 @@ export default function EntertainmentIndustryPage({
       </section>
       <section
         id="services"
-        className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
+        className="scroll-mt-24 mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
       >
         <h2 className="text-5xl md:text-7xl">
           {locale === "ru"
@@ -231,7 +231,7 @@ export default function EntertainmentIndustryPage({
       </section>
       <AiSolutionsSection locale={locale} sector="entertainment" />
       <IndustryAiShowcase locale={locale} sector="entertainment" />
-      <section id="contact" className="px-5 pb-10 md:px-8">
+      <section id="contact" className="scroll-mt-24 px-5 pb-10 md:px-8">
         <div className="mx-auto max-w-7xl rounded-[3rem] bg-[#171115] px-6 py-16 text-white md:px-12 md:py-24">
           <h2 className="max-w-4xl text-5xl md:text-7xl">{t.cta}</h2>
           <div className="mt-10 max-w-4xl">
