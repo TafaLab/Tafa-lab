@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
@@ -67,8 +68,7 @@ export async function GET(request:Request){
 }
 
 const clean=(v:unknown,max:number)=>typeof v==="string"?v.trim().slice(0,max):"";
-const attempts=new Map<string,number[]>();
-const WINDOW_MS=10*60*1000;
+const WINDOW_SECONDS=600;
 const MAX_ATTEMPTS=5;
 
 export async function POST(request:Request){
@@ -83,11 +83,24 @@ export async function POST(request:Request){
     if(!startedAt||now-startedAt<1200||now-startedAt>2*60*60*1000){
       return NextResponse.json({error:"invalid_submission"},{status:400});
     }
-    const forwarded=request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-    const clientKey=forwarded||request.headers.get("x-real-ip")||"unknown";
-    const recent=(attempts.get(clientKey)??[]).filter(time=>now-time<WINDOW_MS);
-    if(recent.length>=MAX_ATTEMPTS)return NextResponse.json({error:"rate_limited"},{status:429});
-    attempts.set(clientKey,[...recent,now]);
+    // Vercel sets x-vercel-forwarded-for from the trusted edge. Do not use
+    // arbitrary client-supplied x-forwarded-for to identify visitors.
+    const clientIp = request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim()
+      || request.headers.get("x-real-ip")?.trim();
+    if (!clientIp) return NextResponse.json({ error: "client_ip_unavailable" }, { status: 503 });
+    const admin = supabaseForAdmin();
+    if (!admin) return NextResponse.json({ error: "server_not_configured" }, { status: 500 });
+    const clientHash = createHash("sha256").update(clientIp).digest("hex");
+    const { data: allowed, error: limitError } = await admin.rpc("stk_lab_check_submission_limit", {
+      p_client_hash: clientHash,
+      p_max_attempts: MAX_ATTEMPTS,
+      p_window_seconds: WINDOW_SECONDS,
+    });
+    if (limitError) {
+      console.error("Tafa Lab submission limit:", limitError.message);
+      return NextResponse.json({ error: "rate_limit_unavailable" }, { status: 503 });
+    }
+    if (!allowed) return NextResponse.json({ error: "rate_limited" }, { status: 429 });
     const name=clean(body.name,100),contact=clean(body.contact,180);
     if(!name||!contact)return NextResponse.json({error:"name_and_contact_required"},{status:400});
     const url=process.env.NEXT_PUBLIC_SUPABASE_URL,anon=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
