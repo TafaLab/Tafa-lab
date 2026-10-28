@@ -5605,8 +5605,8 @@ export default function StkAdminPage() {
           : current.meta,
         activity: nextActivity,
       };
-    if (!isCrmId(selectedId))
-      await sb.from("stk_lab_leads").delete().eq("id", selectedId);
+    // Commit the CRM tombstone first. Never delete a source row before the
+    // cloud confirms the CRM update, or a failed sync loses the source data.
     const syncError = await persistCrmState(next, accessToken);
     if (syncError) {
       // persistCrmState writes optimistically to localStorage. Roll back the
@@ -5616,6 +5616,8 @@ export default function StkAdminPage() {
       setDeleting(false);
       return;
     }
+    // Keep source leads intact: the persisted tombstone hides the CRM record
+    // and avoids a second destructive operation that cannot be rolled back.
     setError("");
     setActivity(nextActivity);
     setLeads((rows) => rows.filter((x) => x.id !== selectedId));
