@@ -5024,62 +5024,23 @@ export default function StkAdminPage() {
     setLeads(savedLeads);
     setLoading(false);
     try {
-      // Use a stateless anonymous client for the read itself. The previous
-      // session token contains oversized legacy metadata and cannot be sent
-      // reliably from this page. The table's RLS policies remain the source
-      // of truth; if they deny anonymous reads, show that exact error.
-      const publicClient = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        { auth: { persistSession: false, autoRefreshToken: false } },
-      );
-      const { data: leadRows, error: leadError } = await publicClient
-        .from("stk_lab_leads")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (leadError)
-        throw new Error(
-          `Supabase ${leadError.code || "error"}: ${leadError.message}`,
-        );
-      const { data: orderRows, error: orderError } = await publicClient
-        .from("orders")
-        .select("*")
-        .eq("weight", "DEMO_SITE_ORDER")
-        .order("created_at", { ascending: false });
-      if (orderError)
-        console.warn("Tafa Lab demo requests load:", orderError.message);
-      const demoLeads: Lead[] = (orderRows || []).map((order) => {
-        let payload: Record<string, unknown> = {};
-        try {
-          const parsed: unknown = order.customer_comment
-            ? JSON.parse(order.customer_comment)
-            : {};
-          if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
-            payload = parsed as Record<string, unknown>;
-          }
-        } catch {}
-        return {
-          id: `order-${order.id}`,
-          created_at: order.created_at,
-          name: order.customer_name || "Без имени",
-          contact:
-            order.customer_phone || order.customer_email || "Контакт не указан",
-          company: null,
-          city: null,
-          project_type: typeof payload.subject === "string" ? payload.subject : "Заявка с демо-сайта",
-          message: typeof payload.message === "string" ? payload.message : null,
-          locale: payload.locale === "en" ? "en" : "ru",
-          source_path: typeof payload.siteName === "string" && payload.siteName
-            ? `Демо · ${payload.siteName}`
-            : "Демо-сайт",
-          status: "new",
-          admin_notes: null,
-        };
+      // Incoming requests are admin-only. Anonymous Supabase reads are denied
+      // by RLS, so use the authenticated server endpoint instead.
+      const session = await sb.auth.getSession();
+      const leadToken = session.data.session?.access_token || accessToken;
+      if (!leadToken) throw new Error("Missing admin session");
+      const inboxResponse = await fetch("/api/stk-lab/leads", {
+        headers: { Authorization: `Bearer ${leadToken}` },
+        cache: "no-store",
+        signal: AbortSignal.timeout(10000),
       });
+      if (!inboxResponse.ok)
+        throw new Error(`Inbox API HTTP ${inboxResponse.status}`);
+      const inboxPayload: { leads?: Lead[] } = await inboxResponse.json();
+      const incomingLeads = Array.isArray(inboxPayload.leads) ? inboxPayload.leads : [];
       setLeads([
         ...savedLeads,
-        ...(leadRows || []).filter((x) => !synced.deleted.includes(x.id)).map((x) => hydrate(x)),
-        ...demoLeads.filter((x) => !synced.deleted.includes(x.id)).map(hydrate),
+        ...incomingLeads.filter((x) => !synced.deleted.includes(x.id)).map(hydrate),
       ]);
     } catch (loadError) {
       const message =
