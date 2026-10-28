@@ -38,3 +38,6 @@ jobs:
       - name: ESLint
         if: success() || failure()
         run: npm run lint
+      - name: Next.js production build (CI only, no deployment)
+        if: success() || failure()
+        run: npm run build
