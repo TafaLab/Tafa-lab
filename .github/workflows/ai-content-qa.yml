@@ -40,4 +40,8 @@ jobs:
         run: npm run lint
       - name: Next.js production build (CI only, no deployment)
         if: success() || failure()
+        env:
+          # Build-only placeholders; never used for a deployment or real Supabase requests.
+          NEXT_PUBLIC_SUPABASE_URL: https://ci-placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
         run: npm run build
