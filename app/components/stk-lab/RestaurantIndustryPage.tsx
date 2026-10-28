@@ -375,14 +375,17 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
             <a href="#services">{t.navServices}</a>
             <a href="#portfolio">{t.navPortfolio}</a>
             <a href="#process">{t.navProcess}</a>
-<a href="#contact">{t.navContact}</a>
+            <a href="#contact">{t.navContact}</a>
           </nav>
+          <div className="flex shrink-0 items-center gap-2">
+            <a href="#contact" className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs font-medium md:hidden">{locale === "ru" ? "Связаться" : "Contact"}</a>
           <Link
             href={`/${other}/industries/restaurants`}
             className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase"
           >
             {other}
           </Link>
+          </div>
         </div>
       </header>
 
