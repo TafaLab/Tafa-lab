@@ -89,7 +89,7 @@ export default function EntertainmentIndustryPage({
     <StkSiteShell>
       <header className="sticky top-0 z-50 border-b bg-white/85 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
-          <Link href={`/${locale}`}>
+          <Link href={`/${locale}`} aria-label="Tafa Lab — home">
             <TafaLabLogo priority />
           </Link>
           <nav className="hidden gap-8 text-sm md:flex">
@@ -100,10 +100,11 @@ export default function EntertainmentIndustryPage({
           <div className="flex shrink-0 items-center gap-2">
             <a href="#contact" className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs font-medium transition-colors hover:bg-black/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:hidden">{locale === "ru" ? "Связаться" : "Contact"}</a>
             <Link
-            href={`/${other}/industries/entertainment`}
-            className="rounded-full border px-3 py-2 text-xs uppercase"
-          >
-            {other}
+              aria-label={locale === "ru" ? "Switch to English" : "Переключить на русский"}
+              href={`/${other}/industries/entertainment`}
+              className="rounded-full border px-3 py-2 text-xs uppercase"
+              >
+              {other.toUpperCase()}
             </Link>
           </div>
         </div>
