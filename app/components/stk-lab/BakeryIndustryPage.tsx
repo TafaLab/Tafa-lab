@@ -446,10 +446,11 @@ export default function BakeryIndustryPage({
           <div className="flex shrink-0 items-center gap-2">
             <a href="#contact" className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs font-medium transition-colors hover:bg-black/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:hidden">{locale === "ru" ? "Связаться" : "Contact"}</a>
             <Link
-            href={`/${other}/industries/bakeries`}
-            className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase tracking-[.14em]"
-          >
-            {other}
+              aria-label={locale === "ru" ? "Switch to English" : "Переключить на русский"}
+              href={`/${other}/industries/bakeries`}
+              className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase tracking-[.14em]"
+              >
+              {other.toUpperCase()}
             </Link>
           </div>
         </div>
