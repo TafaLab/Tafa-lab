@@ -3940,6 +3940,7 @@ export default function StkAdminPage() {
     [copied, setCopied] = useState(false);
   const [draftStatus, setDraftStatus] = useState<LeadStatus>("new"),
     [draftNotes, setDraftNotes] = useState(""),
+    [draftName, setDraftName] = useState(""),
     [draftReminder, setDraftReminder] = useState(""),
     [draftReminderTime, setDraftReminderTime] = useState("");
   const [draftPhones, setDraftPhones] = useState<string[]>([""]),
@@ -4620,6 +4621,7 @@ export default function StkAdminPage() {
     const local = readLocalCrmState();
     const hydrateLocal = (lead: Lead) => ({
         ...lead,
+        name: local.meta[lead.id]?.lead_name || lead.name,
         contact: local.meta[lead.id]?.contact || lead.contact,
         country: local.meta[lead.id]?.country ?? lead.country,
         city: local.meta[lead.id]?.city ?? lead.city,
@@ -4995,6 +4997,7 @@ export default function StkAdminPage() {
     setCustomCities(synced.customCities || {});
     const hydrate = (x: Lead) => ({
       ...x,
+      name: seededMeta[x.id]?.lead_name || x.name,
       contact: seededMeta[x.id]?.contact || x.contact,
       city: seededMeta[x.id]?.city ?? x.city,
       company: seededMeta[x.id]?.company ?? x.company,
@@ -5094,6 +5097,7 @@ export default function StkAdminPage() {
     const fields = contactFields(lead.contact),
       meta = crmMeta[lead.id] || { reminder_at: "", history: [] };
     setSelectedId(lead.id);
+    setDraftName(meta.lead_name || lead.name);
     setDraftStatus(meta.status || lead.status);
     setDraftNotes(lead.admin_notes || "");
     setDraftReminder(meta.reminder_at || "");
@@ -5218,8 +5222,15 @@ export default function StkAdminPage() {
     ]
       .filter(Boolean)
       .join(" · ");
+    const cleanName = draftName.trim();
+    if (!cleanName) {
+      setError(locale === "ru" ? "Укажите имя контакта." : "Enter a contact name.");
+      setSaving(false);
+      return;
+    }
     const meta: CrmMeta = {
       ...previous,
+      lead_name: cleanName,
       reminder_at: draftReminder,
       reminder_time: draftReminderTime,
       history,
@@ -5243,6 +5254,7 @@ export default function StkAdminPage() {
       profitability: draftProfitability || null,
     };
     const trackedBefore = {
+        name: previous.lead_name || lead.name,
         reminder_at: previous.reminder_at || "",
         reminder_time: previous.reminder_time || "",
         contact: previous.contact || lead.contact || "",
@@ -5259,6 +5271,7 @@ export default function StkAdminPage() {
         notes: lead.admin_notes || "",
       },
       trackedAfter = {
+        name: cleanName,
         reminder_at: meta.reminder_at || "",
         reminder_time: meta.reminder_time || "",
         contact: meta.contact || "",
@@ -5302,6 +5315,7 @@ export default function StkAdminPage() {
         x.id === selectedId
           ? {
               ...x,
+              name: cleanName,
               status: draftStatus,
               admin_notes: notes || null,
               contact,
@@ -7356,6 +7370,15 @@ export default function StkAdminPage() {
                     </button>
                   </div>
                   <div className="mt-6 space-y-5">
+                    <label className="block text-xs text-black/40">
+                      {locale === "ru" ? "Имя / название контакта" : "Contact name"}
+                      <input
+                        value={draftName}
+                        onChange={(e) => setDraftName(e.target.value)}
+                        maxLength={160}
+                        className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3"
+                      />
+                    </label>
                     <label className="block text-xs text-black/40">
                       {t.status}
                       <select
