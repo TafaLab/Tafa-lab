@@ -4,6 +4,8 @@ import StkLeadForm from "./StkLeadForm";
 import TafaLabLogo from "./TafaLabLogo";
 import StkSiteShell from "./design/StkSiteShell";
 import EventIdeasSection from "./EventIdeasSection";
+import AiSolutionsSection from "./AiSolutionsSection";
+import IndustryAiShowcase from "./IndustryAiShowcase";
 
 type Locale = "ru" | "en";
 const copy = {
@@ -177,14 +179,6 @@ export default function EntertainmentIndustryPage({
         </div>
 </section>
       <EventIdeasSection locale={locale} />
-      <section id="contact" className="px-5 pb-10 md:px-8">
-        <div className="mx-auto max-w-7xl rounded-[3rem] bg-[#171115] px-6 py-16 text-white md:px-12 md:py-24">
-          <h2 className="max-w-4xl text-5xl md:text-7xl">{t.cta}</h2>
-          <div className="mt-10 max-w-4xl">
-            <StkLeadForm locale={locale} />
-          </div>
-        </div>
-      </section>
       <section className="border-t">
         <div className="mx-auto max-w-7xl px-5 py-20 md:px-8">
           <div className="flex items-end justify-between gap-8">
@@ -228,6 +222,16 @@ export default function EntertainmentIndustryPage({
                 <span>→</span>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+      <AiSolutionsSection locale={locale} sector="entertainment" />
+      <IndustryAiShowcase locale={locale} sector="entertainment" />
+      <section id="contact" className="px-5 pb-10 md:px-8">
+        <div className="mx-auto max-w-7xl rounded-[3rem] bg-[#171115] px-6 py-16 text-white md:px-12 md:py-24">
+          <h2 className="max-w-4xl text-5xl md:text-7xl">{t.cta}</h2>
+          <div className="mt-10 max-w-4xl">
+            <StkLeadForm locale={locale} />
           </div>
         </div>
       </section>
