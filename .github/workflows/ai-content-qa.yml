@@ -33,6 +33,8 @@ jobs:
       - name: Verify AI content references
         run: npm run qa:ai-content
       - name: TypeScript type check
+        if: success() || failure()
         run: npx tsc --noEmit
       - name: ESLint
+        if: success() || failure()
         run: npm run lint
