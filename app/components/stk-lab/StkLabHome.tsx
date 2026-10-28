@@ -64,7 +64,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
           <div className="flex items-center gap-3">
             <Link href={`/${other}`} aria-label={locale === "ru" ? "Switch to English" : "Переключить на русский"} className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">{other.toUpperCase()}</Link>
             <a href="#contact" className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:hidden">{locale === "ru" ? "Связаться" : "Contact"}</a>
-            <a href="#contact" className="hidden rounded-full bg-[var(--stk-dark)] px-5 py-2.5 text-sm text-white sm:inline-flex" style={{ color: "#ffffff" }}>{t.nav.cta}</a>
+            <a href="#contact" className="hidden rounded-full bg-[var(--stk-dark)] px-5 py-2.5 text-sm text-white sm:inline-flex focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2" style={{ color: "#ffffff" }}>{t.nav.cta}</a>
           </div>
         </div>
       </header>
