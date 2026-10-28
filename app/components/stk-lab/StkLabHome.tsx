@@ -197,6 +197,17 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
         </div>
       </section>
 
+      <section aria-label={locale==="ru"?"Статьи об AI":"AI insights"} className="mx-auto max-w-7xl px-5 py-12 md:px-8">
+        <div className="flex flex-col gap-5 rounded-[var(--stk-radius-panel)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)] p-7 md:flex-row md:items-center md:justify-between md:p-10">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[.2em] text-[color:var(--stk-muted-strong)]">Tafa Lab · Insights</p>
+            <h2 className="mt-3 text-2xl font-medium md:text-3xl">{locale==="ru"?"AI-решения для восьми отраслей":"AI solutions across eight industries"}</h2>
+            <p className="mt-3 max-w-xl text-sm leading-7 text-[color:var(--stk-muted)]">{locale==="ru"?"Практические статьи о сценариях, интеграциях и ограничениях AI-ассистентов.":"Practical guides to AI assistant workflows, integrations and safeguards."}</p>
+          </div>
+          <Link href={`/${locale}/blog`} className="shrink-0 rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm font-medium">{locale==="ru"?"Смотреть статьи":"Explore articles"} →</Link>
+        </div>
+      </section>
+
       <section id="contact" className="px-5 pb-10 md:px-8">
         <div className="mx-auto max-w-7xl rounded-[var(--stk-radius-card)] bg-[var(--stk-dark)] px-6 py-20 text-center text-white md:px-12 md:py-28">
           <p className="text-xs uppercase tracking-[.25em] text-white/45">{t.cta.eyebrow}</p>
@@ -207,17 +218,6 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
             <span>{t.cta.note}</span>
             <a href={whatsapp} target="_blank" rel="noreferrer" className="underline decoration-white/25 underline-offset-4 hover:text-white" style={{color:"inherit"}}>{locale==="ru"?"Или написать в WhatsApp":"Or message us on WhatsApp"} ↗</a>
           </div>
-        </div>
-      </section>
-
-      <section aria-label={locale==="ru"?"Статьи об AI":"AI insights"} className="mx-auto max-w-7xl px-5 py-12 md:px-8">
-        <div className="flex flex-col gap-5 rounded-[var(--stk-radius-panel)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)] p-7 md:flex-row md:items-center md:justify-between md:p-10">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[.2em] text-[color:var(--stk-muted-strong)]">Tafa Lab · Insights</p>
-            <h2 className="mt-3 text-2xl font-medium md:text-3xl">{locale==="ru"?"AI-решения для восьми отраслей":"AI solutions across eight industries"}</h2>
-            <p className="mt-3 max-w-xl text-sm leading-7 text-[color:var(--stk-muted)]">{locale==="ru"?"Практические статьи о сценариях, интеграциях и ограничениях AI-ассистентов.":"Practical guides to AI assistant workflows, integrations and safeguards."}</p>
-          </div>
-          <Link href={`/${locale}/blog`} className="shrink-0 rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm font-medium">{locale==="ru"?"Смотреть статьи":"Explore articles"} →</Link>
         </div>
       </section>
 
