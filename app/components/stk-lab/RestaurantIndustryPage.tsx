@@ -20,16 +20,16 @@ const copy = {
     navContact: "Contact",
     heroEyebrow: "Websites & digital systems for restaurants",
     heroTitle:
-      "Restaurant websites that turn attention into reservations, orders and repeat guests.",
+      "Restaurant websites with menus, reservations and ordering.",
     heroText:
-      "We design premium restaurant websites and custom digital systems — online menus, ordering, reservations, POS workflows, dashboards and multi-location management.",
+      "Build a website with an up-to-date menu, table enquiries and ordering. Add reporting, operational tools and multi-location management when needed.",
     heroCta: "View restaurant projects",
     heroSecondary: "Discuss a project",
-    introTitle: "More than a beautiful restaurant website.",
+    introTitle: "Easier choices for guests. Less manual work for staff.",
     intro1:
-      "A restaurant website should do more than show food photography. It should help guests choose, reserve, order and return — while reducing repetitive work for the team.",
+      "Guests browse the menu, check the details and send a table or order enquiry. Your team receives the information it needs without extra calls.",
     intro2:
-      "Tafa Lab combines brand-led web design with practical restaurant technology, from digital menus and table reservations to owner dashboards and operational systems.",
+      "Depending on your needs, we can add digital menus, booking integrations, order tracking and manager reports.",
     servicesTitle: "Digital solutions for restaurants",
     servicesText:
       "Start with a focused website or build a connected restaurant ecosystem. Every solution is adapted to the concept, service model and operational needs.",
