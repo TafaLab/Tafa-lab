@@ -441,14 +441,17 @@ export default function BakeryIndustryPage({
             <Link href={`/${locale}`}>{t.nav.home}</Link>
             <a href="#services">{t.nav.services}</a>
             <a href="#portfolio">{t.nav.portfolio}</a>
-<a href="#contact">{t.nav.contact}</a>
+            <a href="#contact">{t.nav.contact}</a>
           </nav>
+          <div className="flex shrink-0 items-center gap-2">
+            <a href="#contact" className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs font-medium md:hidden">{locale === "ru" ? "Связаться" : "Contact"}</a>
           <Link
             href={`/${other}/industries/bakeries`}
             className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase tracking-[.14em]"
           >
             {other}
           </Link>
+          </div>
         </div>
       </header>
 
