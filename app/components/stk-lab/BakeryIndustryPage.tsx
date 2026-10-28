@@ -444,13 +444,13 @@ export default function BakeryIndustryPage({
             <a href="#contact">{t.nav.contact}</a>
           </nav>
           <div className="flex shrink-0 items-center gap-2">
-            <a href="#contact" className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs font-medium md:hidden">{locale === "ru" ? "Связаться" : "Contact"}</a>
-          <Link
+            <a href="#contact" className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs font-medium transition-colors hover:bg-black/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:hidden">{locale === "ru" ? "Связаться" : "Contact"}</a>
+            <Link
             href={`/${other}/industries/bakeries`}
             className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase tracking-[.14em]"
           >
             {other}
-          </Link>
+            </Link>
           </div>
         </div>
       </header>
