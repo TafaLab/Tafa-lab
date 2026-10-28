@@ -2,12 +2,6 @@
 
 import { useLocale } from "next-intl";
 
-import Footer from "@/app/components/layout/Footer";
-import Header from "@/app/components/layout/Header";
-
-import { enMessages } from "@/messages/en";
-import { ruMessages } from "@/messages/ru";
-
 type Locale = "ru" | "en";
 
 const whatsappNumber = "77471818493";
@@ -22,10 +16,6 @@ export default function ContactsPage() {
 
   const isEnglish = locale === "en";
 
-  const text = isEnglish
-    ? enMessages
-    : ruMessages;
-
   const whatsappMessage = isEnglish
     ? "Hello! I would like to discuss a project with Tafa Lab."
     : "Здравствуйте! Хочу обсудить проект с Tafa Lab.";
@@ -37,10 +27,16 @@ export default function ContactsPage() {
 
   return (
     <main className="min-h-screen bg-[#faf8f6] text-[#342923]">
-      <Header
-        locale={locale}
-        text={text.nav}
-      />
+      <header className="border-b border-black/10 bg-white/90">
+        <nav aria-label={isEnglish ? "Main navigation" : "Основная навигация"} className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-5">
+          <a href={`/${locale}`} className="font-bold tracking-wide text-[#342923]">TAFA LAB</a>
+          <div className="flex items-center gap-5 text-sm font-medium">
+            <a href={`/${locale}/ai-agents`} className="text-[#342923]">{isEnglish ? "AI Agents" : "AI-агенты"}</a>
+            <a href={`/${locale}/blog`} className="text-[#342923]">{isEnglish ? "Articles" : "Статьи"}</a>
+            <a href={`/${isEnglish ? "ru" : "en"}/contacts`} lang={isEnglish ? "ru" : "en"} className="text-[#342923]">{isEnglish ? "RU" : "EN"}</a>
+          </div>
+        </nav>
+      </header>
 
       <section className="relative overflow-hidden">
         <div className="pointer-events-none absolute -left-24 top-16 h-72 w-72 rounded-full bg-[#ead7d5]/45 blur-3xl" />
@@ -224,10 +220,9 @@ export default function ContactsPage() {
         </div>
       </section>
 
-      <Footer
-        locale={locale}
-        text={text.footer}
-      />
+      <footer className="border-t border-black/10 bg-white px-6 py-8 text-center text-sm text-[#342923]/70">
+        © Tafa Lab · <a href={`/${locale}`} className="underline">{isEnglish ? "Back to main site" : "На главную"}</a>
+      </footer>
     </main>
   );
 }
