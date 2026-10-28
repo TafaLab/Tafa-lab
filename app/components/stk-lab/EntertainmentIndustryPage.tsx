@@ -112,7 +112,7 @@ export default function EntertainmentIndustryPage({
         <p className="text-xs font-semibold uppercase tracking-[.25em] text-[#9a5b76]">
           {t.eyebrow}
         </p>
-        <h1 className="mt-7 max-w-6xl text-6xl leading-[.92] tracking-[-.06em] md:text-8xl">
+        <h1 className="mt-7 max-w-6xl text-balance text-5xl leading-[1.02] tracking-[-.055em] sm:text-6xl md:text-8xl md:leading-[.98]">
           {t.title}
         </h1>
         <p className="mt-8 max-w-2xl text-xl leading-8 text-black/55">
