@@ -437,7 +437,7 @@ export default function BakeryIndustryPage({
           <Link href={`/${locale}`} aria-label="Tafa Lab">
             <TafaLabLogo priority />
           </Link>
-          <nav className="hidden items-center gap-7 text-sm md:flex">
+          <nav aria-label={locale === "ru" ? "Навигация по странице" : "Page sections"} className="hidden items-center gap-7 text-sm md:flex">
             <Link href={`/${locale}`}>{t.nav.home}</Link>
             <a href="#services">{t.nav.services}</a>
             <a href="#portfolio">{t.nav.portfolio}</a>
@@ -449,7 +449,7 @@ export default function BakeryIndustryPage({
               aria-label={locale === "ru" ? "Switch to English" : "Переключить на русский"}
               href={`/${other}/industries/bakeries`}
               className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase tracking-[.14em]"
-              >
+            >
               {other.toUpperCase()}
             </Link>
           </div>
