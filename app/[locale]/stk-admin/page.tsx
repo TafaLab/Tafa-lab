@@ -5078,8 +5078,8 @@ export default function StkAdminPage() {
       });
       setLeads([
         ...savedLeads,
-        ...(leadRows || []).map((x) => hydrate(x)),
-        ...demoLeads.map(hydrate),
+        ...(leadRows || []).filter((x) => !synced.deleted.includes(x.id)).map((x) => hydrate(x)),
+        ...demoLeads.filter((x) => !synced.deleted.includes(x.id)).map(hydrate),
       ]);
     } catch (loadError) {
       const message =
