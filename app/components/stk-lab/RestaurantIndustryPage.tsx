@@ -450,7 +450,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
 
       <section
         id="services"
-        className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
+        className="scroll-mt-24 mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
       >
         <div className="max-w-3xl">
           <h2 className="text-4xl tracking-[-.045em] md:text-6xl">
@@ -506,7 +506,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
 
       <section
         id="portfolio"
-        className="bg-[var(--stk-surface-strong)] py-24 md:py-32"
+        className="scroll-mt-24 bg-[var(--stk-surface-strong)] py-24 md:py-32"
       >
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <div className="max-w-3xl">
@@ -563,7 +563,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
 
       <section
         id="process"
-        className="bg-[var(--stk-accent-soft)] py-24 md:py-32"
+        className="scroll-mt-24 bg-[var(--stk-accent-soft)] py-24 md:py-32"
       >
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <div className="grid gap-8 md:grid-cols-2">
@@ -725,7 +725,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
       <AiSolutionsSection locale={locale} sector="restaurants" />
       <IndustryAiShowcase locale={locale} sector="restaurants" />
 
-      <section id="contact" className="px-5 py-10 md:px-8 md:py-16">
+      <section id="contact" className="scroll-mt-24 px-5 py-10 md:px-8 md:py-16">
         <div className="mx-auto max-w-7xl rounded-[var(--stk-radius-card)] bg-[var(--stk-dark)] px-6 py-14 text-white md:px-12 md:py-20">
           <p className="text-xs uppercase tracking-[.24em] text-white/40">
             {t.contactEyebrow}
