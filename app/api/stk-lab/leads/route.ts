@@ -83,6 +83,8 @@ export async function POST(request:Request){
     if(!startedAt||now-startedAt<1200||now-startedAt>2*60*60*1000){
       return NextResponse.json({error:"invalid_submission"},{status:400});
     }
+    const name=clean(body.name,100),contact=clean(body.contact,180);
+    if(!name||!contact)return NextResponse.json({error:"name_and_contact_required"},{status:400});
     // Vercel sets x-vercel-forwarded-for from the trusted edge. Do not use
     // arbitrary client-supplied x-forwarded-for to identify visitors.
     const clientIp = request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim()
@@ -101,8 +103,6 @@ export async function POST(request:Request){
       return NextResponse.json({ error: "rate_limit_unavailable" }, { status: 503 });
     }
     if (!allowed) return NextResponse.json({ error: "rate_limited" }, { status: 429 });
-    const name=clean(body.name,100),contact=clean(body.contact,180);
-    if(!name||!contact)return NextResponse.json({error:"name_and_contact_required"},{status:400});
     const url=process.env.NEXT_PUBLIC_SUPABASE_URL,anon=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     if(!url||!anon)return NextResponse.json({error:"server_not_configured"},{status:500});
     const supabase=createClient(url,anon,{auth:{persistSession:false,autoRefreshToken:false}});
