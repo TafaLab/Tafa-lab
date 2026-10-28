@@ -54,15 +54,16 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
       <header className="sticky top-0 z-50 border-b border-[color:var(--stk-border)] bg-[color:var(--stk-bg-translucent)] backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
           <Link href={`/${locale}`} aria-label="Tafa Lab"><TafaLabLogo priority /></Link>
-          <nav className="hidden gap-7 text-sm text-[color:var(--stk-muted-strong)] lg:flex">
+          <nav aria-label={locale === "ru" ? "Навигация по странице" : "Page sections"} className="hidden gap-7 text-sm text-[color:var(--stk-muted-strong)] lg:flex">
             <a href="#work">{t.nav.work}</a>
             <a href="#services">{t.nav.services}</a>
             <a href="#process">{t.nav.process}</a>
-<a href="#industries">{t.nav.industries}</a>
+            <a href="#industries">{t.nav.industries}</a>
             <a href="#faq">{t.nav.faq}</a>
           </nav>
           <div className="flex items-center gap-3">
-            <Link href={`/${other}`} className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase">{other}</Link>
+            <Link href={`/${other}`} aria-label={locale === "ru" ? "Switch to English" : "Переключить на русский"} className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">{other.toUpperCase()}</Link>
+            <a href="#contact" className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:hidden">{locale === "ru" ? "Связаться" : "Contact"}</a>
             <a href="#contact" className="hidden rounded-full bg-[var(--stk-dark)] px-5 py-2.5 text-sm text-white sm:inline-flex" style={{ color: "#ffffff" }}>{t.nav.cta}</a>
           </div>
         </div>
