@@ -15,14 +15,14 @@ const copy = {
   en: {
     eyebrow: "Websites & digital systems for travel businesses",
     title:
-      "Travel websites that turn inspiration into carefully planned journeys.",
-    text: "Premium websites and custom travel systems for agencies, tour operators and bespoke travel companies — trip builders, itineraries, bookings, CRM, operations and digital concierge experiences.",
+      "Travel websites for destinations, itineraries and enquiries.",
+    text: "Help travelers compare destinations and itineraries, choose dates and send an enquiry. Give your team tools to manage trip details, requests and bookings.",
     primary: "View travel websites",
     secondary: "Discuss a project",
     introTitle:
-      "From the first idea to the final transfer — one connected digital journey.",
+      "From choosing a trip to confirming the details.",
     introText:
-      "We combine destination-led editorial design with practical travel technology, helping clients discover, plan and experience a trip while giving the travel team control over requests, bookings, payments and operations.",
+      "Travelers compare destinations and packages, choose dates and send requests. Managers receive trip details and guide each enquiry toward confirmation.",
     servicesTitle: "Digital solutions for travel companies",
     services: [
       [
