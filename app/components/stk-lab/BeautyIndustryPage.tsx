@@ -15,13 +15,13 @@ const copy = {
   en: {
     eyebrow: "Websites & digital systems for beauty businesses",
     title:
-      "Beauty websites that turn attention into appointments and loyal clients.",
-    text: "Premium websites and custom systems for salons, studios and aesthetic businesses — services, online booking, staff schedules, CRM, analytics and owner dashboards.",
+      "A salon website where clients can choose and book a service.",
+    text: "Present services, prices and stylist portfolios. Add appointment booking, schedules and tools for managing client enquiries.",
     primary: "Explore beauty solutions",
     secondary: "Discuss a project",
-    introTitle: "A beautiful brand should also be easy to book.",
+    introTitle: "Book a service without endless messages.",
     introText:
-      "We connect editorial design with the practical tools a beauty business needs: clear services and pricing, frictionless booking, client management, team schedules and business analytics.",
+      "Clients can see service prices, durations and stylist portfolios before booking. Connected calendars, reminders and enquiry tracking can support the team.",
     servicesTitle: "Digital solutions for beauty businesses",
     services: [
       [
