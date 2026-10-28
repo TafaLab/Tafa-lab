@@ -92,7 +92,7 @@ export default function EntertainmentIndustryPage({
           <Link href={`/${locale}`} aria-label="Tafa Lab — home">
             <TafaLabLogo priority />
           </Link>
-          <nav className="hidden gap-8 text-sm md:flex">
+          <nav aria-label={locale === "ru" ? "Навигация по странице" : "Page sections"} className="hidden gap-8 text-sm md:flex">
             <a href="#projects">{locale === "ru" ? "Проекты" : "Projects"}</a>
             <a href="#services">{locale === "ru" ? "Решения" : "Solutions"}</a>
             <a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
@@ -103,7 +103,7 @@ export default function EntertainmentIndustryPage({
               aria-label={locale === "ru" ? "Switch to English" : "Переключить на русский"}
               href={`/${other}/industries/entertainment`}
               className="rounded-full border px-3 py-2 text-xs uppercase"
-              >
+            >
               {other.toUpperCase()}
             </Link>
           </div>
