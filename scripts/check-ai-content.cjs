@@ -65,6 +65,12 @@ check(crmSyncApi.includes('authenticatedUser(request'), "CRM sync API missing au
 check(crmPage.includes('const legacyCrmSeeds: Lead[] = []'), "Legacy CRM imports must remain disabled");
 check(crmPage.includes('const saveError = await persistCrmState('), "CRM create must inspect cloud sync result");
 check(crmPage.includes('if (saveError || !accessToken)'), "CRM create must not report success without cloud confirmation");
+const robots = read("app/robots.ts");
+for (const locale of ["ru", "en"]) {
+  check(robots.includes(`"/${locale}/stk-admin"`), `Private CRM route must be excluded from robots: ${locale}`);
+}
+check(crmPage.includes('...(leadRows || []).filter((x) => !synced.deleted.includes(x.id))'), "CRM source leads must honor deleted tombstones");
+check(crmPage.includes('...demoLeads.filter((x) => !synced.deleted.includes(x.id))'), "CRM demo requests must honor deleted tombstones");
 
 if (errors.length) {
   console.error("AI content QA failed:\n" + errors.map((e) => "- " + e).join("\n"));
