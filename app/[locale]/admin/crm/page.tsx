@@ -1,6 +1,6 @@
 "use client";
 import { supabase } from "@/lib/supabase";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useLocale } from "next-intl";
 type Stage="new"|"contacted"|"proposal"|"won"|"lost";
 type Order={id:string;order_number:number|null;created_at:string;status:string;customer_name:string|null;customer_email:string|null;customer_phone:string|null;customer_comment:string|null;price:number|string|null};
@@ -14,8 +14,7 @@ const seedLeads:Order[]=[
  {id:"lead-demo-005",order_number:null,created_at:"2026-09-01T18:20:00Z",status:"lost",customer_name:"Илья Волков",customer_email:"ilya.demo@example.com",customer_phone:"+7 700 000 00 05",price:75,customer_comment:"Тестовая неактуальная заявка. Контакт вымышленный."}
 ];
 export default function AdminCrmPage(){
- const ru=useLocale()!=="en"; const [orders,setOrders]=useState<Order[]>([]); const [id,setId]=useState<string|null>(null); const [q,setQ]=useState(""); const [filter,setFilter]=useState<Stage|"all">("all"); const [meta,setMeta]=useState<Record<string,Meta>>({}); const [loading,setLoading]=useState(true);
- useEffect(()=>{try{setMeta(JSON.parse(localStorage.getItem("tafa-admin-crm")||"{}"));}catch{} setOrders(seedLeads);setId(seedLeads[0]?.id||null);setLoading(false);},[]);
+ const ru=useLocale()!=="en"; const [orders]=useState<Order[]>(seedLeads); const [id,setId]=useState<string|null>(seedLeads[0]?.id||null); const [q,setQ]=useState(""); const [filter,setFilter]=useState<Stage|"all">("all"); const [meta,setMeta]=useState<Record<string,Meta>>(()=>{if(typeof window==="undefined")return {};try{return JSON.parse(localStorage.getItem("tafa-admin-crm")||"{}");}catch{return {};}}); const loading=false;
  const labels:Record<Stage,string>=ru?{new:"Новая",contacted:"Связались",proposal:"Предложение",won:"Клиент",lost:"Неактуально"}:{new:"New",contacted:"Contacted",proposal:"Proposal",won:"Won",lost:"Lost"};
  const list=useMemo(()=>orders.filter(o=>{const value=[o.customer_name,o.customer_email,o.customer_phone,String(o.order_number||"")].join(" ").toLowerCase();return value.includes(q.toLowerCase())&&(filter==="all"||(meta[o.id]?.stage||"new")===filter)}),[orders,q,filter,meta]);
  const selected=orders.find(o=>o.id===id)||list[0]||null; const m=selected?{...blank,...(meta[selected.id]||{})}:blank;
