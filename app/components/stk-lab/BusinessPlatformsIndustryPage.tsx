@@ -15,13 +15,13 @@ const copy = {
   en: {
     eyebrow: "Custom business platforms & internal systems",
     title:
-      "One connected platform instead of spreadsheets, chats and disconnected tools.",
-    text: "Custom management systems for growing businesses — sales, expenses, inventory, purchasing, staff, attendance, payroll, branches, reports, workflows and owner dashboards.",
+      "Sales, inventory, staff and reporting in one system.",
+    text: "Build an internal platform around your operations: sales and expenses, purchasing, stock levels, staff schedules and branch reporting.",
     primary: "Explore business systems",
     secondary: "Discuss a project",
-    introTitle: "Software shaped around the way your business actually works.",
+    introTitle: "A system built around how your business operates.",
     introText:
-      "Instead of forcing operations into generic software, we design the platform around your branches, roles, approvals, inventory flows, financial logic and reporting needs.",
+      "We first map how your team handles orders, inventory, purchasing approvals and reporting. Then we design roles, screens and automation around those workflows.",
     servicesTitle: "What a custom business platform can include",
     services: [
       [
