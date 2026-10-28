@@ -109,7 +109,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
         </div>
       </section>
 
-      <section id="work" className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
+      <section id="work" className="scroll-mt-24 mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
         <SectionHead {...t.work}/>
         <div className="mt-14 grid gap-5 md:grid-cols-2">
           {t.work.projects.map((p, i) => {
@@ -145,7 +145,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
         </div>
       </section>
 
-      <section id="services" className="bg-[var(--stk-dark)] py-24 text-white md:py-32">
+      <section id="services" className="scroll-mt-24 bg-[var(--stk-dark)] py-24 text-white md:py-32">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <SectionHead {...t.services} dark/>
           <div className="mt-14 grid gap-px overflow-hidden rounded-[var(--stk-radius-card)] bg-white/10 sm:grid-cols-2 lg:grid-cols-3">
@@ -161,7 +161,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
         </div>
       </section>
 
-      <section id="process" className="border-y border-[color:var(--stk-border)] bg-[color:var(--stk-surface)] py-24 md:py-32">
+      <section id="process" className="scroll-mt-24 border-y border-[color:var(--stk-border)] bg-[color:var(--stk-surface)] py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <SectionHead {...t.process}/>
           <div className="mx-auto mt-14 max-w-4xl">
@@ -170,7 +170,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
         </div>
       </section>
 
-      <section id="pricing" className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
+      <section id="pricing" className="scroll-mt-24 mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
         <SectionHead {...t.pricing}/>
         <div className="mx-auto mt-8 w-fit rounded-full border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)] px-5 py-2 text-sm">{t.pricing.launch}</div>
         <div className="mt-12 grid gap-4 lg:grid-cols-4">
@@ -178,7 +178,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
         </div>
 </section>
 
-      <section id="industries" className="bg-[var(--stk-accent-soft)] py-24 md:py-32">
+      <section id="industries" className="scroll-mt-24 bg-[var(--stk-accent-soft)] py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <SectionHead {...t.industries}/>
           <div className="mx-auto mt-14 grid max-w-4xl gap-px overflow-hidden rounded-[var(--stk-radius-card)] bg-black/10 sm:grid-cols-2">
@@ -191,7 +191,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
       <AiSolutionsSection locale={locale} />
       <div className="mx-auto max-w-7xl px-5 pb-16 md:px-8"><Link href={`/${locale}/ai-agents`} className="inline-flex rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm font-medium">{locale === "ru" ? "Все услуги AI-агентов и автоматизации" : "Explore AI agents and automation services"} →</Link></div>
 
-      <section id="faq" className="mx-auto max-w-5xl px-5 py-24 md:px-8 md:py-32">
+      <section id="faq" className="scroll-mt-24 mx-auto max-w-5xl px-5 py-24 md:px-8 md:py-32">
         <SectionHead {...t.faq}/>
         <div className="mt-12 border-t border-[color:var(--stk-border)]">
           {t.faq.items.map(([q,a])=><details key={q} className="group border-b border-[color:var(--stk-border)] py-5"><summary className="cursor-pointer list-none pr-8 text-lg font-medium">{q}</summary><p className="mt-4 max-w-3xl leading-7 text-[color:var(--stk-muted)]">{a}</p></details>)}
@@ -209,7 +209,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
         </div>
       </section>
 
-      <section id="contact" className="px-5 pb-10 md:px-8">
+      <section id="contact" className="scroll-mt-24 px-5 pb-10 md:px-8">
         <div className="mx-auto max-w-7xl rounded-[var(--stk-radius-card)] bg-[var(--stk-dark)] px-6 py-20 text-center text-white md:px-12 md:py-28">
           <p className="text-xs uppercase tracking-[.25em] text-white/45">{t.cta.eyebrow}</p>
           <h2 className="mx-auto mt-4 max-w-4xl text-balance text-4xl tracking-[-.05em] md:text-7xl">{t.cta.title}</h2>
