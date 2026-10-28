@@ -95,14 +95,17 @@ export default function EntertainmentIndustryPage({
           <nav className="hidden gap-8 text-sm md:flex">
             <a href="#projects">{locale === "ru" ? "Проекты" : "Projects"}</a>
             <a href="#services">{locale === "ru" ? "Решения" : "Solutions"}</a>
-<a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
+            <a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
           </nav>
+          <div className="flex shrink-0 items-center gap-2">
+            <a href="#contact" className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs font-medium md:hidden">{locale === "ru" ? "Связаться" : "Contact"}</a>
           <Link
             href={`/${other}/industries/entertainment`}
             className="rounded-full border px-3 py-2 text-xs uppercase"
           >
             {other}
           </Link>
+          </div>
         </div>
       </header>
       <section className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-36">
