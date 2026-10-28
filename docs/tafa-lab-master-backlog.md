@@ -1,6 +1,6 @@
 # Tafa Lab — master backlog
 
-Updated: 2026-10-26. Repository: `TafaLab/Tafa-lab`. This is the studio website and its industry demos, **not** `Tafalab-travel`.
+Updated: 2026-10-28. CI verified on Node.js 24: [run 40705709963](https://github.com/TafaLab/Tafa-lab/actions/runs/40705709963) (`26199e0`), including AI QA, TypeScript, ESLint and Next.js build. Visual RU/EN Preview QA remains pending. Repository: `TafaLab/Tafa-lab`. This is the studio website and its industry demos, **not** `Tafalab-travel`.
 
 ## Operating rules
 - Preserve existing live pages, demos, CRM data, Supabase schemas and working routes.
