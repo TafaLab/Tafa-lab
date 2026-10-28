@@ -384,14 +384,17 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
             <a href="#services">{locale === "ru" ? "Решения" : "Solutions"}</a>
             <a href="#portfolio">{locale === "ru" ? "Работы" : "Portfolio"}</a>
             <a href="#process">{locale === "ru" ? "Процесс" : "Process"}</a>
-<a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
+            <a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
           </nav>
+          <div className="flex shrink-0 items-center gap-2">
+            <a href="#contact" className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs font-medium md:hidden">{locale === "ru" ? "Связаться" : "Contact"}</a>
           <Link
             href={`/${other}/industries/travel`}
             className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase"
           >
             {other}
           </Link>
+          </div>
         </div>
       </header>
 
