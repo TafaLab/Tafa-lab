@@ -194,7 +194,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
       <section id="faq" className="scroll-mt-24 mx-auto max-w-5xl px-5 py-24 md:px-8 md:py-32">
         <SectionHead {...t.faq}/>
         <div className="mt-12 border-t border-[color:var(--stk-border)]">
-          {t.faq.items.map(([q,a])=><details key={q} className="group border-b border-[color:var(--stk-border)] py-5"><summary className="cursor-pointer list-none pr-8 text-lg font-medium">{q}</summary><p className="mt-4 max-w-3xl leading-7 text-[color:var(--stk-muted)]">{a}</p></details>)}
+          {t.faq.items.map(([q,a])=><details key={q} className="group border-b border-[color:var(--stk-border)] py-5"><summary className="relative cursor-pointer list-none pr-10 text-lg font-medium focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4">{q}<span aria-hidden="true" className="absolute right-1 top-0 text-2xl leading-none transition-transform group-open:rotate-45">+</span></summary><p className="mt-4 max-w-3xl leading-7 text-[color:var(--stk-muted)]">{a}</p></details>)}
         </div>
       </section>
 
