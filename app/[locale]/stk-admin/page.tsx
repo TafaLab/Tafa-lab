@@ -5149,6 +5149,7 @@ export default function StkAdminPage() {
       );
     setActivity(nextActivity);
     if (syncError && !/rate limit/i.test(syncError)) setError(syncError);
+    return syncError;
   }
   async function saveLead() {
     if (!selectedId) return;
@@ -5309,7 +5310,11 @@ export default function StkAdminPage() {
               : "Record updated",
         ),
       );
-    await saveMeta({ ...crmMeta, [selectedId]: meta }, settings, savedActivity);
+    const saveError = await saveMeta({ ...crmMeta, [selectedId]: meta }, settings, savedActivity);
+    if (saveError) {
+      setSaving(false);
+      return;
+    }
     setLeads((rows) =>
       rows.map((x) =>
         x.id === selectedId
