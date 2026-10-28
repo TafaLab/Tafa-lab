@@ -162,9 +162,7 @@ export default async function IndustryPage({
       );
 
     case "entertainment":
-      return (<>{structuredData}<EntertainmentIndustryPage locale={locale} />
-          <AiSolutionsSection locale={locale} sector={industry} />
-          <IndustryAiShowcase locale={locale} sector={industry} /></>);
+      return (<>{structuredData}<EntertainmentIndustryPage locale={locale} /></>);
 
     default:
       notFound();
