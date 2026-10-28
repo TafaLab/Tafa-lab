@@ -10,8 +10,12 @@ export default function robots(): MetadataRoute.Robots {
       disallow: [
         "/ru/admin",
         "/ru/admin/",
+        "/ru/stk-admin",
+        "/ru/stk-admin/",
         "/en/admin",
         "/en/admin/",
+        "/en/stk-admin",
+        "/en/stk-admin/",
         "/ru/checkout",
         "/en/checkout",
         "/ru/thank-you",
