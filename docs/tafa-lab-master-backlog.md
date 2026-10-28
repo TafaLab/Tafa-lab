@@ -75,7 +75,7 @@ Bakeries, restaurants, beauty/wellness, travel/hospitality **within Tafa Lab**, 
 
 - [x] RU/EN каталог восьми статей, ссылки из главной и отраслевых страниц.
 - [x] Sitemap, hreflang и Article/CollectionPage JSON-LD добавлены в исходный код.
-- [ ] Выполнить локально `npm ci`, `npx tsc --noEmit`, `npm run lint` и `npm run build` (пока не подтверждено).
+- [x] В GitHub Actions на `dev` подтверждены `npm ci`, `npm run qa:ai-content`, `npx tsc --noEmit`, `npm run lint` и `npm run build` — [успешный запуск 40704703212](https://github.com/TafaLab/Tafa-lab/actions/runs/40704703212), коммит `ed1ede3`. Это CI-проверка с фиктивными Supabase-параметрами, не локальная сборка и не проверка Preview/Production.
 - [ ] Проверить JSON-LD и canonical/hreflang в сгенерированных RU/EN HTML.
 - [ ] Проверить навигацию всех восьми статей, адаптивность и доступность с клавиатуры.
 - [ ] Проверить настройку Vercel: автоматические Git-деплои на push в dev/main могут запускаться независимо от ручного вызова; до общего релиза отключить или контролировать их.
