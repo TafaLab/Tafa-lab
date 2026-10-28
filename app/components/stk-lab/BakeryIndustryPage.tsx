@@ -19,17 +19,17 @@ const copy = {
       contact: "Contact",
     },
     heroKicker: "Websites for bakeries & cake studios",
-    heroTitle: "Premium Websites for Bakeries",
+    heroTitle: "Websites for bakeries, cake studios and custom orders",
     heroText:
-      "We design premium websites for bakeries, cake studios and dessert brands that showcase your products, simplify ordering and help your business grow.",
+      "Show flavors, fillings and cake designs in one place. Help customers choose a cake, select a date and send an enquiry without lengthy messages.",
     heroCta: "View portfolio",
-    introTitle: "More Than a Beautiful Website",
+    introTitle: "From dessert catalogue to order enquiry",
     introEyebrow:
       "Digital solutions created specifically for bakeries, cake studios and dessert brands",
     introText1:
-      "A successful bakery website should do more than simply showcase products beautifully. It should help customers explore the product range, understand the available options, and place orders with ease.",
+      "Customers can compare flavors, sizes, prices and design examples, then share their preferred date and order details.",
     introText2:
-      "We create thoughtfully designed digital solutions that simplify the ordering process, reduce repetitive customer inquiries, and turn your website into a practical tool for business growth.",
+      "A clear catalogue and enquiry form reduce repeated questions. Payments, delivery options and staff handoff can be added when needed.",
     servicesTitle: "What We Can Create for Your Bakery",
     servicesText:
       "From focused landing pages to complete online stores and interactive cake builders, each solution is tailored to your products, customers and ordering process.",
