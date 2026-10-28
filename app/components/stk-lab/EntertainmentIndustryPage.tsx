@@ -12,9 +12,9 @@ const copy = {
   en: {
     eyebrow: "Websites for entertainment & celebrations",
     title:
-      "Digital experiences that begin the celebration before the doors open.",
+      "Make it easy to choose an event and send an enquiry.",
     text: "Websites and booking journeys for event studios, performers, children's entertainment and family venues.",
-    projects: "Three worlds. Three completely different reasons to celebrate.",
+    projects: "Three examples of event and entertainment websites.",
     services: [
       ["Event & wedding website", ""],
       ["Programs & packages", ""],
@@ -41,14 +41,14 @@ const copy = {
         "wondernest-kids-demo",
       ],
     ],
-    cta: "Tell us what people should feel.",
+    cta: "Tell us about your project.",
   },
   ru: {
     eyebrow: "Сайты для развлечений и праздников",
     title:
-      "Цифровые впечатления, с которых праздник начинается ещё до открытия дверей.",
-    text: "Сайты и сценарии бронирования для event-студий, артистов, детских программ и семейных игровых пространств.",
-    projects: "Три мира. Три совершенно разных повода праздновать.",
+      "Сайт, на котором удобно выбрать праздник и оставить заявку.",
+    text: "Показываем программы, условия и свободные даты. Помогаем гостям разобраться в предложении, а организаторам — получать заявки с нужными деталями.",
+    projects: "Три примера сайтов для мероприятий и развлечений.",
     services: [
       ["Сайт событий и свадеб", ""],
       ["Программы и пакеты", ""],
@@ -75,7 +75,7 @@ const copy = {
         "wondernest-kids-demo",
       ],
     ],
-    cta: "Расскажите, что должны почувствовать гости.",
+    cta: "Расскажите о вашем проекте.",
   },
 } as const;
 export default function EntertainmentIndustryPage({
