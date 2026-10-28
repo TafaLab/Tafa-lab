@@ -1,3 +1,5 @@
+import AiSolutionsSection from "./AiSolutionsSection";
+import IndustryAiShowcase from "./IndustryAiShowcase";
 import Image from "next/image";
 import Link from "next/link";
 import StkSiteShell from "./design/StkSiteShell";
@@ -715,6 +717,9 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
           </div>
         </div>
       </section>
+
+      <AiSolutionsSection locale={locale} sector="restaurants" />
+      <IndustryAiShowcase locale={locale} sector="restaurants" />
 
       <section id="contact" className="px-5 py-10 md:px-8 md:py-16">
         <div className="mx-auto max-w-7xl rounded-[var(--stk-radius-card)] bg-[var(--stk-dark)] px-6 py-14 text-white md:px-12 md:py-20">
