@@ -185,7 +185,14 @@ export default function ContactsPage() {
                   : "Напишите нам в мессенджер или на почту — ответим, когда будем на связи."}
               </p>
 
-              <p className="mt-6 font-semibold text-[#714739]">{email}</p>
+              <div className="mt-6 flex flex-wrap gap-3 text-sm font-semibold">
+                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-[#714739] underline underline-offset-4">
+                  WhatsApp
+                </a>
+                <a href={`mailto:${email}`} className="text-[#714739] underline underline-offset-4">
+                  Email
+                </a>
+              </div>
             </div>
           </div>
 
