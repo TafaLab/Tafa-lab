@@ -380,7 +380,7 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
           <Link href={`/${locale}`} aria-label="Tafa Lab">
             <TafaLabLogo priority />
           </Link>
-          <nav className="hidden gap-7 text-sm md:flex">
+          <nav aria-label={locale === "ru" ? "Навигация по странице" : "Page sections"} className="hidden gap-7 text-sm md:flex">
             <a href="#services">{locale === "ru" ? "Решения" : "Solutions"}</a>
             <a href="#portfolio">{locale === "ru" ? "Работы" : "Portfolio"}</a>
             <a href="#process">{locale === "ru" ? "Процесс" : "Process"}</a>
@@ -392,7 +392,7 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
               aria-label={locale === "ru" ? "Switch to English" : "Переключить на русский"}
               href={`/${other}/industries/travel`}
               className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase"
-              >
+            >
               {other.toUpperCase()}
             </Link>
           </div>
