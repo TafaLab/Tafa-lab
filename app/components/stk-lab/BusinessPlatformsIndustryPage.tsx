@@ -667,7 +667,7 @@ export default function BusinessPlatformsIndustryPage({
           <div className="divide-y divide-[color:var(--stk-border)] border-y border-[color:var(--stk-border)]">
             {t.faqs.map(([q, a]) => (
               <details key={q} className="group py-6">
-                <summary className="flex cursor-pointer list-none justify-between gap-5 text-xl">
+                <summary className="flex cursor-pointer list-none justify-between gap-5 text-xl focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current">
                   <span>{q}</span>
                   <span className="transition group-open:rotate-45">+</span>
                 </summary>

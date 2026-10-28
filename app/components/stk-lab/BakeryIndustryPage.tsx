@@ -775,7 +775,7 @@ export default function BakeryIndustryPage({
           <div className="divide-y divide-black/10 border-y border-[color:var(--stk-border)]">
             {t.faqs.map(([q, a]) => (
               <details key={q} className="group py-6">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-xl tracking-[-.025em]">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-xl tracking-[-.025em] focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current">
                   <span>{q}</span>
                   <span className="text-[color:var(--stk-faint)] transition group-open:rotate-45">
                     +
