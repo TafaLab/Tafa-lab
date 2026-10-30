@@ -32,8 +32,9 @@ export default function IndustryInteractiveDemo({ locale, sector }: { locale: Lo
             </button>
           ))}
         </div>
+        <div role="status" aria-live="polite" aria-atomic="true">
         {choice !== null && (
-          <div role="status" aria-live="polite" className="mt-5 rounded-xl border border-[#ddd3ca] bg-white p-5">
+          <div className="mt-5 rounded-xl border border-[#ddd3ca] bg-white p-5">
             {learning ? (
               <p>{choice === 0 ? (ru ? "Верно! Обратная связь помогает ученику понять ошибки и закрепить материал." : "Correct! Feedback helps learners understand mistakes and retain knowledge.") : (ru ? "Попробуйте ещё раз: полезная платформа не только показывает контент, но и помогает учиться." : "Try again: a useful platform does more than display content; it supports learning.")}</p>
             ) : (
@@ -47,6 +48,7 @@ export default function IndustryInteractiveDemo({ locale, sector }: { locale: Lo
             )}
           </div>
         )}
+        </div>
       </div>
     </section>
   );
