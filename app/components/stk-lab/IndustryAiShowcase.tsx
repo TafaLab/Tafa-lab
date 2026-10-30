@@ -54,7 +54,7 @@ export default function IndustryAiShowcase({locale,sector}:{locale:StkLabLocale;
   <div className="mt-8 flex flex-wrap gap-4">
    <Link href={`/${locale}/blog`} className="rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm">{ru?"Все статьи":"All articles"}</Link>
    <Link href={`/${locale}/ai-agents`} className="rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm">{ru?"Все AI-услуги":"Explore AI services"}</Link>
-   <Link href={sector === "learning-platforms" || sector === "conferences" ? `/${locale}#contact` : "#contact" className="rounded-full bg-[var(--stk-dark)] px-6 py-3 text-sm text-white" style={{color:"#ffffff"}}>{ru?"Заказать AI-агента":"Discuss an AI agent"}</Link>
+   <Link href={sector === "learning-platforms" || sector === "conferences" ? `/${locale}#contact` : "#contact"} className="rounded-full bg-[var(--stk-dark)] px-6 py-3 text-sm text-white" style={{color:"#ffffff"}}>{ru?"Заказать AI-агента":"Discuss an AI agent"}</Link>
   </div>
  </section>;
 }
