@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import BouquetBuilderDemo from "@/app/components/stk-lab/BouquetBuilderDemo";
+import FloristCatalogDemo from "@/app/components/stk-lab/FloristCatalogDemo";
 
 const content = {
   ru: { title: "Сайты и платформы для цветочных магазинов", intro: "Проектируем онлайн-каталоги, конструкторы букетов и удобные сценарии оформления заказов для флористических студий.", items: ["Каталог цветов и готовых букетов", "Конструктор индивидуального букета", "Корзина и оформление заказа", "Варианты доставки и самовывоза", "Управление заказами и клиентами", "AI-помощник по выбору цветов"] },
@@ -30,6 +31,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       <p className="mt-10 max-w-3xl leading-7 text-[#675c56]">{locale === "ru" ? "Функции и интеграции разрабатываются индивидуально после согласования задачи." : "Features and integrations are scoped individually after discussing your project."}</p>
       <Link href={`/${locale}#contact`} className="mt-8 inline-flex rounded-full bg-[#211a17] px-7 py-3 text-white">{locale === "ru" ? "Обсудить проект" : "Discuss a project"}</Link>
     </div>
+    <FloristCatalogDemo locale={locale} />
     <BouquetBuilderDemo locale={locale} />
   </main>;
 }
