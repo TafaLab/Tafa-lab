@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import BouquetBuilderDemo from "@/app/components/stk-lab/BouquetBuilderDemo";
 import FloristCatalogDemo from "@/app/components/stk-lab/FloristCatalogDemo";
+import FloristFulfillmentDemo from "@/app/components/stk-lab/FloristFulfillmentDemo";
 
 const content = {
   ru: { title: "Сайты и платформы для цветочных магазинов", intro: "Проектируем онлайн-каталоги, конструкторы букетов и удобные сценарии оформления заказов для флористических студий.", items: ["Каталог цветов и готовых букетов", "Конструктор индивидуального букета", "Корзина и оформление заказа", "Варианты доставки и самовывоза", "Управление заказами и клиентами", "AI-помощник по выбору цветов"] },
@@ -33,5 +34,6 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     </div>
     <FloristCatalogDemo locale={locale} />
     <BouquetBuilderDemo locale={locale} />
+    <FloristFulfillmentDemo locale={locale} />
   </main>;
 }
