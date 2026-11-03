@@ -58,7 +58,6 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
             <a href="#work">{t.nav.work}</a>
             <a href="#services">{t.nav.services}</a>
             <a href="#process">{t.nav.process}</a>
-            <a href="#pricing">{t.nav.pricing}</a>
             <a href="#industries">{t.nav.industries}</a>
             <a href="#faq">{t.nav.faq}</a>
           </nav>
