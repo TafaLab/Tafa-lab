@@ -30,10 +30,13 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       <h2 className="mt-20 text-3xl">{locale === "ru" ? "Что мы можем разработать" : "What we can build"}</h2>
       <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">{t.items.map((item) => <div key={item} className="rounded-2xl border border-[#ddd3ca] bg-white p-7"><h3 className="text-xl">{item}</h3></div>)}</div>
       <p className="mt-10 max-w-3xl leading-7 text-[#675c56]">{locale === "ru" ? "Функции и интеграции разрабатываются индивидуально после согласования задачи." : "Features and integrations are scoped individually after discussing your project."}</p>
-      <Link href={`/${locale}#contact`} className="mt-8 inline-flex rounded-full bg-[#211a17] px-7 py-3 text-white">{locale === "ru" ? "Обсудить проект" : "Discuss a project"}</Link>
     </div>
     <FloristCatalogDemo locale={locale} />
     <BouquetBuilderDemo locale={locale} />
     <FloristFulfillmentDemo locale={locale} />
+    <div className="mx-auto mt-16 max-w-6xl px-5 text-center md:px-8">
+      <p className="text-lg text-[#675c56]">{locale === "ru" ? "Хотите подобную платформу для своей студии? Обсудим задачи и подходящие интеграции." : "Want a platform like this for your studio? Let’s discuss your workflow and integrations."}</p>
+      <Link href={`/${locale}#contact`} className="mt-6 inline-flex rounded-full bg-[#211a17] px-7 py-3 text-white">{locale === "ru" ? "Обсудить проект" : "Discuss a project"}</Link>
+    </div>
   </main>;
 }
