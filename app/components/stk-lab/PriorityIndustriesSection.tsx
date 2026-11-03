@@ -32,7 +32,7 @@ export default function PriorityIndustriesSection({ locale }: { locale: StkLabLo
         {ru ? "Новые направления" : "New industries"}
       </p>
       <h2 id="new-industries-title" className="mt-4 text-balance text-4xl font-medium tracking-[-.04em] md:text-6xl">
-        {ru ? "Цифровые решения для обучения и событий" : "Digital platforms for learning and events"}
+        {ru ? "Цифровые решения для разных сфер бизнеса" : "Digital platforms for growing businesses"}
       </h2>
       <div className="mt-12 grid gap-5 md:grid-cols-2">
         {items.map((item) => (
