@@ -45,6 +45,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
     { path: "/industries/learning-platforms", priority: 0.7, changeFrequency: "monthly" as const },
     { path: "/industries/conferences", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/industries/flowers", priority: 0.7, changeFrequency: "monthly" as const },
     { path: "/ai-agents", priority: 0.85, changeFrequency: "monthly" as const },
     { path: "/blog", priority: 0.85, changeFrequency: "monthly" as const },
     { path: "/blog/ai-bakery-order-assistant", priority: 0.7, changeFrequency: "monthly" as const },
