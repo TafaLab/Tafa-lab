@@ -53,6 +53,19 @@ for (const [slug, sector] of slugs) {
 for (const route of ["/blog", "/ai-agents", "/industries/learning-platforms", "/industries/conferences", "/industries/flowers"]) {
   check(sitemap.includes(`path: "${route}"`), `Missing sitemap route: ${route}`);
 }
+// Flowers is a public bilingual showcase, not a live commerce integration.
+const flowers = read("app/[locale]/industries/flowers/page.tsx");
+const flowersModules = ["FloristCatalogDemo", "BouquetBuilderDemo", "FloristFulfillmentDemo"];
+for (const moduleName of flowersModules) {
+  check(flowers.includes(`<${moduleName} locale={locale} />`), `Flowers missing demo: ${moduleName}`);
+  const moduleSource = read(`app/components/stk-lab/${moduleName}.tsx`);
+  check(moduleSource.startsWith('"use client"'), `Flowers demo must remain interactive: ${moduleName}`);
+}
+check(flowers.includes('href={`/${locale}#contact`}'), "Flowers missing localized contact CTA");
+check(flowers.indexOf("<FloristCatalogDemo") < flowers.indexOf("<BouquetBuilderDemo"), "Flowers catalog must precede builder");
+check(flowers.indexOf("<BouquetBuilderDemo") < flowers.indexOf("<FloristFulfillmentDemo"), "Flowers builder must precede fulfillment");
+check(flowers.lastIndexOf('href={`/${locale}#contact`}') > flowers.indexOf("<FloristFulfillmentDemo"), "Flowers contact CTA must follow demos");
+
 // Release guardrails for CRM and incoming requests; these are static checks,
 // not substitutes for authenticated Preview integration tests.
 const leadsApi = read("app/api/stk-lab/leads/route.ts");
