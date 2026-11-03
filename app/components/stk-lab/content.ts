@@ -9,7 +9,7 @@ export const stkLabContent = {
       text: "Crafting elegant websites and web applications for bakeries, hospitality, beauty and ambitious businesses. Designed with intention. Built to perform.",
       primary: "Start a project",
       secondary: "View selected work",
-      stats: [["5", "Featured Projects"], ["6", "Business Industries"], ["100%", "Custom Design"]],
+      stats: [["5", "Featured Projects"], ["9", "Business Industries"], ["100%", "Custom Design"]],
     },
     work: {
       eyebrow: "Selected Work",
