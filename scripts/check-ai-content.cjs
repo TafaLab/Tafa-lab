@@ -50,7 +50,7 @@ for (const [slug, sector] of slugs) {
   check(showcase.includes(`"${slug}"`), `Missing industry article link: ${slug}`);
   check(sitemap.includes(`/blog/${slug}`), `Missing sitemap entry: ${slug}`);
 }
-for (const route of ["/blog", "/ai-agents", "/industries/learning-platforms", "/industries/conferences"]) {
+for (const route of ["/blog", "/ai-agents", "/industries/learning-platforms", "/industries/conferences", "/industries/flowers"]) {
   check(sitemap.includes(`path: "${route}"`), `Missing sitemap route: ${route}`);
 }
 // Release guardrails for CRM and incoming requests; these are static checks,
