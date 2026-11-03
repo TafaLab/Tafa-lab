@@ -170,14 +170,6 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
         </div>
       </section>
 
-      <section id="pricing" className="scroll-mt-24 mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
-        <SectionHead {...t.pricing}/>
-        <div className="mx-auto mt-8 w-fit rounded-full border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)] px-5 py-2 text-sm">{t.pricing.launch}</div>
-        <div className="mt-12 grid gap-4 lg:grid-cols-4">
-          {t.pricing.plans.map(([label,name,oldPrice,price,timing,features],i)=><div key={name as string} className={`rounded-[var(--stk-radius-card)] border p-6 ${i===2?"border-[var(--stk-dark)] bg-[var(--stk-dark)] text-white":"border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)]"}`}><p className="text-xs uppercase tracking-[.2em] opacity-55">{label as string}</p><h3 className="mt-4 text-2xl">{name as string}</h3><div className="mt-2 text-xs opacity-55">{timing as string}</div><ul className="mt-8 space-y-3 text-sm leading-6">{(features as readonly string[]).map(f=><li key={f}>• {f}</li>)}</ul><a href="#contact" style={{ color: i === 2 ? "#211a17" : "#ffffff" }} className={`mt-8 inline-flex rounded-full px-5 py-2.5 text-sm font-medium ${i===2?"bg-white":"bg-[var(--stk-dark)]"}`}>{t.nav.cta}</a></div>)}
-        </div>
-</section>
-
       <section id="industries" className="scroll-mt-24 bg-[var(--stk-accent-soft)] py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <SectionHead {...t.industries}/>
