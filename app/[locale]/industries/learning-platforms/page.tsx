@@ -29,9 +29,9 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">{t.items.map((item) => <div key={item} className="rounded-2xl border border-[#ddd3ca] bg-white p-7"><h3 className="text-xl">{item}</h3></div>)}</div>
       <p className="mt-10 max-w-3xl leading-7 text-[#675c56]">{locale === "ru" ? "Разработка под задачи бизнеса. Функции и интеграции согласовываются до начала проекта." : "Custom development scoped to your business. Features and integrations are agreed before implementation."}</p>
     </div>
-    <IndustryInteractiveDemo locale={locale} sector="learning-platforms" />
     <AiSolutionsSection locale={locale} sector="learning-platforms" />
     <IndustryAiShowcase locale={locale} sector="learning-platforms" />
+    <IndustryInteractiveDemo locale={locale} sector="learning-platforms" />
     <div className="mx-auto mt-12 max-w-6xl text-center">
       <Link href={`/${locale}#contact`} className="inline-flex rounded-full bg-[#211a17] px-7 py-3 text-white">{locale === "ru" ? "Обсудить проект" : "Discuss a project"}</Link>
     </div>
