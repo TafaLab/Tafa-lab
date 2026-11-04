@@ -51,7 +51,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "invalid_submission" }, { status: 400 });
     }
 
-    const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+    const forwarded = request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim();
     const clientKey = forwarded || request.headers.get("x-real-ip") || "unknown";
     const recent = (attempts.get(clientKey) ?? []).filter((time) => now - time < windowMs);
     if (recent.length >= 5) {
