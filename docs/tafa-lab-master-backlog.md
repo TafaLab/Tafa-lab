@@ -99,3 +99,5 @@ Bakeries, restaurants, beauty/wellness, travel/hospitality **within Tafa Lab**, 
 - [ ] Проверить навигацию всех восьми статей, адаптивность и доступность с клавиатуры.
 - [ ] Проверить настройку Vercel: автоматические Git-деплои на push в dev/main могут запускаться независимо от ручного вызова; до общего релиза отключить или контролировать их.
 - [ ] Только после QA согласовать объединение dev → main и единый production-деплой.
+
+- **CRM request description (2026-11-04):** User confirmed Preview test lead reaches `/ru/stk-admin`, but submitted free-text description was missing from lead details. Fixed display of `selected.message` in RU/EN lead drawer in commit `c9d8408`. Status: **IN PROGRESS** until TypeScript, ESLint, build and updated Preview visual verification; do not mark DONE or release until verified.
