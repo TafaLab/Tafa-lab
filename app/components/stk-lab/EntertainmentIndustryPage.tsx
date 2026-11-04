@@ -127,6 +127,9 @@ export default function EntertainmentIndustryPage({
           {locale === "ru" ? "Смотреть проекты" : "Explore projects"} ↓
         </a>
       </section>
+
+      <AiSolutionsSection locale={locale} sector="entertainment" />
+      <IndustryAiShowcase locale={locale} sector="entertainment" />
       <section
         id="projects"
         className="scroll-mt-24 bg-[#171115] px-5 py-24 text-white md:px-8 md:py-32"
@@ -229,8 +232,7 @@ export default function EntertainmentIndustryPage({
           </div>
         </div>
       </section>
-      <AiSolutionsSection locale={locale} sector="entertainment" />
-      <IndustryAiShowcase locale={locale} sector="entertainment" />
+
       <section id="contact" className="scroll-mt-24 px-5 pb-10 md:px-8">
         <div className="mx-auto max-w-7xl rounded-[3rem] bg-[#171115] px-6 py-16 text-white md:px-12 md:py-24">
           <h2 className="max-w-4xl text-5xl md:text-7xl">{t.cta}</h2>
