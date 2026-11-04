@@ -7338,6 +7338,12 @@ export default function StkAdminPage() {
                     </button>
                   </div>
                   <div className="mt-6 space-y-5">
+                    {selected.message?.trim() && (
+                      <section className="rounded-2xl border border-black/10 bg-[#faf8f6] p-4" aria-label={locale === "ru" ? "Описание заявки" : "Request details"}>
+                        <p className="text-xs font-semibold text-black/55">{locale === "ru" ? "Описание заявки" : "Request details"}</p>
+                        <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-[#342923]">{selected.message}</p>
+                      </section>
+                    )}
                     <label className="block text-xs text-black/40">
                       {locale === "ru" ? "Имя / название контакта" : "Contact name"}
                       <input
