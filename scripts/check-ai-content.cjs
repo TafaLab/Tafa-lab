@@ -29,6 +29,10 @@ check(index.includes('"@type":"CollectionPage"'), "Missing CollectionPage JSON-L
 check(index.includes('"@type":"ItemList"'), "Missing ItemList JSON-LD");
 check(index.includes('"x-default"'), "Blog index missing x-default hreflang");
 check(homepage.includes('/blog'), "Homepage missing blog entry");
+// Industry AI CTA must navigate to the localized homepage contact section.
+const aiSolutions = read("app/components/stk-lab/AiSolutionsSection.tsx");
+check(aiSolutions.includes('href={`/${locale}#contact`}'), "Industry AI CTA must target localized homepage contact");
+check(homepage.includes('id="contact"'), "Homepage missing contact anchor for industry AI CTA");
 check(jsonLd.includes('"@type": "Article"'), "Missing Article JSON-LD component");
 check(sitemap.includes('"x-default"'), "Sitemap missing x-default alternates");
 check(!sitemap.includes("lastModified: new Date()"), "Sitemap uses misleading current-date lastModified");
