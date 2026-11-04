@@ -1,5 +1,24 @@
 # Tafa Lab — master backlog
 
+## Release and AI-first priority — 2026-11-04 (owner request)
+
+**Decision:** AI agents and automation are the primary commercial focus. Surface existing, accurately labeled AI offers and scripted demos near the top, not after the rest of each industry page. Do not imply live integrations or publish package prices.
+
+### Completed in dev
+- [x] Home: AI solutions section moved immediately after hero/stats and direct AI-agents CTA added to hero — `33164d0`.
+- [x] Six existing industries (bakeries, restaurants, beauty, travel, business-platforms, entertainment): AI offers and scripted showcase moved immediately after hero; existing contact form remains last — `011d050`, `23f53a2`, `e5a2806`, `ade893a`, `393a155`, `d88bb3`.
+- [x] Learning Platforms and Conferences: AI offers/showcase moved before interactive prototype, contact CTA retained at end — `54beeee`, `e890f15`.
+- [x] Reused existing components, no new AI provider/API, no CRM or Supabase changes, no public pricing.
+
+### Remaining / release gate
+- [ ] Run complete `node scripts/check-ai-content.cjs`, TypeScript, ESLint, Next.js production build for the current release head. Prior static source inspections are **not** a build.
+- [ ] RU/EN desktop/mobile visual, keyboard and anchor navigation QA (including hero AI CTA, all 8 sector AI blocks, Flowers and contact form); verify no overflow or duplicated marketing blocks.
+- [ ] Verify scripted AI demos are clearly labeled; no false promise of live chat, reservations, orders or payments.
+- [ ] Verify Production deployment health after approved merge, and log release SHA and deployment status.
+- [ ] Real AI-backed FAQ remains separate under issue #14; requires server-side provider key, rate limits, privacy safeguards and verified budget before launch.
+- [ ] Keep issue #13 and the master backlog updated after each package: completed, pending, SHA/PR, and actual QA evidence. Do not mark unexecuted tests as passed.
+
+
 Updated: 2026-10-28. CI verified on Node.js 24: [run 40705709963](https://github.com/TafaLab/Tafa-lab/actions/runs/40705709963) (`26199e0`), including AI QA, TypeScript, ESLint and Next.js build. Visual RU/EN Preview QA remains pending. Repository: `TafaLab/Tafa-lab`. This is the studio website and its industry demos, **not** `Tafalab-travel`.
 
 ## Operating rules
