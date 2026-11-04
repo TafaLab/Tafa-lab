@@ -3773,7 +3773,7 @@ async function persistCrmState(state: CrmSyncState, accessToken = "") {
   // Never put the CRM database into Supabase user metadata: it is embedded in
   // the JWT and eventually makes the Authorization header too large for Vercel.
   writeLocalCrmState({ ...state, synced_at: new Date().toISOString() });
-  if (!accessToken) return "";
+  if (!accessToken) return "sync_unauthorized";
   try {
     const response = await fetch("/api/stk-lab/crm-sync", {
       method: "PUT",
@@ -3940,6 +3940,7 @@ export default function StkAdminPage() {
     [copied, setCopied] = useState(false);
   const [draftStatus, setDraftStatus] = useState<LeadStatus>("new"),
     [draftNotes, setDraftNotes] = useState(""),
+    [draftName, setDraftName] = useState(""),
     [draftReminder, setDraftReminder] = useState(""),
     [draftReminderTime, setDraftReminderTime] = useState("");
   const [draftPhones, setDraftPhones] = useState<string[]>([""]),
@@ -3990,12 +3991,17 @@ export default function StkAdminPage() {
 
   useEffect(() => {
     let active = true;
-    const local = readLocalCrmState();
-    setCrmMeta(local.meta);
-    setSettings(local.settings || emptySettings());
-    setPlannerTasks(local.planner || []);
-    setCustomCities(local.customCities || {});
-    setActivity(local.activity || []);
+    // Restore browser-backed CRM data asynchronously after mount to avoid
+    // synchronous state updates during the effect setup phase.
+    queueMicrotask(() => {
+      if (!active) return;
+      const local = readLocalCrmState();
+      setCrmMeta(local.meta);
+      setSettings(local.settings || emptySettings());
+      setPlannerTasks(local.planner || []);
+      setCustomCities(local.customCities || {});
+      setActivity(local.activity || []);
+    });
     const fallback = window.setTimeout(() => {
       if (active) setReady(true);
     }, 5000);
@@ -4030,8 +4036,12 @@ export default function StkAdminPage() {
           setReady(true);
         }
       });
-    const { data } = sb.auth.onAuthStateChange((_event, session) => {
+    const { data } = sb.auth.onAuthStateChange((event, session) => {
       if (active) {
+        if (event === "SIGNED_OUT") {
+          setLeads([]);
+          setSelectedId(null);
+        }
         setUser(session?.user ?? null);
         setAccessToken(session?.access_token ?? "");
         setRefreshToken(session?.refresh_token ?? "");
@@ -4059,10 +4069,6 @@ export default function StkAdminPage() {
         setLoading(false);
       });
       return;
-    }
-    if (!user) {
-      setLeads([]);
-      setSelectedId(null);
     }
   }, [user, accessToken]);
 
@@ -4278,7 +4284,8 @@ export default function StkAdminPage() {
     cityFilter,
   ]);
   useEffect(() => {
-    setVisibleLeadCount(20);
+    const reset = window.setTimeout(() => setVisibleLeadCount(20), 0);
+    return () => window.clearTimeout(reset);
   }, [
     section,
     filter,
@@ -4597,12 +4604,24 @@ export default function StkAdminPage() {
     }
   }
 
+  // Legacy prospect imports are retained in source history but no longer loaded into CRM.
+  const legacyCrmSeeds: Lead[] = [];
+  const CRM_RESET_KEY = "stk-admin-crm-contacts-reset-v1";
+  const resetLegacyContacts = () => {
+    if (localStorage.getItem(CRM_RESET_KEY) === "done") return false;
+    const current = readLocalCrmState();
+    writeLocalCrmState({ ...current, manual: [], meta: {}, deleted: [], activity: [] });
+    return true;
+  };
+
   async function load() {
     setLoading(true);
     setError("");
+    const didResetLegacyContacts = resetLegacyContacts();
     const local = readLocalCrmState();
     const hydrateLocal = (lead: Lead) => ({
         ...lead,
+        name: local.meta[lead.id]?.lead_name || lead.name,
         contact: local.meta[lead.id]?.contact || lead.contact,
         country: local.meta[lead.id]?.country ?? lead.country,
         city: local.meta[lead.id]?.city ?? lead.city,
@@ -4614,14 +4633,14 @@ export default function StkAdminPage() {
           null,
       }),
       localSeeded = [
-        ...kaskelenLeads,
-        ...almatyLeadSeed,
-        ...extraAlmatyLeadSeed,
-        ...taldykorganLeadSeed,
-        ...almatyBarsLeadSeed,
-        ...(nycBeautyLeadSeed as unknown as Lead[]),
-        ...(nycRestaurantLeadSeed as unknown as Lead[]),
-        ...(nycBakeryCoffeeLeadSeed as unknown as Lead[]),
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
       ]
         .filter((lead) => !local.deleted.includes(lead.id))
         .map(hydrateLocal),
@@ -4672,6 +4691,9 @@ export default function StkAdminPage() {
       ...(remote.activity || []),
     ].some((item) => item.id.startsWith("status-snapshot-"));
     let synced = mergeCrmStates(local, remote);
+    // Cloud contacts created after the reset must survive a first visit from
+    // another browser. The browser legacy data was already cleared above;
+    // the cloud state is authoritative for any new records.
     const statusActivityUpgraded = (synced.activity || []).some(
       (item) =>
         item.type === "status_changed" &&
@@ -4692,14 +4714,14 @@ export default function StkAdminPage() {
       };
     const knownLeads: Lead[] = [
         ...synced.manual,
-        ...kaskelenLeads,
-        ...almatyLeadSeed,
-        ...extraAlmatyLeadSeed,
-        ...taldykorganLeadSeed,
-        ...almatyBarsLeadSeed,
-        ...(nycBeautyLeadSeed as unknown as Lead[]),
-        ...(nycRestaurantLeadSeed as unknown as Lead[]),
-        ...(nycBakeryCoffeeLeadSeed as unknown as Lead[]),
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
+        ...legacyCrmSeeds,
       ],
       leadNames = new Map(knownLeads.map((lead) => [lead.id, lead.name])),
       leadById = new Map(knownLeads.map((lead) => [lead.id, lead]));
@@ -4914,16 +4936,20 @@ export default function StkAdminPage() {
       recoveryDatesCorrected ||
       syntheticActivityRemoved ||
       statusActivityUpgraded ||
+      didResetLegacyContacts ||
       crmStateScore(local) > crmStateScore(remote)
     ) {
       writeLocalCrmState(synced);
       void persistCrmState(synced, accessToken).then((syncError) => {
+        if (didResetLegacyContacts && !syncError && accessToken) {
+          localStorage.setItem(CRM_RESET_KEY, "done");
+        }
         if (syncError && !/rate limit/i.test(syncError)) setError(syncError);
       });
     } else writeLocalCrmState(synced);
     setActivity(synced.activity || []);
     const seededMeta = { ...synced.meta };
-    (nycBeautyLeadSeed as unknown as Lead[]).forEach((lead) => {
+    legacyCrmSeeds.forEach((lead) => {
       const previous = seededMeta[lead.id];
       if (previous?.profitability) return;
       seededMeta[lead.id] = {
@@ -4939,7 +4965,7 @@ export default function StkAdminPage() {
           : "high",
       };
     });
-    (nycRestaurantLeadSeed as unknown as Lead[]).forEach((lead) => {
+    legacyCrmSeeds.forEach((lead) => {
       const previous = seededMeta[lead.id];
       seededMeta[lead.id] = {
         ...(previous || { reminder_at: "", history: [] }),
@@ -4952,7 +4978,7 @@ export default function StkAdminPage() {
           previous?.profitability || lead.seedProfitability || "medium",
       };
     });
-    (nycBakeryCoffeeLeadSeed as unknown as Lead[]).forEach((lead) => {
+    legacyCrmSeeds.forEach((lead) => {
       const previous = seededMeta[lead.id];
       if (previous?.profitability) return;
       seededMeta[lead.id] = {
@@ -4971,6 +4997,7 @@ export default function StkAdminPage() {
     setCustomCities(synced.customCities || {});
     const hydrate = (x: Lead) => ({
       ...x,
+      name: seededMeta[x.id]?.lead_name || x.name,
       contact: seededMeta[x.id]?.contact || x.contact,
       city: seededMeta[x.id]?.city ?? x.city,
       company: seededMeta[x.id]?.company ?? x.company,
@@ -4979,14 +5006,14 @@ export default function StkAdminPage() {
         seededMeta[x.id]?.history?.at(-1)?.text || x.admin_notes || null,
     });
     const seeded: Lead[] = [
-      ...kaskelenLeads,
-      ...almatyLeadSeed,
-      ...extraAlmatyLeadSeed,
-      ...taldykorganLeadSeed,
-      ...almatyBarsLeadSeed,
-      ...(nycBeautyLeadSeed as unknown as Lead[]),
-      ...(nycRestaurantLeadSeed as unknown as Lead[]),
-      ...(nycBakeryCoffeeLeadSeed as unknown as Lead[]),
+      ...legacyCrmSeeds,
+      ...legacyCrmSeeds,
+      ...legacyCrmSeeds,
+      ...legacyCrmSeeds,
+      ...legacyCrmSeeds,
+      ...legacyCrmSeeds,
+      ...legacyCrmSeeds,
+      ...legacyCrmSeeds,
     ]
       .filter((x) => !synced.deleted.includes(x.id))
       .map(hydrate);
@@ -4997,59 +5024,23 @@ export default function StkAdminPage() {
     setLeads(savedLeads);
     setLoading(false);
     try {
-      // Use a stateless anonymous client for the read itself. The previous
-      // session token contains oversized legacy metadata and cannot be sent
-      // reliably from this page. The table's RLS policies remain the source
-      // of truth; if they deny anonymous reads, show that exact error.
-      const publicClient = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        { auth: { persistSession: false, autoRefreshToken: false } },
-      );
-      const { data: leadRows, error: leadError } = await publicClient
-        .from("stk_lab_leads")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (leadError)
-        throw new Error(
-          `Supabase ${leadError.code || "error"}: ${leadError.message}`,
-        );
-      const { data: orderRows, error: orderError } = await publicClient
-        .from("orders")
-        .select("*")
-        .eq("weight", "DEMO_SITE_ORDER")
-        .order("created_at", { ascending: false });
-      if (orderError)
-        console.warn("Tafa Lab demo requests load:", orderError.message);
-      const demoLeads: Lead[] = (orderRows || []).map((order: any) => {
-        let payload: any = {};
-        try {
-          payload = order.customer_comment
-            ? JSON.parse(order.customer_comment)
-            : {};
-        } catch {}
-        return {
-          id: `order-${order.id}`,
-          created_at: order.created_at,
-          name: order.customer_name || "Без имени",
-          contact:
-            order.customer_phone || order.customer_email || "Контакт не указан",
-          company: null,
-          city: null,
-          project_type: payload.subject || "Заявка с демо-сайта",
-          message: payload.message || null,
-          locale: payload.locale === "en" ? "en" : "ru",
-          source_path: payload.siteName
-            ? `Демо · ${payload.siteName}`
-            : "Демо-сайт",
-          status: "new",
-          admin_notes: null,
-        };
+      // Incoming requests are admin-only. Anonymous Supabase reads are denied
+      // by RLS, so use the authenticated server endpoint instead.
+      const session = await sb.auth.getSession();
+      const leadToken = session.data.session?.access_token || accessToken;
+      if (!leadToken) throw new Error("Missing admin session");
+      const inboxResponse = await fetch("/api/stk-lab/leads", {
+        headers: { Authorization: `Bearer ${leadToken}` },
+        cache: "no-store",
+        signal: AbortSignal.timeout(10000),
       });
+      if (!inboxResponse.ok)
+        throw new Error(`Inbox API HTTP ${inboxResponse.status}`);
+      const inboxPayload: { leads?: Lead[] } = await inboxResponse.json();
+      const incomingLeads = Array.isArray(inboxPayload.leads) ? inboxPayload.leads : [];
       setLeads([
         ...savedLeads,
-        ...(leadRows || []).map((x: any) => hydrate(x)),
-        ...demoLeads.map(hydrate),
+        ...incomingLeads.filter((x) => !synced.deleted.includes(x.id)).map(hydrate),
       ]);
     } catch (loadError) {
       const message =
@@ -5067,6 +5058,7 @@ export default function StkAdminPage() {
     const fields = contactFields(lead.contact),
       meta = crmMeta[lead.id] || { reminder_at: "", history: [] };
     setSelectedId(lead.id);
+    setDraftName(meta.lead_name || lead.name);
     setDraftStatus(meta.status || lead.status);
     setDraftNotes(lead.admin_notes || "");
     setDraftReminder(meta.reminder_at || "");
@@ -5118,6 +5110,7 @@ export default function StkAdminPage() {
       );
     setActivity(nextActivity);
     if (syncError && !/rate limit/i.test(syncError)) setError(syncError);
+    return syncError;
   }
   async function saveLead() {
     if (!selectedId) return;
@@ -5191,8 +5184,15 @@ export default function StkAdminPage() {
     ]
       .filter(Boolean)
       .join(" · ");
+    const cleanName = draftName.trim();
+    if (!cleanName) {
+      setError(locale === "ru" ? "Укажите имя контакта." : "Enter a contact name.");
+      setSaving(false);
+      return;
+    }
     const meta: CrmMeta = {
       ...previous,
+      lead_name: cleanName,
       reminder_at: draftReminder,
       reminder_time: draftReminderTime,
       history,
@@ -5216,6 +5216,7 @@ export default function StkAdminPage() {
       profitability: draftProfitability || null,
     };
     const trackedBefore = {
+        name: previous.lead_name || lead.name,
         reminder_at: previous.reminder_at || "",
         reminder_time: previous.reminder_time || "",
         contact: previous.contact || lead.contact || "",
@@ -5232,6 +5233,7 @@ export default function StkAdminPage() {
         notes: lead.admin_notes || "",
       },
       trackedAfter = {
+        name: cleanName,
         reminder_at: meta.reminder_at || "",
         reminder_time: meta.reminder_time || "",
         contact: meta.contact || "",
@@ -5269,12 +5271,17 @@ export default function StkAdminPage() {
               : "Record updated",
         ),
       );
-    await saveMeta({ ...crmMeta, [selectedId]: meta }, settings, savedActivity);
+    const saveError = await saveMeta({ ...crmMeta, [selectedId]: meta }, settings, savedActivity);
+    if (saveError) {
+      setSaving(false);
+      return;
+    }
     setLeads((rows) =>
       rows.map((x) =>
         x.id === selectedId
           ? {
               ...x,
+              name: cleanName,
               status: draftStatus,
               admin_notes: notes || null,
               contact,
@@ -5505,10 +5512,23 @@ export default function StkAdminPage() {
         createCrmActivity("lead_created", lead),
       ]);
     setLeads((rows) => [lead, ...rows]);
-    await persistCrmState(
+    const saveError = await persistCrmState(
       { ...current, manual, meta: nextMeta, settings, activity: nextActivity },
       accessToken,
     );
+    if (saveError || !accessToken) {
+      setError(saveError || "sync_unauthorized");
+      setNotice(locale === "ru" ? "Контакт сохранён только в этом браузере. Синхронизация не подтверждена." : "Contact saved only in this browser. Cloud sync not confirmed.");
+      setTimeout(() => setNotice(""), 6500);
+      setCrmMeta(nextMeta);
+      setActivity(nextActivity);
+      setNewLead(emptyNewLead);
+      setAdding(false);
+      setSection("crm");
+      setSelectedId(null);
+      return;
+    }
+    setError("");
     setCrmMeta(nextMeta);
     setActivity(nextActivity);
     setNewLead(emptyNewLead);
@@ -5546,9 +5566,20 @@ export default function StkAdminPage() {
           : current.meta,
         activity: nextActivity,
       };
-    if (!isCrmId(selectedId))
-      await sb.from("stk_lab_leads").delete().eq("id", selectedId);
-    await persistCrmState(next, accessToken);
+    // Commit the CRM tombstone first. Never delete a source row before the
+    // cloud confirms the CRM update, or a failed sync loses the source data.
+    const syncError = await persistCrmState(next, accessToken);
+    if (syncError) {
+      // persistCrmState writes optimistically to localStorage. Roll back the
+      // local deletion when the server has not confirmed the update.
+      writeLocalCrmState(current);
+      setError(syncError);
+      setDeleting(false);
+      return;
+    }
+    // Keep source leads intact: the persisted tombstone hides the CRM record
+    // and avoids a second destructive operation that cannot be rolled back.
+    setError("");
     setActivity(nextActivity);
     setLeads((rows) => rows.filter((x) => x.id !== selectedId));
     setSelectedId(null);
@@ -7307,6 +7338,21 @@ export default function StkAdminPage() {
                     </button>
                   </div>
                   <div className="mt-6 space-y-5">
+                    {selected.message?.trim() && (
+                      <section className="rounded-2xl border border-black/10 bg-[#faf8f6] p-4" aria-label={locale === "ru" ? "Описание заявки" : "Request details"}>
+                        <p className="text-xs font-semibold text-black/55">{locale === "ru" ? "Описание заявки" : "Request details"}</p>
+                        <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-[#342923]">{selected.message}</p>
+                      </section>
+                    )}
+                    <label className="block text-xs text-black/40">
+                      {locale === "ru" ? "Имя / название контакта" : "Contact name"}
+                      <input
+                        value={draftName}
+                        onChange={(e) => setDraftName(e.target.value)}
+                        maxLength={160}
+                        className="mt-2 w-full rounded-2xl border border-black/10 bg-[#faf8f6] px-4 py-3"
+                      />
+                    </label>
                     <label className="block text-xs text-black/40">
                       {t.status}
                       <select

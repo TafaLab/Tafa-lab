@@ -1,3 +1,5 @@
+import AiSolutionsSection from "./AiSolutionsSection";
+import IndustryAiShowcase from "./IndustryAiShowcase";
 import Image from "next/image";
 import Link from "next/link";
 import StkSiteShell from "./design/StkSiteShell";
@@ -13,13 +15,13 @@ const copy = {
   en: {
     eyebrow: "Websites & digital systems for beauty businesses",
     title:
-      "Beauty websites that turn attention into appointments and loyal clients.",
-    text: "Premium websites and custom systems for salons, studios and aesthetic businesses — services, online booking, staff schedules, CRM, analytics and owner dashboards.",
+      "A salon website where clients can choose and book a service.",
+    text: "Present services, prices and stylist portfolios. Add appointment booking, schedules and tools for managing client enquiries.",
     primary: "Explore beauty solutions",
     secondary: "Discuss a project",
-    introTitle: "A beautiful brand should also be easy to book.",
+    introTitle: "Book a service without endless messages.",
     introText:
-      "We connect editorial design with the practical tools a beauty business needs: clear services and pricing, frictionless booking, client management, team schedules and business analytics.",
+      "Clients can see service prices, durations and stylist portfolios before booking. Connected calendars, reminders and enquiry tracking can support the team.",
     servicesTitle: "Digital solutions for beauty businesses",
     services: [
       [
@@ -180,13 +182,13 @@ const copy = {
   ru: {
     eyebrow: "Сайты и цифровые системы для beauty-бизнеса",
     title:
-      "Beauty-сайты, которые превращают внимание в записи и постоянных клиентов.",
-    text: "Премиальные сайты и индивидуальные системы для салонов, студий и эстетических проектов: услуги, онлайн-запись, расписание мастеров, CRM, аналитика и кабинет владельца.",
+      "Сайт салона, где легко выбрать услугу и записаться.",
+    text: "Показываем услуги, цены и работы мастеров. Добавляем онлайн-запись, расписание и инструменты для управления клиентскими обращениями.",
     primary: "Смотреть beauty-решения",
     secondary: "Обсудить проект",
-    introTitle: "Красивый бренд должен быть ещё и удобным для записи.",
+    introTitle: "Запись на услугу без лишних сообщений.",
     introText:
-      "Мы соединяем editorial-дизайн с инструментами, которые нужны beauty-бизнесу: понятные услуги и цены, быстрая запись, управление клиентами, расписание команды и бизнес-аналитика.",
+      "Клиент сразу видит стоимость и длительность услуги, работы мастеров и способ записи. Для салона можно подключить календарь, напоминания и учёт обращений.",
     servicesTitle: "Цифровые решения для beauty-бизнеса",
     services: [
       [
@@ -360,18 +362,22 @@ export default function BeautyIndustryPage({ locale }: { locale: Locale }) {
           <Link href={`/${locale}`} aria-label="Tafa Lab">
             <TafaLabLogo priority />
           </Link>
-          <nav className="hidden gap-7 text-sm md:flex">
+          <nav aria-label={locale === "ru" ? "Навигация по странице" : "Page sections"} className="hidden gap-7 text-sm md:flex">
             <a href="#services">{locale === "ru" ? "Решения" : "Solutions"}</a>
             <a href="#portfolio">{locale === "ru" ? "Работы" : "Portfolio"}</a>
             <a href="#process">{locale === "ru" ? "Процесс" : "Process"}</a>
-<a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
+            <a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
           </nav>
-          <Link
-            href={`/${other}/industries/beauty`}
-            className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase"
-          >
-            {other}
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <a href="#contact" className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs font-medium transition-colors hover:bg-black/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:hidden">{locale === "ru" ? "Связаться" : "Contact"}</a>
+            <Link
+              aria-label={locale === "ru" ? "Switch to English" : "Переключить на русский"}
+              href={`/${other}/industries/beauty`}
+              className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase"
+            >
+              {other.toUpperCase()}
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -421,6 +427,9 @@ export default function BeautyIndustryPage({ locale }: { locale: Locale }) {
         </StkReveal>
       </section>
 
+      <AiSolutionsSection locale={locale} sector="beauty" />
+      <IndustryAiShowcase locale={locale} sector="beauty" />
+
       <section className="border-y border-[color:var(--stk-border)] bg-[color:var(--stk-surface)]">
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 md:grid-cols-2 md:px-8 md:py-28">
           <h2 className="text-4xl tracking-[-.045em] md:text-6xl">
@@ -434,7 +443,7 @@ export default function BeautyIndustryPage({ locale }: { locale: Locale }) {
 
       <section
         id="services"
-        className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
+        className="scroll-mt-24 mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
       >
         <h2 className="max-w-3xl text-4xl tracking-[-.045em] md:text-6xl">
           {t.servicesTitle}
@@ -485,7 +494,7 @@ export default function BeautyIndustryPage({ locale }: { locale: Locale }) {
 
       <section
         id="portfolio"
-        className="bg-[var(--stk-surface-strong)] py-24 md:py-32"
+        className="scroll-mt-24 bg-[var(--stk-surface-strong)] py-24 md:py-32"
       >
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <p className="text-xs font-semibold uppercase tracking-[.24em] text-[color:var(--stk-muted-strong)]">
@@ -534,7 +543,7 @@ export default function BeautyIndustryPage({ locale }: { locale: Locale }) {
 
       <section
         id="process"
-        className="bg-[var(--stk-accent-soft)] py-24 md:py-32"
+        className="scroll-mt-24 bg-[var(--stk-accent-soft)] py-24 md:py-32"
       >
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <h2 className="text-4xl tracking-[-.045em] md:text-6xl">
@@ -607,7 +616,7 @@ export default function BeautyIndustryPage({ locale }: { locale: Locale }) {
           <div className="divide-y divide-[color:var(--stk-border)] border-y border-[color:var(--stk-border)]">
             {t.faqs.map(([q, a]) => (
               <details key={q} className="group py-6">
-                <summary className="flex cursor-pointer list-none justify-between gap-5 text-xl">
+                <summary className="flex cursor-pointer list-none justify-between gap-5 text-xl focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current">
                   <span>{q}</span>
                   <span className="transition group-open:rotate-45">+</span>
                 </summary>
@@ -683,7 +692,9 @@ export default function BeautyIndustryPage({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-      <section id="contact" className="px-5 py-10 md:px-8 md:py-16">
+
+
+      <section id="contact" className="scroll-mt-24 px-5 py-10 md:px-8 md:py-16">
         <div className="mx-auto max-w-7xl rounded-[var(--stk-radius-card)] bg-[var(--stk-dark)] px-6 py-14 text-white md:px-12 md:py-20">
           <p className="text-xs uppercase tracking-[.24em] text-white/40">
             {t.contactEyebrow}

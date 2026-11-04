@@ -1,3 +1,5 @@
+import AiSolutionsSection from "./AiSolutionsSection";
+import IndustryAiShowcase from "./IndustryAiShowcase";
 import Image from "next/image";
 import Link from "next/link";
 import type { StkLabLocale } from "@/app/components/stk-lab/content";
@@ -17,17 +19,17 @@ const copy = {
       contact: "Contact",
     },
     heroKicker: "Websites for bakeries & cake studios",
-    heroTitle: "Premium Websites for Bakeries",
+    heroTitle: "Websites for bakeries, cake studios and custom orders",
     heroText:
-      "We design premium websites for bakeries, cake studios and dessert brands that showcase your products, simplify ordering and help your business grow.",
+      "Show flavors, fillings and cake designs in one place. Help customers choose a cake, select a date and send an enquiry without lengthy messages.",
     heroCta: "View portfolio",
-    introTitle: "More Than a Beautiful Website",
+    introTitle: "From dessert catalogue to order enquiry",
     introEyebrow:
       "Digital solutions created specifically for bakeries, cake studios and dessert brands",
     introText1:
-      "A successful bakery website should do more than simply showcase products beautifully. It should help customers explore the product range, understand the available options, and place orders with ease.",
+      "Customers can compare flavors, sizes, prices and design examples, then share their preferred date and order details.",
     introText2:
-      "We create thoughtfully designed digital solutions that simplify the ordering process, reduce repetitive customer inquiries, and turn your website into a practical tool for business growth.",
+      "A clear catalogue and enquiry form reduce repeated questions. Payments, delivery options and staff handoff can be added when needed.",
     servicesTitle: "What We Can Create for Your Bakery",
     servicesText:
       "From focused landing pages to complete online stores and interactive cake builders, each solution is tailored to your products, customers and ordering process.",
@@ -219,17 +221,17 @@ const copy = {
       contact: "Контакты",
     },
     heroKicker: "Сайты для пекарен и кондитерских",
-    heroTitle: "Премиальные сайты для пекарен и кондитерских",
+    heroTitle: "Сайты для пекарен, кондитерских и заказных тортов",
     heroText:
-      "Мы создаём современные сайты для пекарен, кондитерских и десертных брендов, которые помогают красиво представить продукцию, упростить оформление заказов и развивать бизнес.",
+      "Покажем ассортимент, начинки и варианты оформления. Поможем покупателю выбрать торт, указать дату и отправить заявку без долгой переписки.",
     heroCta: "Смотреть портфолио",
-    introTitle: "Больше чем просто красивый сайт",
+    introTitle: "От каталога десертов до заявки на заказ",
     introEyebrow:
-      "Цифровые решения, созданные специально для пекарен, кондитерских студий и десертных брендов",
+      "Для пекарен, кондитерских и студий заказных тортов",
     introText1:
-      "Успешный сайт для пекарни должен не только красиво демонстрировать продукцию. Он должен помогать клиентам легко знакомиться с ассортиментом, понимать доступные варианты и оформлять заказы без лишних сложностей.",
+      "Покупатель видит вкусы, размеры, цены и примеры оформления. Перед заказом он может уточнить состав, выбрать дату и оставить пожелания.",
     introText2:
-      "Мы создаём продуманные цифровые решения, которые упрощают оформление заказов, сокращают количество однотипных вопросов и превращают сайт в практичный инструмент развития бизнеса.",
+      "Каталог и понятная форма заявки сокращают повторяющиеся вопросы. При необходимости добавляем оплату, доставку и передачу заказов команде.",
     servicesTitle: "Что мы можем создать для вашей пекарни",
     servicesText:
       "От лаконичных лендингов до полноценных интернет-магазинов и интерактивных конструкторов тортов — каждое решение создаётся с учётом вашей продукции, клиентов и процесса заказа.",
@@ -435,18 +437,22 @@ export default function BakeryIndustryPage({
           <Link href={`/${locale}`} aria-label="Tafa Lab">
             <TafaLabLogo priority />
           </Link>
-          <nav className="hidden items-center gap-7 text-sm md:flex">
+          <nav aria-label={locale === "ru" ? "Навигация по странице" : "Page sections"} className="hidden items-center gap-7 text-sm md:flex">
             <Link href={`/${locale}`}>{t.nav.home}</Link>
             <a href="#services">{t.nav.services}</a>
             <a href="#portfolio">{t.nav.portfolio}</a>
-<a href="#contact">{t.nav.contact}</a>
+            <a href="#contact">{t.nav.contact}</a>
           </nav>
-          <Link
-            href={`/${other}/industries/bakeries`}
-            className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase tracking-[.14em]"
-          >
-            {other}
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <a href="#contact" className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs font-medium transition-colors hover:bg-black/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:hidden">{locale === "ru" ? "Связаться" : "Contact"}</a>
+            <Link
+              aria-label={locale === "ru" ? "Switch to English" : "Переключить на русский"}
+              href={`/${other}/industries/bakeries`}
+              className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase tracking-[.14em]"
+            >
+              {other.toUpperCase()}
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -487,6 +493,9 @@ export default function BakeryIndustryPage({
         </div>
       </section>
 
+      <AiSolutionsSection locale={locale} sector="bakeries" />
+      <IndustryAiShowcase locale={locale} sector="bakeries" />
+
       <section className="border-y border-[color:var(--stk-border)] bg-[var(--stk-surface-strong)]">
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 md:grid-cols-[.9fr_1.1fr] md:px-8 md:py-28">
           <div>
@@ -506,7 +515,7 @@ export default function BakeryIndustryPage({
 
       <section
         id="services"
-        className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
+        className="scroll-mt-24 mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
       >
         <div className="max-w-3xl">
           <h2 className="text-4xl tracking-[-.045em] md:text-6xl">
@@ -609,7 +618,7 @@ export default function BakeryIndustryPage({
 
       <section
         id="portfolio"
-        className="bg-[var(--stk-surface-strong)] py-24 md:py-32"
+        className="scroll-mt-24 bg-[var(--stk-surface-strong)] py-24 md:py-32"
       >
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <div className="max-w-3xl">
@@ -769,7 +778,7 @@ export default function BakeryIndustryPage({
           <div className="divide-y divide-black/10 border-y border-[color:var(--stk-border)]">
             {t.faqs.map(([q, a]) => (
               <details key={q} className="group py-6">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-xl tracking-[-.025em]">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-xl tracking-[-.025em] focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current">
                   <span>{q}</span>
                   <span className="text-[color:var(--stk-faint)] transition group-open:rotate-45">
                     +
@@ -845,7 +854,9 @@ export default function BakeryIndustryPage({
         </div>
       </section>
 
-      <section id="contact" className="px-5 py-10 md:px-8 md:py-16">
+
+
+      <section id="contact" className="scroll-mt-24 px-5 py-10 md:px-8 md:py-16">
         <div className="mx-auto max-w-7xl rounded-[var(--stk-radius-card)] bg-[var(--stk-dark)] px-6 py-14 text-white md:px-12 md:py-20">
           <p className="text-xs uppercase tracking-[.24em] text-white/40">
             {t.contactEyebrow}

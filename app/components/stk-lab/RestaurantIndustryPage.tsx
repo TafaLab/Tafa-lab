@@ -1,3 +1,5 @@
+import AiSolutionsSection from "./AiSolutionsSection";
+import IndustryAiShowcase from "./IndustryAiShowcase";
 import Image from "next/image";
 import Link from "next/link";
 import StkSiteShell from "./design/StkSiteShell";
@@ -18,16 +20,16 @@ const copy = {
     navContact: "Contact",
     heroEyebrow: "Websites & digital systems for restaurants",
     heroTitle:
-      "Restaurant websites that turn attention into reservations, orders and repeat guests.",
+      "Restaurant websites with menus, reservations and ordering.",
     heroText:
-      "We design premium restaurant websites and custom digital systems — online menus, ordering, reservations, POS workflows, dashboards and multi-location management.",
+      "Build a website with an up-to-date menu, table enquiries and ordering. Add reporting, operational tools and multi-location management when needed.",
     heroCta: "View restaurant projects",
     heroSecondary: "Discuss a project",
-    introTitle: "More than a beautiful restaurant website.",
+    introTitle: "Easier choices for guests. Less manual work for staff.",
     intro1:
-      "A restaurant website should do more than show food photography. It should help guests choose, reserve, order and return — while reducing repetitive work for the team.",
+      "Guests browse the menu, check the details and send a table or order enquiry. Your team receives the information it needs without extra calls.",
     intro2:
-      "Tafa Lab combines brand-led web design with practical restaurant technology, from digital menus and table reservations to owner dashboards and operational systems.",
+      "Depending on your needs, we can add digital menus, booking integrations, order tracking and manager reports.",
     servicesTitle: "Digital solutions for restaurants",
     servicesText:
       "Start with a focused website or build a connected restaurant ecosystem. Every solution is adapted to the concept, service model and operational needs.",
@@ -187,16 +189,16 @@ const copy = {
     navContact: "Контакты",
     heroEyebrow: "Сайты и цифровые системы для ресторанов",
     heroTitle:
-      "Ресторанные сайты, которые превращают внимание в брони, заказы и постоянных гостей.",
+      "Сайт ресторана с меню, бронированием и заказами.",
     heroText:
-      "Создаём премиальные сайты и цифровые системы для ресторанов: онлайн-меню, заказы, бронирование, POS-процессы, дашборды и управление несколькими филиалами.",
+      "Разрабатываем сайты с актуальным меню, заявками на столики и заказами. При необходимости подключаем учёт, отчёты и управление филиалами.",
     heroCta: "Смотреть ресторанные проекты",
     heroSecondary: "Обсудить проект",
-    introTitle: "Больше, чем красивый сайт ресторана.",
+    introTitle: "Гостю — удобный выбор, команде — меньше ручной работы.",
     intro1:
-      "Сайт ресторана должен не только показывать красивые блюда. Он должен помогать гостю выбрать, забронировать, заказать и вернуться — одновременно сокращая ручную работу команды.",
+      "Гость открывает меню, узнаёт условия и отправляет запрос на столик или заказ. Команда получает нужные детали без лишних звонков.",
     intro2:
-      "Tafa Lab объединяет брендовый веб-дизайн с практичными ресторанными технологиями: от цифрового меню и бронирования до дашбордов владельца и операционных систем.",
+      "В зависимости от задачи добавляем онлайн-меню, интеграцию с бронированиями, учёт заказов и отчёты для управляющего.",
     servicesTitle: "Цифровые решения для ресторанов",
     servicesText:
       "Можно начать с сайта или построить связанную ресторанную экосистему. Решение адаптируется под концепцию, формат обслуживания и реальные процессы бизнеса.",
@@ -369,18 +371,22 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
           <Link href={`/${locale}`} aria-label="Tafa Lab">
             <TafaLabLogo priority />
           </Link>
-          <nav className="hidden items-center gap-7 text-sm md:flex">
+          <nav aria-label={locale === "ru" ? "Навигация по странице" : "Page sections"} className="hidden items-center gap-7 text-sm md:flex">
             <a href="#services">{t.navServices}</a>
             <a href="#portfolio">{t.navPortfolio}</a>
             <a href="#process">{t.navProcess}</a>
-<a href="#contact">{t.navContact}</a>
+            <a href="#contact">{t.navContact}</a>
           </nav>
-          <Link
-            href={`/${other}/industries/restaurants`}
-            className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase"
-          >
-            {other}
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <a href="#contact" className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs font-medium transition-colors hover:bg-black/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:hidden">{locale === "ru" ? "Связаться" : "Contact"}</a>
+            <Link
+              aria-label={locale === "ru" ? "Switch to English" : "Переключить на русский"}
+              href={`/${other}/industries/restaurants`}
+              className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase"
+            >
+              {other.toUpperCase()}
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -430,6 +436,9 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
         </StkReveal>
       </section>
 
+      <AiSolutionsSection locale={locale} sector="restaurants" />
+      <IndustryAiShowcase locale={locale} sector="restaurants" />
+
       <section className="border-y border-[color:var(--stk-border)] bg-[color:var(--stk-surface)]">
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 md:grid-cols-2 md:px-8 md:py-28">
           <h2 className="text-4xl tracking-[-.045em] md:text-6xl">
@@ -444,7 +453,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
 
       <section
         id="services"
-        className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
+        className="scroll-mt-24 mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
       >
         <div className="max-w-3xl">
           <h2 className="text-4xl tracking-[-.045em] md:text-6xl">
@@ -500,7 +509,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
 
       <section
         id="portfolio"
-        className="bg-[var(--stk-surface-strong)] py-24 md:py-32"
+        className="scroll-mt-24 bg-[var(--stk-surface-strong)] py-24 md:py-32"
       >
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <div className="max-w-3xl">
@@ -557,7 +566,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
 
       <section
         id="process"
-        className="bg-[var(--stk-accent-soft)] py-24 md:py-32"
+        className="scroll-mt-24 bg-[var(--stk-accent-soft)] py-24 md:py-32"
       >
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <div className="grid gap-8 md:grid-cols-2">
@@ -636,7 +645,7 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
           <div className="divide-y divide-black/10 border-y border-[color:var(--stk-border)]">
             {t.faqs.map(([q, a]) => (
               <details key={q} className="group py-6">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-xl">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-5 text-xl focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current">
                   <span>{q}</span>
                   <span className="text-[color:var(--stk-faint)] transition group-open:rotate-45">
                     +
@@ -716,7 +725,9 @@ export default function RestaurantIndustryPage({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-      <section id="contact" className="px-5 py-10 md:px-8 md:py-16">
+
+
+      <section id="contact" className="scroll-mt-24 px-5 py-10 md:px-8 md:py-16">
         <div className="mx-auto max-w-7xl rounded-[var(--stk-radius-card)] bg-[var(--stk-dark)] px-6 py-14 text-white md:px-12 md:py-20">
           <p className="text-xs uppercase tracking-[.24em] text-white/40">
             {t.contactEyebrow}

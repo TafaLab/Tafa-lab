@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
@@ -23,9 +24,12 @@ export async function GET(request:Request){
     if(!tokenClient)return NextResponse.json({error:"server_not_configured"},{status:500});
     const {data:{user},error:authError}=await tokenClient.auth.getUser(token);
     if(authError||!user)return NextResponse.json({error:"unauthorized"},{status:401});
-    // The route already requires a valid authenticated CRM session. Prefer
-    // the server client so a stale hard-coded Supabase user ID or RLS policy
-    // cannot turn a real request list into an empty response.
+    // Only the administrator identified in the current Supabase RLS policies
+    // may read the combined CRM requests inbox.
+    if(user.id!=="56964541-7502-4f8e-99da-5e36aaf3529b")
+      return NextResponse.json({error:"forbidden"},{status:403});
+    // Never fall back to a service-role read for an arbitrary authenticated
+    // account. This check must stay aligned with the admin-only RLS policy.
     const supabase=supabaseForAdmin()||tokenClient;
     const [{data:leadRows,error:leadError},{data:orderRows,error:orderError}]=await Promise.all([
       supabase.from("stk_lab_leads").select("*").order("created_at",{ascending:false}),
@@ -39,19 +43,22 @@ export async function GET(request:Request){
     // source is unavailable.
     if(orderError)console.error("Tafa Lab demo requests load:",orderError.message);
 
-    const demoLeads=(orderError?[]:(orderRows||[])).map((order:any)=>{
-      let payload:any={};
-      try{payload=order.customer_comment?JSON.parse(order.customer_comment):{};}catch{}
+    const demoLeads=(orderError?[]:(orderRows||[])).map((order)=>{
+      let payload:Record<string,unknown>={};
+      try{
+        const parsed:unknown=order.customer_comment?JSON.parse(order.customer_comment):{};
+        if(parsed&&typeof parsed==="object"&&!Array.isArray(parsed))payload=parsed as Record<string,unknown>;
+      }catch{}
       return {
         id:`order-${order.id}`,
         created_at:order.created_at,
         name:order.customer_name||"Без имени",
         contact:order.customer_phone||order.customer_email||"Контакт не указан",
         company:null,
-        project_type:payload.subject||"Заявка с демо-сайта",
-        message:payload.message||null,
+        project_type:clean(payload.subject,120)||"Заявка с демо-сайта",
+        message:clean(payload.message,3000)||null,
         locale:payload.locale==="en"?"en":"ru",
-        source_path:payload.siteName?`Демо · ${payload.siteName}`:"Демо-сайт",
+        source_path:clean(payload.siteName,160)?`Демо · ${clean(payload.siteName,160)}`:"Демо-сайт",
         status:"new",
         admin_notes:null,
       };
@@ -61,8 +68,7 @@ export async function GET(request:Request){
 }
 
 const clean=(v:unknown,max:number)=>typeof v==="string"?v.trim().slice(0,max):"";
-const attempts=new Map<string,number[]>();
-const WINDOW_MS=10*60*1000;
+const WINDOW_SECONDS=600;
 const MAX_ATTEMPTS=5;
 
 export async function POST(request:Request){
@@ -77,13 +83,26 @@ export async function POST(request:Request){
     if(!startedAt||now-startedAt<1200||now-startedAt>2*60*60*1000){
       return NextResponse.json({error:"invalid_submission"},{status:400});
     }
-    const forwarded=request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-    const clientKey=forwarded||request.headers.get("x-real-ip")||"unknown";
-    const recent=(attempts.get(clientKey)??[]).filter(time=>now-time<WINDOW_MS);
-    if(recent.length>=MAX_ATTEMPTS)return NextResponse.json({error:"rate_limited"},{status:429});
-    attempts.set(clientKey,[...recent,now]);
     const name=clean(body.name,100),contact=clean(body.contact,180);
     if(!name||!contact)return NextResponse.json({error:"name_and_contact_required"},{status:400});
+    // Vercel sets x-vercel-forwarded-for from the trusted edge. Do not use
+    // arbitrary client-supplied x-forwarded-for to identify visitors.
+    const clientIp = request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim()
+      || request.headers.get("x-real-ip")?.trim();
+    if (!clientIp) return NextResponse.json({ error: "client_ip_unavailable" }, { status: 503 });
+    const admin = supabaseForAdmin();
+    if (!admin) return NextResponse.json({ error: "server_not_configured" }, { status: 500 });
+    const clientHash = createHash("sha256").update(clientIp).digest("hex");
+    const { data: allowed, error: limitError } = await admin.rpc("stk_lab_check_submission_limit", {
+      p_client_hash: clientHash,
+      p_max_attempts: MAX_ATTEMPTS,
+      p_window_seconds: WINDOW_SECONDS,
+    });
+    if (limitError) {
+      console.error("Tafa Lab submission limit:", limitError.message);
+      return NextResponse.json({ error: "rate_limit_unavailable" }, { status: 503 });
+    }
+    if (!allowed) return NextResponse.json({ error: "rate_limited" }, { status: 429 });
     const url=process.env.NEXT_PUBLIC_SUPABASE_URL,anon=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     if(!url||!anon)return NextResponse.json({error:"server_not_configured"},{status:500});
     const supabase=createClient(url,anon,{auth:{persistSession:false,autoRefreshToken:false}});

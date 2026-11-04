@@ -2,12 +2,6 @@
 
 import { useLocale } from "next-intl";
 
-import Footer from "@/app/components/layout/Footer";
-import Header from "@/app/components/layout/Header";
-
-import { enMessages } from "@/messages/en";
-import { ruMessages } from "@/messages/ru";
-
 type Locale = "ru" | "en";
 
 const whatsappNumber = "77471818493";
@@ -22,13 +16,9 @@ export default function ContactsPage() {
 
   const isEnglish = locale === "en";
 
-  const text = isEnglish
-    ? enMessages
-    : ruMessages;
-
   const whatsappMessage = isEnglish
-    ? "Hello! I would like to ask a question about STK Bakery."
-    : "Здравствуйте! Я хочу задать вопрос о STK Bakery.";
+    ? "Hello! I would like to discuss a project with Tafa Lab."
+    : "Здравствуйте! Хочу обсудить проект с Tafa Lab.";
 
   const whatsappUrl =
     `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
@@ -37,10 +27,16 @@ export default function ContactsPage() {
 
   return (
     <main className="min-h-screen bg-[#faf8f6] text-[#342923]">
-      <Header
-        locale={locale}
-        text={text.nav}
-      />
+      <header className="border-b border-black/10 bg-white/90">
+        <nav aria-label={isEnglish ? "Main navigation" : "Основная навигация"} className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-5">
+          <a href={`/${locale}`} className="font-bold tracking-wide text-[#342923]">TAFA LAB</a>
+          <div className="flex items-center gap-5 text-sm font-medium">
+            <a href={`/${locale}/ai-agents`} className="text-[#342923]">{isEnglish ? "AI Agents" : "AI-агенты"}</a>
+            <a href={`/${locale}/blog`} className="text-[#342923]">{isEnglish ? "Articles" : "Статьи"}</a>
+            <a href={`/${isEnglish ? "ru" : "en"}/contacts`} lang={isEnglish ? "ru" : "en"} className="text-[#342923]">{isEnglish ? "RU" : "EN"}</a>
+          </div>
+        </nav>
+      </header>
 
       <section className="relative overflow-hidden">
         <div className="pointer-events-none absolute -left-24 top-16 h-72 w-72 rounded-full bg-[#ead7d5]/45 blur-3xl" />
@@ -57,14 +53,14 @@ export default function ContactsPage() {
 
             <h1 className="mt-4 text-4xl font-bold sm:text-5xl lg:text-6xl">
               {isEnglish
-                ? "Contact STK Bakery"
-                : "Связаться с STK Bakery"}
+                ? "Contact Tafa Lab"
+                : "Связаться с Tafa Lab"}
             </h1>
 
             <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-black/60 md:text-lg">
               {isEnglish
-                ? "Have a question about a cake, breakfast or custom order? Contact us in the most convenient way."
-                : "Есть вопрос о торте, завтраке или индивидуальном заказе? Свяжитесь с нами удобным для вас способом."}
+                ? "Have a website, app or automation project in mind? Tell us what you need, and we’ll discuss the next steps."
+                : "Планируете сайт, приложение или автоматизацию? Расскажите о задаче — обсудим подход и следующие шаги."}
             </p>
           </div>
 
@@ -99,8 +95,8 @@ export default function ContactsPage() {
 
               <p className="mt-3 text-sm leading-6 text-black/55">
                 {isEnglish
-                  ? "The quickest way to ask a question or discuss an order."
-                  : "Самый быстрый способ задать вопрос или обсудить заказ."}
+                  ? "A convenient way to discuss your project and ask questions."
+                  : "Удобный способ обсудить проект и задать вопросы."}
               </p>
 
               <span className="mt-6 inline-flex items-center gap-2 font-semibold text-[#714739]">
@@ -147,8 +143,8 @@ export default function ContactsPage() {
 
               <p className="mt-3 text-sm leading-6 text-black/55">
                 {isEnglish
-                  ? "Send us your ideas, references and order details."
-                  : "Отправьте нам идеи, примеры и подробности вашего заказа."}
+                  ? "Send us your project brief, references and questions."
+                  : "Отправьте описание проекта, примеры и вопросы."}
               </p>
 
               <span className="mt-6 block break-all font-semibold text-[#714739]">
@@ -179,33 +175,30 @@ export default function ContactsPage() {
 
               <h2 className="mt-6 text-2xl font-semibold">
                 {isEnglish
-                  ? "Opening Hours"
-                  : "Время работы"}
+                  ? "How to Reach Us"
+                  : "Как с нами связаться"}
               </h2>
 
               <p className="mt-3 text-sm leading-6 text-black/55">
                 {isEnglish
-                  ? "We accept messages and orders every day."
-                  : "Мы принимаем сообщения и заказы каждый день."}
+                  ? "Send us a message or email; we will respond when available."
+                  : "Напишите нам в мессенджер или на почту — ответим, когда будем на связи."}
               </p>
 
-              <div className="mt-6">
-                <p className="font-semibold text-[#714739]">
-                  {isEnglish
-                    ? "Daily"
-                    : "Ежедневно"}
-                </p>
-
-                <p className="mt-1 text-lg font-semibold">
-                  08:00–22:00
-                </p>
+              <div className="mt-6 flex flex-wrap gap-3 text-sm font-semibold">
+                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-[#714739] underline underline-offset-4">
+                  WhatsApp
+                </a>
+                <a href={`mailto:${email}`} className="text-[#714739] underline underline-offset-4">
+                  Email
+                </a>
               </div>
             </div>
           </div>
 
           <div className="mx-auto mt-10 max-w-5xl overflow-hidden rounded-[2rem] bg-[#684336] px-6 py-10 text-center text-white shadow-[0_24px_70px_rgba(72,45,34,0.18)] md:px-12 md:py-14">
             <span className="text-xs font-semibold uppercase tracking-[0.24em] text-white/60">
-              STK Bakery
+              Tafa Lab
             </span>
 
             <h2 className="mt-4 text-3xl font-bold md:text-4xl">
@@ -216,8 +209,8 @@ export default function ContactsPage() {
 
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/70 md:text-base">
               {isEnglish
-                ? "Tell us about your idea, preferred flavors and event date. We will help you choose the perfect option."
-                : "Расскажите нам о вашей идее, любимых вкусах и дате события. Мы поможем подобрать идеальный вариант."}
+                ? "Tell us about your goals, project scope and timeline. We’ll discuss a practical solution."
+                : "Расскажите о целях, задачах и сроках проекта. Обсудим подходящее решение."}
             </p>
 
             <a
@@ -234,10 +227,9 @@ export default function ContactsPage() {
         </div>
       </section>
 
-      <Footer
-        locale={locale}
-        text={text.footer}
-      />
+      <footer className="border-t border-black/10 bg-white px-6 py-8 text-center text-sm text-[#342923]/70">
+        © Tafa Lab · <a href={`/${locale}`} className="underline">{isEnglish ? "Back to main site" : "На главную"}</a>
+      </footer>
     </main>
   );
 }

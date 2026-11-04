@@ -1,6 +1,25 @@
 # Tafa Lab — master backlog
 
-Updated: 2026-10-26. Repository: `TafaLab/Tafa-lab`. This is the studio website and its industry demos, **not** `Tafalab-travel`.
+## Release and AI-first priority — 2026-11-04 (owner request)
+
+**Decision:** AI agents and automation are the primary commercial focus. Surface existing, accurately labeled AI offers and scripted demos near the top, not after the rest of each industry page. Do not imply live integrations or publish package prices.
+
+### Completed in dev
+- [x] Home: AI solutions section moved immediately after hero/stats and direct AI-agents CTA added to hero — `33164d0`.
+- [x] Six existing industries (bakeries, restaurants, beauty, travel, business-platforms, entertainment): AI offers and scripted showcase moved immediately after hero; existing contact form remains last — `011d050`, `23f53a2`, `e5a2806`, `ade893a`, `393a155`, `d88bb3`.
+- [x] Learning Platforms and Conferences: AI offers/showcase moved before interactive prototype, contact CTA retained at end — `54beeee`, `e890f15`.
+- [x] Reused existing components, no new AI provider/API, no CRM or Supabase changes, no public pricing.
+
+### Remaining / release gate
+- [ ] Run complete `node scripts/check-ai-content.cjs`, TypeScript, ESLint, Next.js production build for the current release head. Prior static source inspections are **not** a build.
+- [ ] RU/EN desktop/mobile visual, keyboard and anchor navigation QA (including hero AI CTA, all 8 sector AI blocks, Flowers and contact form); verify no overflow or duplicated marketing blocks.
+- [ ] Verify scripted AI demos are clearly labeled; no false promise of live chat, reservations, orders or payments.
+- [ ] Verify Production deployment health after approved merge, and log release SHA and deployment status.
+- [ ] Real AI-backed FAQ remains separate under issue #14; requires server-side provider key, rate limits, privacy safeguards and verified budget before launch.
+- [ ] Keep issue #13 and the master backlog updated after each package: completed, pending, SHA/PR, and actual QA evidence. Do not mark unexecuted tests as passed.
+
+
+Updated: 2026-10-28. CI verified on Node.js 24: [run 40705709963](https://github.com/TafaLab/Tafa-lab/actions/runs/40705709963) (`26199e0`), including AI QA, TypeScript, ESLint and Next.js build. Visual RU/EN Preview QA remains pending. Repository: `TafaLab/Tafa-lab`. This is the studio website and its industry demos, **not** `Tafalab-travel`.
 
 ## Operating rules
 - Preserve existing live pages, demos, CRM data, Supabase schemas and working routes.
@@ -68,3 +87,17 @@ Updated: 2026-10-26. Repository: `TafaLab/Tafa-lab`. This is the studio website 
 Bakeries, restaurants, beauty/wellness, travel/hospitality **within Tafa Lab**, business platforms, entertainment/events. Flowers & Florists is the next category. The separate `Tafalab-travel` repository remains independent.
 
 - [x] Published RU/EN AI guides for Entertainment, Learning Platforms and Conferences; all eight industry showcases now link to full articles. Production deployment/build verification pending.
+
+- [x] DEV only: added bilingual `/[locale]/blog` index for all eight AI guides and linked it from industry showcases. Pending build, QA and consolidated release.
+
+## Предрелизная проверка AI-раздела (dev, без Vercel)
+
+- [x] RU/EN каталог восьми статей, ссылки из главной и отраслевых страниц.
+- [x] Sitemap, hreflang и Article/CollectionPage JSON-LD добавлены в исходный код.
+- [x] В GitHub Actions на `dev` подтверждены `npm ci`, `npm run qa:ai-content`, `npx tsc --noEmit`, `npm run lint` и `npm run build` — [успешный запуск 40704703212](https://github.com/TafaLab/Tafa-lab/actions/runs/40704703212), коммит `ed1ede3`. Это CI-проверка с фиктивными Supabase-параметрами, не локальная сборка и не проверка Preview/Production.
+- [ ] Проверить JSON-LD и canonical/hreflang в сгенерированных RU/EN HTML.
+- [ ] Проверить навигацию всех восьми статей, адаптивность и доступность с клавиатуры.
+- [ ] Проверить настройку Vercel: автоматические Git-деплои на push в dev/main могут запускаться независимо от ручного вызова; до общего релиза отключить или контролировать их.
+- [ ] Только после QA согласовать объединение dev → main и единый production-деплой.
+
+- **CRM request description (2026-11-04):** User confirmed Preview test lead reaches `/ru/stk-admin`, but submitted free-text description was missing from lead details. Fixed display of `selected.message` in RU/EN lead drawer in commit `c9d8408`. Status: **IN PROGRESS** until TypeScript, ESLint, build and updated Preview visual verification; do not mark DONE or release until verified.

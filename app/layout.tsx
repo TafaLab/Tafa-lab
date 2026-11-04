@@ -1,10 +1,9 @@
 import type { Metadata, Viewport } from "next";
+import { getLocale } from "next-intl/server";
 import "./globals.css";
 import "./polish.css";
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  "https://tafalab.com";
+const siteUrl = "https://tafalab.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -80,14 +79,16 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+
   return (
     <html
-      lang="ru"
+      lang={locale}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >

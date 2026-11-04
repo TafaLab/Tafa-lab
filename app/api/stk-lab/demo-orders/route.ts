@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
@@ -31,9 +32,6 @@ const allowedSites = new Set([
   "LEDGER / PRIVATE — business platform",
 ]);
 
-const attempts = new Map<string, number[]>();
-const windowMs = 10 * 60 * 1000;
-
 function clean(value: unknown, max: number) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }
@@ -51,13 +49,25 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "invalid_submission" }, { status: 400 });
     }
 
-    const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-    const clientKey = forwarded || request.headers.get("x-real-ip") || "unknown";
-    const recent = (attempts.get(clientKey) ?? []).filter((time) => now - time < windowMs);
-    if (recent.length >= 5) {
-      return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+    // Share the existing persistent limiter with the main lead form.
+    const clientIp = request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim()
+      || request.headers.get("x-real-ip")?.trim();
+    if (!clientIp) return NextResponse.json({ error: "client_ip_unavailable" }, { status: 503 });
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!url || !serviceKey) return NextResponse.json({ error: "server_not_configured" }, { status: 500 });
+    const admin = createClient(url, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } });
+    const clientHash = createHash("sha256").update(clientIp).digest("hex");
+    const { data: allowed, error: limitError } = await admin.rpc("stk_lab_check_submission_limit", {
+      p_client_hash: clientHash,
+      p_max_attempts: 5,
+      p_window_seconds: 600,
+    });
+    if (limitError) {
+      console.error("Demo order submission limit:", limitError.message);
+      return NextResponse.json({ error: "rate_limit_unavailable" }, { status: 503 });
     }
-    attempts.set(clientKey, [...recent, now]);
+    if (!allowed) return NextResponse.json({ error: "rate_limited" }, { status: 429 });
 
     const name = clean(body.name, 100);
     const contact = clean(body.contact, 180);
@@ -66,7 +76,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "invalid_request" }, { status: 400 });
     }
 
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     if (!url || !anon) {
       return NextResponse.json({ error: "server_not_configured" }, { status: 500 });

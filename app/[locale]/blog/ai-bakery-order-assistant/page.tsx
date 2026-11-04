@@ -1,3 +1,4 @@
+import ArticleStructuredData from "@/app/components/stk-lab/ArticleStructuredData";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -34,11 +35,11 @@ const articles = {
 } as const;
 export async function generateMetadata({params}:{params:Promise<{locale:string}>}):Promise<Metadata>{
  const {locale}=await params;if(locale!=="ru"&&locale!=="en")return {};
- const t=articles[locale];return {title:`${t.title} | Tafa Lab`,description:t.description,alternates:{canonical:`/${locale}/blog/ai-bakery-order-assistant`,languages:{ru:"/ru/blog/ai-bakery-order-assistant",en:"/en/blog/ai-bakery-order-assistant","x-default":"/en/blog/ai-bakery-order-assistant"}}};
+ const t=articles[locale];return {title:t.title,description:t.description,alternates:{canonical:`/${locale}/blog/ai-bakery-order-assistant`,languages:{ru:"/ru/blog/ai-bakery-order-assistant",en:"/en/blog/ai-bakery-order-assistant","x-default":"/en/blog/ai-bakery-order-assistant"}}};
 }
 export default async function Page({params}:{params:Promise<{locale:string}>}){
  const {locale}=await params;if(locale!=="ru"&&locale!=="en")notFound();const t=articles[locale];
- return <main className="min-h-screen bg-[var(--stk-bg)] text-[var(--stk-text)]">
+ return <main className="min-h-screen bg-[var(--stk-bg)] text-[var(--stk-text)]"><ArticleStructuredData locale={locale} slug="ai-bakery-order-assistant" headline={t.title} description={t.description} />
  <article className="mx-auto max-w-3xl px-5 py-16 md:py-24">
  <Link href={`/${locale}/industries/bakeries`} className="text-sm underline underline-offset-4">← {t.back}</Link>
  <p className="mt-16 text-xs font-semibold uppercase tracking-[.2em] text-[color:var(--stk-muted)]">{t.tag} · Tafa Lab</p>
@@ -46,6 +47,6 @@ export default async function Page({params}:{params:Promise<{locale:string}>}){
  <p className="mt-8 text-lg leading-8 text-[color:var(--stk-muted)]">{t.intro}</p>
  {t.sections.map(([heading,body])=><section key={heading} className="mt-12"><h2 className="text-2xl font-medium">{heading}</h2><p className="mt-4 leading-8 text-[color:var(--stk-muted)]">{body}</p></section>)}
  <p className="mt-12 border-t border-[color:var(--stk-border)] pt-8 leading-8">{t.conclusion}</p>
- <Link href={`/${locale}#contact`} className="mt-10 inline-flex rounded-full bg-[var(--stk-dark)] px-7 py-3 text-white" style={{color:"#fff"}}>{t.cta}</Link>
+ <Link href={`/${locale}/blog`} className="mt-10 mr-4 inline-flex rounded-full border border-[color:var(--stk-border)] px-7 py-3 text-sm">{locale==="ru"?"Все статьи":"All articles"}</Link><Link href={`/${locale}#contact`} className="mt-10 inline-flex rounded-full bg-[var(--stk-dark)] px-7 py-3 text-white" style={{color:"#fff"}}>{t.cta}</Link>
  </article></main>;
 }

@@ -4,15 +4,17 @@ import StkLeadForm from "./StkLeadForm";
 import TafaLabLogo from "./TafaLabLogo";
 import StkSiteShell from "./design/StkSiteShell";
 import EventIdeasSection from "./EventIdeasSection";
+import AiSolutionsSection from "./AiSolutionsSection";
+import IndustryAiShowcase from "./IndustryAiShowcase";
 
 type Locale = "ru" | "en";
 const copy = {
   en: {
     eyebrow: "Websites for entertainment & celebrations",
     title:
-      "Digital experiences that begin the celebration before the doors open.",
+      "Make it easy to choose an event and send an enquiry.",
     text: "Websites and booking journeys for event studios, performers, children's entertainment and family venues.",
-    projects: "Three worlds. Three completely different reasons to celebrate.",
+    projects: "Three examples of event and entertainment websites.",
     services: [
       ["Event & wedding website", ""],
       ["Programs & packages", ""],
@@ -39,14 +41,14 @@ const copy = {
         "wondernest-kids-demo",
       ],
     ],
-    cta: "Tell us what people should feel.",
+    cta: "Tell us about your project.",
   },
   ru: {
     eyebrow: "Сайты для развлечений и праздников",
     title:
-      "Цифровые впечатления, с которых праздник начинается ещё до открытия дверей.",
-    text: "Сайты и сценарии бронирования для event-студий, артистов, детских программ и семейных игровых пространств.",
-    projects: "Три мира. Три совершенно разных повода праздновать.",
+      "Сайт, на котором удобно выбрать праздник и оставить заявку.",
+    text: "Показываем программы, условия и свободные даты. Помогаем гостям разобраться в предложении, а организаторам — получать заявки с нужными деталями.",
+    projects: "Три примера сайтов для мероприятий и развлечений.",
     services: [
       ["Сайт событий и свадеб", ""],
       ["Программы и пакеты", ""],
@@ -73,7 +75,7 @@ const copy = {
         "wondernest-kids-demo",
       ],
     ],
-    cta: "Расскажите, что должны почувствовать гости.",
+    cta: "Расскажите о вашем проекте.",
   },
 } as const;
 export default function EntertainmentIndustryPage({
@@ -87,27 +89,31 @@ export default function EntertainmentIndustryPage({
     <StkSiteShell>
       <header className="sticky top-0 z-50 border-b bg-white/85 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
-          <Link href={`/${locale}`}>
+          <Link href={`/${locale}`} aria-label="Tafa Lab — home">
             <TafaLabLogo priority />
           </Link>
-          <nav className="hidden gap-8 text-sm md:flex">
+          <nav aria-label={locale === "ru" ? "Навигация по странице" : "Page sections"} className="hidden gap-8 text-sm md:flex">
             <a href="#projects">{locale === "ru" ? "Проекты" : "Projects"}</a>
             <a href="#services">{locale === "ru" ? "Решения" : "Solutions"}</a>
-<a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
+            <a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
           </nav>
-          <Link
-            href={`/${other}/industries/entertainment`}
-            className="rounded-full border px-3 py-2 text-xs uppercase"
-          >
-            {other}
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <a href="#contact" className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs font-medium transition-colors hover:bg-black/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:hidden">{locale === "ru" ? "Связаться" : "Contact"}</a>
+            <Link
+              aria-label={locale === "ru" ? "Switch to English" : "Переключить на русский"}
+              href={`/${other}/industries/entertainment`}
+              className="rounded-full border px-3 py-2 text-xs uppercase"
+            >
+              {other.toUpperCase()}
+            </Link>
+          </div>
         </div>
       </header>
       <section className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-36">
         <p className="text-xs font-semibold uppercase tracking-[.25em] text-[#9a5b76]">
           {t.eyebrow}
         </p>
-        <h1 className="mt-7 max-w-6xl text-6xl leading-[.92] tracking-[-.06em] md:text-8xl">
+        <h1 className="mt-7 max-w-6xl text-balance text-5xl leading-[1.02] tracking-[-.055em] sm:text-6xl md:text-8xl md:leading-[.98]">
           {t.title}
         </h1>
         <p className="mt-8 max-w-2xl text-xl leading-8 text-black/55">
@@ -121,9 +127,12 @@ export default function EntertainmentIndustryPage({
           {locale === "ru" ? "Смотреть проекты" : "Explore projects"} ↓
         </a>
       </section>
+
+      <AiSolutionsSection locale={locale} sector="entertainment" />
+      <IndustryAiShowcase locale={locale} sector="entertainment" />
       <section
         id="projects"
-        className="bg-[#171115] px-5 py-24 text-white md:px-8 md:py-32"
+        className="scroll-mt-24 bg-[#171115] px-5 py-24 text-white md:px-8 md:py-32"
       >
         <div className="mx-auto max-w-7xl">
           <h2 className="max-w-4xl text-5xl tracking-[-.05em] md:text-7xl">
@@ -159,7 +168,7 @@ export default function EntertainmentIndustryPage({
       </section>
       <section
         id="services"
-        className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
+        className="scroll-mt-24 mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
       >
         <h2 className="text-5xl md:text-7xl">
           {locale === "ru"
@@ -177,14 +186,6 @@ export default function EntertainmentIndustryPage({
         </div>
 </section>
       <EventIdeasSection locale={locale} />
-      <section id="contact" className="px-5 pb-10 md:px-8">
-        <div className="mx-auto max-w-7xl rounded-[3rem] bg-[#171115] px-6 py-16 text-white md:px-12 md:py-24">
-          <h2 className="max-w-4xl text-5xl md:text-7xl">{t.cta}</h2>
-          <div className="mt-10 max-w-4xl">
-            <StkLeadForm locale={locale} />
-          </div>
-        </div>
-      </section>
       <section className="border-t">
         <div className="mx-auto max-w-7xl px-5 py-20 md:px-8">
           <div className="flex items-end justify-between gap-8">
@@ -228,6 +229,15 @@ export default function EntertainmentIndustryPage({
                 <span>→</span>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" className="scroll-mt-24 px-5 pb-10 md:px-8">
+        <div className="mx-auto max-w-7xl rounded-[3rem] bg-[#171115] px-6 py-16 text-white md:px-12 md:py-24">
+          <h2 className="max-w-4xl text-5xl md:text-7xl">{t.cta}</h2>
+          <div className="mt-10 max-w-4xl">
+            <StkLeadForm locale={locale} />
           </div>
         </div>
       </section>

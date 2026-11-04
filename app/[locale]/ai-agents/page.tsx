@@ -28,7 +28,7 @@ export async function generateMetadata({params}:{params:Promise<{locale:string}>
  const {locale}=await params;
  if(locale!=="ru"&&locale!=="en")return {};
  const t=text[locale];
- return {title:`${t.title} | Tafa Lab`,description:t.intro,alternates:{canonical:`/${locale}/ai-agents`,languages:{ru:"/ru/ai-agents",en:"/en/ai-agents","x-default":"/en/ai-agents"}}};
+ return {title:t.title,description:t.intro,alternates:{canonical:`/${locale}/ai-agents`,languages:{ru:"/ru/ai-agents",en:"/en/ai-agents","x-default":"/en/ai-agents"}}};
 }
 export default async function Page({params}:{params:Promise<{locale:string}>}){
  const {locale}=await params;

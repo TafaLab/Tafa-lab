@@ -18,6 +18,13 @@ export default function PriorityIndustriesSection({ locale }: { locale: StkLabLo
         : "Conference websites, registration, ticketing, agendas, speakers and AI event concierge.",
       href: `/${locale}/industries/conferences`,
     },
+    {
+      label: ru ? "Цветочные магазины и флористика" : "Flowers & Florists",
+      description: ru
+        ? "Каталоги букетов, индивидуальный конструктор, доставка и управление заказами."
+        : "Bouquet catalogs, a custom bouquet builder, delivery and order management.",
+      href: `/${locale}/industries/flowers`,
+    },
   ];
   return (
     <section className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28" aria-labelledby="new-industries-title">
@@ -25,7 +32,7 @@ export default function PriorityIndustriesSection({ locale }: { locale: StkLabLo
         {ru ? "Новые направления" : "New industries"}
       </p>
       <h2 id="new-industries-title" className="mt-4 text-balance text-4xl font-medium tracking-[-.04em] md:text-6xl">
-        {ru ? "Цифровые решения для обучения и событий" : "Digital platforms for learning and events"}
+        {ru ? "Цифровые решения для разных сфер бизнеса" : "Digital platforms for growing businesses"}
       </h2>
       <div className="mt-12 grid gap-5 md:grid-cols-2">
         {items.map((item) => (

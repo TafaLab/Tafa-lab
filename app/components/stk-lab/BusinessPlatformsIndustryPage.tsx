@@ -1,3 +1,5 @@
+import AiSolutionsSection from "./AiSolutionsSection";
+import IndustryAiShowcase from "./IndustryAiShowcase";
 import Image from "next/image";
 import Link from "next/link";
 import StkSiteShell from "./design/StkSiteShell";
@@ -13,13 +15,13 @@ const copy = {
   en: {
     eyebrow: "Custom business platforms & internal systems",
     title:
-      "One connected platform instead of spreadsheets, chats and disconnected tools.",
-    text: "Custom management systems for growing businesses — sales, expenses, inventory, purchasing, staff, attendance, payroll, branches, reports, workflows and owner dashboards.",
+      "Sales, inventory, staff and reporting in one system.",
+    text: "Build an internal platform around your operations: sales and expenses, purchasing, stock levels, staff schedules and branch reporting.",
     primary: "Explore business systems",
     secondary: "Discuss a project",
-    introTitle: "Software shaped around the way your business actually works.",
+    introTitle: "A system built around how your business operates.",
     introText:
-      "Instead of forcing operations into generic software, we design the platform around your branches, roles, approvals, inventory flows, financial logic and reporting needs.",
+      "We first map how your team handles orders, inventory, purchasing approvals and reporting. Then we design roles, screens and automation around those workflows.",
     servicesTitle: "What a custom business platform can include",
     services: [
       [
@@ -174,13 +176,13 @@ const copy = {
   ru: {
     eyebrow: "Индивидуальные бизнес-платформы и внутренние системы",
     title:
-      "Одна связанная платформа вместо таблиц, чатов и разрозненных сервисов.",
-    text: "Индивидуальные системы управления для растущего бизнеса: продажи, расходы, склад, закупки, сотрудники, посещаемость, зарплаты, филиалы, отчёты, процессы и кабинет владельца.",
+      "Продажи, склад, сотрудники и отчёты — в одной системе.",
+    text: "Разрабатываем внутренние платформы под ваши процессы: учёт продаж и расходов, закупки, остатки, графики сотрудников и отчёты по филиалам.",
     primary: "Смотреть бизнес-системы",
     secondary: "Обсудить проект",
     introTitle: "Система строится вокруг реальной работы вашего бизнеса.",
     introText:
-      "Вместо того чтобы подстраивать процессы под универсальную программу, мы проектируем платформу под ваши филиалы, роли, согласования, движение товара, финансовую логику и отчётность.",
+      "Сначала разбираем, как устроена работа: кто принимает заказы, ведёт склад, согласует закупки и смотрит отчёты. Затем проектируем роли, экраны и автоматизацию под эти задачи.",
     servicesTitle: "Что может входить в бизнес-платформу",
     services: [
       [
@@ -353,18 +355,22 @@ export default function BusinessPlatformsIndustryPage({
           <Link href={`/${locale}`} aria-label="Tafa Lab">
             <TafaLabLogo priority />
           </Link>
-          <nav className="hidden gap-7 text-sm md:flex">
+          <nav aria-label={locale === "ru" ? "Навигация по странице" : "Page sections"} className="hidden gap-7 text-sm md:flex">
             <a href="#services">{locale === "ru" ? "Решения" : "Solutions"}</a>
             <a href="#portfolio">{locale === "ru" ? "Проекты" : "Projects"}</a>
             <a href="#process">{locale === "ru" ? "Процесс" : "Process"}</a>
-<a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
+            <a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
           </nav>
-          <Link
-            href={`/${other}/industries/business-platforms`}
-            className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase"
-          >
-            {other}
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <a href="#contact" className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs font-medium transition-colors hover:bg-black/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:hidden">{locale === "ru" ? "Связаться" : "Contact"}</a>
+            <Link
+              aria-label={locale === "ru" ? "Switch to English" : "Переключить на русский"}
+              href={`/${other}/industries/business-platforms`}
+              className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase"
+            >
+              {other.toUpperCase()}
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -414,6 +420,9 @@ export default function BusinessPlatformsIndustryPage({
         </StkReveal>
       </section>
 
+      <AiSolutionsSection locale={locale} sector="business-platforms" />
+      <IndustryAiShowcase locale={locale} sector="business-platforms" />
+
       <section className="border-y border-[color:var(--stk-border)] bg-[color:var(--stk-surface)]">
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 md:grid-cols-2 md:px-8 md:py-28">
           <h2 className="text-4xl tracking-[-.045em] md:text-6xl">
@@ -427,7 +436,7 @@ export default function BusinessPlatformsIndustryPage({
 
       <section
         id="services"
-        className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
+        className="scroll-mt-24 mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
       >
         <h2 className="max-w-3xl text-4xl tracking-[-.045em] md:text-6xl">
           {t.servicesTitle}
@@ -480,7 +489,7 @@ export default function BusinessPlatformsIndustryPage({
 
       <section
         id="portfolio"
-        className="bg-[var(--stk-surface-strong)] py-24 md:py-32"
+        className="scroll-mt-24 bg-[var(--stk-surface-strong)] py-24 md:py-32"
       >
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <p className="text-xs font-semibold uppercase tracking-[.24em] text-[color:var(--stk-muted-strong)]">
@@ -588,7 +597,7 @@ export default function BusinessPlatformsIndustryPage({
 
       <section
         id="process"
-        className="bg-[var(--stk-accent-soft)] py-24 md:py-32"
+        className="scroll-mt-24 bg-[var(--stk-accent-soft)] py-24 md:py-32"
       >
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <h2 className="text-4xl tracking-[-.045em] md:text-6xl">
@@ -661,7 +670,7 @@ export default function BusinessPlatformsIndustryPage({
           <div className="divide-y divide-[color:var(--stk-border)] border-y border-[color:var(--stk-border)]">
             {t.faqs.map(([q, a]) => (
               <details key={q} className="group py-6">
-                <summary className="flex cursor-pointer list-none justify-between gap-5 text-xl">
+                <summary className="flex cursor-pointer list-none justify-between gap-5 text-xl focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current">
                   <span>{q}</span>
                   <span className="transition group-open:rotate-45">+</span>
                 </summary>
@@ -737,7 +746,9 @@ export default function BusinessPlatformsIndustryPage({
         </div>
       </section>
 
-      <section id="contact" className="px-5 py-10 md:px-8 md:py-16">
+
+
+      <section id="contact" className="scroll-mt-24 px-5 py-10 md:px-8 md:py-16">
         <div className="mx-auto max-w-7xl rounded-[var(--stk-radius-card)] bg-[var(--stk-dark)] px-6 py-14 text-white md:px-12 md:py-20">
           <p className="text-xs uppercase tracking-[.24em] text-white/40">
             {t.contactEyebrow}

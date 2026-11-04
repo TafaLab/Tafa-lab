@@ -1,8 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  "https://tafalab.com";
+const siteUrl = "https://tafalab.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const locales = ["ru", "en"] as const;
@@ -45,6 +43,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
     },
 
+    { path: "/industries/learning-platforms", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/industries/conferences", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/industries/flowers", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/ai-agents", priority: 0.85, changeFrequency: "monthly" as const },
+    { path: "/blog", priority: 0.85, changeFrequency: "monthly" as const },
+    { path: "/blog/ai-bakery-order-assistant", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/blog/ai-restaurant-host", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/blog/ai-beauty-receptionist", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/blog/ai-travel-advisor", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/blog/ai-business-knowledge-agent", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/blog/ai-event-assistant", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/blog/ai-learning-assistant", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/blog/ai-conference-concierge", priority: 0.7, changeFrequency: "monthly" as const },
+
     // Live STK Bakery demo. Kept public as a portfolio project.
     {
       path: "/bakery",
@@ -56,13 +68,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return locales.flatMap((locale) =>
     corePages.map((page) => ({
       url: `${siteUrl}/${locale}${page.path}`,
-      lastModified: new Date(),
       changeFrequency: page.changeFrequency,
       priority: page.priority,
       alternates: {
         languages: {
           ru: `${siteUrl}/ru${page.path}`,
           en: `${siteUrl}/en${page.path}`,
+          "x-default": `${siteUrl}/en${page.path}`,
         },
       },
     })),

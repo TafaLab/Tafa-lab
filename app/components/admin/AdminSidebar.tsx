@@ -103,6 +103,7 @@ export default function AdminSidebar() {
       [
         locale,
         text.categories,
+        text.crm,
         text.constructor,
         text.dashboard,
         text.fillings,

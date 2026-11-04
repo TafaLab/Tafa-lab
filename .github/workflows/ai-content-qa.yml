@@ -1,0 +1,48 @@
+name: AI content QA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+    paths:
+      - "app/**"
+      - "scripts/check-ai-content.cjs"
+      - "package.json"
+      - ".github/workflows/ai-content-qa.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "scripts/check-ai-content.cjs"
+      - "package.json"
+      - ".github/workflows/ai-content-qa.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify-ai-content:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Verify AI content references
+        run: npm run qa:ai-content
+      - name: TypeScript type check
+        if: success() || failure()
+        run: npx tsc --noEmit
+      - name: ESLint
+        if: success() || failure()
+        run: npm run lint
+      - name: Next.js production build (CI only, no deployment)
+        if: success() || failure()
+        env:
+          # Build-only placeholders; never used for a deployment or real Supabase requests.
+          NEXT_PUBLIC_SUPABASE_URL: https://ci-placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
+        run: npm run build

@@ -54,16 +54,17 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
       <header className="sticky top-0 z-50 border-b border-[color:var(--stk-border)] bg-[color:var(--stk-bg-translucent)] backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 md:px-8">
           <Link href={`/${locale}`} aria-label="Tafa Lab"><TafaLabLogo priority /></Link>
-          <nav className="hidden gap-7 text-sm text-[color:var(--stk-muted-strong)] lg:flex">
+          <nav aria-label={locale === "ru" ? "Навигация по странице" : "Page sections"} className="hidden gap-7 text-sm text-[color:var(--stk-muted-strong)] lg:flex">
             <a href="#work">{t.nav.work}</a>
             <a href="#services">{t.nav.services}</a>
             <a href="#process">{t.nav.process}</a>
-<a href="#industries">{t.nav.industries}</a>
+            <a href="#industries">{t.nav.industries}</a>
             <a href="#faq">{t.nav.faq}</a>
           </nav>
           <div className="flex items-center gap-3">
-            <Link href={`/${other}`} className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase">{other}</Link>
-            <a href="#contact" className="hidden rounded-full bg-[var(--stk-dark)] px-5 py-2.5 text-sm text-white sm:inline-flex" style={{ color: "#ffffff" }}>{t.nav.cta}</a>
+            <Link href={`/${other}`} aria-label={locale === "ru" ? "Switch to English" : "Переключить на русский"} className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">{other.toUpperCase()}</Link>
+            <a href="#contact" className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:hidden">{locale === "ru" ? "Связаться" : "Contact"}</a>
+            <a href="#contact" className="hidden rounded-full bg-[var(--stk-dark)] px-5 py-2.5 text-sm text-white sm:inline-flex focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2" style={{ color: "#ffffff" }}>{t.nav.cta}</a>
           </div>
         </div>
       </header>
@@ -76,6 +77,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
             <p className="mt-7 max-w-2xl text-lg leading-8 text-[color:var(--stk-muted)]">{t.hero.text}</p>
             <div className="mt-9 flex flex-wrap gap-3">
               <a href="#contact" className="rounded-full bg-[var(--stk-dark)] px-6 py-3 text-sm text-white" style={{ color: "#ffffff" }}>{t.hero.primary}</a>
+              <Link href={`/${locale}/ai-agents`} className="rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm">{locale === "ru" ? "AI-агенты для бизнеса" : "AI agents for business"}</Link>
               <a href="#work" className="rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm">{t.hero.secondary}</a>
             </div>
           </div>
@@ -108,7 +110,10 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
         </div>
       </section>
 
-      <section id="work" className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
+      <AiSolutionsSection locale={locale} />
+      <div className="mx-auto max-w-7xl px-5 pb-16 md:px-8"><Link href={`/${locale}/ai-agents`} className="inline-flex rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm font-medium">{locale === "ru" ? "Все услуги AI-агентов и автоматизации" : "Explore AI agents and automation services"} →</Link></div>
+
+      <section id="work" className="scroll-mt-24 mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
         <SectionHead {...t.work}/>
         <div className="mt-14 grid gap-5 md:grid-cols-2">
           {t.work.projects.map((p, i) => {
@@ -144,7 +149,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
         </div>
       </section>
 
-      <section id="services" className="bg-[var(--stk-dark)] py-24 text-white md:py-32">
+      <section id="services" className="scroll-mt-24 bg-[var(--stk-dark)] py-24 text-white md:py-32">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <SectionHead {...t.services} dark/>
           <div className="mt-14 grid gap-px overflow-hidden rounded-[var(--stk-radius-card)] bg-white/10 sm:grid-cols-2 lg:grid-cols-3">
@@ -160,7 +165,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
         </div>
       </section>
 
-      <section id="process" className="border-y border-[color:var(--stk-border)] bg-[color:var(--stk-surface)] py-24 md:py-32">
+      <section id="process" className="scroll-mt-24 border-y border-[color:var(--stk-border)] bg-[color:var(--stk-surface)] py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <SectionHead {...t.process}/>
           <div className="mx-auto mt-14 max-w-4xl">
@@ -169,15 +174,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
         </div>
       </section>
 
-      <section id="pricing" className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
-        <SectionHead {...t.pricing}/>
-        <div className="mx-auto mt-8 w-fit rounded-full border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)] px-5 py-2 text-sm">{t.pricing.launch}</div>
-        <div className="mt-12 grid gap-4 lg:grid-cols-4">
-          {t.pricing.plans.map(([label,name,oldPrice,price,timing,features],i)=><div key={name as string} className={`rounded-[var(--stk-radius-card)] border p-6 ${i===2?"border-[var(--stk-dark)] bg-[var(--stk-dark)] text-white":"border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)]"}`}><p className="text-xs uppercase tracking-[.2em] opacity-55">{label as string}</p><h3 className="mt-4 text-2xl">{name as string}</h3><div className="mt-2 text-xs opacity-55">{timing as string}</div><ul className="mt-8 space-y-3 text-sm leading-6">{(features as readonly string[]).map(f=><li key={f}>• {f}</li>)}</ul><a href="#contact" style={{ color: i === 2 ? "#211a17" : "#ffffff" }} className={`mt-8 inline-flex rounded-full px-5 py-2.5 text-sm font-medium ${i===2?"bg-white":"bg-[var(--stk-dark)]"}`}>{t.nav.cta}</a></div>)}
-        </div>
-</section>
-
-      <section id="industries" className="bg-[var(--stk-accent-soft)] py-24 md:py-32">
+      <section id="industries" className="scroll-mt-24 bg-[var(--stk-accent-soft)] py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <SectionHead {...t.industries}/>
           <div className="mx-auto mt-14 grid max-w-4xl gap-px overflow-hidden rounded-[var(--stk-radius-card)] bg-black/10 sm:grid-cols-2">
@@ -187,17 +184,26 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
       </section>
 
       <PriorityIndustriesSection locale={locale} />
-      <AiSolutionsSection locale={locale} />
-      <div className="mx-auto max-w-7xl px-5 pb-16 md:px-8"><Link href={`/${locale}/ai-agents`} className="inline-flex rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm font-medium">{locale === "ru" ? "Все услуги AI-агентов и автоматизации" : "Explore AI agents and automation services"} →</Link></div>
 
-      <section id="faq" className="mx-auto max-w-5xl px-5 py-24 md:px-8 md:py-32">
+      <section id="faq" className="scroll-mt-24 mx-auto max-w-5xl px-5 py-24 md:px-8 md:py-32">
         <SectionHead {...t.faq}/>
         <div className="mt-12 border-t border-[color:var(--stk-border)]">
-          {t.faq.items.map(([q,a])=><details key={q} className="group border-b border-[color:var(--stk-border)] py-5"><summary className="cursor-pointer list-none pr-8 text-lg font-medium">{q}</summary><p className="mt-4 max-w-3xl leading-7 text-[color:var(--stk-muted)]">{a}</p></details>)}
+          {t.faq.items.map(([q,a])=><details key={q} className="group border-b border-[color:var(--stk-border)] py-5"><summary className="relative cursor-pointer list-none pr-10 text-lg font-medium focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4">{q}<span aria-hidden="true" className="absolute right-1 top-0 text-2xl leading-none transition-transform group-open:rotate-45">+</span></summary><p className="mt-4 max-w-3xl leading-7 text-[color:var(--stk-muted)]">{a}</p></details>)}
         </div>
       </section>
 
-      <section id="contact" className="px-5 pb-10 md:px-8">
+      <section aria-label={locale==="ru"?"Статьи об AI":"AI insights"} className="mx-auto max-w-7xl px-5 py-12 md:px-8">
+        <div className="flex flex-col gap-5 rounded-[var(--stk-radius-panel)] border border-[color:var(--stk-border)] bg-[color:var(--stk-surface-card)] p-7 md:flex-row md:items-center md:justify-between md:p-10">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[.2em] text-[color:var(--stk-muted-strong)]">Tafa Lab · Insights</p>
+            <h2 className="mt-3 text-2xl font-medium md:text-3xl">{locale==="ru"?"AI-решения для восьми отраслей":"AI solutions across eight industries"}</h2>
+            <p className="mt-3 max-w-xl text-sm leading-7 text-[color:var(--stk-muted)]">{locale==="ru"?"Практические статьи о сценариях, интеграциях и ограничениях AI-ассистентов.":"Practical guides to AI assistant workflows, integrations and safeguards."}</p>
+          </div>
+          <Link href={`/${locale}/blog`} className="shrink-0 rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm font-medium">{locale==="ru"?"Смотреть статьи":"Explore articles"} →</Link>
+        </div>
+      </section>
+
+      <section id="contact" className="scroll-mt-24 px-5 pb-10 md:px-8">
         <div className="mx-auto max-w-7xl rounded-[var(--stk-radius-card)] bg-[var(--stk-dark)] px-6 py-20 text-center text-white md:px-12 md:py-28">
           <p className="text-xs uppercase tracking-[.25em] text-white/45">{t.cta.eyebrow}</p>
           <h2 className="mx-auto mt-4 max-w-4xl text-balance text-4xl tracking-[-.05em] md:text-7xl">{t.cta.title}</h2>

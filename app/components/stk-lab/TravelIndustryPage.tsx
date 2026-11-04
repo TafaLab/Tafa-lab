@@ -1,3 +1,5 @@
+import AiSolutionsSection from "./AiSolutionsSection";
+import IndustryAiShowcase from "./IndustryAiShowcase";
 import Image from "next/image";
 import Link from "next/link";
 import StkSiteShell from "./design/StkSiteShell";
@@ -13,14 +15,14 @@ const copy = {
   en: {
     eyebrow: "Websites & digital systems for travel businesses",
     title:
-      "Travel websites that turn inspiration into carefully planned journeys.",
-    text: "Premium websites and custom travel systems for agencies, tour operators and bespoke travel companies — trip builders, itineraries, bookings, CRM, operations and digital concierge experiences.",
+      "Travel websites for destinations, itineraries and enquiries.",
+    text: "Help travelers compare destinations and itineraries, choose dates and send an enquiry. Give your team tools to manage trip details, requests and bookings.",
     primary: "View travel websites",
     secondary: "Discuss a project",
     introTitle:
-      "From the first idea to the final transfer — one connected digital journey.",
+      "From choosing a trip to confirming the details.",
     introText:
-      "We combine destination-led editorial design with practical travel technology, helping clients discover, plan and experience a trip while giving the travel team control over requests, bookings, payments and operations.",
+      "Travelers compare destinations and packages, choose dates and send requests. Managers receive trip details and guide each enquiry toward confirmation.",
     servicesTitle: "Digital solutions for travel companies",
     services: [
       [
@@ -188,14 +190,14 @@ const copy = {
   ru: {
     eyebrow: "Сайты и цифровые системы для travel-бизнеса",
     title:
-      "Travel-сайты, которые превращают вдохновение в продуманное путешествие.",
-    text: "Премиальные сайты и индивидуальные системы для агентств, туроператоров и travel-компаний: конструктор поездки, маршруты, бронирования, CRM, операционное управление и digital concierge.",
+      "Сайты для турфирм: направления, маршруты и заявки.",
+    text: "Помогаем путешественнику выбрать направление, сравнить программы и отправить запрос. Для команды разрабатываем инструменты работы с маршрутами, заявками и бронированиями.",
     primary: "Смотреть travel-сайты",
     secondary: "Обсудить проект",
     introTitle:
-      "От первой идеи до последнего трансфера — один связанный цифровой путь.",
+      "От выбора поездки до подтверждения деталей.",
     introText:
-      "Мы соединяем эмоциональный дизайн направлений с практичными travel-технологиями: клиенту удобно выбирать и планировать поездку, а команда контролирует заявки, бронирования, оплаты и операции.",
+      "Клиент сравнивает направления и программы, выбирает даты и оставляет запрос. Менеджер получает детали поездки и ведёт заявку до подтверждения.",
     servicesTitle: "Цифровые решения для travel-компаний",
     services: [
       [
@@ -378,18 +380,22 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
           <Link href={`/${locale}`} aria-label="Tafa Lab">
             <TafaLabLogo priority />
           </Link>
-          <nav className="hidden gap-7 text-sm md:flex">
+          <nav aria-label={locale === "ru" ? "Навигация по странице" : "Page sections"} className="hidden gap-7 text-sm md:flex">
             <a href="#services">{locale === "ru" ? "Решения" : "Solutions"}</a>
             <a href="#portfolio">{locale === "ru" ? "Работы" : "Portfolio"}</a>
             <a href="#process">{locale === "ru" ? "Процесс" : "Process"}</a>
-<a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
+            <a href="#contact">{locale === "ru" ? "Контакты" : "Contact"}</a>
           </nav>
-          <Link
-            href={`/${other}/industries/travel`}
-            className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase"
-          >
-            {other}
-          </Link>
+          <div className="flex shrink-0 items-center gap-2">
+            <a href="#contact" className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs font-medium transition-colors hover:bg-black/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current md:hidden">{locale === "ru" ? "Связаться" : "Contact"}</a>
+            <Link
+              aria-label={locale === "ru" ? "Switch to English" : "Переключить на русский"}
+              href={`/${other}/industries/travel`}
+              className="rounded-full border border-[color:var(--stk-border)] px-3 py-2 text-xs uppercase"
+            >
+              {other.toUpperCase()}
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -439,6 +445,9 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
         </StkReveal>
       </section>
 
+      <AiSolutionsSection locale={locale} sector="travel" />
+      <IndustryAiShowcase locale={locale} sector="travel" />
+
       <section className="border-y border-[color:var(--stk-border)] bg-[color:var(--stk-surface)]">
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 md:grid-cols-2 md:px-8 md:py-28">
           <h2 className="text-4xl tracking-[-.045em] md:text-6xl">
@@ -452,7 +461,7 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
 
       <section
         id="services"
-        className="mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
+        className="scroll-mt-24 mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32"
       >
         <h2 className="max-w-3xl text-4xl tracking-[-.045em] md:text-6xl">
           {t.servicesTitle}
@@ -544,7 +553,7 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
 
       <section
         id="portfolio"
-        className="bg-[var(--stk-surface-strong)] py-24 md:py-32"
+        className="scroll-mt-24 bg-[var(--stk-surface-strong)] py-24 md:py-32"
       >
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <p className="text-xs font-semibold uppercase tracking-[.24em] text-[color:var(--stk-muted-strong)]">
@@ -601,7 +610,7 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
 
       <section
         id="process"
-        className="bg-[var(--stk-accent-soft)] py-24 md:py-32"
+        className="scroll-mt-24 bg-[var(--stk-accent-soft)] py-24 md:py-32"
       >
         <div className="mx-auto max-w-7xl px-5 md:px-8">
           <h2 className="text-4xl tracking-[-.045em] md:text-6xl">
@@ -674,7 +683,7 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
           <div className="divide-y divide-[color:var(--stk-border)] border-y border-[color:var(--stk-border)]">
             {t.faqs.map(([q, a]) => (
               <details key={q} className="group py-6">
-                <summary className="flex cursor-pointer list-none justify-between gap-5 text-xl">
+                <summary className="flex cursor-pointer list-none justify-between gap-5 text-xl focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current">
                   <span>{q}</span>
                   <span className="transition group-open:rotate-45">+</span>
                 </summary>
@@ -752,7 +761,9 @@ export default function TravelIndustryPage({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-      <section id="contact" className="px-5 py-10 md:px-8 md:py-16">
+
+
+      <section id="contact" className="scroll-mt-24 px-5 py-10 md:px-8 md:py-16">
         <div className="mx-auto max-w-7xl rounded-[var(--stk-radius-card)] bg-[var(--stk-dark)] px-6 py-14 text-white md:px-12 md:py-20">
           <p className="text-xs uppercase tracking-[.24em] text-white/40">
             {t.contactEyebrow}
