@@ -76,7 +76,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "invalid_request" }, { status: 400 });
     }
 
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     if (!url || !anon) {
       return NextResponse.json({ error: "server_not_configured" }, { status: 500 });
