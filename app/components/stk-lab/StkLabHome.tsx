@@ -77,6 +77,7 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
             <p className="mt-7 max-w-2xl text-lg leading-8 text-[color:var(--stk-muted)]">{t.hero.text}</p>
             <div className="mt-9 flex flex-wrap gap-3">
               <a href="#contact" className="rounded-full bg-[var(--stk-dark)] px-6 py-3 text-sm text-white" style={{ color: "#ffffff" }}>{t.hero.primary}</a>
+              <Link href={`/${locale}/ai-agents`} className="rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm">{locale === "ru" ? "AI-агенты для бизнеса" : "AI agents for business"}</Link>
               <a href="#work" className="rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm">{t.hero.secondary}</a>
             </div>
           </div>
@@ -108,6 +109,9 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
           ))}
         </div>
       </section>
+
+      <AiSolutionsSection locale={locale} />
+      <div className="mx-auto max-w-7xl px-5 pb-16 md:px-8"><Link href={`/${locale}/ai-agents`} className="inline-flex rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm font-medium">{locale === "ru" ? "Все услуги AI-агентов и автоматизации" : "Explore AI agents and automation services"} →</Link></div>
 
       <section id="work" className="scroll-mt-24 mx-auto max-w-7xl px-5 py-24 md:px-8 md:py-32">
         <SectionHead {...t.work}/>
@@ -180,8 +184,6 @@ export default function StkLabHome({ locale }: { locale: StkLabLocale }) {
       </section>
 
       <PriorityIndustriesSection locale={locale} />
-      <AiSolutionsSection locale={locale} />
-      <div className="mx-auto max-w-7xl px-5 pb-16 md:px-8"><Link href={`/${locale}/ai-agents`} className="inline-flex rounded-full border border-[color:var(--stk-border)] px-6 py-3 text-sm font-medium">{locale === "ru" ? "Все услуги AI-агентов и автоматизации" : "Explore AI agents and automation services"} →</Link></div>
 
       <section id="faq" className="scroll-mt-24 mx-auto max-w-5xl px-5 py-24 md:px-8 md:py-32">
         <SectionHead {...t.faq}/>
