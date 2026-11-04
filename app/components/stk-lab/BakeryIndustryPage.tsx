@@ -493,6 +493,9 @@ export default function BakeryIndustryPage({
         </div>
       </section>
 
+      <AiSolutionsSection locale={locale} sector="bakeries" />
+      <IndustryAiShowcase locale={locale} sector="bakeries" />
+
       <section className="border-y border-[color:var(--stk-border)] bg-[var(--stk-surface-strong)]">
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 md:grid-cols-[.9fr_1.1fr] md:px-8 md:py-28">
           <div>
@@ -851,8 +854,7 @@ export default function BakeryIndustryPage({
         </div>
       </section>
 
-      <AiSolutionsSection locale={locale} sector="bakeries" />
-      <IndustryAiShowcase locale={locale} sector="bakeries" />
+
 
       <section id="contact" className="scroll-mt-24 px-5 py-10 md:px-8 md:py-16">
         <div className="mx-auto max-w-7xl rounded-[var(--stk-radius-card)] bg-[var(--stk-dark)] px-6 py-14 text-white md:px-12 md:py-20">
