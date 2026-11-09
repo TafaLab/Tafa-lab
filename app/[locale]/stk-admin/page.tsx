@@ -7074,12 +7074,12 @@ export default function StkAdminPage() {
             section,
           ) && (
             <>
-              <div className="mt-7 flex flex-wrap gap-2">
+              <div className="mt-7 flex min-w-0 max-w-full gap-2 overflow-x-auto pb-2 md:flex-wrap md:overflow-visible">
                 {filterKeys.map((key) => (
                   <button
                     key={key}
                     onClick={() => setFilter(key)}
-                    className={`rounded-full border px-4 py-2 text-sm ${filter === key ? "border-[#211a17] bg-[#211a17] text-white" : "border-black/10 bg-white"}`}
+                    className={`shrink-0 whitespace-nowrap rounded-full border px-4 py-2 text-sm ${filter === key ? "border-[#211a17] bg-[#211a17] text-white" : "border-black/10 bg-white"}`}
                   >
                     {t.filters[key]}{" "}
                     <span className="opacity-60">{counts[key]}</span>

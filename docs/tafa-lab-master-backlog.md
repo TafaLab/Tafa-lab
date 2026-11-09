@@ -101,3 +101,7 @@ Bakeries, restaurants, beauty/wellness, travel/hospitality **within Tafa Lab**, 
 - [ ] Только после QA согласовать объединение dev → main и единый production-деплой.
 
 - **CRM request description (2026-11-04):** User confirmed Preview test lead reaches `/ru/stk-admin`, but submitted free-text description was missing from lead details. Fixed display of `selected.message` in RU/EN lead drawer in commit `c9d8408`. Status: **IN PROGRESS** until TypeScript, ESLint, build and updated Preview visual verification; do not mark DONE or release until verified.
+
+## Deferred tasks — owner request (2026-11-05)
+- [ ] **P1 — Mobile UI performance:** investigate and reproduce noticeable interface lag on phones across the Tafa Lab website; profile actual slow interactions and fix the verified cause without redesigning the approved UI. Verify on mobile in RU/EN before DONE. Status: TODO; do not assume root cause.
+- [ ] **P3 — CRM expansion (low priority, last in queue):** keep CRM on the backlog, not paused or cancelled. Schedule broader CRM development after higher-priority site, AI, and mobile stability tasks; preserve existing CRM functionality and lead-description fix tracked above. Status: TODO. Do not duplicate existing CRM bug work.
